@@ -15,10 +15,15 @@ cache = new Cache("")
 Then, load with,
 
 ```js
-var allNpcs = cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id)
+var allNpcs = cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id);
 ```
-
 Here, the ```IndexType.CONFIGS.id``` is the Index and the ```ConfigType.NPC.id``` is the Archive.
+
+
+```js
+var zulrah = cache.getFile(IndexType.CONFIGS.id,ConfigType.NPC.id, 2042);
+```
+Here again, the ```IndexType.CONFIGS.id``` is the Index, the ```ConfigType.NPC.id``` is the Archive, and the 2042 is the File Id or in this case the NPC Id.
 
 ## Loaders Implemented
 
