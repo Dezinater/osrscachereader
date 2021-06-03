@@ -17,6 +17,16 @@ const ConfigType = {
 	HITSPLAT: {id: 32, loader: undefined},
 	HEALTHBAR: {id: 33, loader: undefined},
 	STRUCT: {id: 34, loader: undefined},
-	AREA: {id: 35, loader: undefined}
+	AREA: {id: 35, loader: undefined},
+
+	valueOf(id){
+        var values = Object.values(IndexType);
+        var keys = Object.keys(IndexType);
+        for(var i=0;i<values.length;i++) {
+            if(id == values[i].id)
+                return IndexType[keys[i]];
+        }
+        return undefined;
+    }
 }
 Object.freeze(ConfigType);

@@ -15,6 +15,16 @@ const IndexType = {
     FONTS:{id: 13, loader: undefined},
     VORBIS:{id: 14, loader: undefined},
     INSTRUMENTS:{id: 15, loader: undefined},
-    WORLDMAP:{id: 16, loader: undefined}
+    WORLDMAP:{id: 16, loader: undefined},
+
+    valueOf(id){
+        var values = Object.values(IndexType);
+        var keys = Object.keys(IndexType);
+        for(var i=0;i<values.length;i++) {
+            if(id == values[i].id)
+                return IndexType[keys[i]];
+        }
+        return undefined;
+    }
 };
 Object.freeze(IndexType);
