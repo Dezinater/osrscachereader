@@ -78,11 +78,11 @@ DataView.prototype.getInt24 = function(pos) {
 DataView.prototype.getString = function(pos) {
 	var string = "";
 	var character;
-	do{
+	while(character != 0) {
 		character = this.getUint8(pos);
 		pos += 1;
 		string += String.fromCharCode(character)
-	} while(character != 0);
+	}
 	
 	return string;
 }
