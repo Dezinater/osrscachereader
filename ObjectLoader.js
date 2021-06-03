@@ -1,6 +1,6 @@
 class ObjectDefinition {
 	constructor(){
-		this.def.shadow = true;
+		this.shadow = true;
 	}
 }
 class ObjectLoader {
@@ -27,8 +27,8 @@ class ObjectLoader {
 
 				for (var index = 0; index < length; ++index)
 				{
-					objectModels.push(dataview.readUint16());
-					objectTypes.push(dataview.readUint8());
+					this.def.objectModels.push(dataview.readUint16());
+					this.def.objectTypes.push(dataview.readUint8());
 				}
 
 			}
@@ -87,7 +87,7 @@ class ObjectLoader {
 		else if (opcode == 24)
 		{
 			this.def.animationID = dataview.readUint16();
-			if (this.def.animationID() == 0xFFFF)
+			if (this.def.animationID == 0xFFFF)
 			{
 				this.def.animationID = -1;
 			}
@@ -222,7 +222,7 @@ class ObjectLoader {
 			for (var index = 0; index <= length; ++index)
 			{
 				this.def.configChangeDest.push(dataview.readUint16());
-				if (0xFFFF == configChangeDest[index])
+				if (0xFFFF == this.def.configChangeDest[index])
 				{
 					this.def.configChangeDest[index] = -1;
 				}
@@ -231,8 +231,8 @@ class ObjectLoader {
 		}
 		else if (opcode == 78)
 		{
-			def.setAmbientSoundId = dataview.readUint16();
-			def.setAnInt2083 = dataview.readUint8();
+			this.def.setAmbientSoundId = dataview.readUint16();
+			this.def.setAnInt2083 = dataview.readUint8();
 		}
 		else if (opcode == 79)
 		{
@@ -284,7 +284,7 @@ class ObjectLoader {
 			for (var index = 0; index <= length; ++index)
 			{
 				this.def.configChangeDest.push(dataview.readUint16());
-				if (0xFFFF == configChangeDest[index])
+				if (0xFFFF == this.def.configChangeDest[index])
 				{
 					this.def.configChangeDest[index] = -1;
 				}
