@@ -2,7 +2,8 @@ main();
 
 function main(){
     cache = new Cache("");
-
+    console.log(IndexType.valueOf(1));
+    console.log(IndexType.CONFIGS.loader);
 }
 
 var test = {};
