@@ -18,7 +18,7 @@ Then, load with,
 var npc = new NpcLoader(cache.getFile(2,9,2042).content).load()
 ```
 
-Here, the 2 is ??, the 9 is ?? and 2042 is the ??.
+Here, the 2 is the Index, the 9 is the Archive and 2042 is the File.
 
 ## Loaders Implemented
 
