@@ -4,8 +4,9 @@ var nameHashLookup = {};
 class FileData {
 	constructor(id) {
 		this.id = id;
-		this.nameHash = 0;
 		this.name = "";
+		this.def = undefined;
+		this.nameHash = 0;
 		this.size = 0;
 		this.content = [];
 	}
@@ -247,20 +248,22 @@ class CacheRequester {
 class CacheDefinitionLoader {
 	constructor(indexId, archiveId, files){
 		this.indexType = IndexType.valueOf(indexId);
+		this.archiveId = archiveId;
 		this.files = files;
 	}
 
 	load() {
+		var loader;
 		if(this.indexType == IndexType.CONFIGS){
-
+			loader = new (ConfigType.valueOf(this.archiveId).loader)();
 		}else{
-			for(var i=0;i<this.files.length;i++){
-				var def = new this.indexType.loader(this.files[i].content).load();
+			loader = new this.indexType.loader();
+		}
+		for(var i=0;i<this.files.length;i++){
 
-				//unload archive file memory to replace it with definition info
-				this.files[i].content = undefined;
-				this.files[i].def = def;
-			}
+			//unload archive file memory to replace it with definition info
+			this.files[i].def = loader.load(this.files[i].content);
+			this.files[i].content = undefined;
 		}
 	}
 }
