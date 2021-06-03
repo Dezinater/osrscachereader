@@ -7,6 +7,7 @@ class FileData {
 		this.nameHash = 0;
 		this.name = "";
 		this.size = 0;
+		this.content = [];
 	}
 }
 
@@ -243,6 +244,27 @@ class CacheRequester {
 
 }
 
+class CacheDefinitionLoader {
+	constructor(indexId, archiveId, files){
+		this.indexType = IndexType.valueOf(indexId);
+		this.files = files;
+	}
+
+	load() {
+		if(this.indexType == IndexType.CONFIGS){
+
+		}else{
+			for(var i=0;i<this.files.length;i++){
+				var def = new this.indexType.loader(this.files[i].content).load();
+
+				//unload archive file memory to replace it with definition info
+				this.files[i].content = undefined;
+				this.files[i].def = def;
+			}
+		}
+	}
+}
+
 class Cache {
 	constructor(rootDir){
 		this.indicies = {};
@@ -267,6 +289,7 @@ class Cache {
 			//might be an error here because of index.indexSegments[archiveId]. might need to use archive keys instead of archiveId
 			var data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment)
 			archive.loadFiles(data);
+			new CacheDefinitionLoader(indexId, archiveId, archive.files).load();
 		}
 		
 		return archive.files;
