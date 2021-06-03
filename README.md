@@ -15,10 +15,10 @@ cache = new Cache("")
 Then, load with,
 
 ```js
-var npc = new NpcLoader(cache.getFile(2,9,2042).content).load()
+var allNpcs = cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id)
 ```
 
-Here, the 2 is the Index, the 9 is the Archive and 2042 is the File.
+Here, the ```IndexType.CONFIGS.id``` is the Index and the ```ConfigType.NPC.id``` is the Archive.
 
 ## Loaders Implemented
 
