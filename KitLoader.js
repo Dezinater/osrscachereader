@@ -16,6 +16,9 @@ class KitLoader {
 	
 	handleOpcode(opcode, dataview){
         switch(opcode) {
+			case 0:
+				break;
+
             case 1:
                 this.def.bodyPartId = dataview.readUint8();
                 break;
@@ -57,10 +60,12 @@ class KitLoader {
                 break;
 
             default:
-                if(opcode >= 60 && opcode < 70)
+                if(opcode >= 60 && opcode < 70){
+					if(this.def.chatheadModels == undefined) this.def.chatheadModels = [];
                     this.def.chatheadModels[opcode - 60] = dataview.readUint16();
-                else
-                    throw 'Unknown opcode found';
+				}else{
+                    throw 'Unknown opcode found: ' + opcode;
+				}
           }
 	}
 }
