@@ -169,7 +169,7 @@ class NpcLoader {
 
 			length = dataview.readUint8();
 			
-			this.def.configs = new int[length + 2];
+			this.def.configs = [];
 
 			for (index = 0; index <= length; ++index)
 			{
