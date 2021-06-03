@@ -1,6 +1,6 @@
 const ConfigType = { 
     UNDERLAY: {id: 1, loader: undefined},
-	IDENTKIT: {id: 3, loader: undefined},
+	IDENTKIT: {id: 3, loader: KitLoader},
 	OVERLAY: {id: 4, loader: undefined},
 	INV: {id: 5, loader: undefined},
 	OBJECT: {id: 6, loader: ObjectLoader},
@@ -20,11 +20,11 @@ const ConfigType = {
 	AREA: {id: 35, loader: undefined},
 
 	valueOf(id){
-        var values = Object.values(IndexType);
-        var keys = Object.keys(IndexType);
+        var values = Object.values(this);
+        var keys = Object.keys(this);
         for(var i=0;i<values.length;i++) {
             if(id == values[i].id)
-                return IndexType[keys[i]];
+                return this[keys[i]];
         }
         return undefined;
     }

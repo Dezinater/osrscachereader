@@ -18,11 +18,11 @@ const IndexType = {
     WORLDMAP:{id: 16, loader: undefined},
 
     valueOf(id){
-        var values = Object.values(IndexType);
-        var keys = Object.keys(IndexType);
+        var values = Object.values(this);
+        var keys = Object.keys(this);
         for(var i=0;i<values.length;i++) {
             if(id == values[i].id)
-                return IndexType[keys[i]];
+                return this[keys[i]];
         }
         return undefined;
     }
