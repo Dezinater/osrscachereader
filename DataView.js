@@ -63,7 +63,7 @@ DataView.prototype.readInt32 = function() { //int
 
 DataView.prototype.readString = function() {
 	var val = this.getString(this.getPosition());
-	this.addPosition(val.length);
+	this.addPosition(val.length+1);
     return val;
 }
 
@@ -75,6 +75,8 @@ DataView.prototype.getInt24 = function(pos) {
     return (this.getInt16(pos) << 8) | this.getInt8(pos+2);
 }
 
+//this method should never be used directly 
+//but if required to use it then remember to do stringLength+1 for the last null character
 DataView.prototype.getString = function(pos) {
 	var string = "";
 	var character;
@@ -84,5 +86,5 @@ DataView.prototype.getString = function(pos) {
 		string += String.fromCharCode(character)
 	}
 	
-	return string;
+	return string.substring(0,string.length-1);
 }
