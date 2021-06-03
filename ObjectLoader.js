@@ -1,9 +1,11 @@
 class ObjectDefinition {
-		
+	constructor(){
+		this.def.shadow = true;
+	}
 }
 class ObjectLoader {
 	
-	constructor(bytes) {  // Constructor
+	constructor(bytes) {
 		this.bytes = bytes;
 		this.def = new ObjectDefinition();
 	}
@@ -110,6 +112,7 @@ class ObjectLoader {
 		{
 			this.def.contrast = dataview.readInt8() * 25;
 		}
+		//30-34, 40, 41 are similar to NPCLoader, maybe make parent class for similar opcode loaders
 		else if (opcode >= 30 && opcode < 35)
 		{
 			if(this.def.actions == undefined)
@@ -118,6 +121,7 @@ class ObjectLoader {
 			var readString = dataview.readString();
 			this.def.actions[opcode - 30] = readString;
 			
+			//might be better to leave it as hidden (?)
 			if (this.def.actions[opcode - 30] == "Hidden")
 			{
 				this.def.actions[opcode - 30] = undefined;
@@ -153,7 +157,7 @@ class ObjectLoader {
 			this.def.rotated = true;
 		}
 		else if (opcode == 64)
-		{
+		{ //needs to be declared as true in constructor if toggling to false
 			this.def.shadow = false;
 		}
 		else if (opcode == 65)
