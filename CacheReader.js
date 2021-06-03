@@ -300,7 +300,7 @@ class Cache {
 
 	//some archives only contain 1 file so a fileId is only needed in some cases
 	getFile(indexId, archiveId, fileId = 0) {
-		return this.getAllFiles()[fileId];
+		return this.getAllFiles(indexId, archiveId)[fileId];
 	}
 	
 	loadCacheFiles(rootDir) {
