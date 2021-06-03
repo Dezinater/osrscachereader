@@ -273,7 +273,7 @@ class Cache {
 		this.indicies = {};
 		
 		this.cacheRequester = new CacheRequester(rootDir);
-		this.loadCacheFiles(rootDir);
+		this.onload = this.loadCacheFiles(rootDir);
 	}
 	
 	getAllFiles(indexId, archiveId) {
@@ -304,6 +304,8 @@ class Cache {
 	}
 	
 	loadCacheFiles(rootDir) {
+
+		//this is basically relying on loading faster than the other stuff. probably should merge this with something
 		getFile(rootDir+"names.tsv").then((nameData) => {
 			var splitNameData = nameData.split("\n");
 			for(var i=0;i<splitNameData.length;i++) {
@@ -315,7 +317,7 @@ class Cache {
 		var idx255 = getFileBytes(rootDir+"main_file_cache.idx255");
 		var idxFiles = [];
 
-		idx255.then((idx255Data) => {
+		return idx255.then((idx255Data) => {
 			var indiciesAmount = idx255Data.length/6; //each section is 6 bits
 
 			for(var i=0;i<indiciesAmount;i++){
@@ -324,7 +326,7 @@ class Cache {
 			
 			//theres probably a better way of doing this
 			//also not completely sure yet if this really needs to be done for index 255
-			Promise.all(idxFiles).then((idxFileData) => {
+			return Promise.all(idxFiles).then((idxFileData) => {
 				for(var i=0;i<=idxFileData.length;i++){
 					var dataview;
 					if(i == idxFileData.length){
@@ -344,10 +346,11 @@ class Cache {
 					}
 					
 				};
-				this.cacheRequester.datDataPromise.then((x) => {
+
+				return this.cacheRequester.datDataPromise.then((x) => {
 					this.loadIndicies(idx255Data);
 				});
-				
+
 			});
 			
 		});
