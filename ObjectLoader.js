@@ -5,13 +5,9 @@ class ObjectDefinition {
 }
 class ObjectLoader {
 	
-	constructor(bytes) {
-		this.bytes = bytes;
+	load(bytes) {
 		this.def = new ObjectDefinition();
-	}
-	
-	load() {
-		let dataview = new DataView(this.bytes.buffer);
+		let dataview = new DataView(bytes.buffer);
 		do {
 			var opcode = dataview.readUint8();
 			this.handleOpcode(opcode, dataview);

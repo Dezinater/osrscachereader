@@ -2,14 +2,10 @@ class NpcDefinition {
 		
 }
 class NpcLoader {
-	
-	constructor(bytes) { 
-		this.bytes = bytes;
+
+	load(bytes) {
 		this.def = new NpcDefinition();
-	}
-	
-	load() {
-		let dataview = new DataView(this.bytes.buffer);
+		let dataview = new DataView(bytes.buffer);
 		do {
 			var opcode = dataview.readUint8();
 			this.handleOpcode(opcode, dataview);
