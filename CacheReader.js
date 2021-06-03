@@ -251,9 +251,7 @@ class Cache {
 		this.loadCacheFiles(rootDir);
 	}
 	
-	//some archives only contain 1 file so a fileId is only needed in some cases
-	getFile(indexId, archiveId, fileId = 0) {
-		
+	getAllFiles(indexId, archiveId) {
 		var index = this.indicies[indexId];
 		if(index == undefined){
 			throw "Index " + indexId + " does not exist";
@@ -271,7 +269,12 @@ class Cache {
 			archive.loadFiles(data);
 		}
 		
-		return archive.files[fileId];
+		return archive.files;
+	}
+
+	//some archives only contain 1 file so a fileId is only needed in some cases
+	getFile(indexId, archiveId, fileId = 0) {
+		return this.getAllFiles()[fileId];
 	}
 	
 	loadCacheFiles(rootDir) {
