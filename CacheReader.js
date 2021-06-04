@@ -95,15 +95,12 @@ class Index {
 		let dataview = new DataView(data.buffer);
 		var streamPos = 0;
 		
-		this.protocol = dataview.getUint8(streamPos);
-		streamPos+=1;
+		this.protocol = dataview.readUint8();
 		
 		if(this.protocol >= 6){
-			this.revision = dataview.getInt32(streamPos);
-			streamPos+=4;
+			this.revision = dataview.readInt32();
 		}
-		this.hash = dataview.getUint8(streamPos);
-		streamPos+=1;
+		this.hash = dataview.readUint8();
 		
 		this.named = (1 & this.hash) != 0;
 		
@@ -113,13 +110,11 @@ class Index {
 			return;
 		}
 		
-		this.archivesCount = dataview.getUint16(streamPos);
-		streamPos+=2;
+		this.archivesCount = dataview.readUint16();
 
 		var lastArchiveId = 0;
 		for(var i=0;i<this.archivesCount;i++) {
-			var archiveId = lastArchiveId += dataview.getInt16(streamPos);
-			streamPos+=2;
+			var archiveId = lastArchiveId += dataview.readInt16();
 			
 			this.archives[archiveId] = new ArchiveData();
 			this.archives[archiveId].id = archiveId;
@@ -129,8 +124,7 @@ class Index {
 		
 		if(this.named){
 			for(var i=0;i<this.archivesCount;i++) {
-				var nameHash = dataview.getInt32(streamPos);
-				streamPos+=4;
+				var nameHash = dataview.readInt32();
 				this.archives[archiveKeys[i]].nameHash = nameHash;
 				if(nameHashLookup[nameHash] != undefined)
 					this.archives[archiveKeys[i]].name = nameHashLookup[nameHash];
@@ -138,20 +132,17 @@ class Index {
 		}
 		
 		for(var i=0;i<this.archivesCount;i++) {
-			var crc = dataview.getInt32(streamPos);
-			streamPos+=4;
+			var crc = dataview.readInt32();
 			this.archives[archiveKeys[i]].crc = crc;
 		}
 		
 		for(var i=0;i<this.archivesCount;i++) {
-			var revision = dataview.getInt32(streamPos);
-			streamPos+=4;
+			var revision = dataview.readInt32();
 			this.archives[archiveKeys[i]].revision = revision;
 		}
 		
 		for(var i=0;i<this.archivesCount;i++) {
-			var numberOfFiles = dataview.getUint16(streamPos);
-			streamPos+=2;
+			var numberOfFiles = dataview.readUint16();
 			if(numberOfFiles <= 0)
 				console.log(numberOfFiles);
 			this.archives[archiveKeys[i]].files = Array(numberOfFiles).fill(undefined);
@@ -160,17 +151,15 @@ class Index {
 		for(var i=0;i<this.archivesCount;i++) {
 			var fileID = 0;
 			for(var j=0;j<this.archives[archiveKeys[i]].files.length;j++){
-				fileID += dataview.getUint16(streamPos);
+				fileID += dataview.readUint16();
 				this.archives[archiveKeys[i]].files[j] = new FileData(fileID);
-				streamPos+=2;
 			}
 		}
 		
 		if(this.named){
 			for(var i=0;i<this.archivesCount;i++) {
 				for(var j=0;j<this.archives[archiveKeys[i]].files.length;j++){
-					var fileName = dataview.getUint32(streamPos);
-					streamPos+=4;
+					var fileName = dataview.readUint32();
 					
 					this.archives[archiveKeys[i]].files[j].nameHash = fileName;
 					
@@ -339,8 +328,8 @@ class Cache {
 					this.indicies[i] = new Index(i);
 					
 					for(var j=0;j<dataview.byteLength;j+=6){
-						var size = (dataview.getUint16(j+0) << 8) | dataview.getUint8(j+2);
-						var segment = (dataview.getUint16(j+3) << 8) | dataview.getUint8(j+5);
+						var size = dataview.readUint24();
+						var segment = dataview.readUint24();
 						//if(indexSegments[i] == undefined) indexSegments[i] = [];
 						this.indicies[i].indexSegments.push(new IndexSegment(size,segment));
 					}
@@ -361,8 +350,8 @@ class Cache {
 		//could probably use the indexSegments or remove the weird i = 255 part from loadCacheFiles
 		//might look better if j++, but works for now
 		for(var j=0;j<dataview.byteLength;j+=6) {
-			var size = (dataview.getUint16(j+0) << 8) | dataview.getUint8(j+2);
-			var segment = (dataview.getUint16(j+3) << 8) | dataview.getUint8(j+5);
+			var size = dataview.readUint24();
+			var segment = dataview.readUint24();
 			var index = this.indicies[j/6];
 			
 			var data = this.cacheRequester.readData(index, size, segment);
