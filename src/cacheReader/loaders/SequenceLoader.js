@@ -1,7 +1,7 @@
-class SequenceDefinition {
+export class SequenceDefinition {
 		
 }
-class SequenceLoader {
+export default class SequenceLoader {
 
 	load(bytes) {
 		this.def = new SequenceDefinition();
