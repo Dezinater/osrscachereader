@@ -1,3 +1,5 @@
+import ModelLoader from '../loaders/ModelLoader.js'
+
 const IndexType = { 
     FRAMES:{id: 0, loader: undefined},
     FRAMEMAPS:{id: 1, loader: undefined},
@@ -18,13 +20,15 @@ const IndexType = {
     WORLDMAP:{id: 16, loader: undefined},
 
     valueOf(id){
-        var values = Object.values(this);
-        var keys = Object.keys(this);
+        var values = Object.values(IndexType);
+        var keys = Object.keys(IndexType);
         for(var i=0;i<values.length;i++) {
             if(id == values[i].id)
-                return this[keys[i]];
+                return IndexType[keys[i]];
         }
         return undefined;
     }
 };
 Object.freeze(IndexType);
+
+export default IndexType;

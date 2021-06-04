@@ -1,7 +1,7 @@
-class KitDefinition {
+export class KitDefinition {
 		
 }
-class KitLoader {
+export default class KitLoader {
 
 	load(bytes) {
 		this.def = new KitDefinition();

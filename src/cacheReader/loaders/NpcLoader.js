@@ -1,7 +1,7 @@
-class NpcDefinition {
+export class NpcDefinition {
 		
 }
-class NpcLoader {
+export default class NpcLoader {
 
 	load(bytes) {
 		this.def = new NpcDefinition();

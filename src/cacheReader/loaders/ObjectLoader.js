@@ -1,9 +1,9 @@
-class ObjectDefinition {
+export class ObjectDefinition {
 	constructor(){
 		this.shadow = true;
 	}
 }
-class ObjectLoader {
+export default class ObjectLoader {
 	
 	load(bytes) {
 		this.def = new ObjectDefinition();

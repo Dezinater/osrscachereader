@@ -1,8 +1,8 @@
-class ModelDefinition {
+export class ModelDefinition {
 		
 }
 
-class ModelLoader {
+export default class ModelLoader {
 	constructor(bytes) { 
 		this.bytes = bytes;
 		this.def = new ModelDefinition();

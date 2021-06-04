@@ -1,3 +1,7 @@
+import KitLoader from '../loaders/KitLoader.js'
+import ObjectLoader from '../loaders/ObjectLoader.js'
+import NpcLoader from '../loaders/NpcLoader.js'
+
 const ConfigType = { 
     UNDERLAY: {id: 1, loader: undefined},
 	IDENTKIT: {id: 3, loader: KitLoader},
@@ -20,13 +24,15 @@ const ConfigType = {
 	AREA: {id: 35, loader: undefined},
 
 	valueOf(id){
-        var values = Object.values(this);
-        var keys = Object.keys(this);
+        var values = Object.values(ConfigType);
+        var keys = Object.keys(ConfigType);
         for(var i=0;i<values.length;i++) {
             if(id == values[i].id)
-                return this[keys[i]];
+                return ConfigType[keys[i]];
         }
         return undefined;
     }
 }
 Object.freeze(ConfigType);
+
+export default ConfigType;
