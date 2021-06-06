@@ -1,4 +1,4 @@
-# OSRS Cache reader
+# OSRS Cache Reader
 
 ![Wise Old Man](https://oldschool.runescape.wiki/images/4/46/Wise_Old_Man_chathead.png?68f26)
 
@@ -11,7 +11,7 @@ Before loading anything run this in console to read the cache,
 ```js
 cache = new Cache("./");
 ```
-The Cache class takes a string as the root directory to load the cache from. This root directory must contain a folder named cache which has files such as ```main_file_cache.idx255``` and ```main_file_cache.dat2```. The cache folder is provided but can be replaced with different versions of the cache. If the cache is not complete it may not load correctly. Runescape streams in the cache so using the files from the client will not be loaded correctly. An archive of complete caches can be found at https://archive.openrs2.org/caches
+The Cache class takes a string as the root directory to load the cache from. This root directory must contain a folder named cache which has files such as ```main_file_cache.idx255``` and ```main_file_cache.dat2```. The cache folder is provided but can be replaced with different versions of the cache. If the cache is not complete it may not load correctly. Runescape streams in the cache so using the files from the client will not always work. An archive of complete caches can be found at https://archive.openrs2.org/caches
 
 Using ```cache.onload``` we can wait until the cache is loaded and then grab files from it
 ```
