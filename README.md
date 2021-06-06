@@ -20,11 +20,13 @@ cache.onload.then(() => {
 });
 ```
 
+Multiple files can be grabbed from the cache
 ```js
 var allNpcs = cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id);
 ```
 Here the ```IndexType.CONFIGS.id``` is the Index and the ```ConfigType.NPC.id``` is the Archive.
 
+Individual files can be accessed too
 ```js
 var zulrah = cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042);
 ```
