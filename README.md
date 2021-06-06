@@ -9,11 +9,16 @@ This project will load stuff from the runescape cache, in browser.
 Before loading anything run this in console to read the cache,
 
 ```js
-cache = new Cache("./")
+cache = new Cache("./");
 ```
 The Cache class takes a string as the root directory to load the cache from. This root directory must contain a folder named cache which has files such as ```main_file_cache.idx255``` and ```main_file_cache.dat2```. The cache folder is provided but can be replaced with different versions of the cache. If the cache is not complete it may not load correctly. Runescape streams in the cache so using the files from the client will not be loaded correctly. An archive of complete caches can be found at https://archive.openrs2.org/caches
 
-Then, load with,
+Using ```cache.onload``` we can wait until the cache is loaded and then grab files from it
+```
+cache.onload.then(() => {
+  //do stuff
+});
+```
 
 ```js
 var allNpcs = cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id);
@@ -25,7 +30,14 @@ var zulrah = cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042);
 ```
 Here again, the ```IndexType.CONFIGS.id``` is the Index, the ```ConfigType.NPC.id``` is the Archive, and the 2042 is the File Id or in this case the NPC Id.
 
-
+Complete Example
+```
+cache = new Cache("./");
+cache.onload.then(() => {
+  var zulrah = cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042);
+  console.log("Zulrah Combat Level: + " zulrah.def.combatLevel);
+});
+```
 
 ## Loaders Implemented
 
