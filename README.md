@@ -33,7 +33,7 @@ var zulrah = cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042);
 Here again, the ```IndexType.CONFIGS.id``` is the Index, the ```ConfigType.NPC.id``` is the Archive, and the 2042 is the File Id or in this case the NPC Id.
 
 Complete Example
-```
+```js
 cache = new Cache("./");
 cache.onload.then(() => {
   var zulrah = cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042);
