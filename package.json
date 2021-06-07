@@ -1,10 +1,15 @@
 {
   "name": "osrscachereader",
+  "exports": "./dist/osrscachereader.js",
   "version": "1.0.0",
   "description": "Read Old-School Runescape Cache files using Javascript",
+  "files": [
+    "./dist/"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack serve --mode development"
+    "dev": "webpack serve --mode development",
+    "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -21,5 +26,9 @@
     "webpack": "^5.38.1",
     "webpack-cli": "^4.7.0",
     "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "bz2": "^1.0.1",
+    "gzip-js": "^0.3.2"
   }
 }

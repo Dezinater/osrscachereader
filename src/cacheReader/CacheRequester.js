@@ -1,4 +1,7 @@
+var gzip = require('gzip-js');
 import * as Ajax from './helpers/ajax.js'
+import { decompress } from 'bz2';
+
 
 export default class CacheRequester {
 	//should be used to make read requests from the cache

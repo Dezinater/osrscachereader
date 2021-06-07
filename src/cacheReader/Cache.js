@@ -1,4 +1,5 @@
 import * as Ajax from './helpers/ajax.js'
+import * as DataViewImport from './helpers/DataView.js'
 
 import CacheDefinitionLoader from './CacheDefinitionLoader.js'
 import CacheRequester from './CacheRequester.js'
@@ -7,11 +8,11 @@ import Index from './cacheTypes/Index.js'
 import nameHashLookup from './HashConverter.js'
 
 export default class RSCache {
-	constructor(rootDir){
+	constructor(cacheRootDir, nameRootDir = undefined){
 		this.indicies = {};
 		
-		this.cacheRequester = new CacheRequester(rootDir);
-		this.onload = this.loadCacheFiles(rootDir);
+		this.cacheRequester = new CacheRequester(cacheRootDir);
+		this.onload = this.loadCacheFiles(cacheRootDir, nameRootDir);
 	}
 	
 	getAllFiles(indexId, archiveId) {
@@ -41,10 +42,13 @@ export default class RSCache {
 		return this.getAllFiles(indexId, archiveId)[fileId];
 	}
 	
-	loadCacheFiles(rootDir) {
+	loadCacheFiles(rootDir, namesRootDir) {
 
 		//this is basically relying on loading faster than the other stuff. probably should merge this with something
-		Ajax.getFile(rootDir+"names.tsv").then((nameData) => {
+		if(namesRootDir == undefined)
+			namesRootDir = rootDir;
+			
+		Ajax.getFile(namesRootDir+"names.tsv").then((nameData) => {
 			var splitNameData = nameData.split("\n");
 			for(var i=0;i<splitNameData.length;i++) {
 				var tabSplit = splitNameData[i].split("\t");

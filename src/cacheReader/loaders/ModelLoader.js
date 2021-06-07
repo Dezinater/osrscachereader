@@ -3,12 +3,9 @@ export class ModelDefinition {
 }
 
 export default class ModelLoader {
-	constructor(bytes) { 
-		this.bytes = bytes;
-		this.def = new ModelDefinition();
-	}
 
-    load() {
+    load(bytes) {
+		this.def = new ModelDefinition();
 		let dataview = new DataView(this.bytes.buffer);
         if (dataview.getInt8(dataview.byteLength-1) == -1 && dataview.getInt8(dataview.byteLength-2) == -1)
 		{
