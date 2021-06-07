@@ -3521,7 +3521,7 @@ class ModelLoader {
 
     load(bytes) {
 		this.def = new ModelDefinition();
-		let dataview = new DataView(this.bytes.buffer);
+		let dataview = new DataView(bytes.buffer);
         if (dataview.getInt8(dataview.byteLength-1) == -1 && dataview.getInt8(dataview.byteLength-2) == -1)
 		{
 			this.load1(dataview);
@@ -5655,15 +5655,6 @@ class RSCache {
 
 
 
-
-var cache = new RSCache("./");
-cache.onload.then(() => {
-    var zulrah = cache.getFile(cacheTypes_IndexType.CONFIGS.id, cacheTypes_ConfigType.NPC.id, 2042);
-    console.log("Zulrah Combat Level: " + zulrah.def.combatLevel);
-    
-    var zulrahModel = cache.getFile(cacheTypes_IndexType.MODELS.id, 14408);
-    console.log(zulrahModel);
-  });
 })();
 
 /******/ 	return __webpack_exports__;
