@@ -6,7 +6,7 @@ export default class ModelLoader {
 
     load(bytes) {
 		this.def = new ModelDefinition();
-		let dataview = new DataView(this.bytes.buffer);
+		let dataview = new DataView(bytes.buffer);
         if (dataview.getInt8(dataview.byteLength-1) == -1 && dataview.getInt8(dataview.byteLength-2) == -1)
 		{
 			this.load1(dataview);
