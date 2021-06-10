@@ -30,7 +30,6 @@ export default class Index {
 		this.named = (1 & this.hash) != 0;
 
 		if (this.protocol >= 7) {
-			console.log(this.protocol);
 			this.archivesCount = dataview.readBigSmart();
 		} else {
 			this.archivesCount = dataview.readUint16();
@@ -80,7 +79,7 @@ export default class Index {
 				numberOfFiles = dataview.readUint16();
 			}
 			if (numberOfFiles <= 0)
-				console.log(numberOfFiles);
+				console.log("Warning: Files <= 0 for archive " + i + ". Files amount: " + numberOfFiles);
 			this.archives[archiveKeys[i]].files = Array(numberOfFiles).fill(undefined);
 		}
 
