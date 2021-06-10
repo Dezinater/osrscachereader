@@ -53,7 +53,7 @@ Loaders currently implemented in JS from [here](https://github.com/open-osrs/run
 - [ ] HitSplat Loader
 - [ ] Interface Loader
 - [ ] Inventory Loader
-- [ ] Item Loader
+- [x] Item Loader
 - [x] Kit Loader
 - [ ] Locations Loader
 - [ ] Map Loader
