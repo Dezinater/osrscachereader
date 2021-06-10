@@ -52,7 +52,7 @@ export default class ModelLoader {
 		var position;
 		if (textureTriangleCount > 0)
 		{
-			this.def.textureRenderTypes = new byte[textureTriangleCount];
+			this.def.textureRenderTypes = [];
 			var2.setPosition(0);
 
 			for (position = 0; position < textureTriangleCount; ++position)
@@ -221,8 +221,8 @@ export default class ModelLoader {
 		var var10;
 		var vertexYOffset;
 		var var15;
-		var povar;
-		for (povar = 0; povar < verticeCount; ++povar)
+		var point;
+		for (point = 0; point < verticeCount; ++point)
 		{
 			var vertexFlags = var2.readUint8();
 			var vertexXOffset = 0;
@@ -243,15 +243,15 @@ export default class ModelLoader {
 				vertexZOffset = var28.readShortSmart();
 			}
 
-			this.def.vertexPositionsX[povar] = vX + vertexXOffset;
-			this.def.vertexPositionsY[povar] = vY + vertexYOffset;
-			this.def.vertexPositionsZ[povar] = vZ + vertexZOffset;
-			vX = this.def.vertexPositionsX[povar];
-			vY = this.def.vertexPositionsY[povar];
-			vZ = this.def.vertexPositionsZ[povar];
+			this.def.vertexPositionsX[point] = vX + vertexXOffset;
+			this.def.vertexPositionsY[point] = vY + vertexYOffset;
+			this.def.vertexPositionsZ[point] = vZ + vertexZOffset;
+			vX = this.def.vertexPositionsX[point];
+			vY = this.def.vertexPositionsY[point];
+			vZ = this.def.vertexPositionsZ[point];
 			if (modelVertexSkins == 1)
 			{
-				this.def.vertexSkins[povar] = var6.readUint8();
+				this.def.vertexSkins[point] = var6.readUint8();
 			}
 		}
 
@@ -263,45 +263,45 @@ export default class ModelLoader {
 		var55.setPosition(texturePos);
 		var51.setPosition(textureCoordPos);
 
-		for (povar = 0; povar < triangleCount; ++povar)
+		for (point = 0; point < triangleCount; ++point)
 		{
-			this.def.faceColors[povar] = var2.readUint16();
+			this.def.faceColors[point] = var2.readUint16();
 			if (var13 == 1)
 			{
-				this.def.faceRenderTypes[povar] = var24.readInt8();
+				this.def.faceRenderTypes[point] = var24.readInt8();
 			}
 
 			if (modelPriority == 255)
 			{
-				this.def.faceRenderPriorities[povar] = var3.readInt8();
+				this.def.faceRenderPriorities[point] = var3.readInt8();
 			}
 
 			if (var50 == 1)
 			{
-				this.def.faceAlphas[povar] = var28.readInt8();
+				this.def.faceAlphas[point] = var28.readInt8();
 			}
 
 			if (var17 == 1)
 			{
-				this.def.faceSkins[povar] = var6.readUint8();
+				this.def.faceSkins[point] = var6.readUint8();
 			}
 
 			if (modelTexture == 1)
 			{
-				this.def.faceTextures[povar] = (var55.readUint16() - 1);
+				this.def.faceTextures[point] = (var55.readUint16() - 1);
 			}
 
-			if (this.def.textureCoordinates != null && this.def.faceTextures[povar] != -1)
+			if (this.def.textureCoordinates != null && this.def.faceTextures[point] != -1)
 			{
-				this.def.textureCoordinates[povar] = (var51.readUint8() - 1);
+				this.def.textureCoordinates[point] = (var51.readUint8() - 1);
 			}
 		}
 
 		var2.setPosition(var11);
 		var24.setPosition(var49);
-		var trianglePovarX = 0;
-		var trianglePovarY = 0;
-		var trianglePovarZ = 0;
+		var trianglePointX = 0;
+		var trianglePointY = 0;
+		var trianglePointZ = 0;
 		vertexYOffset = 0;
 
 		var var16;
@@ -310,45 +310,45 @@ export default class ModelLoader {
 			var numFaces = var24.readUint8();
 			if (numFaces == 1)
 			{
-				trianglePovarX = var2.readShortSmart() + vertexYOffset;
-				trianglePovarY = var2.readShortSmart() + trianglePovarX;
-				trianglePovarZ = var2.readShortSmart() + trianglePovarY;
-				vertexYOffset = trianglePovarZ;
-				this.def.faceVertexIndices1[vertexZOffset] = trianglePovarX;
-				this.def.faceVertexIndices2[vertexZOffset] = trianglePovarY;
-				this.def.faceVertexIndices3[vertexZOffset] = trianglePovarZ;
+				trianglePointX = var2.readShortSmart() + vertexYOffset;
+				trianglePointY = var2.readShortSmart() + trianglePointX;
+				trianglePointZ = var2.readShortSmart() + trianglePointY;
+				vertexYOffset = trianglePointZ;
+				this.def.faceVertexIndices1[vertexZOffset] = trianglePointX;
+				this.def.faceVertexIndices2[vertexZOffset] = trianglePointY;
+				this.def.faceVertexIndices3[vertexZOffset] = trianglePointZ;
 			}
 
 			if (numFaces == 2)
 			{
-				trianglePovarY = trianglePovarZ;
-				trianglePovarZ = var2.readShortSmart() + vertexYOffset;
-				vertexYOffset = trianglePovarZ;
-				this.def.faceVertexIndices1[vertexZOffset] = trianglePovarX;
-				this.def.faceVertexIndices2[vertexZOffset] = trianglePovarY;
-				this.def.faceVertexIndices3[vertexZOffset] = trianglePovarZ;
+				trianglePointY = trianglePointZ;
+				trianglePointZ = var2.readShortSmart() + vertexYOffset;
+				vertexYOffset = trianglePointZ;
+				this.def.faceVertexIndices1[vertexZOffset] = trianglePointX;
+				this.def.faceVertexIndices2[vertexZOffset] = trianglePointY;
+				this.def.faceVertexIndices3[vertexZOffset] = trianglePointZ;
 			}
 
 			if (numFaces == 3)
 			{
-				trianglePovarX = trianglePovarZ;
-				trianglePovarZ = var2.readShortSmart() + vertexYOffset;
-				vertexYOffset = trianglePovarZ;
-				this.def.faceVertexIndices1[vertexZOffset] = trianglePovarX;
-				this.def.faceVertexIndices2[vertexZOffset] = trianglePovarY;
-				this.def.faceVertexIndices3[vertexZOffset] = trianglePovarZ;
+				trianglePointX = trianglePointZ;
+				trianglePointZ = var2.readShortSmart() + vertexYOffset;
+				vertexYOffset = trianglePointZ;
+				this.def.faceVertexIndices1[vertexZOffset] = trianglePointX;
+				this.def.faceVertexIndices2[vertexZOffset] = trianglePointY;
+				this.def.faceVertexIndices3[vertexZOffset] = trianglePointZ;
 			}
 
 			if (numFaces == 4)
 			{
-				var var57 = trianglePovarX;
-				trianglePovarX = trianglePovarY;
-				trianglePovarY = var57;
-				trianglePovarZ = var2.readShortSmart() + vertexYOffset;
-				vertexYOffset = trianglePovarZ;
-				this.def.faceVertexIndices1[vertexZOffset] = trianglePovarX;
+				var var57 = trianglePointX;
+				trianglePointX = trianglePointY;
+				trianglePointY = var57;
+				trianglePointZ = var2.readShortSmart() + vertexYOffset;
+				vertexYOffset = trianglePointZ;
+				this.def.faceVertexIndices1[vertexZOffset] = trianglePointX;
 				this.def.faceVertexIndices2[vertexZOffset] = var57;
-				this.def.faceVertexIndices3[vertexZOffset] = trianglePovarZ;
+				this.def.faceVertexIndices3[vertexZOffset] = trianglePointZ;
 			}
 		}
 
@@ -857,40 +857,40 @@ export default class ModelLoader {
 					textureCoordinate &= 0xFF;
 
 					var textureRenderType = 0;
-					if (textureRenderTypes != null)
+					if (this.def.textureRenderTypes != undefined)
 					{
-						textureRenderType = textureRenderTypes[textureCoordinate];
+						textureRenderType = this.def.textureRenderTypes[textureCoordinate];
 					}
 
 					if (textureRenderType == 0)
 					{
-						var faceVertexIdx1 = faceVertexIndices1[i];
-						var faceVertexIdx2 = faceVertexIndices2[i];
-						var faceVertexIdx3 = faceVertexIndices3[i];
+						var faceVertexIdx1 = this.def.faceVertexIndices1[i];
+						var faceVertexIdx2 = this.def.faceVertexIndices2[i];
+						var faceVertexIdx3 = this.def.faceVertexIndices3[i];
 
 						var triangleVertexIdx1 = textureTriangleVertexIndices1[textureCoordinate];
 						var triangleVertexIdx2 = textureTriangleVertexIndices2[textureCoordinate];
 						var triangleVertexIdx3 = textureTriangleVertexIndices3[textureCoordinate];
 
-						var triangleX = vertexPositionsX[triangleVertexIdx1];
-						var triangleY = vertexPositionsY[triangleVertexIdx1];
-						var triangleZ = vertexPositionsZ[triangleVertexIdx1];
+						var triangleX = this.def.vertexPositionsX[triangleVertexIdx1];
+						var triangleY = this.def.vertexPositionsY[triangleVertexIdx1];
+						var triangleZ = this.def.vertexPositionsZ[triangleVertexIdx1];
 
-					    var f_882_ = vertexPositionsX[triangleVertexIdx2] - triangleX;
-					    var f_883_ = vertexPositionsY[triangleVertexIdx2] - triangleY;
-					    var f_884_ = vertexPositionsZ[triangleVertexIdx2] - triangleZ;
-					    var f_885_ = vertexPositionsX[triangleVertexIdx3] - triangleX;
-					    var f_886_ = vertexPositionsY[triangleVertexIdx3] - triangleY;
-					    var f_887_ = vertexPositionsZ[triangleVertexIdx3] - triangleZ;
-					    var f_888_ = vertexPositionsX[faceVertexIdx1] - triangleX;
-					    var f_889_ = vertexPositionsY[faceVertexIdx1] - triangleY;
-					    var f_890_ = vertexPositionsZ[faceVertexIdx1] - triangleZ;
-					    var f_891_ = vertexPositionsX[faceVertexIdx2] - triangleX;
-					    var f_892_ = vertexPositionsY[faceVertexIdx2] - triangleY;
-					    var f_893_ = vertexPositionsZ[faceVertexIdx2] - triangleZ;
-					    var f_894_ = vertexPositionsX[faceVertexIdx3] - triangleX;
-					    var f_895_ = vertexPositionsY[faceVertexIdx3] - triangleY;
-					    var f_896_ = vertexPositionsZ[faceVertexIdx3] - triangleZ;
+					    var f_882_ = this.def.vertexPositionsX[triangleVertexIdx2] - triangleX;
+					    var f_883_ = this.def.vertexPositionsY[triangleVertexIdx2] - triangleY;
+					    var f_884_ = this.def.vertexPositionsZ[triangleVertexIdx2] - triangleZ;
+					    var f_885_ = this.def.vertexPositionsX[triangleVertexIdx3] - triangleX;
+					    var f_886_ = this.def.vertexPositionsY[triangleVertexIdx3] - triangleY;
+					    var f_887_ = this.def.vertexPositionsZ[triangleVertexIdx3] - triangleZ;
+					    var f_888_ = this.def.vertexPositionsX[faceVertexIdx1] - triangleX;
+					    var f_889_ = this.def.vertexPositionsY[faceVertexIdx1] - triangleY;
+					    var f_890_ = this.def.vertexPositionsZ[faceVertexIdx1] - triangleZ;
+					    var f_891_ = this.def.vertexPositionsX[faceVertexIdx2] - triangleX;
+					    var f_892_ = this.def.vertexPositionsY[faceVertexIdx2] - triangleY;
+					    var f_893_ = this.def.vertexPositionsZ[faceVertexIdx2] - triangleZ;
+					    var f_894_ = this.def.vertexPositionsX[faceVertexIdx3] - triangleX;
+					    var f_895_ = this.def.vertexPositionsY[faceVertexIdx3] - triangleY;
+					    var f_896_ = this.def.vertexPositionsZ[faceVertexIdx3] - triangleZ;
 
 					    var f_897_ = f_883_ * f_887_ - f_884_ * f_886_;
 					    var f_898_ = f_884_ * f_885_ - f_882_ * f_887_;
