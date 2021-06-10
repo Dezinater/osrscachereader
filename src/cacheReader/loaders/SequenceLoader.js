@@ -20,14 +20,14 @@ export default class SequenceLoader {
 		if (opcode == 1)
 		{
 			var3 = dataview.readUint16();
-			this.def.frameLenghts = new int[var3];
+			this.def.frameLengths = [];
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
-				this.def.frameLenghts[var4] = dataview.readUint16();
+				this.def.frameLengths[var4] = dataview.readUint16();
 			}
 
-			this.def.frameIDs = new int[var3];
+			this.def.frameIDs = [];
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
@@ -46,7 +46,7 @@ export default class SequenceLoader {
 		else if (opcode == 3)
 		{
 			var3 = dataview.readUint8();
-			this.def.interleaveLeave = new int[1 + var3];
+			this.def.interleaveLeave = [];
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
@@ -90,7 +90,7 @@ export default class SequenceLoader {
 		else if (opcode == 12)
 		{
 			var3 = dataview.readUint8();
-			this.def.chatFrameIds = new int[var3];
+			this.def.chatFrameIds = [];
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
@@ -105,7 +105,7 @@ export default class SequenceLoader {
 		else if (opcode == 13)
 		{
 			var3 = dataview.readUint8();
-			this.def.frameSounds = new int[var3];
+			this.def.frameSounds = [];
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
