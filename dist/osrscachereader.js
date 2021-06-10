@@ -3520,6 +3520,7 @@ class ModelDefinition {
 class ModelLoader {
 
     load(bytes) {
+		console.log(bytes);
 		this.def = new ModelDefinition();
 		let dataview = new DataView(bytes.buffer);
         if (dataview.getInt8(dataview.byteLength-1) == -1 && dataview.getInt8(dataview.byteLength-2) == -1)
@@ -3567,7 +3568,7 @@ class ModelLoader {
 		var position;
 		if (textureTriangleCount > 0)
 		{
-			this.def.textureRenderTypes = new byte[textureTriangleCount];
+			this.def.textureRenderTypes = [];
 			var2.setPosition(0);
 
 			for (position = 0; position < textureTriangleCount; ++position)
@@ -3736,8 +3737,8 @@ class ModelLoader {
 		var var10;
 		var vertexYOffset;
 		var var15;
-		var povar;
-		for (povar = 0; povar < verticeCount; ++povar)
+		var point;
+		for (point = 0; point < verticeCount; ++point)
 		{
 			var vertexFlags = var2.readUint8();
 			var vertexXOffset = 0;
@@ -3758,15 +3759,15 @@ class ModelLoader {
 				vertexZOffset = var28.readShortSmart();
 			}
 
-			this.def.vertexPositionsX[povar] = vX + vertexXOffset;
-			this.def.vertexPositionsY[povar] = vY + vertexYOffset;
-			this.def.vertexPositionsZ[povar] = vZ + vertexZOffset;
-			vX = this.def.vertexPositionsX[povar];
-			vY = this.def.vertexPositionsY[povar];
-			vZ = this.def.vertexPositionsZ[povar];
+			this.def.vertexPositionsX[point] = vX + vertexXOffset;
+			this.def.vertexPositionsY[point] = vY + vertexYOffset;
+			this.def.vertexPositionsZ[point] = vZ + vertexZOffset;
+			vX = this.def.vertexPositionsX[point];
+			vY = this.def.vertexPositionsY[point];
+			vZ = this.def.vertexPositionsZ[point];
 			if (modelVertexSkins == 1)
 			{
-				this.def.vertexSkins[povar] = var6.readUint8();
+				this.def.vertexSkins[point] = var6.readUint8();
 			}
 		}
 
@@ -3778,45 +3779,45 @@ class ModelLoader {
 		var55.setPosition(texturePos);
 		var51.setPosition(textureCoordPos);
 
-		for (povar = 0; povar < triangleCount; ++povar)
+		for (point = 0; point < triangleCount; ++point)
 		{
-			this.def.faceColors[povar] = var2.readUint16();
+			this.def.faceColors[point] = var2.readUint16();
 			if (var13 == 1)
 			{
-				this.def.faceRenderTypes[povar] = var24.readInt8();
+				this.def.faceRenderTypes[point] = var24.readInt8();
 			}
 
 			if (modelPriority == 255)
 			{
-				this.def.faceRenderPriorities[povar] = var3.readInt8();
+				this.def.faceRenderPriorities[point] = var3.readInt8();
 			}
 
 			if (var50 == 1)
 			{
-				this.def.faceAlphas[povar] = var28.readInt8();
+				this.def.faceAlphas[point] = var28.readInt8();
 			}
 
 			if (var17 == 1)
 			{
-				this.def.faceSkins[povar] = var6.readUint8();
+				this.def.faceSkins[point] = var6.readUint8();
 			}
 
 			if (modelTexture == 1)
 			{
-				this.def.faceTextures[povar] = (var55.readUint16() - 1);
+				this.def.faceTextures[point] = (var55.readUint16() - 1);
 			}
 
-			if (this.def.textureCoordinates != null && this.def.faceTextures[povar] != -1)
+			if (this.def.textureCoordinates != null && this.def.faceTextures[point] != -1)
 			{
-				this.def.textureCoordinates[povar] = (var51.readUint8() - 1);
+				this.def.textureCoordinates[point] = (var51.readUint8() - 1);
 			}
 		}
 
 		var2.setPosition(var11);
 		var24.setPosition(var49);
-		var trianglePovarX = 0;
-		var trianglePovarY = 0;
-		var trianglePovarZ = 0;
+		var trianglePointX = 0;
+		var trianglePointY = 0;
+		var trianglePointZ = 0;
 		vertexYOffset = 0;
 
 		var var16;
@@ -3825,45 +3826,45 @@ class ModelLoader {
 			var numFaces = var24.readUint8();
 			if (numFaces == 1)
 			{
-				trianglePovarX = var2.readShortSmart() + vertexYOffset;
-				trianglePovarY = var2.readShortSmart() + trianglePovarX;
-				trianglePovarZ = var2.readShortSmart() + trianglePovarY;
-				vertexYOffset = trianglePovarZ;
-				this.def.faceVertexIndices1[vertexZOffset] = trianglePovarX;
-				this.def.faceVertexIndices2[vertexZOffset] = trianglePovarY;
-				this.def.faceVertexIndices3[vertexZOffset] = trianglePovarZ;
+				trianglePointX = var2.readShortSmart() + vertexYOffset;
+				trianglePointY = var2.readShortSmart() + trianglePointX;
+				trianglePointZ = var2.readShortSmart() + trianglePointY;
+				vertexYOffset = trianglePointZ;
+				this.def.faceVertexIndices1[vertexZOffset] = trianglePointX;
+				this.def.faceVertexIndices2[vertexZOffset] = trianglePointY;
+				this.def.faceVertexIndices3[vertexZOffset] = trianglePointZ;
 			}
 
 			if (numFaces == 2)
 			{
-				trianglePovarY = trianglePovarZ;
-				trianglePovarZ = var2.readShortSmart() + vertexYOffset;
-				vertexYOffset = trianglePovarZ;
-				this.def.faceVertexIndices1[vertexZOffset] = trianglePovarX;
-				this.def.faceVertexIndices2[vertexZOffset] = trianglePovarY;
-				this.def.faceVertexIndices3[vertexZOffset] = trianglePovarZ;
+				trianglePointY = trianglePointZ;
+				trianglePointZ = var2.readShortSmart() + vertexYOffset;
+				vertexYOffset = trianglePointZ;
+				this.def.faceVertexIndices1[vertexZOffset] = trianglePointX;
+				this.def.faceVertexIndices2[vertexZOffset] = trianglePointY;
+				this.def.faceVertexIndices3[vertexZOffset] = trianglePointZ;
 			}
 
 			if (numFaces == 3)
 			{
-				trianglePovarX = trianglePovarZ;
-				trianglePovarZ = var2.readShortSmart() + vertexYOffset;
-				vertexYOffset = trianglePovarZ;
-				this.def.faceVertexIndices1[vertexZOffset] = trianglePovarX;
-				this.def.faceVertexIndices2[vertexZOffset] = trianglePovarY;
-				this.def.faceVertexIndices3[vertexZOffset] = trianglePovarZ;
+				trianglePointX = trianglePointZ;
+				trianglePointZ = var2.readShortSmart() + vertexYOffset;
+				vertexYOffset = trianglePointZ;
+				this.def.faceVertexIndices1[vertexZOffset] = trianglePointX;
+				this.def.faceVertexIndices2[vertexZOffset] = trianglePointY;
+				this.def.faceVertexIndices3[vertexZOffset] = trianglePointZ;
 			}
 
 			if (numFaces == 4)
 			{
-				var var57 = trianglePovarX;
-				trianglePovarX = trianglePovarY;
-				trianglePovarY = var57;
-				trianglePovarZ = var2.readShortSmart() + vertexYOffset;
-				vertexYOffset = trianglePovarZ;
-				this.def.faceVertexIndices1[vertexZOffset] = trianglePovarX;
+				var var57 = trianglePointX;
+				trianglePointX = trianglePointY;
+				trianglePointY = var57;
+				trianglePointZ = var2.readShortSmart() + vertexYOffset;
+				vertexYOffset = trianglePointZ;
+				this.def.faceVertexIndices1[vertexZOffset] = trianglePointX;
 				this.def.faceVertexIndices2[vertexZOffset] = var57;
-				this.def.faceVertexIndices3[vertexZOffset] = trianglePovarZ;
+				this.def.faceVertexIndices3[vertexZOffset] = trianglePointZ;
 			}
 		}
 
@@ -4372,9 +4373,9 @@ class ModelLoader {
 					textureCoordinate &= 0xFF;
 
 					var textureRenderType = 0;
-					if (textureRenderTypes != null)
+					if (this.def.textureRenderTypes != undefined)
 					{
-						textureRenderType = textureRenderTypes[textureCoordinate];
+						textureRenderType = this.def.textureRenderTypes[textureCoordinate];
 					}
 
 					if (textureRenderType == 0)
@@ -5307,9 +5308,10 @@ class CacheRequester {
 		});
 	}
 	
-	readData(index, size, segment){
+	readData(index, size, segment, archiveId = 0){
 		var compressedData = new Uint8Array(size);
-		this.readSector(compressedData, segment);
+		//console.log("Size " + size);
+		this.readSector(compressedData, segment, archiveId);
 		
 		let dataview = new DataView(compressedData.buffer);
 		var compressionOpcode = dataview.getUint8(0);
@@ -5335,17 +5337,38 @@ class CacheRequester {
 		return decompressedData;
 	}
 
-	readSector(buffer, pos){
+	readSector(buffer, pos, archiveId){
 		var convertedPos = pos * 520;
 		
 		let dataview = new DataView(this.datData.buffer);
-		var nextSector = dataview.getUint24(convertedPos+4);
+		//var currentPart = dataview.getInt16(convertedPos+2);
+		//var nextSector = dataview.getUint24(convertedPos+4);
+
+		var currentArchive;
+		var currentPart;
+		var nextSector;
+		var currentIndex;
+
+
+		if (archiveId > 0xFFFF) {
+			currentArchive = dataview.getUint32(convertedPos + 0);
+			currentPart = dataview.getUint16(convertedPos + 4);
+			nextSector = dataview.getUint24(convertedPos + 6);
+			currentIndex = dataview.getUint8(convertedPos + 4);
+		} else {
+			currentArchive = dataview.getUint16(convertedPos + 0);
+			currentPart = dataview.getUint16(convertedPos + 2);
+			nextSector = dataview.getUint24(convertedPos + 4);
+			currentIndex = dataview.getUint8(convertedPos + 7);
+		}
+
 		var data; 
-		
-		if(nextSector != 0)
+		if(nextSector != 0 || buffer.byteLength == 512)
 			data = new Uint8Array(dataview.buffer.slice(convertedPos+8,convertedPos+520));
-		else
+		else{
+			console.log((buffer.byteLength%512));
 			data = new Uint8Array(dataview.buffer.slice(convertedPos+8,convertedPos+8+(buffer.byteLength%512)));
+		}
 		
 		buffer.set(data, dataview.getInt16(convertedPos+2)*512);
 
@@ -5532,7 +5555,7 @@ class Index {
 	}
 }
 
-;// CONCATENATED MODULE: ./src/cacheReader/Cache.js
+;// CONCATENATED MODULE: ./src/cacheReader/RSCache.js
 
 
 
@@ -5551,6 +5574,8 @@ class RSCache {
 	}
 	
 	getAllFiles(indexId, archiveId) {
+		
+		console.log(indexId + " " + archiveId);
 		var index = this.indicies[indexId];
 		if(index == undefined){
 			throw "Index " + indexId + " does not exist";
@@ -5560,11 +5585,11 @@ class RSCache {
 		if(archive == undefined){
 			throw "Archive " + archiveId + " does not exist in Index " + indexId;
 		}
-
 		//files should only be loaded when they are required. need a better memory management system or something in the future
 		if(archive.filesLoaded == false){
+			console.log(index + " " + archiveId);
 			//might be an error here because of index.indexSegments[archiveId]. might need to use archive keys instead of archiveId
-			var data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment)
+			var data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId)
 			archive.loadFiles(data);
 			new CacheDefinitionLoader(indexId, archiveId, archive.files).load();
 		}
@@ -5574,22 +5599,22 @@ class RSCache {
 
 	//some archives only contain 1 file so a fileId is only needed in some cases
 	getFile(indexId, archiveId, fileId = 0) {
+		console.log("test");
 		return this.getAllFiles(indexId, archiveId)[fileId];
 	}
 	
 	loadCacheFiles(rootDir, namesRootDir) {
 
 		//this is basically relying on loading faster than the other stuff. probably should merge this with something
-		if(namesRootDir == undefined)
-			namesRootDir = rootDir;
-			
-		getFile(namesRootDir+"names.tsv").then((nameData) => {
-			var splitNameData = nameData.split("\n");
-			for(var i=0;i<splitNameData.length;i++) {
-				var tabSplit = splitNameData[i].split("\t");
-				HashConverter[tabSplit[3]] = tabSplit[4]; //3 = hash, 4 = name
-			}
-		});
+		if(namesRootDir != undefined){
+			getFile(namesRootDir+"names.tsv").then((nameData) => {
+				var splitNameData = nameData.split("\n");
+				for(var i=0;i<splitNameData.length;i++) {
+					var tabSplit = splitNameData[i].split("\t");
+					HashConverter[tabSplit[3]] = tabSplit[4]; //3 = hash, 4 = name
+				}
+			});
+		}
 		
 		var idx255 = getFileBytes(rootDir+"main_file_cache.idx255");
 		var idxFiles = [];
@@ -5655,6 +5680,13 @@ class RSCache {
 
 
 
+
+var test = new RSCache("./");
+test.onload.then(() => {
+    var modelTest = test.getFile(cacheTypes_IndexType.MODELS.id, 317);
+    
+    console.log(modelTest);
+});
 })();
 
 /******/ 	return __webpack_exports__;
