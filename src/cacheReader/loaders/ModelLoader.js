@@ -868,9 +868,9 @@ export default class ModelLoader {
 						var faceVertexIdx2 = this.def.faceVertexIndices2[i];
 						var faceVertexIdx3 = this.def.faceVertexIndices3[i];
 
-						var triangleVertexIdx1 = textureTriangleVertexIndices1[textureCoordinate];
-						var triangleVertexIdx2 = textureTriangleVertexIndices2[textureCoordinate];
-						var triangleVertexIdx3 = textureTriangleVertexIndices3[textureCoordinate];
+						var triangleVertexIdx1 = this.def.textureTriangleVertexIndices1[textureCoordinate];
+						var triangleVertexIdx2 = this.def.textureTriangleVertexIndices2[textureCoordinate];
+						var triangleVertexIdx3 = this.def.textureTriangleVertexIndices3[textureCoordinate];
 
 						var triangleX = this.def.vertexPositionsX[triangleVertexIdx1];
 						var triangleY = this.def.vertexPositionsY[triangleVertexIdx1];
