@@ -3373,9 +3373,9 @@ DataView.prototype.readShortSmart = function() {
 DataView.prototype.readBigSmart = function() {
 	var peek = this.getUint8(this.pos);
 	if(peek >= 0) {
-		this.readUint16() & 0xFFFF;
+		return this.readUint16() & 0xFFFF;
 	}else{
-		this.readInt32() & 0x7fffffff;
+		return this.readInt32() & 0x7fffffff;
 	}
 }
 
@@ -3520,7 +3520,6 @@ class ModelDefinition {
 class ModelLoader {
 
     load(bytes) {
-		console.log(bytes);
 		this.def = new ModelDefinition();
 		let dataview = new DataView(bytes.buffer);
         if (dataview.getInt8(dataview.byteLength-1) == -1 && dataview.getInt8(dataview.byteLength-2) == -1)
@@ -4380,33 +4379,33 @@ class ModelLoader {
 
 					if (textureRenderType == 0)
 					{
-						var faceVertexIdx1 = faceVertexIndices1[i];
-						var faceVertexIdx2 = faceVertexIndices2[i];
-						var faceVertexIdx3 = faceVertexIndices3[i];
+						var faceVertexIdx1 = this.def.faceVertexIndices1[i];
+						var faceVertexIdx2 = this.def.faceVertexIndices2[i];
+						var faceVertexIdx3 = this.def.faceVertexIndices3[i];
 
-						var triangleVertexIdx1 = textureTriangleVertexIndices1[textureCoordinate];
-						var triangleVertexIdx2 = textureTriangleVertexIndices2[textureCoordinate];
-						var triangleVertexIdx3 = textureTriangleVertexIndices3[textureCoordinate];
+						var triangleVertexIdx1 = this.def.textureTriangleVertexIndices1[textureCoordinate];
+						var triangleVertexIdx2 = this.def.textureTriangleVertexIndices2[textureCoordinate];
+						var triangleVertexIdx3 = this.def.textureTriangleVertexIndices3[textureCoordinate];
 
-						var triangleX = vertexPositionsX[triangleVertexIdx1];
-						var triangleY = vertexPositionsY[triangleVertexIdx1];
-						var triangleZ = vertexPositionsZ[triangleVertexIdx1];
+						var triangleX = this.def.vertexPositionsX[triangleVertexIdx1];
+						var triangleY = this.def.vertexPositionsY[triangleVertexIdx1];
+						var triangleZ = this.def.vertexPositionsZ[triangleVertexIdx1];
 
-					    var f_882_ = vertexPositionsX[triangleVertexIdx2] - triangleX;
-					    var f_883_ = vertexPositionsY[triangleVertexIdx2] - triangleY;
-					    var f_884_ = vertexPositionsZ[triangleVertexIdx2] - triangleZ;
-					    var f_885_ = vertexPositionsX[triangleVertexIdx3] - triangleX;
-					    var f_886_ = vertexPositionsY[triangleVertexIdx3] - triangleY;
-					    var f_887_ = vertexPositionsZ[triangleVertexIdx3] - triangleZ;
-					    var f_888_ = vertexPositionsX[faceVertexIdx1] - triangleX;
-					    var f_889_ = vertexPositionsY[faceVertexIdx1] - triangleY;
-					    var f_890_ = vertexPositionsZ[faceVertexIdx1] - triangleZ;
-					    var f_891_ = vertexPositionsX[faceVertexIdx2] - triangleX;
-					    var f_892_ = vertexPositionsY[faceVertexIdx2] - triangleY;
-					    var f_893_ = vertexPositionsZ[faceVertexIdx2] - triangleZ;
-					    var f_894_ = vertexPositionsX[faceVertexIdx3] - triangleX;
-					    var f_895_ = vertexPositionsY[faceVertexIdx3] - triangleY;
-					    var f_896_ = vertexPositionsZ[faceVertexIdx3] - triangleZ;
+					    var f_882_ = this.def.vertexPositionsX[triangleVertexIdx2] - triangleX;
+					    var f_883_ = this.def.vertexPositionsY[triangleVertexIdx2] - triangleY;
+					    var f_884_ = this.def.vertexPositionsZ[triangleVertexIdx2] - triangleZ;
+					    var f_885_ = this.def.vertexPositionsX[triangleVertexIdx3] - triangleX;
+					    var f_886_ = this.def.vertexPositionsY[triangleVertexIdx3] - triangleY;
+					    var f_887_ = this.def.vertexPositionsZ[triangleVertexIdx3] - triangleZ;
+					    var f_888_ = this.def.vertexPositionsX[faceVertexIdx1] - triangleX;
+					    var f_889_ = this.def.vertexPositionsY[faceVertexIdx1] - triangleY;
+					    var f_890_ = this.def.vertexPositionsZ[faceVertexIdx1] - triangleZ;
+					    var f_891_ = this.def.vertexPositionsX[faceVertexIdx2] - triangleX;
+					    var f_892_ = this.def.vertexPositionsY[faceVertexIdx2] - triangleY;
+					    var f_893_ = this.def.vertexPositionsZ[faceVertexIdx2] - triangleZ;
+					    var f_894_ = this.def.vertexPositionsX[faceVertexIdx3] - triangleX;
+					    var f_895_ = this.def.vertexPositionsY[faceVertexIdx3] - triangleY;
+					    var f_896_ = this.def.vertexPositionsZ[faceVertexIdx3] - triangleZ;
 
 					    var f_897_ = f_883_ * f_887_ - f_884_ * f_886_;
 					    var f_898_ = f_884_ * f_885_ - f_882_ * f_887_;
@@ -5223,7 +5222,325 @@ class NpcLoader {
 		}
 	}
 }
+;// CONCATENATED MODULE: ./src/cacheReader/loaders/ItemLoader.js
+class ItemDefinition {
+
+}
+class ItemLoader {
+
+    load(bytes) {
+        this.def = new ItemDefinition();
+        let dataview = new DataView(bytes.buffer);
+        do {
+            var opcode = dataview.readUint8();
+            this.handleOpcode(opcode, dataview);
+        } while (opcode != 0);
+
+        return this.def;
+    }
+
+    handleOpcode(opcode, dataview) {
+        if (opcode == 1) {
+            this.def.inventoryModel = dataview.readUint16();
+        }
+        else if (opcode == 2) {
+            this.def.name = dataview.readString();
+        }
+        else if (opcode == 4) {
+            this.def.zoom2d = dataview.readUint16();
+        }
+        else if (opcode == 5) {
+            this.def.xan2d = dataview.readUint16();
+        }
+        else if (opcode == 6) {
+            this.def.yan2d = dataview.readUint16();
+        }
+        else if (opcode == 7) {
+            this.def.xOffset2d = dataview.readUint16();
+            if (this.def.xOffset2d > 32767) {
+                this.def.xOffset2d -= 65536;
+            }
+        }
+        else if (opcode == 8) {
+            this.def.yOffset2d = dataview.readUint16();
+            if (this.def.yOffset2d > 32767) {
+                this.def.yOffset2d -= 65536;
+            }
+        }
+        else if (opcode == 11) {
+            this.def.stackable = 1;
+        }
+        else if (opcode == 12) {
+            this.def.cost = dataview.readInt32();
+        }
+        else if (opcode == 16) {
+            this.def.members = true;
+        }
+        else if (opcode == 23) {
+            this.def.maleModel0 = dataview.readUint16();
+            this.def.maleOffset = dataview.readUint8();
+        }
+        else if (opcode == 24) {
+            this.def.maleModel1 = dataview.readUint16();
+        }
+        else if (opcode == 25) {
+            this.def.femaleModel0 = dataview.readUint16();
+            this.def.femaleOffset = dataview.readUint8();
+        }
+        else if (opcode == 26) {
+            this.def.femaleModel1 = dataview.readUint16();
+        }
+        else if (opcode >= 30 && opcode < 35) {
+            if(this.def.options == undefined)
+				this.def.options = [];
+
+            this.def.options[opcode - 30] = dataview.readString();
+            if (this.def.options[opcode - 30] == "Hidden") {
+                this.def.options[opcode - 30] = null;
+            }
+        }
+        else if (opcode >= 35 && opcode < 40) {
+            if(this.def.interfaceOptions == undefined)
+				this.def.interfaceOptions = [];
+            this.def.interfaceOptions[opcode - 35] = dataview.readString();
+        }
+        else if (opcode == 40) {
+            var var5 = dataview.readUint8();
+            this.def.colorFind = [];
+            this.def.colorReplace = [];
+
+            for (var var4 = 0; var4 < var5; ++var4) {
+                this.def.colorFind[var4] = dataview.readUint16();
+                this.def.colorReplace[var4] = dataview.readUint16();
+            }
+
+        }
+        else if (opcode == 41) {
+            var var5 = dataview.readUint8();
+            this.def.textureFind = [];
+            this.def.textureReplace = [];
+
+            for (var var4 = 0; var4 < var5; ++var4) {
+                this.def.textureFind[var4] = dataview.readUint16();
+                this.def.textureReplace[var4] = dataview.readUint16();
+            }
+
+        }
+        else if (opcode == 42) {
+            this.def.shiftClickDropIndex = dataview.readInt8();
+        }
+        else if (opcode == 65) {
+            this.def.isTradeable = true;
+        }
+        else if (opcode == 78) {
+            this.def.maleModel2 = dataview.readUint16();
+        }
+        else if (opcode == 79) {
+            this.def.femaleModel2 = dataview.readUint16();
+        }
+        else if (opcode == 90) {
+            this.def.maleHeadModel = dataview.readUint16();
+        }
+        else if (opcode == 91) {
+            this.def.femaleHeadModel = dataview.readUint16();
+        }
+        else if (opcode == 92) {
+            this.def.maleHeadModel2 = dataview.readUint16();
+        }
+        else if (opcode == 93) {
+            this.def.femaleHeadModel2 = dataview.readUint16();
+        }
+        else if (opcode == 95) {
+            this.def.zan2d = dataview.readUint16();
+        }
+        else if (opcode == 97) {
+            this.def.notedID = dataview.readUint16();
+        }
+        else if (opcode == 98) {
+            this.def.notedTemplate = dataview.readUint16();
+        }
+        else if (opcode >= 100 && opcode < 110) {
+            if (this.def.countObj == undefined) {
+                this.def.countObj = [];
+                this.def.countCo = [];
+            }
+
+            this.def.countObj[opcode - 100] = dataview.readUint16();
+            this.def.countCo[opcode - 100] = dataview.readUint16();
+        }
+        else if (opcode == 110) {
+            this.def.resizeX = dataview.readUint16();
+        }
+        else if (opcode == 111) {
+            this.def.resizeY = dataview.readUint16();
+        }
+        else if (opcode == 112) {
+            this.def.resizeZ = dataview.readUint16();
+        }
+        else if (opcode == 113) {
+            this.def.ambient = dataview.readInt8();
+        }
+        else if (opcode == 114) {
+            this.def.contrast = dataview.readInt8();
+        }
+        else if (opcode == 115) {
+            this.def.team = dataview.readUint8();
+        }
+        else if (opcode == 139) {
+            this.def.boughtId = dataview.readUint16();
+        }
+        else if (opcode == 140) {
+            this.def.boughtTemplateId = dataview.readUint16();
+        }
+        else if (opcode == 148) {
+            this.def.placeholderId = dataview.readUint16();
+        }
+        else if (opcode == 149) {
+            this.def.placeholderTemplateId = dataview.readUint16();
+        }
+        else if (opcode == 249) {
+            var length = dataview.readUint8();
+            this.def.params = {};
+
+            for (var i = 0; i < length; i++) {
+                var isString = dataview.readUint8() == 1;
+
+                var key = dataview.readInt24();
+                var value;
+
+                if (isString) {
+                    value = dataview.readString();
+                }
+                else {
+                    value = dataview.readInt32()
+                }
+
+                this.def.params[key] = value;
+            }
+        }
+    }
+}
+;// CONCATENATED MODULE: ./src/cacheReader/loaders/SequenceLoader.js
+class SequenceDefinition {
+		
+}
+class SequenceLoader {
+
+	load(bytes) {
+		this.def = new SequenceDefinition();
+		let dataview = new DataView(bytes.buffer);
+		do {
+			var opcode = dataview.readUint8();
+			this.handleOpcode(opcode, dataview);
+		} while(opcode != 0);
+		
+		return this.def;
+	}
+	
+	handleOpcode(opcode, dataview){
+        var var3;
+		var var4;
+		if (opcode == 1)
+		{
+			var3 = dataview.readUint16();
+			this.def.frameLengths = [];
+
+			for (var4 = 0; var4 < var3; ++var4)
+			{
+				this.def.frameLengths[var4] = dataview.readUint16();
+			}
+
+			this.def.frameIDs = [];
+
+			for (var4 = 0; var4 < var3; ++var4)
+			{
+				this.def.frameIDs[var4] = dataview.readUint16();
+			}
+
+			for (var4 = 0; var4 < var3; ++var4)
+			{
+				this.def.frameIDs[var4] += dataview.readUint16() << 16;
+			}
+		}
+		else if (opcode == 2)
+		{
+			this.def.frameStep = dataview.readUint16();
+		}
+		else if (opcode == 3)
+		{
+			var3 = dataview.readUint8();
+			this.def.interleaveLeave = [];
+
+			for (var4 = 0; var4 < var3; ++var4)
+			{
+				this.def.interleaveLeave[var4] = dataview.readUint8();
+			}
+
+			this.def.interleaveLeave[var3] = 9999999;
+		}
+		else if (opcode == 4)
+		{
+			this.def.stretches = true;
+		}
+		else if (opcode == 5)
+		{
+			this.def.forcedPriority = dataview.readUint8();
+		}
+		else if (opcode == 6)
+		{
+			this.def.leftHandItem = dataview.readUint16();
+		}
+		else if (opcode == 7)
+		{
+			this.def.rightHandItem = dataview.readUint16();
+		}
+		else if (opcode == 8)
+		{
+			this.def.maxLoops = dataview.readUint8();
+		}
+		else if (opcode == 9)
+		{
+			this.def.precedenceAnimating = dataview.readUint8();
+		}
+		else if (opcode == 10)
+		{
+			this.def.priority = dataview.readUint8();
+		}
+		else if (opcode == 11)
+		{
+			this.def.replyMode = dataview.readUint8();
+		}
+		else if (opcode == 12)
+		{
+			var3 = dataview.readUint8();
+			this.def.chatFrameIds = [];
+
+			for (var4 = 0; var4 < var3; ++var4)
+			{
+				this.def.chatFrameIds[var4] = dataview.readUint16();
+			}
+
+			for (var4 = 0; var4 < var3; ++var4)
+			{
+				this.def.chatFrameIds[var4] += dataview.readUint16() << 16;
+			}
+		}
+		else if (opcode == 13)
+		{
+			var3 = dataview.readUint8();
+			this.def.frameSounds = [];
+
+			for (var4 = 0; var4 < var3; ++var4)
+			{
+				this.def.frameSounds[var4] = dataview.readUint24();
+			}
+		}
+          
+	}
+}
 ;// CONCATENATED MODULE: ./src/cacheReader/cacheTypes/ConfigType.js
+
+
 
 
 
@@ -5236,9 +5553,9 @@ const ConfigType = {
 	OBJECT: {id: 6, loader: ObjectLoader},
 	ENUM: {id: 8, loader: undefined},
 	NPC: {id: 9, loader: NpcLoader},
-	ITEM: {id: 10, loader: undefined},
+	ITEM: {id: 10, loader: ItemLoader},
 	PARAMS: {id: 11, loader: undefined},
-	SEQUENCE: {id: 12, loader: undefined},
+	SEQUENCE: {id: 12, loader: SequenceLoader},
 	SPOTANIM: {id: 13, loader: undefined},
 	VARBIT: {id: 14, loader: undefined},
 	VARCLIENT: {id: 19, loader: undefined},
@@ -5310,18 +5627,22 @@ class CacheRequester {
 	
 	readData(index, size, segment, archiveId = 0){
 		var compressedData = new Uint8Array(size);
-		//console.log("Size " + size);
+		
 		this.readSector(compressedData, segment, archiveId);
 		
 		let dataview = new DataView(compressedData.buffer);
 		var compressionOpcode = dataview.getUint8(0);
-		
-		var data = new Uint8Array(dataview.buffer.slice(9,9+dataview.getUint32(1)));
+		var compressedLength = dataview.getUint32(1);
+
+		var data;
 		var decompressedData;
 		
 		if(compressionOpcode == 0) { //none
+			data = new Uint8Array(dataview.buffer.slice(5,9+compressedLength));
 			decompressedData = data;
+			index.revision = dataview.getUint16(data.buffer.byteLength)
 		} else if(compressionOpcode == 1) { //bz2
+			data = new Uint8Array(dataview.buffer.slice(9,9+compressedLength));
 			var header = "BZh1";
 			var bzData = new Uint8Array(4+data.length);
 			bzData[0]= 'B'.charCodeAt(0);
@@ -5330,7 +5651,8 @@ class CacheRequester {
 			bzData[3]= '1'.charCodeAt(0);
 			bzData.set(data, 4)
 			decompressedData = bz2.decompress(bzData);
-		} else if(compressionOpcode == 2) { //gz
+		} else if(compressionOpcode == 2) { //gzip
+			data = new Uint8Array(dataview.buffer.slice(9,9+compressedLength));
 			decompressedData = new Uint8Array(gzip.unzip(data));
 		}
 		
@@ -5341,8 +5663,6 @@ class CacheRequester {
 		var convertedPos = pos * 520;
 		
 		let dataview = new DataView(this.datData.buffer);
-		//var currentPart = dataview.getInt16(convertedPos+2);
-		//var nextSector = dataview.getUint24(convertedPos+4);
 
 		var currentArchive;
 		var currentPart;
@@ -5365,10 +5685,8 @@ class CacheRequester {
 		var data; 
 		if(nextSector != 0 || buffer.byteLength == 512)
 			data = new Uint8Array(dataview.buffer.slice(convertedPos+8,convertedPos+520));
-		else{
-			console.log((buffer.byteLength%512));
+		else
 			data = new Uint8Array(dataview.buffer.slice(convertedPos+8,convertedPos+8+(buffer.byteLength%512)));
-		}
 		
 		buffer.set(data, dataview.getInt16(convertedPos+2)*512);
 
@@ -5469,87 +5787,102 @@ class Index {
 		this.archives = {};
 		this.indexSegments = [];
 	}
-	
+
 	loadIndexData(data) {
 		let dataview = new DataView(data.buffer);
-		var streamPos = 0;
-		
+
 		this.protocol = dataview.readUint8();
-		
-		if(this.protocol >= 6){
+
+		if (this.protocol >= 6) {
 			this.revision = dataview.readInt32();
 		}
 		this.hash = dataview.readUint8();
-		
+
 		this.named = (1 & this.hash) != 0;
-		
-		//var validArchivesCount = protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
-		if(this.protocol >= 7){
-			console.log("Warning: Unhandled protcol 7");
-			return;
+
+		if (this.protocol >= 7) {
+			console.log(this.protocol);
+			this.archivesCount = dataview.readBigSmart();
+		} else {
+			this.archivesCount = dataview.readUint16();
 		}
-		
-		this.archivesCount = dataview.readUint16();
+
 
 		var lastArchiveId = 0;
-		for(var i=0;i<this.archivesCount;i++) {
-			var archiveId = lastArchiveId += dataview.readInt16();
-			
+		for (var i = 0; i < this.archivesCount; i++) {
+
+			var archiveId;
+			if(this.protocol >= 7){
+				archiveId = lastArchiveId += dataview.readBigSmart();
+			}else{
+				archiveId = lastArchiveId += dataview.readInt16();
+			}
+
 			this.archives[archiveId] = new ArchiveData();
 			this.archives[archiveId].id = archiveId;
 		}
-		
+
 		var archiveKeys = Object.keys(this.archives);
-		
-		if(this.named){
-			for(var i=0;i<this.archivesCount;i++) {
+
+		if (this.named) {
+			for (var i = 0; i < this.archivesCount; i++) {
 				var nameHash = dataview.readInt32();
 				this.archives[archiveKeys[i]].nameHash = nameHash;
-				if(HashConverter[nameHash] != undefined)
+				if (HashConverter[nameHash] != undefined)
 					this.archives[archiveKeys[i]].name = HashConverter[nameHash];
 			}
 		}
-		
-		for(var i=0;i<this.archivesCount;i++) {
+
+		for (var i = 0; i < this.archivesCount; i++) {
 			var crc = dataview.readInt32();
 			this.archives[archiveKeys[i]].crc = crc;
 		}
-		
-		for(var i=0;i<this.archivesCount;i++) {
+
+		for (var i = 0; i < this.archivesCount; i++) {
 			var revision = dataview.readInt32();
 			this.archives[archiveKeys[i]].revision = revision;
 		}
-		
-		for(var i=0;i<this.archivesCount;i++) {
-			var numberOfFiles = dataview.readUint16();
-			if(numberOfFiles <= 0)
+
+		for (var i = 0; i < this.archivesCount; i++) {
+			var numberOfFiles;
+			if(this.protocol >= 7){
+				numberOfFiles = dataview.readBigSmart();
+			}else{
+				numberOfFiles = dataview.readUint16();
+			}
+			if (numberOfFiles <= 0)
 				console.log(numberOfFiles);
 			this.archives[archiveKeys[i]].files = Array(numberOfFiles).fill(undefined);
 		}
-		
-		for(var i=0;i<this.archivesCount;i++) {
+
+		for (var i = 0; i < this.archivesCount; i++) {
 			var fileID = 0;
-			for(var j=0;j<this.archives[archiveKeys[i]].files.length;j++){
-				fileID += dataview.readUint16();
+			for (var j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
+
+				if(this.protocol >= 7){
+					fileID += dataview.readBigSmart();
+				}else{
+					fileID += dataview.readUint16();
+				}
 				this.archives[archiveKeys[i]].files[j] = new FileData(fileID);
 			}
 		}
-		
-		if(this.named){
-			for(var i=0;i<this.archivesCount;i++) {
-				for(var j=0;j<this.archives[archiveKeys[i]].files.length;j++){
+
+		if (this.named) {
+			for (var i = 0; i < this.archivesCount; i++) {
+				for (var j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
 					var fileName = dataview.readUint32();
-					
+
 					this.archives[archiveKeys[i]].files[j].nameHash = fileName;
-					
-					if(HashConverter[fileName] != undefined)
+
+					if (HashConverter[fileName] != undefined)
 						this.archives[archiveKeys[i]].files[j].name = HashConverter[fileName];
-					
+
 				}
 			}
 		}
 	}
-	
+
 	toString() {
 		return this.id;
 	}
@@ -5566,88 +5899,84 @@ class Index {
 
 
 class RSCache {
-	constructor(cacheRootDir, nameRootDir = undefined){
+	constructor(cacheRootDir = "./", nameRootDir = undefined) {
 		this.indicies = {};
-		
+
 		this.cacheRequester = new CacheRequester(cacheRootDir);
 		this.onload = this.loadCacheFiles(cacheRootDir, nameRootDir);
 	}
-	
+
 	getAllFiles(indexId, archiveId) {
-		
-		console.log(indexId + " " + archiveId);
 		var index = this.indicies[indexId];
-		if(index == undefined){
+		if (index == undefined) {
 			throw "Index " + indexId + " does not exist";
 		}
-		
+
 		var archive = index.archives[archiveId];
-		if(archive == undefined){
+		if (archive == undefined) {
 			throw "Archive " + archiveId + " does not exist in Index " + indexId;
 		}
 		//files should only be loaded when they are required. need a better memory management system or something in the future
-		if(archive.filesLoaded == false){
-			console.log(index + " " + archiveId);
+		if (archive.filesLoaded == false) {
 			//might be an error here because of index.indexSegments[archiveId]. might need to use archive keys instead of archiveId
 			var data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId)
 			archive.loadFiles(data);
 			new CacheDefinitionLoader(indexId, archiveId, archive.files).load();
 		}
-		
+
 		return archive.files;
 	}
 
 	//some archives only contain 1 file so a fileId is only needed in some cases
 	getFile(indexId, archiveId, fileId = 0) {
-		console.log("test");
 		return this.getAllFiles(indexId, archiveId)[fileId];
 	}
-	
+
 	loadCacheFiles(rootDir, namesRootDir) {
 
 		//this is basically relying on loading faster than the other stuff. probably should merge this with something
-		if(namesRootDir != undefined){
-			getFile(namesRootDir+"names.tsv").then((nameData) => {
+		if (namesRootDir != undefined) {
+			getFile(namesRootDir + "names.tsv").then((nameData) => {
 				var splitNameData = nameData.split("\n");
-				for(var i=0;i<splitNameData.length;i++) {
+				for (var i = 0; i < splitNameData.length; i++) {
 					var tabSplit = splitNameData[i].split("\t");
 					HashConverter[tabSplit[3]] = tabSplit[4]; //3 = hash, 4 = name
 				}
 			});
 		}
-		
-		var idx255 = getFileBytes(rootDir+"main_file_cache.idx255");
+
+		var idx255 = getFileBytes(rootDir + "main_file_cache.idx255");
 		var idxFiles = [];
 
 		return idx255.then((idx255Data) => {
-			var indiciesAmount = idx255Data.length/6; //each section is 6 bits
+			var indiciesAmount = idx255Data.length / 6; //each section is 6 bits
 
-			for(var i=0;i<indiciesAmount;i++){
-				idxFiles.push(getFileBytes(rootDir+"main_file_cache.idx"+i));
+			for (var i = 0; i < indiciesAmount; i++) {
+				idxFiles.push(getFileBytes(rootDir + "main_file_cache.idx" + i));
 			}
-			
+
 			//theres probably a better way of doing this
 			//also not completely sure yet if this really needs to be done for index 255
 			return Promise.all(idxFiles).then((idxFileData) => {
-				for(var i=0;i<=idxFileData.length;i++){
+				for (var i = 0; i <= idxFileData.length; i++) {
 					var dataview;
-					if(i == idxFileData.length){
+					if (i == idxFileData.length) { //ugly fix, needs to be improved
 						dataview = new DataView(idx255Data.buffer);
 						i = 255;
-					}else{
+					} else {
 						dataview = new DataView(idxFileData[i].buffer);
 					}
-					
+
 					this.indicies[i] = new Index(i);
-					
-					for(var j=0;j<dataview.byteLength;j+=6){
+
+					for (var j = 0; j < dataview.byteLength; j += 6) {
 						var size = dataview.readUint24();
 						var segment = dataview.readUint24();
 						//if(indexSegments[i] == undefined) indexSegments[i] = [];
 						//this.indicies[i].indexSegments.push(new IndexSegment(size,segment));
-                        this.indicies[i].indexSegments.push({size,segment});
+						this.indicies[i].indexSegments.push({ size, segment });
 					}
-					
+
 				};
 
 				return this.cacheRequester.datDataPromise.then((x) => {
@@ -5655,19 +5984,18 @@ class RSCache {
 				});
 
 			});
-			
+
 		});
 	}
-	
+
 	loadIndicies(idxData) {
 		var dataview = new DataView(idxData.buffer);
 		//could probably use the indexSegments or remove the weird i = 255 part from loadCacheFiles
 		//might look better if j++, but works for now
-		for(var j=0;j<dataview.byteLength;j+=6) {
+		for (var j = 0; j < dataview.byteLength; j += 6) {
 			var size = dataview.readUint24();
 			var segment = dataview.readUint24();
-			var index = this.indicies[j/6];
-			
+			var index = this.indicies[j / 6];
 			var data = this.cacheRequester.readData(index, size, segment);
 			index.loadIndexData(data);
 		}
@@ -5680,13 +6008,6 @@ class RSCache {
 
 
 
-
-var test = new RSCache("./");
-test.onload.then(() => {
-    var modelTest = test.getFile(cacheTypes_IndexType.MODELS.id, 317);
-    
-    console.log(modelTest);
-});
 })();
 
 /******/ 	return __webpack_exports__;
