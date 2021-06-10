@@ -74,9 +74,9 @@ DataView.prototype.readShortSmart = function() {
 DataView.prototype.readBigSmart = function() {
 	var peek = this.getUint8(this.pos);
 	if(peek >= 0) {
-		this.readUint16() & 0xFFFF;
+		return this.readUint16() & 0xFFFF;
 	}else{
-		this.readInt32() & 0x7fffffff;
+		return this.readInt32() & 0x7fffffff;
 	}
 }
 

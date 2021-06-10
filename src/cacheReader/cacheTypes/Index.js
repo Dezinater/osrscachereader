@@ -30,7 +30,6 @@ export default class Index {
 
 		this.named = (1 & this.hash) != 0;
 
-		//var validArchivesCount = protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
 		if (this.protocol >= 7) {
 			console.log(this.protocol);
 			this.archivesCount = dataview.readBigSmart();
