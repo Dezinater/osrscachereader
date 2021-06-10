@@ -16,87 +16,104 @@ export default class Index {
 		this.archives = {};
 		this.indexSegments = [];
 	}
-	
+
 	loadIndexData(data) {
 		let dataview = new DataView(data.buffer);
 		var streamPos = 0;
-		
+
 		this.protocol = dataview.readUint8();
-		
-		if(this.protocol >= 6){
+
+		if (this.protocol >= 6) {
 			this.revision = dataview.readInt32();
 		}
 		this.hash = dataview.readUint8();
-		
+
 		this.named = (1 & this.hash) != 0;
-		
+
 		//var validArchivesCount = protocol >= 7 ? stream.readBigSmart() : stream.readUnsignedShort();
-		if(this.protocol >= 7){
-			console.log("Warning: Unhandled protcol 7");
-			return;
+		if (this.protocol >= 7) {
+			console.log(this.protocol);
+			this.archivesCount = dataview.readBigSmart();
+		} else {
+			this.archivesCount = dataview.readUint16();
 		}
-		
-		this.archivesCount = dataview.readUint16();
+
 
 		var lastArchiveId = 0;
-		for(var i=0;i<this.archivesCount;i++) {
-			var archiveId = lastArchiveId += dataview.readInt16();
-			
+		for (var i = 0; i < this.archivesCount; i++) {
+
+			var archiveId;
+			if(this.protocol >= 7){
+				archiveId = lastArchiveId += dataview.readBigSmart();
+			}else{
+				archiveId = lastArchiveId += dataview.readInt16();
+			}
+
 			this.archives[archiveId] = new ArchiveData();
 			this.archives[archiveId].id = archiveId;
 		}
-		
+
 		var archiveKeys = Object.keys(this.archives);
-		
-		if(this.named){
-			for(var i=0;i<this.archivesCount;i++) {
+
+		if (this.named) {
+			for (var i = 0; i < this.archivesCount; i++) {
 				var nameHash = dataview.readInt32();
 				this.archives[archiveKeys[i]].nameHash = nameHash;
-				if(nameHashLookup[nameHash] != undefined)
+				if (nameHashLookup[nameHash] != undefined)
 					this.archives[archiveKeys[i]].name = nameHashLookup[nameHash];
 			}
 		}
-		
-		for(var i=0;i<this.archivesCount;i++) {
+
+		for (var i = 0; i < this.archivesCount; i++) {
 			var crc = dataview.readInt32();
 			this.archives[archiveKeys[i]].crc = crc;
 		}
-		
-		for(var i=0;i<this.archivesCount;i++) {
+
+		for (var i = 0; i < this.archivesCount; i++) {
 			var revision = dataview.readInt32();
 			this.archives[archiveKeys[i]].revision = revision;
 		}
-		
-		for(var i=0;i<this.archivesCount;i++) {
-			var numberOfFiles = dataview.readUint16();
-			if(numberOfFiles <= 0)
+
+		for (var i = 0; i < this.archivesCount; i++) {
+			var numberOfFiles;
+			if(this.protocol >= 7){
+				numberOfFiles = dataview.readBigSmart();
+			}else{
+				numberOfFiles = dataview.readUint16();
+			}
+			if (numberOfFiles <= 0)
 				console.log(numberOfFiles);
 			this.archives[archiveKeys[i]].files = Array(numberOfFiles).fill(undefined);
 		}
-		
-		for(var i=0;i<this.archivesCount;i++) {
+
+		for (var i = 0; i < this.archivesCount; i++) {
 			var fileID = 0;
-			for(var j=0;j<this.archives[archiveKeys[i]].files.length;j++){
-				fileID += dataview.readUint16();
+			for (var j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
+
+				if(this.protocol >= 7){
+					fileID += dataview.readBigSmart();
+				}else{
+					fileID += dataview.readUint16();
+				}
 				this.archives[archiveKeys[i]].files[j] = new FileData(fileID);
 			}
 		}
-		
-		if(this.named){
-			for(var i=0;i<this.archivesCount;i++) {
-				for(var j=0;j<this.archives[archiveKeys[i]].files.length;j++){
+
+		if (this.named) {
+			for (var i = 0; i < this.archivesCount; i++) {
+				for (var j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
 					var fileName = dataview.readUint32();
-					
+
 					this.archives[archiveKeys[i]].files[j].nameHash = fileName;
-					
-					if(nameHashLookup[fileName] != undefined)
+
+					if (nameHashLookup[fileName] != undefined)
 						this.archives[archiveKeys[i]].files[j].name = nameHashLookup[fileName];
-					
+
 				}
 			}
 		}
 	}
-	
+
 	toString() {
 		return this.id;
 	}
