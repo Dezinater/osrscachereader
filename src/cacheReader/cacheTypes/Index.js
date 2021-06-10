@@ -19,7 +19,6 @@ export default class Index {
 
 	loadIndexData(data) {
 		let dataview = new DataView(data.buffer);
-		var streamPos = 0;
 
 		this.protocol = dataview.readUint8();
 

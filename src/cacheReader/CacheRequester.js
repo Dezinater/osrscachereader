@@ -39,7 +39,7 @@ export default class CacheRequester {
 			bzData[3]= '1'.charCodeAt(0);
 			bzData.set(data, 4)
 			decompressedData = bz2.decompress(bzData);
-		} else if(compressionOpcode == 2) { //gz
+		} else if(compressionOpcode == 2) { //gzip
 			data = new Uint8Array(dataview.buffer.slice(9,9+compressedLength));
 			decompressedData = new Uint8Array(gzip.unzip(data));
 		}
@@ -51,8 +51,6 @@ export default class CacheRequester {
 		var convertedPos = pos * 520;
 		
 		let dataview = new DataView(this.datData.buffer);
-		//var currentPart = dataview.getInt16(convertedPos+2);
-		//var nextSector = dataview.getUint24(convertedPos+4);
 
 		var currentArchive;
 		var currentPart;

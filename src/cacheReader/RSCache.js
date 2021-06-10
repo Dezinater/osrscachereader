@@ -8,7 +8,7 @@ import Index from './cacheTypes/Index.js'
 import nameHashLookup from './HashConverter.js'
 
 export default class RSCache {
-	constructor(cacheRootDir, nameRootDir = undefined) {
+	constructor(cacheRootDir = "./", nameRootDir = undefined) {
 		this.indicies = {};
 
 		this.cacheRequester = new CacheRequester(cacheRootDir);
@@ -69,7 +69,7 @@ export default class RSCache {
 			return Promise.all(idxFiles).then((idxFileData) => {
 				for (var i = 0; i <= idxFileData.length; i++) {
 					var dataview;
-					if (i == idxFileData.length) {
+					if (i == idxFileData.length) { //ugly fix, needs to be improved
 						dataview = new DataView(idx255Data.buffer);
 						i = 255;
 					} else {
