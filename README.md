@@ -37,7 +37,7 @@ Complete Example
 cache = new RSCache("./");
 cache.onload.then(() => {
   var zulrah = cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042);
-  console.log("Zulrah Combat Level: + " zulrah.def.combatLevel);
+  console.log("Zulrah Combat Level: " + zulrah.def.combatLevel);
 });
 ```
 
@@ -53,17 +53,17 @@ Loaders currently implemented in JS from [here](https://github.com/open-osrs/run
 - [ ] HitSplat Loader
 - [ ] Interface Loader
 - [ ] Inventory Loader
-- [ ] Item Loader
+- [x] Item Loader
 - [x] Kit Loader
 - [ ] Locations Loader
 - [ ] Map Loader
-- [ ] Model Loader
+- [x] Model Loader
 - [x] Npc Loader
 - [x] Object Loader
 - [ ] Overlay Loader
 - [ ] Param Loader
 - [ ] Script Loader
-- [ ] Sequence Loader
+- [x] Sequence Loader
 - [ ] SpotAnim Loader
 - [ ] Sprite Loader
 - [ ] Struct Loader
