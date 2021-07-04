@@ -7,6 +7,7 @@ export default class CacheRequester {
 	//should be used to make read requests from the cache
 	//this should make it easier to multithread/async this later on
 	constructor(rootDir) {
+		this.worker = new Worker(new URL('./worker.js', import.meta.url));
 		if ('caches' in window) { //if we are able to use cache api
 			var request = rootDir + "cache/" + "main_file_cache.dat2";
 			this.datDataPromise = caches.open('osrsrenderer').then((browserCache) => {
@@ -44,6 +45,11 @@ export default class CacheRequester {
 
 
 	readData(index, size, segment, archiveId = 0) {
+		this.worker.postMessage("yeehaw");
+		this.worker.onmessage = function(event) {
+			//console.log(event);
+		};
+
 		var compressedData = new Uint8Array(size);
 
 		this.readSector(compressedData, segment, archiveId);
