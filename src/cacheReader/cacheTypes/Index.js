@@ -36,13 +36,13 @@ export default class Index {
 		}
 
 
-		var lastArchiveId = 0;
-		for (var i = 0; i < this.archivesCount; i++) {
+		let lastArchiveId = 0;
+		for (let i = 0; i < this.archivesCount; i++) {
 
-			var archiveId;
-			if(this.protocol >= 7){
+			let archiveId;
+			if (this.protocol >= 7) {
 				archiveId = lastArchiveId += dataview.readBigSmart();
-			}else{
+			} else {
 				archiveId = lastArchiveId += dataview.readInt16();
 			}
 
@@ -50,32 +50,32 @@ export default class Index {
 			this.archives[archiveId].id = archiveId;
 		}
 
-		var archiveKeys = Object.keys(this.archives);
+		let archiveKeys = Object.keys(this.archives);
 
 		if (this.named) {
-			for (var i = 0; i < this.archivesCount; i++) {
-				var nameHash = dataview.readInt32();
+			for (let i = 0; i < this.archivesCount; i++) {
+				let nameHash = dataview.readInt32();
 				this.archives[archiveKeys[i]].nameHash = nameHash;
 				if (nameHashLookup[nameHash] != undefined)
 					this.archives[archiveKeys[i]].name = nameHashLookup[nameHash];
 			}
 		}
 
-		for (var i = 0; i < this.archivesCount; i++) {
-			var crc = dataview.readInt32();
+		for (let i = 0; i < this.archivesCount; i++) {
+			let crc = dataview.readInt32();
 			this.archives[archiveKeys[i]].crc = crc;
 		}
 
-		for (var i = 0; i < this.archivesCount; i++) {
-			var revision = dataview.readInt32();
+		for (let i = 0; i < this.archivesCount; i++) {
+			let revision = dataview.readInt32();
 			this.archives[archiveKeys[i]].revision = revision;
 		}
 
-		for (var i = 0; i < this.archivesCount; i++) {
-			var numberOfFiles;
-			if(this.protocol >= 7){
+		for (let i = 0; i < this.archivesCount; i++) {
+			let numberOfFiles;
+			if (this.protocol >= 7) {
 				numberOfFiles = dataview.readBigSmart();
-			}else{
+			} else {
 				numberOfFiles = dataview.readUint16();
 			}
 			if (numberOfFiles <= 0)
@@ -83,13 +83,13 @@ export default class Index {
 			this.archives[archiveKeys[i]].files = Array(numberOfFiles).fill(undefined);
 		}
 
-		for (var i = 0; i < this.archivesCount; i++) {
-			var fileID = 0;
-			for (var j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
+		for (let i = 0; i < this.archivesCount; i++) {
+			let fileID = 0;
+			for (let j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
 
-				if(this.protocol >= 7){
+				if (this.protocol >= 7) {
 					fileID += dataview.readBigSmart();
-				}else{
+				} else {
 					fileID += dataview.readUint16();
 				}
 				this.archives[archiveKeys[i]].files[j] = new FileData(fileID);
@@ -97,9 +97,9 @@ export default class Index {
 		}
 
 		if (this.named) {
-			for (var i = 0; i < this.archivesCount; i++) {
-				for (var j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
-					var fileName = dataview.readUint32();
+			for (let i = 0; i < this.archivesCount; i++) {
+				for (let j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
+					let fileName = dataview.readUint32();
 
 					this.archives[archiveKeys[i]].files[j].nameHash = fileName;
 

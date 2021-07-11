@@ -16,41 +16,41 @@ export default class ArchiveData {
 			return;
 		}
 		let dataview = new DataView(data.buffer);
-		var chunks = dataview.getUint8(data.length - 1);
+		let chunks = dataview.getUint8(data.length - 1);
 
-		var chunkSizes = [];
-		for(var i=0;i<this.files.length;i++){
+		let chunkSizes = [];
+		for(let i=0;i<this.files.length;i++){
 			chunkSizes[i] = [];
 		}
-		var fileSizes = Array(this.files.length).fill(0);
+		//let fileSizes = Array(this.files.length).fill(0);
 		
-		var streamPosition = data.length - 1 - chunks * this.files.length * 4;
+		let streamPosition = data.length - 1 - chunks * this.files.length * 4;
 
 		//the following two loops can be combined in to one
-		for(var i=0;i<chunks;i++){
-			var chunkSize = 0;
-			for(var id = 0; id < this.files.length; id++){
-				var delta = dataview.getInt32(streamPosition);
+		for(let i=0;i<chunks;i++){
+			let chunkSize = 0;
+			for(let id = 0; id < this.files.length; id++){
+				let delta = dataview.getInt32(streamPosition);
 				chunkSize += delta;
 				streamPosition += 4;
 				chunkSizes[id][i] = chunkSize;
-				fileSizes[id] += chunkSize;
+				//fileSizes[id] += chunkSize;
 			}
 		}
 		
-		var fileOffsets = Array(this.files.length).fill(0);
+		//let fileOffsets = Array(this.files.length).fill(0);
 		
 		streamPosition = 0;
 		
-		for(var i=0;i<chunks; i++){
-			for(var id=0;id<this.files.length;id++){
-				var chunkSize = chunkSizes[id][i];
+		for(let i=0;i<chunks; i++){
+			for(let id=0;id<this.files.length;id++){
+				let chunkSize = chunkSizes[id][i];
 				this.files[id].content = new Uint8Array(dataview.buffer.slice(streamPosition,streamPosition+chunkSize));
 				streamPosition += chunkSize;
-				fileOffsets[id] += chunkSize;
+				//fileOffsets[id] += chunkSize;
 			}
 		}
 		
-		this.filesLoaded = true;
+		
 	}
 }
