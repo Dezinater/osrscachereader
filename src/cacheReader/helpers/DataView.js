@@ -20,59 +20,59 @@ DataView.prototype.getPosition = function() {
 }
 
 DataView.prototype.readUint8 = function() { //byte
-	var val = this.getUint8(this.getPosition());
+	let val = this.getUint8(this.getPosition());
 	this.addPosition(1);
     return val;
 }
 DataView.prototype.readUint16 = function() { //short
-	var val = this.getUint16(this.getPosition());
+	let val = this.getUint16(this.getPosition());
 	this.addPosition(2);
     return val;
 }
 DataView.prototype.readUint24 = function() {
-	var val = this.getUint24(this.getPosition());
+	let val = this.getUint24(this.getPosition());
 	this.addPosition(3);
     return val;
 }
 DataView.prototype.readUint32 = function() { //int
-	var val = this.getUint32(this.getPosition());
+	let val = this.getUint32(this.getPosition());
 	this.addPosition(4);
     return val;
 }
 DataView.prototype.readUnsignedShortSmart = function() {
-	var peek = this.getUint8(this.pos) & 0xFF;
+	let peek = this.getUint8(this.pos) & 0xFF;
 	return peek < 128 ? this.readUint8() : this.readUint16() - 0x8000;
 }
 
 
 DataView.prototype.readInt8 = function() { //byte
-	var val = this.getInt8(this.getPosition());
+	let val = this.getInt8(this.getPosition());
 	this.addPosition(1);
     return val;
 }
 DataView.prototype.readInt16 = function() { //short
-	var val = this.getInt16(this.getPosition());
+	let val = this.getInt16(this.getPosition());
 	this.addPosition(2);
     return val;
 }
 DataView.prototype.readInt24 = function() {
-	var val = this.getInt24(this.getPosition());
+	let val = this.getInt24(this.getPosition());
 	this.addPosition(3);
     return val;
 }
 DataView.prototype.readInt32 = function() { //int
-	var val = this.getInt32(this.getPosition());
+	let val = this.getInt32(this.getPosition());
 	this.addPosition(4);
     return val;
 }
 DataView.prototype.readShortSmart = function() {
-	var peek = this.getUint8(this.pos) & 0xFF;
+	let peek = this.getUint8(this.pos) & 0xFF;
 	return peek < 128 ? this.readUint8() - 64 : this.readUint16() - 0xc000;
 }
 
 
 DataView.prototype.readBigSmart = function() {
-	var peek = this.getUint8(this.pos);
+	let peek = this.getUint8(this.pos);
 	if(peek >= 0) {
 		return this.readUint16() & 0xFFFF;
 	}else{
@@ -81,7 +81,7 @@ DataView.prototype.readBigSmart = function() {
 }
 
 DataView.prototype.readString = function() {
-	var val = this.getString(this.getPosition());
+	let val = this.getString(this.getPosition());
 	this.addPosition(val.length+1);
     return val;
 }
@@ -97,8 +97,8 @@ DataView.prototype.getInt24 = function(pos) {
 //this method should never be used directly 
 //but if required to use it then remember to do stringLength+1 for the last null character
 DataView.prototype.getString = function(pos) {
-	var string = "";
-	var character;
+	let string = "";
+	let character;
 	while(character != 0) {
 		character = this.getUint8(pos);
 		pos += 1;
