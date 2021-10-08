@@ -1,8 +1,10 @@
+import FramemapLoader from '../loaders/FramemapLoader.js';
+import FramesLoader from '../loaders/FramesLoader.js';
 import ModelLoader from '../loaders/ModelLoader.js'
 
 const IndexType = { 
-    FRAMES:{id: 0, loader: undefined},
-    FRAMEMAPS:{id: 1, loader: undefined},
+    FRAMES:{id: 0, loader: FramesLoader},
+    FRAMEMAPS:{id: 1, loader: FramemapLoader},
     CONFIGS:{id: 2, loader: undefined},
     INTERFACES:{id: 3, loader: undefined},
     SOUNDEFFECTS:{id: 4, loader: undefined},
