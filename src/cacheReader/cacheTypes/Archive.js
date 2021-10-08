@@ -17,12 +17,12 @@ export default class ArchiveData {
 		}
 		let dataview = new DataView(data.buffer);
 		let chunks = dataview.getUint8(data.length - 1);
-
+		
 		let chunkSizes = [];
 		for(let i=0;i<this.files.length;i++){
 			chunkSizes[i] = [];
 		}
-		//let fileSizes = Array(this.files.length).fill(0);
+		let fileSizes = Array(this.files.length).fill(0);
 		
 		let streamPosition = data.length - 1 - chunks * this.files.length * 4;
 
@@ -31,26 +31,49 @@ export default class ArchiveData {
 			let chunkSize = 0;
 			for(let id = 0; id < this.files.length; id++){
 				let delta = dataview.getInt32(streamPosition);
+				
 				chunkSize += delta;
 				streamPosition += 4;
 				chunkSizes[id][i] = chunkSize;
-				//fileSizes[id] += chunkSize;
+				fileSizes[id] += chunkSize;
 			}
 		}
-		
-		//let fileOffsets = Array(this.files.length).fill(0);
+		//console.log(data);
+		//console.log(chunkSizes);
+		//console.log(fileSizes);
+
+		let fileOffsets = Array(this.files.length).fill(0);
 		
 		streamPosition = 0;
 		
 		for(let i=0;i<chunks; i++){
 			for(let id=0;id<this.files.length;id++){
 				let chunkSize = chunkSizes[id][i];
-				this.files[id].content = new Uint8Array(dataview.buffer.slice(streamPosition,streamPosition+chunkSize));
-				streamPosition += chunkSize;
-				//fileOffsets[id] += chunkSize;
+				//console.log(chunkSize);
+				//System.out.println(fileOffsets[id] + " " + chunkSize + " " + stream.getOffset() + " " + stream.remaining());
+				//console.log(id + " " + fileOffsets[id] + " " + chunkSize);
+
+				//dez - can be done in a better way
+				var newData = new Uint8Array(dataview.buffer.slice(streamPosition,streamPosition+chunkSize));
+				var contentUpdate = new Uint8Array(this.files[id].content.length + newData.length);
+				contentUpdate.set(this.files[id].content);
+				contentUpdate.set(newData, this.files[id].content.length);
+
+				this.files[id].content = contentUpdate;
+				fileOffsets[id] += chunkSize;
+				
+				if(id == 0){
+					//console.log(this.files[id].content);
+					//console.log(newData);
+					//console.log(streamPosition);
+				}
+				streamPosition += newData.byteLength;
+					//console.log(fileOffsets[id]);
+				//console.log(this.files[id].content);
 			}
 		}
-		
+		//console.log(fileOffsets);
+		//console.log(this.files[0]);
 		
 	}
 }
