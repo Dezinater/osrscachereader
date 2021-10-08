@@ -3,122 +3,123 @@ export class NpcDefinition {
 }
 export default class NpcLoader {
 
-	load(bytes) {
-		this.def = new NpcDefinition();
+	load(bytes, id) {
+		let def = new NpcDefinition();
+		def.id = id;
 		let dataview = new DataView(bytes.buffer);
 		do {
 			var opcode = dataview.readUint8();
-			this.handleOpcode(opcode, dataview);
+			this.handleOpcode(def, opcode, dataview);
 		} while(opcode != 0);
 		
-		return this.def;
+		return def;
 	}
 	
-	handleOpcode(opcode, dataview){
+	handleOpcode(def, opcode, dataview){
 		var length;
 		var index;
 		if (opcode == 1)
 		{
 			length = dataview.readUint8();
-			this.def.models = [];
+			def.models = [];
 
 			for (index = 0; index < length; ++index)
 			{
-				this.def.models.push(dataview.readUint16());
+				def.models.push(dataview.readUint16());
 			}
 		}else if (opcode == 2)
 		{
 			var name = dataview.readString();
-			this.def.name = name;
+			def.name = name;
 		}
 		else if (opcode == 12)
 		{
-			this.def.size = dataview.readUint8();
+			def.size = dataview.readUint8();
 		}
 		else if (opcode == 13)
 		{
-			this.def.standingAnimation = dataview.readUint16();
+			def.standingAnimation = dataview.readUint16();
 		}
 		else if (opcode == 14)
 		{
-			this.def.walkingAnimation = dataview.readUint16();
+			def.walkingAnimation = dataview.readUint16();
 		}
 		else if (opcode == 15)
 		{
-			this.def.rotateLeftAnimation = dataview.readUint16();
+			def.rotateLeftAnimation = dataview.readUint16();
 		}
 		else if (opcode == 16)
 		{
-			this.def.rotateRightAnimation = dataview.readUint16();
+			def.rotateRightAnimation = dataview.readUint16();
 		}
 		else if (opcode == 17)
 		{
-			this.def.walkingAnimation = dataview.readUint16();
-			this.def.rotate180Animation = dataview.readUint16();
-			this.def.rotate90RightAnimation = dataview.readUint16();
-			this.def.rotate90LeftAnimation = dataview.readUint16();
+			def.walkingAnimation = dataview.readUint16();
+			def.rotate180Animation = dataview.readUint16();
+			def.rotate90RightAnimation = dataview.readUint16();
+			def.rotate90LeftAnimation = dataview.readUint16();
 		}
 		else if (opcode == 18)
 		{
-			this.def.category = dataview.readUint16();
+			def.category = dataview.readUint16();
 		}
 		else if (opcode >= 30 && opcode < 35)
 		{
-			if(this.def.actions == undefined)
-				this.def.actions = [];
+			if(def.actions == undefined)
+				def.actions = [];
 			
 			var readString = dataview.readString();
-			this.def.actions[opcode - 30] = readString;
+			def.actions[opcode - 30] = readString;
 			
-			if (this.def.actions[opcode - 30] == "Hidden")
+			if (def.actions[opcode - 30] == "Hidden")
 			{
-				this.def.actions[opcode - 30] = undefined;
+				def.actions[opcode - 30] = undefined;
 			}
 		}
 		else if (opcode == 40)
 		{
 			length = dataview.readUint8();
-			this.def.recolorToFind = [];
-			this.def.recolorToReplace = [];
+			def.recolorToFind = [];
+			def.recolorToReplace = [];
 
 			for (index = 0; index < length; ++index)
 			{
-				this.def.recolorToFind.push(dataview.readUint16());
-				this.def.recolorToReplace.push(dataview.readUint16());
+				def.recolorToFind.push(dataview.readUint16());
+				def.recolorToReplace.push(dataview.readUint16());
 			}
 
 		}
 		else if (opcode == 41)
 		{
 			length = dataview.readUint8();
-			this.def.retextureToFind = [];
-			this.def.retextureToReplace = [];
+			def.retextureToFind = [];
+			def.retextureToReplace = [];
 
 			for (index = 0; index < length; ++index)
 			{
-				this.def.retextureToFind.push(dataview.readUint16());
-				this.def.retextureToReplace.push(dataview.readUint16());
+				def.retextureToFind.push(dataview.readUint16());
+				def.retextureToReplace.push(dataview.readUint16());
 			}
 
 		}
 		else if (opcode == 60)
 		{
 			length = dataview.readUint8();
-			this.def.chatheadModels = [];
+			def.chatheadModels = [];
 
 			for (index = 0; index < length; ++index)
 			{
-				this.def.chatheadModels.push(dataview.readUint16());
+				def.chatheadModels.push(dataview.readUint16());
 			}
 
 		}
 		else if (opcode == 93)
 		{
-			this.def.isMinimapVisible = false;
+			def.isMinimapVisible = false;
 		}
 		else if (opcode == 95)
 		{
-			this.def.combatLevel = dataview.readUint16();
+			def.combatLevel = dataview.readUint16();
 		}
 		else if (opcode == 97)
 		{
@@ -126,86 +127,86 @@ export default class NpcLoader {
 		}
 		else if (opcode == 98)
 		{
-			this.def.heightScale = dataview.readUint16();
+			def.heightScale = dataview.readUint16();
 		}
 		else if (opcode == 99)
 		{
-			this.def.hasRenderPriority = true;
+			def.hasRenderPriority = true;
 		}
 		else if (opcode == 100)
 		{
-			this.def.ambient = dataview.readInt8();
+			def.ambient = dataview.readInt8();
 		}
 		else if (opcode == 101)
 		{
-			this.def.contrast = dataview.readInt8();
+			def.contrast = dataview.readInt8();
 		}
 		else if (opcode == 102)
 		{
-			this.def.headIcon = dataview.readUint16();
+			def.headIcon = dataview.readUint16();
 		}
 		else if (opcode == 103)
 		{
-			this.def.rotationSpeed = dataview.readUint16();
+			def.rotationSpeed = dataview.readUint16();
 		}
 		else if (opcode == 106)
 		{
-			this.def.varbitId = dataview.readUint16();
-			if (this.def.varbitId == 65535)
+			def.varbitId = dataview.readUint16();
+			if (def.varbitId == 65535)
 			{
-				this.def.varbitId = -1;
+				def.varbitId = -1;
 			}
 
-			this.def.varpIndex = dataview.readUint16();
+			def.varpIndex = dataview.readUint16();
 			
-			if (this.def.varpIndex == 65535)
+			if (def.varpIndex == 65535)
 			{
-				this.def.varpIndex = -1;
+				def.varpIndex = -1;
 			}
 
 			length = dataview.readUint8();
 			
-			this.def.configs = [];
+			def.configs = [];
 
 			for (index = 0; index <= length; ++index)
 			{
-				this.def.configs[index] = dataview.readUint16();
+				def.configs[index] = dataview.readUint16();
 				
-				if (this.def.configs[index] == '\uffff')
+				if (def.configs[index] == '\uffff')
 				{
-					this.def.configs[index] = -1;
+					def.configs[index] = -1;
 				}
 			}
 
-			this.def.configs[length + 1] = -1;
+			def.configs[length + 1] = -1;
 
 		}
 		else if (opcode == 107)
 		{
-			this.def.isInteractable = false;
+			def.isInteractable = false;
 		}
 		else if (opcode == 109)
 		{
-			this.def.rotationFlag = false;
+			def.rotationFlag = false;
 		}
 		else if (opcode == 111)
 		{
-			this.def.isPet = true;
+			def.isPet = true;
 		}
 		else if (opcode == 118)
 		{
-			this.def.varbitId = dataview.readUint16();
+			def.varbitId = dataview.readUint16();
 			
-			if (this.def.varbitId == 65535)
+			if (def.varbitId == 65535)
 			{
-				this.def.varbitId = -1;
+				def.varbitId = -1;
 			}
 
-			this.def.varpIndex = dataview.readUint16();
+			def.varpIndex = dataview.readUint16();
 			
-			if (this.def.varpIndex == 65535)
+			if (def.varpIndex == 65535)
 			{
-				this.def.varpIndex = -1;
+				def.varpIndex = -1;
 			}
 
 			var varVal = dataview.readUint16();
@@ -216,26 +217,26 @@ export default class NpcLoader {
 			}
 
 			length = dataview.readUint8();
-			this.def.configs = [];
+			def.configs = [];
 
 			for (index = 0; index <= length; ++index)
 			{
 				var value = dataview.readUint16();
 				
-				if (this.def.configs[index] == '\uffff') {
-					this.def.configs.push(-1);
+				if (def.configs[index] == '\uffff') {
+					def.configs.push(-1);
 				} else {
-					this.def.configs.push(value);
+					def.configs.push(value);
 				}
 			}
 
-			this.def.configs.push(varVal);
+			def.configs.push(varVal);
 		}
 		else if (opcode == 249)
 		{
 			length = dataview.readUint8();
 			
-			this.def.params = {};
+			def.params = {};
 
 			for (var i = 0; i < length; i++)
 			{
@@ -254,7 +255,7 @@ export default class NpcLoader {
 					value = dataview.readInt32()
 				}
 
-				this.def.params[key] = value;
+				def.params[key] = value;
 			}
 		}
 	}

@@ -3,113 +3,114 @@ export class SequenceDefinition {
 }
 export default class SequenceLoader {
 
-	load(bytes) {
-		this.def = new SequenceDefinition();
+	load(bytes, id) {
+		let def = new SequenceDefinition();
+        def.id = id;
 		let dataview = new DataView(bytes.buffer);
 		do {
 			var opcode = dataview.readUint8();
-			this.handleOpcode(opcode, dataview);
+			this.handleOpcode(def, opcode, dataview);
 		} while(opcode != 0);
 		
-		return this.def;
+		return def;
 	}
 	
-	handleOpcode(opcode, dataview){
+	handleOpcode(def, opcode, dataview){
         var var3;
 		var var4;
 		if (opcode == 1)
 		{
 			var3 = dataview.readUint16();
-			this.def.frameLengths = [];
+			def.frameLengths = [];
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
-				this.def.frameLengths[var4] = dataview.readUint16();
+				def.frameLengths[var4] = dataview.readUint16();
 			}
 
-			this.def.frameIDs = [];
+			def.frameIDs = [];
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
-				this.def.frameIDs[var4] = dataview.readUint16();
+				def.frameIDs[var4] = dataview.readUint16();
 			}
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
-				this.def.frameIDs[var4] += dataview.readUint16() << 16;
+				def.frameIDs[var4] += dataview.readUint16() << 16;
 			}
 		}
 		else if (opcode == 2)
 		{
-			this.def.frameStep = dataview.readUint16();
+			def.frameStep = dataview.readUint16();
 		}
 		else if (opcode == 3)
 		{
 			var3 = dataview.readUint8();
-			this.def.interleaveLeave = [];
+			def.interleaveLeave = [];
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
-				this.def.interleaveLeave[var4] = dataview.readUint8();
+				def.interleaveLeave[var4] = dataview.readUint8();
 			}
 
-			this.def.interleaveLeave[var3] = 9999999;
+			def.interleaveLeave[var3] = 9999999;
 		}
 		else if (opcode == 4)
 		{
-			this.def.stretches = true;
+			def.stretches = true;
 		}
 		else if (opcode == 5)
 		{
-			this.def.forcedPriority = dataview.readUint8();
+			def.forcedPriority = dataview.readUint8();
 		}
 		else if (opcode == 6)
 		{
-			this.def.leftHandItem = dataview.readUint16();
+			def.leftHandItem = dataview.readUint16();
 		}
 		else if (opcode == 7)
 		{
-			this.def.rightHandItem = dataview.readUint16();
+			def.rightHandItem = dataview.readUint16();
 		}
 		else if (opcode == 8)
 		{
-			this.def.maxLoops = dataview.readUint8();
+			def.maxLoops = dataview.readUint8();
 		}
 		else if (opcode == 9)
 		{
-			this.def.precedenceAnimating = dataview.readUint8();
+			def.precedenceAnimating = dataview.readUint8();
 		}
 		else if (opcode == 10)
 		{
-			this.def.priority = dataview.readUint8();
+			def.priority = dataview.readUint8();
 		}
 		else if (opcode == 11)
 		{
-			this.def.replyMode = dataview.readUint8();
+			def.replyMode = dataview.readUint8();
 		}
 		else if (opcode == 12)
 		{
 			var3 = dataview.readUint8();
-			this.def.chatFrameIds = [];
+			def.chatFrameIds = [];
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
-				this.def.chatFrameIds[var4] = dataview.readUint16();
+				def.chatFrameIds[var4] = dataview.readUint16();
 			}
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
-				this.def.chatFrameIds[var4] += dataview.readUint16() << 16;
+				def.chatFrameIds[var4] += dataview.readUint16() << 16;
 			}
 		}
 		else if (opcode == 13)
 		{
 			var3 = dataview.readUint8();
-			this.def.frameSounds = [];
+			def.frameSounds = [];
 
 			for (var4 = 0; var4 < var3; ++var4)
 			{
-				this.def.frameSounds[var4] = dataview.readUint24();
+				def.frameSounds[var4] = dataview.readUint24();
 			}
 		}
           
