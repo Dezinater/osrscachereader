@@ -3,9 +3,9 @@
   "exports": "./dist/osrscachereader.js",
   "version": "1.0.0",
   "description": "Read Old-School Runescape Cache files using Javascript",
-  "main": "./dist/osrscachereader.js",
+  "main": "./dist/osrscachereader",
   "files": [
-    "./dist/osrscachereader.js"
+    "dist"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
