@@ -5,7 +5,7 @@
   "description": "Read Old-School Runescape Cache files using Javascript",
   "main": "./dist/osrscachereader.js",
   "files": [
-    "./dist/"
+    "./dist/osrscachereader.js"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
