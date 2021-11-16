@@ -16,6 +16,10 @@ var promise1, promise2;
 console.log("loading");
 cache.onload.then(() => {
   console.log(cache);
+  console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
+  
+
+  /*
   cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(zulrah => {
     console.log(zulrah);
     var models = zulrah.def.models;
@@ -29,6 +33,7 @@ cache.onload.then(() => {
       console.log(x);
     });
   });
+  */
   //console.log("loaded");
   //var zulrah = cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042);
   //console.log(await cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042));
@@ -50,8 +55,7 @@ cache.onload.then(() => {
   });
   
   //});
-
-
-
+  
 });
+
 */

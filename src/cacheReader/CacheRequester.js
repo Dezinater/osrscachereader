@@ -87,7 +87,6 @@ export default class CacheRequester {
 	}
 
 	readData(index, size, segment, archiveId = 0) {
-
 		/*
 		this.worker.onmessage = function(event) {
 			//event.data.decompressedData
@@ -122,7 +121,10 @@ export default class CacheRequester {
 				decompressedData = bz2.decompress(bzData);
 			} else if (compressionOpcode == 2) { //gzip
 				data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
+				//console.log(new Uint8Array(dataview.buffer)+"");
+
 				decompressedData = new Uint8Array(gzip.unzip(data));
+
 			}
 
 			return { index, archiveId, decompressedData };
@@ -153,11 +155,11 @@ export default class CacheRequester {
 		}
 
 		var data;
-		if (nextSector != 0 || buffer.byteLength == 512)
+		if (nextSector != 0 || buffer.byteLength == 512 || buffer.byteLength % 512 == 0)
 			data = new Uint8Array(dataview.buffer.slice(convertedPos + 8, convertedPos + 520));
 		else
 			data = new Uint8Array(dataview.buffer.slice(convertedPos + 8, convertedPos + 8 + (buffer.byteLength % 512)));
-
+		
 		buffer.set(data, dataview.getInt16(convertedPos + 2) * 512);
 
 		if (nextSector != 0)

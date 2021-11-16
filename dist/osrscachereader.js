@@ -5945,7 +5945,6 @@ class CacheRequester {
 	}
 
 	readData(index, size, segment, archiveId = 0) {
-
 		/*
 		this.worker.onmessage = function(event) {
 			//event.data.decompressedData
@@ -5980,7 +5979,10 @@ class CacheRequester {
 				decompressedData = bz2.decompress(bzData);
 			} else if (compressionOpcode == 2) { //gzip
 				data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
+				//console.log(new Uint8Array(dataview.buffer)+"");
+
 				decompressedData = new Uint8Array(gzip.unzip(data));
+
 			}
 
 			return { index, archiveId, decompressedData };
@@ -6011,11 +6013,11 @@ class CacheRequester {
 		}
 
 		var data;
-		if (nextSector != 0 || buffer.byteLength == 512)
+		if (nextSector != 0 || buffer.byteLength == 512 || buffer.byteLength % 512 == 0)
 			data = new Uint8Array(dataview.buffer.slice(convertedPos + 8, convertedPos + 520));
 		else
 			data = new Uint8Array(dataview.buffer.slice(convertedPos + 8, convertedPos + 8 + (buffer.byteLength % 512)));
-
+		
 		buffer.set(data, dataview.getInt16(convertedPos + 2) * 512);
 
 		if (nextSector != 0)
@@ -6262,6 +6264,7 @@ class RSCache {
 	}
 
 	async getAllFiles(indexId, archiveId, threaded = false) {
+		
 		return new Promise((resolve, reject) => {
 			let index = this.indicies[indexId];
 			if (index == undefined) {
@@ -6269,6 +6272,7 @@ class RSCache {
 			}
 
 			let archive = index.archives[archiveId];
+			
 			if (archive == undefined) {
 				throw "Archive " + archiveId + " does not exist in Index " + indexId;
 			}
@@ -6356,12 +6360,10 @@ class RSCache {
 					}
 
 					this.indicies[i] = new Index(i);
-
 					for (let j = 0; j < dataview.byteLength; j += 6) {
 						let size = dataview.readUint24();
 						let segment = dataview.readUint24();
-						//if(indexSegments[i] == undefined) indexSegments[i] = [];
-						//this.indicies[i].indexSegments.push(new IndexSegment(size,segment));
+						
 						this.indicies[i].indexSegments.push({ size, segment });
 					}
 
@@ -6427,6 +6429,10 @@ var promise1, promise2;
 console.log("loading");
 cache.onload.then(() => {
   console.log(cache);
+  console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
+  
+
+  /*
   cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(zulrah => {
     console.log(zulrah);
     var models = zulrah.def.models;
@@ -6440,6 +6446,7 @@ cache.onload.then(() => {
       console.log(x);
     });
   });
+  */
   //console.log("loaded");
   //var zulrah = cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042);
   //console.log(await cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042));
@@ -6461,10 +6468,9 @@ cache.onload.then(() => {
   });
   
   //});
-
-
-
+  
 });
+
 */
 })();
 
