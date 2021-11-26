@@ -469,6 +469,7 @@ export default class ModelLoader {
 		}
 		else {
 			def.priority = var14;
+			def.faceRenderPriorities = Array(def.faceCount).fill(def.priority);
 		}
 
 		if (var30 == 1) {
