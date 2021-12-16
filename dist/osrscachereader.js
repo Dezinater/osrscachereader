@@ -3777,11 +3777,17 @@ class ModelLoader {
 		let def = new ModelDefinition();
 		def.id = id;
 		let dataview = new DataView(bytes.buffer);
-		if (dataview.getInt8(dataview.byteLength - 1) == -1 && dataview.getInt8(dataview.byteLength - 2) == -1) {
+		if (dataview.getInt8(dataview.byteLength - 1) == -3 && dataview.getInt8(dataview.byteLength - 2) == -1) {
+			this.load3(def, dataview);
+		}
+		else if (dataview.getInt8(dataview.byteLength - 1) == -2 && dataview.getInt8(dataview.byteLength - 2) == -1) {
+			this.load2(def, dataview);
+		}
+		else if (dataview.getInt8(dataview.byteLength - 1) == -1 && dataview.getInt8(dataview.byteLength - 2) == -1) {
 			this.load1(def, dataview);
 		}
 		else {
-			this.load2(def, dataview);
+			this.loadOriginal(def, dataview);
 		}
 
 		this.computeNormals2(def);
@@ -3789,6 +3795,719 @@ class ModelLoader {
 		this.computeAnimationTables(def);
 
 		return def;
+	}
+
+	load3(def, var1) {
+		let var2 = DataView(var1.buffer);
+		let var3 = DataView(var1.buffer);
+		let var4 = DataView(var1.buffer);
+		let var5 = DataView(var1.buffer);
+		let var6 = DataView(var1.buffer);
+		let var7 = DataView(var1.buffer);
+		let var8 = DataView(var1.buffer);
+		var2.setPosition(var1.byteLength - 26);
+		let var9 = var2.readUint16();
+		let var10 = var2.readUint16();
+		let var11 = var2.readUint8();
+		let var12 = var2.readUint8();
+		let var13 = var2.readUint8();
+		let var14 = var2.readUint8();
+		let var15 = var2.readUint8();
+		let var16 = var2.readUint8();
+		let var17 = var2.readUint8();
+		let var18 = var2.readUint8();
+		let var19 = var2.readUint16();
+		let var20 = var2.readUint16();
+		let var21 = var2.readUint16();
+		let var22 = var2.readUint16();
+		let var23 = var2.readUint16();
+		let var24 = var2.readUint16();
+		let var25 = 0;
+		let var26 = 0;
+		let var27 = 0;
+		let var28;
+		if (var11 > 0)
+		{
+			def.textureRenderTypes = [];
+			var2.setPosition(0);
+
+			for (var28 = 0; var28 < var11; ++var28)
+			{
+				let var29 = def.textureRenderTypes[var28] = var2.readInt8();
+				if (var29 == 0)
+				{
+					++var25;
+				}
+
+				if (var29 >= 1 && var29 <= 3)
+				{
+					++var26;
+				}
+
+				if (var29 == 2)
+				{
+					++var27;
+				}
+			}
+		}
+
+		var28 = var11 + var9;
+		let var58 = var28;
+		if (var12 == 1)
+		{
+			var28 += var10;
+		}
+
+		let var30 = var28;
+		var28 += var10;
+		let var31 = var28;
+		if (var13 == 255)
+		{
+			var28 += var10;
+		}
+
+		let var32 = var28;
+		if (var15 == 1)
+		{
+			var28 += var10;
+		}
+
+		let var33 = var28;
+		var28 += var24;
+		let var34 = var28;
+		if (var14 == 1)
+		{
+			var28 += var10;
+		}
+
+		let var35 = var28;
+		var28 += var22;
+		let var36 = var28;
+		if (var16 == 1)
+		{
+			var28 += var10 * 2;
+		}
+
+		let var37 = var28;
+		var28 += var23;
+		let var38 = var28;
+		var28 += var10 * 2;
+		let var39 = var28;
+		var28 += var19;
+		let var40 = var28;
+		var28 += var20;
+		let var41 = var28;
+		var28 += var21;
+		let var42 = var28;
+		var28 += var25 * 6;
+		let var43 = var28;
+		var28 += var26 * 6;
+		let var44 = var28;
+		var28 += var26 * 6;
+		let var45 = var28;
+		var28 += var26 * 2;
+		let var46 = var28;
+		var28 += var26;
+		let var47 = var28;
+		var28 = var28 + var26 * 2 + var27 * 2;
+		def.vertexCount = var9;
+		def.faceCount = var10;
+		def.numTextureFaces = var11;
+		def.vertexPositionsX = [];
+		def.vertexPositionsY = [];
+		def.vertexPositionsZ = [];
+		def.faceVertexIndices1 = [];
+		def.faceVertexIndices2 = [];
+		def.faceVertexIndices3 = [];
+		if (var17 == 1)
+		{
+			def.packedVertexGroups = [];
+		}
+
+		if (var12 == 1)
+		{
+			def.faceRenderTypes = [];
+		}
+
+		if (var13 == 255)
+		{
+			def.faceRenderPriorities = [];
+		}
+		else
+		{
+			def.priority = var13;
+		}
+
+		if (var14 == 1)
+		{
+			def.faceTransparencies = [];
+		}
+
+		if (var15 == 1)
+		{
+			def.packedTransparencyVertexGroups = [];
+		}
+
+		if (var16 == 1)
+		{
+			def.faceTextures = [];
+		}
+
+		if (var16 == 1 && var11 > 0)
+		{
+			def.textureCoords = [];
+		}
+
+		if (var18 == 1)
+		{
+			//def.animayaGroups = new int[var9][];
+			//def.animayaScales = new int[var9][];
+			def.animayaGroups = new Array(var9);
+			def.animayaScales = new Array(var9);
+		}
+
+		def.faceColors = [];
+		if (var11 > 0)
+		{
+			def.texIndices1 = [];
+			def.texIndices2 = [];
+			def.texIndices3 = [];
+		}
+
+		var2.setOffset(var11);
+		var3.setOffset(var39);
+		var4.setOffset(var40);
+		var5.setOffset(var41);
+		var6.setOffset(var33);
+		let var48 = 0;
+		let var49 = 0;
+		let var50 = 0;
+
+		let var51;
+		let var52;
+		let var53;
+		let var54;
+		let var55;
+		for (var51 = 0; var51 < var9; ++var51)
+		{
+			var52 = var2.readUint8();
+			var53 = 0;
+			if ((var52 & 1) != 0)
+			{
+				var53 = var3.readShortSmart();
+			}
+
+			var54 = 0;
+			if ((var52 & 2) != 0)
+			{
+				var54 = var4.readShortSmart();
+			}
+
+			var55 = 0;
+			if ((var52 & 4) != 0)
+			{
+				var55 = var5.readShortSmart();
+			}
+
+			def.vertexPositionsX[var51] = var48 + var53;
+			def.vertexPositionsY[var51] = var49 + var54;
+			def.vertexPositionsZ[var51] = var50 + var55;
+			var48 = def.vertexPositionsX[var51];
+			var49 = def.vertexPositionsY[var51];
+			var50 = def.vertexPositionsZ[var51];
+			if (var17 == 1)
+			{
+				def.packedVertexGroups[var51] = var6.readUint8();
+			}
+		}
+
+		if (var18 == 1)
+		{
+			for (var51 = 0; var51 < var9; ++var51)
+			{
+				var52 = var6.readUint8();
+				def.animayaGroups[var51] = [];
+				def.animayaScales[var51] = [];
+
+				for (var53 = 0; var53 < var52; ++var53)
+				{
+					def.animayaGroups[var51][var53] = var6.readUint8();
+					def.animayaScales[var51][var53] = var6.readUint8();
+				}
+			}
+		}
+
+		var2.setPosition(var38);
+		var3.setPosition(var58);
+		var4.setPosition(var31);
+		var5.setPosition(var34);
+		var6.setPosition(var32);
+		var7.setPosition(var36);
+		var8.setPosition(var37);
+
+		for (var51 = 0; var51 < var10; ++var51)
+		{
+			def.faceColors[var51] = var2.readUint16();
+			if (var12 == 1)
+			{
+				def.faceRenderTypes[var51] = var3.readInt8();
+			}
+
+			if (var13 == 255)
+			{
+				def.faceRenderPriorities[var51] = var4.readInt8();
+			}
+
+			if (var14 == 1)
+			{
+				def.faceTransparencies[var51] = var5.readInt8();
+			}
+
+			if (var15 == 1)
+			{
+				def.packedTransparencyVertexGroups[var51] = var6.readUint8();
+			}
+
+			if (var16 == 1)
+			{
+				def.faceTextures[var51] = (short) (var7.readUint16() - 1);
+			}
+
+			if (def.textureCoords != null && def.faceTextures[var51] != -1)
+			{
+				def.textureCoords[var51] = (byte) (var8.readUint16() - 1);
+			}
+		}
+
+		var2.setPosition(var35);
+		var3.setPosition(var30);
+		var51 = 0;
+		var52 = 0;
+		var53 = 0;
+		var54 = 0;
+
+		let var56;
+		for (var55 = 0; var55 < var10; ++var55)
+		{
+			var56 = var3.readUint8();
+			if (var56 == 1)
+			{
+				var51 = var2.readShortSmart() + var54;
+				var52 = var2.readShortSmart() + var51;
+				var53 = var2.readShortSmart() + var52;
+				var54 = var53;
+				def.faceVertexIndices1[var55] = var51;
+				def.faceVertexIndices2[var55] = var52;
+				def.faceVertexIndices3[var55] = var53;
+			}
+
+			if (var56 == 2)
+			{
+				var52 = var53;
+				var53 = var2.readShortSmart() + var54;
+				var54 = var53;
+				def.faceVertexIndices1[var55] = var51;
+				def.faceVertexIndices2[var55] = var52;
+				def.faceVertexIndices3[var55] = var53;
+			}
+
+			if (var56 == 3)
+			{
+				var51 = var53;
+				var53 = var2.readShortSmart() + var54;
+				var54 = var53;
+				def.faceVertexIndices1[var55] = var51;
+				def.faceVertexIndices2[var55] = var52;
+				def.faceVertexIndices3[var55] = var53;
+			}
+
+			if (var56 == 4)
+			{
+				let var57 = var51;
+				var51 = var52;
+				var52 = var57;
+				var53 = var2.readShortSmart() + var54;
+				var54 = var53;
+				def.faceVertexIndices1[var55] = var51;
+				def.faceVertexIndices2[var55] = var57;
+				def.faceVertexIndices3[var55] = var53;
+			}
+		}
+
+		var2.setPosition(var42);
+		var3.setPosition(var43);
+		var4.setPosition(var44);
+		var5.setPosition(var45);
+		var6.setPosition(var46);
+		var7.setPosition(var47);
+
+		for (var55 = 0; var55 < var11; ++var55)
+		{
+			var56 = def.textureRenderTypes[var55] & 255;
+			if (var56 == 0)
+			{
+				def.texIndices1[var55] = var2.readUint16();
+				def.texIndices2[var55] = var2.readUint16();
+				def.texIndices3[var55] = var2.readUint16();
+			}
+		}
+
+		var2.setPosition(var28);
+		var55 = var2.readUint8();
+		if (var55 != 0)
+		{
+			var2.readUint16();
+			var2.readUint16();
+			var2.readUint16();
+			var2.readInt32();
+		}
+
+	}
+
+	load2(def, var1)
+	{
+		let var2 = false;
+		let var3 = false;
+		let var4 = new DataView(var1.buffer);
+		let var5 = new DataView(var1.buffer);
+		let var6 = new DataView(var1.buffer);
+		let var7 = new DataView(var1.buffer);
+		let var8 = new DataView(var1.buffer);
+		var4.setPosition(var1.byteLength - 23);
+		let var9 = var4.readUint16();
+		let var10 = var4.readUint16();
+		let var11 = var4.readUint8();
+		let var12 = var4.readUint8();
+		let var13 = var4.readUint8();
+		let var14 = var4.readUint8();
+		let var15 = var4.readUint8();
+		let var16 = var4.readUint8();
+		let var17 = var4.readUint8();
+		let var18 = var4.readUint16();
+		let var19 = var4.readUint16();
+		let var20 = var4.readUint16();
+		let var21 = var4.readUint16();
+		let var22 = var4.readUint16();
+		let var23 = 0;
+		let var24 = var23 + var9;
+		let var25 = var24;
+		var24 += var10;
+		let var26 = var24;
+		if (var13 == 255)
+		{
+			var24 += var10;
+		}
+
+		let var27 = var24;
+		if (var15 == 1)
+		{
+			var24 += var10;
+		}
+
+		let var28 = var24;
+		if (var12 == 1)
+		{
+			var24 += var10;
+		}
+
+		let var29 = var24;
+		var24 += var22;
+		let var30 = var24;
+		if (var14 == 1)
+		{
+			var24 += var10;
+		}
+
+		let var31 = var24;
+		var24 += var21;
+		let var32 = var24;
+		var24 += var10 * 2;
+		let var33 = var24;
+		var24 += var11 * 6;
+		let var34 = var24;
+		var24 += var18;
+		let var35 = var24;
+		var24 += var19;
+		let var10000 = var24 + var20;
+		def.vertexCount = var9;
+		def.faceCount = var10;
+		def.numTextureFaces = var11;
+		def.vertexPositionsX = [];
+		def.vertexPositionsY = [];
+		def.vertexPositionsZ = [];
+		def.faceVertexIndices1 = [];
+		def.faceVertexIndices2 = [];
+		def.faceVertexIndices3 = [];
+		if (var11 > 0)
+		{
+			def.textureRenderTypes = [];
+			def.texIndices1 = [];
+			def.texIndices2 = [];
+			def.texIndices3 = [];
+		}
+
+		if (var16 == 1)
+		{
+			def.packedVertexGroups = [];
+		}
+
+		if (var12 == 1)
+		{
+			def.faceRenderTypes = [];
+			def.textureCoords = [];
+			def.faceTextures = [];
+		}
+
+		if (var13 == 255)
+		{
+			def.faceRenderPriorities = [];
+		}
+		else
+		{
+			def.priority = var13;
+		}
+
+		if (var14 == 1)
+		{
+			def.faceTransparencies = [];
+		}
+
+		if (var15 == 1)
+		{
+			def.packedTransparencyVertexGroups = [];
+		}
+
+		if (var17 == 1)
+		{
+			//def.animayaGroups = new int[var9][];
+			//def.animayaScales = new int[var9][];
+			
+			def.animayaGroups = [];
+			def.animayaScales = [];
+		}
+
+		def.faceColors = [];
+		var4.setPosition(var23);
+		var5.setPosition(var34);
+		var6.setPosition(var35);
+		var7.setPosition(var24);
+		var8.setPosition(var29);
+		let var37 = 0;
+		let var38 = 0;
+		let var39 = 0;
+
+		let var40;
+		let var41;
+		let var42;
+		let var43;
+		let var44;
+		
+		for (var40 = 0; var40 < var9; ++var40)
+		{
+			var41 = var4.readUint8();
+			var42 = 0;
+			if ((var41 & 1) != 0)
+			{
+				var42 = var5.readShortSmart();
+			}
+
+			var43 = 0;
+			if ((var41 & 2) != 0)
+			{
+				var43 = var6.readShortSmart();
+			}
+
+			var44 = 0;
+			if ((var41 & 4) != 0)
+			{
+				var44 = var7.readShortSmart();
+			}
+
+			def.vertexPositionsX[var40] = var37 + var42;
+			def.vertexPositionsY[var40] = var38 + var43;
+			def.vertexPositionsZ[var40] = var39 + var44;
+			var37 = def.vertexPositionsX[var40];
+			var38 = def.vertexPositionsY[var40];
+			var39 = def.vertexPositionsZ[var40];
+			if (var16 == 1)
+			{
+				def.packedVertexGroups[var40] = var8.readUint8();
+			}
+		}
+
+		if (var17 == 1)
+		{
+			for (var40 = 0; var40 < var9; ++var40)
+			{
+				var41 = var8.readUint8();
+				def.animayaGroups[var40] = [];
+				def.animayaScales[var40] = [];
+
+				for (var42 = 0; var42 < var41; ++var42)
+				{
+					def.animayaGroups[var40][var42] = var8.readUint8();
+					def.animayaScales[var40][var42] = var8.readUint8();
+				}
+			}
+		}
+
+		var4.setPosition(var32);
+		var5.setPosition(var28);
+		var6.setPosition(var26);
+		var7.setPosition(var30);
+		var8.setPosition(var27);
+
+		for (var40 = 0; var40 < var10; ++var40)
+		{
+			def.faceColors[var40] = var4.readUint16();
+			if (var12 == 1)
+			{
+				var41 = var5.readUint8();
+				if ((var41 & 1) == 1)
+				{
+					def.faceRenderTypes[var40] = 1;
+					var2 = true;
+				}
+				else
+				{
+					def.faceRenderTypes[var40] = 0;
+				}
+
+				if ((var41 & 2) == 2)
+				{
+					def.textureCoords[var40] = (byte) (var41 >> 2);
+					def.faceTextures[var40] = def.faceColors[var40];
+					def.faceColors[var40] = 127;
+					if (def.faceTextures[var40] != -1)
+					{
+						var3 = true;
+					}
+				}
+				else
+				{
+					def.textureCoords[var40] = -1;
+					def.faceTextures[var40] = -1;
+				}
+			}
+
+			if (var13 == 255)
+			{
+				def.faceRenderPriorities[var40] = var6.readInt8();
+			}
+
+			if (var14 == 1)
+			{
+				def.faceTransparencies[var40] = var7.readInt8();
+			}
+
+			if (var15 == 1)
+			{
+				def.packedTransparencyVertexGroups[var40] = var8.readUint8();
+			}
+		}
+
+		var4.setPosition(var31);
+		var5.setPosition(var25);
+		var40 = 0;
+		var41 = 0;
+		var42 = 0;
+		var43 = 0;
+
+		let var45;
+		let var46;
+		for (var44 = 0; var44 < var10; ++var44)
+		{
+			var45 = var5.readUint8();
+			if (var45 == 1)
+			{
+				var40 = var4.readShortSmart() + var43;
+				var41 = var4.readShortSmart() + var40;
+				var42 = var4.readShortSmart() + var41;
+				var43 = var42;
+				def.faceVertexIndices1[var44] = var40;
+				def.faceVertexIndices2[var44] = var41;
+				def.faceVertexIndices3[var44] = var42;
+			}
+
+			if (var45 == 2)
+			{
+				var41 = var42;
+				var42 = var4.readShortSmart() + var43;
+				var43 = var42;
+				def.faceVertexIndices1[var44] = var40;
+				def.faceVertexIndices2[var44] = var41;
+				def.faceVertexIndices3[var44] = var42;
+			}
+
+			if (var45 == 3)
+			{
+				var40 = var42;
+				var42 = var4.readShortSmart() + var43;
+				var43 = var42;
+				def.faceVertexIndices1[var44] = var40;
+				def.faceVertexIndices2[var44] = var41;
+				def.faceVertexIndices3[var44] = var42;
+			}
+
+			if (var45 == 4)
+			{
+				var46 = var40;
+				var40 = var41;
+				var41 = var46;
+				var42 = var4.readShortSmart() + var43;
+				var43 = var42;
+				def.faceVertexIndices1[var44] = var40;
+				def.faceVertexIndices2[var44] = var46;
+				def.faceVertexIndices3[var44] = var42;
+			}
+		}
+
+		var4.setPosition(var33);
+
+		for (var44 = 0; var44 < var11; ++var44)
+		{
+			def.textureRenderTypes[var44] = 0;
+			def.texIndices1[var44] = var4.readUint16();
+			def.texIndices2[var44] = var4.readUint16();
+			def.texIndices3[var44] = var4.readUint16();
+		}
+
+		if (def.textureCoords != null)
+		{
+			let var47 = false;
+
+			for (var45 = 0; var45 < var10; ++var45)
+			{
+				var46 = def.textureCoords[var45] & 255;
+				if (var46 != 255)
+				{
+					if (def.faceVertexIndices1[var45] == (def.texIndices1[var46] & '\uffff') && def.faceVertexIndices2[var45] == (def.texIndices2[var46] & '\uffff') && def.faceVertexIndices3[var45] == (def.texIndices3[var46] & '\uffff'))
+					{
+						def.textureCoords[var45] = -1;
+					}
+					else
+					{
+						var47 = true;
+					}
+				}
+			}
+
+			if (!var47)
+			{
+				def.textureCoords = null;
+			}
+		}
+
+		if (!var3)
+		{
+			def.faceTextures = null;
+		}
+
+		if (!var2)
+		{
+			def.faceRenderTypes = null;
+		}
+
 	}
 
 	load1(def, var1) {
@@ -4146,7 +4865,7 @@ class ModelLoader {
 		}
 	}
 
-	load2(def, var1) {
+	loadOriginal(def, var1) {
 		var var2 = false;
 		var var43 = false;
 		var var5 = new DataView(var1.buffer);
@@ -4638,7 +5357,6 @@ class ModelLoader {
 
 			if (var15 == 0) {
 				var var16 = def.vertexNormals[vertexA];
-				console.log(vertexA);
 				//console.log(var16);
 				var16.magnitude = 0;
 				var16.x += var11;
@@ -6418,8 +7136,15 @@ class RSCache {
 
 
 
+/*
+var cache = new RSCache("./", (x) => { console.log(x) });
 
-
+cache.onload.then(() => {
+  console.log(cache);
+  console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
+  cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
+});
+*/
 /*
 var cache;
 

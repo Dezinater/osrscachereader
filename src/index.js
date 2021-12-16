@@ -3,8 +3,15 @@ import IndexType from './cacheReader/cacheTypes/IndexType.js'
 import ConfigType from './cacheReader/cacheTypes/ConfigType.js'
 
 export { RSCache, IndexType, ConfigType };
+/*
+var cache = new RSCache("./", (x) => { console.log(x) });
 
-
+cache.onload.then(() => {
+  console.log(cache);
+  console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
+  cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
+});
+*/
 /*
 var cache;
 
