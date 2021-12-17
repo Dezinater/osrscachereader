@@ -3798,13 +3798,13 @@ class ModelLoader {
 	}
 
 	load3(def, var1) {
-		let var2 = DataView(var1.buffer);
-		let var3 = DataView(var1.buffer);
-		let var4 = DataView(var1.buffer);
-		let var5 = DataView(var1.buffer);
-		let var6 = DataView(var1.buffer);
-		let var7 = DataView(var1.buffer);
-		let var8 = DataView(var1.buffer);
+		let var2 = new DataView(var1.buffer);
+		let var3 = new DataView(var1.buffer);
+		let var4 = new DataView(var1.buffer);
+		let var5 = new DataView(var1.buffer);
+		let var6 = new DataView(var1.buffer);
+		let var7 = new DataView(var1.buffer);
+		let var8 = new DataView(var1.buffer);
 		var2.setPosition(var1.byteLength - 26);
 		let var9 = var2.readUint16();
 		let var10 = var2.readUint16();
@@ -3974,11 +3974,11 @@ class ModelLoader {
 			def.texIndices3 = [];
 		}
 
-		var2.setOffset(var11);
-		var3.setOffset(var39);
-		var4.setOffset(var40);
-		var5.setOffset(var41);
-		var6.setOffset(var33);
+		var2.setPosition(var11);
+		var3.setPosition(var39);
+		var4.setPosition(var40);
+		var5.setPosition(var41);
+		var6.setPosition(var33);
 		let var48 = 0;
 		let var49 = 0;
 		let var50 = 0;
@@ -6984,7 +6984,7 @@ class RSCache {
 	}
 
 	async getAllFiles(indexId, archiveId, threaded = false) {
-		
+
 		return new Promise((resolve, reject) => {
 			let index = this.indicies[indexId];
 			if (index == undefined) {
@@ -6992,7 +6992,7 @@ class RSCache {
 			}
 
 			let archive = index.archives[archiveId];
-			
+
 			if (archive == undefined) {
 				throw "Archive " + archiveId + " does not exist in Index " + indexId;
 			}
@@ -7006,8 +7006,9 @@ class RSCache {
 					data = this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
 				else
 					data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
-				//console.log(data);
+
 				return data.then(x => {
+					//console.log(x);
 					archive = index.archives[x.archiveId];
 
 					//console.log(archive);
@@ -7083,7 +7084,7 @@ class RSCache {
 					for (let j = 0; j < dataview.byteLength; j += 6) {
 						let size = dataview.readUint24();
 						let segment = dataview.readUint24();
-						
+
 						this.indicies[i].indexSegments.push({ size, segment });
 					}
 
@@ -7141,8 +7142,12 @@ var cache = new RSCache("./", (x) => { console.log(x) });
 
 cache.onload.then(() => {
   console.log(cache);
-  console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
-  cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
+  //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
+  //cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 11012, false).then(x => {
+    //console.log(x);
+    //cache.getFile(IndexType.MODELS.id, x.def.models[0], 0, false).then(y => console.log(y))
+  });
 });
 */
 /*

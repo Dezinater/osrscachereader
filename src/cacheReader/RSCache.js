@@ -21,7 +21,7 @@ export default class RSCache {
 	}
 
 	async getAllFiles(indexId, archiveId, threaded = false) {
-		
+
 		return new Promise((resolve, reject) => {
 			let index = this.indicies[indexId];
 			if (index == undefined) {
@@ -29,7 +29,7 @@ export default class RSCache {
 			}
 
 			let archive = index.archives[archiveId];
-			
+
 			if (archive == undefined) {
 				throw "Archive " + archiveId + " does not exist in Index " + indexId;
 			}
@@ -43,8 +43,9 @@ export default class RSCache {
 					data = this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
 				else
 					data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
-				//console.log(data);
+
 				return data.then(x => {
+					//console.log(x);
 					archive = index.archives[x.archiveId];
 
 					//console.log(archive);
@@ -120,7 +121,7 @@ export default class RSCache {
 					for (let j = 0; j < dataview.byteLength; j += 6) {
 						let size = dataview.readUint24();
 						let segment = dataview.readUint24();
-						
+
 						this.indicies[i].indexSegments.push({ size, segment });
 					}
 

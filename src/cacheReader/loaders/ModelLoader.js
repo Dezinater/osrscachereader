@@ -29,13 +29,13 @@ export default class ModelLoader {
 	}
 
 	load3(def, var1) {
-		let var2 = DataView(var1.buffer);
-		let var3 = DataView(var1.buffer);
-		let var4 = DataView(var1.buffer);
-		let var5 = DataView(var1.buffer);
-		let var6 = DataView(var1.buffer);
-		let var7 = DataView(var1.buffer);
-		let var8 = DataView(var1.buffer);
+		let var2 = new DataView(var1.buffer);
+		let var3 = new DataView(var1.buffer);
+		let var4 = new DataView(var1.buffer);
+		let var5 = new DataView(var1.buffer);
+		let var6 = new DataView(var1.buffer);
+		let var7 = new DataView(var1.buffer);
+		let var8 = new DataView(var1.buffer);
 		var2.setPosition(var1.byteLength - 26);
 		let var9 = var2.readUint16();
 		let var10 = var2.readUint16();
@@ -205,11 +205,11 @@ export default class ModelLoader {
 			def.texIndices3 = [];
 		}
 
-		var2.setOffset(var11);
-		var3.setOffset(var39);
-		var4.setOffset(var40);
-		var5.setOffset(var41);
-		var6.setOffset(var33);
+		var2.setPosition(var11);
+		var3.setPosition(var39);
+		var4.setPosition(var40);
+		var5.setPosition(var41);
+		var6.setPosition(var33);
 		let var48 = 0;
 		let var49 = 0;
 		let var50 = 0;

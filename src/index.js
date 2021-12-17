@@ -8,8 +8,12 @@ var cache = new RSCache("./", (x) => { console.log(x) });
 
 cache.onload.then(() => {
   console.log(cache);
-  console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
-  cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
+  //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
+  //cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 11012, false).then(x => {
+    //console.log(x);
+    //cache.getFile(IndexType.MODELS.id, x.def.models[0], 0, false).then(y => console.log(y))
+  });
 });
 */
 /*
