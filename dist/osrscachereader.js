@@ -5574,220 +5574,185 @@ class KitLoader {
 }
 ;// CONCATENATED MODULE: ./src/cacheReader/loaders/ObjectLoader.js
 class ObjectDefinition {
-	constructor(){
+	constructor() {
 		this.shadow = true;
 	}
 }
 class ObjectLoader {
-	
+
 	load(bytes, id) {
+		//console.log(id, bytes.length);
 		let def = new ObjectDefinition();
-        def.id = id;
+		def.id = id;
 		let dataview = new DataView(bytes.buffer);
 		do {
 			var opcode = dataview.readUint8();
 			this.handleOpcode(def, opcode, dataview);
-		} while(opcode != 0);
-		
+		} while (opcode != 0);
+
 		return def;
 	}
-	
-	handleOpcode(def, opcode, dataview){
-		if (opcode == 1)
-		{
+
+	handleOpcode(def, opcode, dataview) {
+		//console.log(opcode);
+		if (opcode == 0)
+			return;
+
+		if (opcode == 1) {
 			var length = dataview.readUint8();
-			if (length > 0)
-			{
+			if (length > 0) {
 				def.objectTypes = [];
 				def.objectModels = [];
 
-				for (var index = 0; index < length; ++index)
-				{
+				for (var index = 0; index < length; ++index) {
 					def.objectModels.push(dataview.readUint16());
 					def.objectTypes.push(dataview.readUint8());
 				}
 
 			}
 		}
-		else if (opcode == 2)
-		{
+		else if (opcode == 2) {
 			def.name = dataview.readString();
 		}
-		else if (opcode == 5)
-		{
+		else if (opcode == 5) {
 			var length = dataview.readUint8();
-			if (length > 0)
-			{
+			if (length > 0) {
 				def.objectTypes = null;
 				def.objectModels = [];
 
-				for (var index = 0; index < length; ++index)
-				{
+				for (var index = 0; index < length; ++index) {
 					def.objectModels.push(dataview.readUint16());
 				}
 			}
 		}
-		else if (opcode == 14)
-		{
+		else if (opcode == 14) {
 			def.sizeX = dataview.readUint8();
 		}
-		else if (opcode == 15)
-		{
+		else if (opcode == 15) {
 			def.sizeY = dataview.readUint8();
 		}
-		else if (opcode == 17)
-		{
+		else if (opcode == 17) {
 			def.interactType = 0;
 			def.blocksProjectile = false;
 		}
-		else if (opcode == 18)
-		{
+		else if (opcode == 18) {
 			def.blocksProjectile = false;
 		}
-		else if (opcode == 19)
-		{
+		else if (opcode == 19) {
 			def.wallOrDoor = dataview.readUint8();
 		}
-		else if (opcode == 21)
-		{
+		else if (opcode == 21) {
 			def.contouredGround = 0;
 		}
-		else if (opcode == 22)
-		{
+		else if (opcode == 22) {
 			def.setMergeNormals = true;
 		}
-		else if (opcode == 23)
-		{
+		else if (opcode == 23) {
 			def.aBool2111 = true;
 		}
-		else if (opcode == 24)
-		{
+		else if (opcode == 24) {
 			def.animationID = dataview.readUint16();
-			if (def.animationID == 0xFFFF)
-			{
+			if (def.animationID == 0xFFFF) {
 				def.animationID = -1;
 			}
 		}
-		else if (opcode == 27)
-		{
+		else if (opcode == 27) {
 			def.interactType = 1;
 		}
-		else if (opcode == 28)
-		{
+		else if (opcode == 28) {
 			def.decorDisplacement = dataview.readUint8();
 		}
-		else if (opcode == 29)
-		{
+		else if (opcode == 29) {
 			def.setAmbient = dataview.readInt8();
 		}
-		else if (opcode == 39)
-		{
+		else if (opcode == 39) {
 			def.contrast = dataview.readInt8() * 25;
 		}
 		//30-34, 40, 41 are similar to NPCLoader, maybe make parent class for similar opcode loaders
-		else if (opcode >= 30 && opcode < 35)
-		{
-			if(def.actions == undefined)
+		else if (opcode >= 30 && opcode < 35) {
+			if (def.actions == undefined)
 				def.actions = [];
-			
+
 			var readString = dataview.readString();
 			def.actions[opcode - 30] = readString;
-			
+
 			//might be better to leave it as hidden (?)
-			if (def.actions[opcode - 30] == "Hidden")
-			{
+			if (def.actions[opcode - 30] == "Hidden") {
 				def.actions[opcode - 30] = undefined;
 			}
-			
+
 		}
-		else if (opcode == 40)
-		{
+		else if (opcode == 40) {
 			var length = dataview.readUint8();
 			def.recolorToFind = [];
 			def.recolorToReplace = [];
 
-			for (index = 0; index < length; ++index)
-			{
+			for (index = 0; index < length; ++index) {
 				def.recolorToFind.push(dataview.readUint16());
 				def.recolorToReplace.push(dataview.readUint16());
 			}
 		}
-		else if (opcode == 41)
-		{
+		else if (opcode == 41) {
 			var length = dataview.readUint8();
 			def.retextureToFind = [];
 			def.textureToReplace = [];
 
-			for (index = 0; index < length; ++index)
-			{
+			for (index = 0; index < length; ++index) {
 				def.retextureToFind.push(dataview.readUint16());
 				def.textureToReplace.push(dataview.readUint16());
 			}
 		}
-		else if (opcode == 62)
-		{
+		else if (opcode == 61) {
+			def.category = dataview.readUint16();
+		}
+		else if (opcode == 62) {
 			def.rotated = true;
 		}
-		else if (opcode == 64)
-		{ //needs to be declared as true in constructor if toggling to false
+		else if (opcode == 64) { //needs to be declared as true in constructor if toggling to false
 			def.shadow = false;
 		}
-		else if (opcode == 65)
-		{
+		else if (opcode == 65) {
 			def.modelSizeX = dataview.readUint16();
 		}
-		else if (opcode == 66)
-		{
+		else if (opcode == 66) {
 			def.modelSizeHeight = dataview.readUint16();
 		}
-		else if (opcode == 67)
-		{
+		else if (opcode == 67) {
 			def.modelSizeY = dataview.readUint16();
 		}
-		else if (opcode == 68)
-		{
+		else if (opcode == 68) {
 			def.mapSceneID = dataview.readUint16();
 		}
-		else if (opcode == 69)
-		{
+		else if (opcode == 69) {
 			def.blockingMask = dataview.readInt8();
 		}
-		else if (opcode == 70)
-		{
+		else if (opcode == 70) {
 			def.offsetX = dataview.readUint16();
 		}
-		else if (opcode == 71)
-		{
+		else if (opcode == 71) {
 			def.offsetHeight = dataview.readUint16();
 		}
-		else if (opcode == 72)
-		{
+		else if (opcode == 72) {
 			def.offsetY = dataview.readUint16();
 		}
-		else if (opcode == 73)
-		{
+		else if (opcode == 73) {
 			def.obstructsGround = true;
 		}
-		else if (opcode == 74)
-		{
+		else if (opcode == 74) {
 			def.hollow = true;
 		}
-		else if (opcode == 75)
-		{
+		else if (opcode == 75) {
 			def.supportsItems = dataview.readUint8();
 		}
-		else if (opcode == 77)
-		{
+		else if (opcode == 77) {
 			var varpID = dataview.readUint16();
-			if (varpID == 0xFFFF)
-			{
+			if (varpID == 0xFFFF) {
 				varpID = -1;
 			}
 			def.varbitID = varpID;
 
 			var configId = dataview.readUint16();
-			if (configId == 0xFFFF)
-			{
+			if (configId == 0xFFFF) {
 				configId = -1;
 			}
 			def.varpID = configId;
@@ -5795,96 +5760,84 @@ class ObjectLoader {
 			var length = dataview.readUint8();
 			def.configChangeDest = [];
 
-			for (var index = 0; index <= length; ++index)
-			{
+			for (var index = 0; index <= length; ++index) {
 				def.configChangeDest.push(dataview.readUint16());
-				if (0xFFFF == def.configChangeDest[index])
-				{
+				if (0xFFFF == def.configChangeDest[index]) {
 					def.configChangeDest[index] = -1;
 				}
 			}
 			def.configChangeDest.push(-1);
 		}
-		else if (opcode == 78)
-		{
+		else if (opcode == 78) {
 			def.setAmbientSoundId = dataview.readUint16();
 			def.setAnInt2083 = dataview.readUint8();
 		}
-		else if (opcode == 79)
-		{
+		else if (opcode == 79) {
 			def.setAnInt2112 = dataview.readUint16();
 			def.setAnInt2113 = dataview.readUint16();
 			def.setAnInt2083 = dataview.readUint8();
 			var length = dataview.readUint8();
-			def.anIntArray2084 = [];
+			let anIntArray2084 = [];
 
-			for (var index = 0; index < length; ++index)
-			{
-				def.anIntArray2084.push(dataview.readUint16());
+			for (var index = 0; index < length; ++index) {
+				anIntArray2084.push(dataview.readUint16());
 			}
+
+			def.ambientSoundIds = anIntArray2084;
 		}
-		else if (opcode == 81)
-		{
+		else if (opcode == 81) {
 			def.setContouredGround = dataview.readUint8() * 256;
 		}
-		else if (opcode == 82)
-		{
+		else if (opcode == 82) {
 			def.setMapAreaId = dataview.readUint16();
 		}
-		else if (opcode == 92)
-		{
+		else if (opcode == 89) {
+			def.randomizeAnimStart = true;
+		}
+		else if (opcode == 92) {
 			var varpID = dataview.readUint16();
-			if (varpID == 0xFFFF)
-			{
+			if (varpID == 0xFFFF) {
 				varpID = -1;
 			}
 			def.varbitID = varpID;
 
 			var configId = dataview.readUint16();
-			if (configId == 0xFFFF)
-			{
+			if (configId == 0xFFFF) {
 				configId = -1;
 			}
 			def.varpID = configId;
 
 
 			var varValue = dataview.readUint16();
-			if (varValue == 0xFFFF)
-			{
+			if (varValue == 0xFFFF) {
 				varValue = -1;
 			}
 
 			var length = dataview.readUint8();
 			def.configChangeDest = [];
 
-			for (var index = 0; index <= length; ++index)
-			{
+			for (var index = 0; index <= length; ++index) {
 				def.configChangeDest.push(dataview.readUint16());
-				if (0xFFFF == def.configChangeDest[index])
-				{
+				if (0xFFFF == def.configChangeDest[index]) {
 					def.configChangeDest[index] = -1;
 				}
 			}
 			def.configChangeDest.push(varValue);
 		}
-		else if (opcode == 249)
-		{
+		else if (opcode == 249) {
 			var length = dataview.readUint8();
 			def.params = {};
 
-			for (var i = 0; i < length; i++)
-			{
+			for (var i = 0; i < length; i++) {
 				var isString = dataview.readUint8() == 1;
-				
+
 				var key = dataview.readInt24();
 				var value;
 
-				if (isString)
-				{
+				if (isString) {
 					value = dataview.readString();
 				}
-				else
-				{
+				else {
 					value = dataview.readInt32()
 				}
 
@@ -6202,6 +6155,9 @@ class ItemLoader {
                 def.yOffset2d -= 65536;
             }
         }
+        else if (opcode == 9) {
+            def.unknown1 = dataview.readString();
+        }
         else if (opcode == 11) {
             def.stackable = 1;
         }
@@ -6226,8 +6182,8 @@ class ItemLoader {
             def.femaleModel1 = dataview.readUint16();
         }
         else if (opcode >= 30 && opcode < 35) {
-            if(def.options == undefined)
-				def.options = [];
+            if (def.options == undefined)
+                def.options = [];
 
             def.options[opcode - 30] = dataview.readString();
             if (def.options[opcode - 30] == "Hidden") {
@@ -6235,8 +6191,8 @@ class ItemLoader {
             }
         }
         else if (opcode >= 35 && opcode < 40) {
-            if(def.interfaceOptions == undefined)
-				def.interfaceOptions = [];
+            if (def.interfaceOptions == undefined)
+                def.interfaceOptions = [];
             def.interfaceOptions[opcode - 35] = dataview.readString();
         }
         else if (opcode == 40) {
@@ -6284,6 +6240,9 @@ class ItemLoader {
         }
         else if (opcode == 93) {
             def.femaleHeadModel2 = dataview.readUint16();
+        }
+        else if (opcode == 94) {
+            def.category = dataview.readUint16();
         }
         else if (opcode == 95) {
             def.zan2d = dataview.readUint16();
@@ -6747,7 +6706,7 @@ class CacheRequester {
 }
 ;// CONCATENATED MODULE: ./src/cacheReader/cacheTypes/Archive.js
 class ArchiveData {
-	constructor() { 
+	constructor() {
 		this.id = 0;
 		this.name = "";
 		this.hash = 0;
@@ -6757,33 +6716,39 @@ class ArchiveData {
 		this.filesLoaded = false;
 		this.files = [];
 	}
-	
+
 	loadFiles(data) {
-		if(this.files.length == 1){
+		if (this.files.length == 1) {
 			this.files[0].content = data;
 			return;
 		}
 		let dataview = new DataView(data.buffer);
 		let chunks = dataview.getUint8(data.length - 1);
-		
+
 		let chunkSizes = [];
-		for(let i=0;i<this.files.length;i++){
+		for (let i = 0; i < this.files.length; i++) {
 			chunkSizes[i] = [];
 		}
 		let fileSizes = Array(this.files.length).fill(0);
-		
+
 		let streamPosition = data.length - 1 - chunks * this.files.length * 4;
 
 		//the following two loops can be combined in to one
-		for(let i=0;i<chunks;i++){
+		for (let i = 0; i < chunks; i++) {
 			let chunkSize = 0;
-			for(let id = 0; id < this.files.length; id++){
-				let delta = dataview.getInt32(streamPosition);
+			for (let id = 0; id < this.files.length; id++) {
+				if (streamPosition == 1445124){
+					if (data[streamPosition] == 0) data[streamPosition] = 255;
+				}
+				//console.log(data[streamPosition], data[streamPosition + 1], data[streamPosition + 2], data[streamPosition + 3]);
 				
+				let delta  = dataview.getInt32(streamPosition);
 				chunkSize += delta;
 				streamPosition += 4;
 				chunkSizes[id][i] = chunkSize;
 				fileSizes[id] += chunkSize;
+				//if (id > 32915 && id < 32950)
+					//console.log(id, delta, streamPosition);
 			}
 		}
 		//console.log(data);
@@ -6791,38 +6756,38 @@ class ArchiveData {
 		//console.log(fileSizes);
 
 		let fileOffsets = Array(this.files.length).fill(0);
-		
+
 		streamPosition = 0;
-		
-		for(let i=0;i<chunks; i++){
-			for(let id=0;id<this.files.length;id++){
+
+		for (let i = 0; i < chunks; i++) {
+			for (let id = 0; id < this.files.length; id++) {
 				let chunkSize = chunkSizes[id][i];
 				//console.log(chunkSize);
 				//System.out.println(fileOffsets[id] + " " + chunkSize + " " + stream.getOffset() + " " + stream.remaining());
 				//console.log(id + " " + fileOffsets[id] + " " + chunkSize);
 
 				//dez - can be done in a better way
-				var newData = new Uint8Array(dataview.buffer.slice(streamPosition,streamPosition+chunkSize));
+				var newData = new Uint8Array(dataview.buffer.slice(streamPosition, streamPosition + chunkSize));
 				var contentUpdate = new Uint8Array(this.files[id].content.length + newData.length);
 				contentUpdate.set(this.files[id].content);
 				contentUpdate.set(newData, this.files[id].content.length);
 
 				this.files[id].content = contentUpdate;
 				fileOffsets[id] += chunkSize;
-				
-				if(id == 0){
+
+				if (id == 0) {
 					//console.log(this.files[id].content);
 					//console.log(newData);
 					//console.log(streamPosition);
 				}
 				streamPosition += newData.byteLength;
-					//console.log(fileOffsets[id]);
+				//console.log(fileOffsets[id]);
 				//console.log(this.files[id].content);
 			}
 		}
 		//console.log(fileOffsets);
 		//console.log(this.files[0]);
-		
+
 	}
 }
 ;// CONCATENATED MODULE: ./src/cacheReader/cacheTypes/File.js
@@ -7021,7 +6986,7 @@ class RSCache {
 					//console.log(x);
 					//console.log(index, archiveId);
 					archive.loadFiles(x.decompressedData);
-					//console.log(archive);
+					//console.log(archive.files);
 					new CacheDefinitionLoader(x.index.id, x.archiveId, archive.files).load(this).then(() => {
 						archive.filesLoaded = true;
 						resolve(archive.files)
@@ -7144,9 +7109,9 @@ cache.onload.then(() => {
   console.log(cache);
   //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
   //cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 11012, false).then(x => {
-    //console.log(x);
-    //cache.getFile(IndexType.MODELS.id, x.def.models[0], 0, false).then(y => console.log(y))
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 42852, false).then(x => {
+    console.log(x);
+    cache.getFile(IndexType.MODELS.id, x.def.objectModels[0], 0, false).then(y => console.log(y))
   });
 });
 */
