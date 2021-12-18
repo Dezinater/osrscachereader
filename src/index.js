@@ -10,9 +10,9 @@ cache.onload.then(() => {
   console.log(cache);
   //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
   //cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 11012, false).then(x => {
-    //console.log(x);
-    //cache.getFile(IndexType.MODELS.id, x.def.models[0], 0, false).then(y => console.log(y))
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 42852, false).then(x => {
+    console.log(x);
+    cache.getFile(IndexType.MODELS.id, x.def.objectModels[0], 0, false).then(y => console.log(y))
   });
 });
 */

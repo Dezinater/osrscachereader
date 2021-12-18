@@ -43,6 +43,9 @@ export default class ItemLoader {
                 def.yOffset2d -= 65536;
             }
         }
+        else if (opcode == 9) {
+            def.unknown1 = dataview.readString();
+        }
         else if (opcode == 11) {
             def.stackable = 1;
         }
@@ -67,8 +70,8 @@ export default class ItemLoader {
             def.femaleModel1 = dataview.readUint16();
         }
         else if (opcode >= 30 && opcode < 35) {
-            if(def.options == undefined)
-				def.options = [];
+            if (def.options == undefined)
+                def.options = [];
 
             def.options[opcode - 30] = dataview.readString();
             if (def.options[opcode - 30] == "Hidden") {
@@ -76,8 +79,8 @@ export default class ItemLoader {
             }
         }
         else if (opcode >= 35 && opcode < 40) {
-            if(def.interfaceOptions == undefined)
-				def.interfaceOptions = [];
+            if (def.interfaceOptions == undefined)
+                def.interfaceOptions = [];
             def.interfaceOptions[opcode - 35] = dataview.readString();
         }
         else if (opcode == 40) {
@@ -125,6 +128,9 @@ export default class ItemLoader {
         }
         else if (opcode == 93) {
             def.femaleHeadModel2 = dataview.readUint16();
+        }
+        else if (opcode == 94) {
+            def.category = dataview.readUint16();
         }
         else if (opcode == 95) {
             def.zan2d = dataview.readUint16();
