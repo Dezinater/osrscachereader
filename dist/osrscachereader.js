@@ -4075,7 +4075,7 @@ class ModelLoader {
 
 			if (def.textureCoords != null && def.faceTextures[var51] != -1)
 			{
-				def.textureCoords[var51] = (byte) (var8.readUint16() - 1);
+				def.textureCoords[var51] = (var8.readUint16() - 1);
 			}
 		}
 
@@ -4375,7 +4375,7 @@ class ModelLoader {
 
 				if ((var41 & 2) == 2)
 				{
-					def.textureCoords[var40] = (byte) (var41 >> 2);
+					def.textureCoords[var40] = (var41 >> 2);
 					def.faceTextures[var40] = def.faceColors[var40];
 					def.faceColors[var40] = 127;
 					if (def.faceTextures[var40] != -1)
