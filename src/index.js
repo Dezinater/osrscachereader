@@ -10,9 +10,11 @@ cache.onload.then(() => {
   console.log(cache);
   //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
   //cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 42852, false).then(x => {
+  //42852
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 7986, false).then(x => {
     console.log(x);
-    cache.getFile(IndexType.MODELS.id, x.def.objectModels[0], 0, false).then(y => console.log(y))
+    for (let i = 0; i < x.def.models.length; i++)
+      cache.getFile(IndexType.MODELS.id, x.def.models[i], 0, false).then(y => console.log(y))
   });
 });
 */
@@ -28,7 +30,7 @@ console.log("loading");
 cache.onload.then(() => {
   console.log(cache);
   console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
-  
+
 
   /*
   cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(zulrah => {
@@ -51,22 +53,22 @@ cache.onload.then(() => {
 
 
   //cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(entityInfo => {
-  /*
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 7053).then(entityInfo2 => {
-    //console.log(entityInfo.def);
-    console.log(entityInfo2.def);
-    var shiftedId = (entityInfo2.def.frameIDs[0] >> 16);
-    console.log(shiftedId);
-    cache.getAllFiles(IndexType.FRAMES.id, shiftedId).then(frameInfo => {
-      console.log(frameInfo);
-    });
-
-    var t1 = performance.now()
-    console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+/*
+cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 7053).then(entityInfo2 => {
+  //console.log(entityInfo.def);
+  console.log(entityInfo2.def);
+  var shiftedId = (entityInfo2.def.frameIDs[0] >> 16);
+  console.log(shiftedId);
+  cache.getAllFiles(IndexType.FRAMES.id, shiftedId).then(frameInfo => {
+    console.log(frameInfo);
   });
-  
-  //});
-  
+
+  var t1 = performance.now()
+  console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
+});
+ 
+//});
+ 
 });
 
 */

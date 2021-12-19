@@ -152,7 +152,7 @@ export default class ModelLoader {
 		def.faceVertexIndices3 = [];
 		if (var17 == 1)
 		{
-			def.packedVertexGroups = [];
+			def.vertexSkins = [];
 		}
 
 		if (var12 == 1)
@@ -171,12 +171,12 @@ export default class ModelLoader {
 
 		if (var14 == 1)
 		{
-			def.faceTransparencies = [];
+			def.faceAlphas = [];
 		}
 
 		if (var15 == 1)
 		{
-			def.packedTransparencyVertexGroups = [];
+			def.faceSkins = [];
 		}
 
 		if (var16 == 1)
@@ -248,7 +248,7 @@ export default class ModelLoader {
 			var50 = def.vertexPositionsZ[var51];
 			if (var17 == 1)
 			{
-				def.packedVertexGroups[var51] = var6.readUint8();
+				def.vertexSkins[var51] = var6.readUint8();
 			}
 		}
 
@@ -291,12 +291,12 @@ export default class ModelLoader {
 
 			if (var14 == 1)
 			{
-				def.faceTransparencies[var51] = var5.readInt8();
+				def.faceAlphas[var51] = var5.readInt8();
 			}
 
 			if (var15 == 1)
 			{
-				def.packedTransparencyVertexGroups[var51] = var6.readUint8();
+				def.faceSkins[var51] = var6.readUint8();
 			}
 
 			if (var16 == 1)
@@ -479,7 +479,7 @@ export default class ModelLoader {
 
 		if (var16 == 1)
 		{
-			def.packedVertexGroups = [];
+			def.vertexSkins = [];
 		}
 
 		if (var12 == 1)
@@ -500,12 +500,12 @@ export default class ModelLoader {
 
 		if (var14 == 1)
 		{
-			def.faceTransparencies = [];
+			def.faceAlphas = [];
 		}
 
 		if (var15 == 1)
 		{
-			def.packedTransparencyVertexGroups = [];
+			def.faceSkins = [];
 		}
 
 		if (var17 == 1)
@@ -562,7 +562,7 @@ export default class ModelLoader {
 			var39 = def.vertexPositionsZ[var40];
 			if (var16 == 1)
 			{
-				def.packedVertexGroups[var40] = var8.readUint8();
+				def.vertexSkins[var40] = var8.readUint8();
 			}
 		}
 
@@ -628,12 +628,12 @@ export default class ModelLoader {
 
 			if (var14 == 1)
 			{
-				def.faceTransparencies[var40] = var7.readInt8();
+				def.faceAlphas[var40] = var7.readInt8();
 			}
 
 			if (var15 == 1)
 			{
-				def.packedTransparencyVertexGroups[var40] = var8.readUint8();
+				def.faceSkins[var40] = var8.readUint8();
 			}
 		}
 
