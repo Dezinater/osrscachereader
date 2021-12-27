@@ -6883,7 +6883,7 @@ class CacheRequester {
 		if (index.id == cacheTypes_IndexType.MAPS.id && this.xteas != undefined) {
 			if (this.xteas[archiveId] != undefined) //if its not a mapdef then it will have a key
 				key = this.xteas[archiveId].key;
-			console.log(key);
+			//console.log(key);
 		}
 
 		return Promise.resolve().then(() => {
@@ -6999,7 +6999,7 @@ class CacheRequester {
 		let out = [];
 
 		let numBlocks = Math.floor(len / 8);
-		console.log(numBlocks);
+		//console.log(numBlocks);
 		for (let block = 0; block < numBlocks; ++block) {
 			let v0 = dataview.readInt32();
 			let v1 = dataview.readInt32();
@@ -7299,7 +7299,7 @@ class RSCache {
 					//console.log(x);
 					archive = index.archives[x.archiveId];
 
-					console.log(archive);
+					//console.log(archive);
 					//console.log(x);
 					//console.log(archive.filesLoaded);
 					if (archive.filesLoaded) {
