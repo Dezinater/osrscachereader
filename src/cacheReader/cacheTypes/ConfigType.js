@@ -3,11 +3,13 @@ import ObjectLoader from '../loaders/ObjectLoader.js'
 import NpcLoader from '../loaders/NpcLoader.js'
 import ItemLoader from '../loaders/ItemLoader.js'
 import SequenceLoader from '../loaders/SequenceLoader.js'
+import OverlayLoader from '../loaders/OverlayLoader.js'
+import UnderlayLoader from '../loaders/UnderlayLoader.js'
 
 const ConfigType = { 
-    UNDERLAY: {id: 1, loader: undefined},
+    UNDERLAY: {id: 1, loader: UnderlayLoader},
 	IDENTKIT: {id: 3, loader: KitLoader},
-	OVERLAY: {id: 4, loader: undefined},
+	OVERLAY: {id: 4, loader: OverlayLoader},
 	INV: {id: 5, loader: undefined},
 	OBJECT: {id: 6, loader: ObjectLoader},
 	ENUM: {id: 8, loader: undefined},

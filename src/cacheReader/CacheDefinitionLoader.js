@@ -10,8 +10,15 @@ export default class CacheDefinitionLoader {
 
 	load(rscache) {
 		return new Promise((resolve, reject) => {
-			var loader;
+			/*
+			if (this.indexType == IndexType.MAPS) {
+				this.loadMaps();
+				resolve();
+				return;
+			}
+			*/
 
+			var loader;
 			if (this.indexType == IndexType.CONFIGS) {
 				loader = new (ConfigType.valueOf(this.archiveId).loader)();
 			} else {
@@ -31,7 +38,7 @@ export default class CacheDefinitionLoader {
 					if (this.files.length > 1) {
 						this.files[loadedDef.id].def = loadedDef;
 						this.files[loadedDef.id].content = undefined;
-					}else{
+					} else {
 						this.files[0].def = loadedDef;
 						this.files[0].content = undefined;
 					}
@@ -42,5 +49,49 @@ export default class CacheDefinitionLoader {
 			Promise.all(promises).then(() => resolve());
 			//resolve();
 		});
+	}
+
+	loadMaps() {
+		/*
+		let MAX_REGIONS = 32768;
+		for (let i = 0; i < MAX_REGIONS; ++i)
+		{
+			let x = i >> 8;
+			let y = i & 0xFF;
+
+			Archive map = index.findArchiveByName("m" + x + "_" + y);
+			Archive land = index.findArchiveByName("l" + x + "_" + y);
+
+			assert (map == null) == (land == null);
+
+			if (map == null || land == null)
+			{
+				continue;
+			}
+
+			byte[] data = map.decompress(storage.loadArchive(map));
+			MapDefinition mapDef = new MapLoader().load(x, y, data);
+			LocationsDefinition locDef = null;
+
+			int[] keys = keyManager.getKeys(i);
+			if (keys != null)
+			{
+				try
+				{
+					data = land.decompress(storage.loadArchive(land), keys);
+				}
+				catch (IOException ex)
+				{
+					continue;
+				}
+
+				locDef = new LocationsLoader().load(x, y, data);
+			}
+
+			mapMap.put(mapDef, locDef);
+		}
+
+		return mapMap;
+		*/
 	}
 }

@@ -1,5 +1,6 @@
 import FramemapLoader from '../loaders/FramemapLoader.js';
 import FramesLoader from '../loaders/FramesLoader.js';
+import MapLoader from '../loaders/MapLoader.js';
 import ModelLoader from '../loaders/ModelLoader.js'
 
 const IndexType = { 
@@ -8,7 +9,7 @@ const IndexType = {
     CONFIGS:{id: 2, loader: undefined},
     INTERFACES:{id: 3, loader: undefined},
     SOUNDEFFECTS:{id: 4, loader: undefined},
-    MAPS:{id: 5, loader: undefined},
+    MAPS:{id: 5, loader: MapLoader},
     TRACK1:{id: 6, loader: undefined},
     MODELS:{id: 7, loader: ModelLoader},
     SPRITES:{id: 8, loader: undefined},
