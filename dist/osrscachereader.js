@@ -7271,59 +7271,95 @@ class RSCache {
 		this.progressFunc(amount);
 	}
 
+
+
 	async getAllFiles(indexId, archiveId, threaded = false) {
+		let index = this.indicies[indexId];
+		if (index == undefined) {
+			throw "Index " + indexId + " does not exist";
+		}
 
-		return new Promise((resolve, reject) => {
-			let index = this.indicies[indexId];
-			if (index == undefined) {
-				throw "Index " + indexId + " does not exist";
-			}
+		let archive = index.archives[archiveId];
 
-			let archive = index.archives[archiveId];
+		if (archive == undefined) {
+			throw "Archive " + archiveId + " does not exist in Index " + indexId;
+		}
 
-			if (archive == undefined) {
-				throw "Archive " + archiveId + " does not exist in Index " + indexId;
-			}
-			//files should only be loaded when they are required. need a better memory management system or something in the future
-			//console.log(archive.filesLoaded);
-			if (archive.filesLoaded == false) {
-				//might be an error here because of index.indexSegments[archiveId]. might need to use archive keys instead of archiveId
-				let data;
-				//console.log(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
-				if (threaded)
-					data = this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
-				else
-					data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
+		if (archive.filesLoaded) {
+			return archive.files;
+		}
 
-				return data.then(x => {
-					//console.log(x);
-					archive = index.archives[x.archiveId];
+		if (this.loadRequests == undefined) this.loadRequests = [];
+		if (this.loadRequests[indexId] == undefined) this.loadRequests[indexId] = {};
+		if (this.loadRequests[indexId][archiveId] == undefined) this.loadRequests[indexId][archiveId] = [];
+		//this.loadRequests[indexId][archiveId]++;
 
-					//console.log(archive);
-					//console.log(x);
-					//console.log(archive.filesLoaded);
-					if (archive.filesLoaded) {
-						resolve(archive.files);
-						return;
-					}
-					//console.log(x);
-					//console.log(index, archiveId);
-					archive.loadFiles(x.decompressedData);
-					//console.log(archive.files);
-					new CacheDefinitionLoader(x.index.id, x.archiveId, archive.files).load(this).then(() => {
-						archive.filesLoaded = true;
-						resolve(archive.files)
-					});
-				});
 
-			} else {
-				resolve(archive.files);
-			}
-
-			//resolve(archive.files);
-
+		//console.log(this.loadRequests[indexId][archiveId]);
+		let newPromise = new Promise((resolve, reject) => {
+			this.loadRequests[indexId][archiveId].push(resolve);
 		});
 
+		//if theres already one processing then just add it to the stack
+		if (this.loadRequests[indexId][archiveId].length > 1) {
+			return newPromise;
+		}
+
+		let data;
+
+		if (threaded)
+			data = this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
+		else
+			data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
+
+		data.then(x => {
+			archive = index.archives[x.archiveId];
+
+			archive.loadFiles(x.decompressedData);
+			new CacheDefinitionLoader(x.index.id, x.archiveId, archive.files).load(this).then(() => {
+				archive.filesLoaded = true;
+				//console.log(this.loadRequests[indexId][archiveId]);
+				for(let i=0;i<this.loadRequests[indexId][archiveId].length;i++){
+					this.loadRequests[indexId][archiveId][i](archive.files);
+				}
+			});
+		});
+
+		return newPromise;
+		//console.log(indexId, archiveId, archive.filesLoaded)
+		/*
+				return new Promise((resolve, reject) => {
+					//files should only be loaded when they are required. need a better memory management system or something in the future
+					//console.log(archive.filesLoaded);
+					if (archive.filesLoaded == false) {
+						let data;
+		
+						if (threaded)
+							data = this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
+						else
+							data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
+		
+						return data.then(x => {
+							archive = index.archives[x.archiveId];
+		
+							if (archive.filesLoaded) {
+								resolve(archive.files);
+								return;
+							}
+							archive.loadFiles(x.decompressedData);
+							new CacheDefinitionLoader(x.index.id, x.archiveId, archive.files).load(this).then(() => {
+								archive.filesLoaded = true;
+								resolve(archive.files)
+							});
+						});
+					} else {
+						resolve(archive.files);
+					}
+		
+					//resolve(archive.files);
+		
+				});
+		*/
 	}
 
 	//some archives only contain 1 file so a fileId is only needed in some cases
@@ -7352,7 +7388,7 @@ class RSCache {
 				for (var i = 0; i < xteas.length; i++) {
 					this.xteas[xteas[i].group] = xteas[i];
 				}
-				
+
 			});
 		}
 
@@ -7444,6 +7480,13 @@ cache.onload.then(() => {
   //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
   //cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
   //42852
+  for(let i=0;i<10;i++){
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 1300+i).then(object => {
+    console.log(object);
+  });
+
+}
+  
   cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => {console.log(x)});
   cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => {console.log(x)});
   cache.getFile(IndexType.MAPS.id, 4).then(x => {
@@ -7451,6 +7494,7 @@ cache.onload.then(() => {
     //for (let i = 0; i < x.def.models.length; i++)
     //  cache.getFile(IndexType.MODELS.id, x.def.models[i], 0, false).then(y => console.log(y))
   });
+  
 });
 */
 /*
