@@ -301,7 +301,7 @@ export default class ModelLoader {
 
 			if (var16 == 1)
 			{
-				def.faceTextures[var51] = (short) (var7.readUint16() - 1);
+				def.faceTextures[var51] = (var7.readUint16() - 1);
 			}
 
 			if (def.textureCoords != null && def.faceTextures[var51] != -1)

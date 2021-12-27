@@ -3766,6 +3766,130 @@ class FramesLoader {
 
     }
 }
+;// CONCATENATED MODULE: ./src/cacheReader/loaders/MapLoader.js
+class MapDefinition {
+
+}
+class LocationDefinition {
+
+}
+class MapLoader {
+
+    /*
+    for(let i=0;i<32768;i++){
+        let x = i >> 8;
+        let y = i & 0xFF;
+        if(hash("l"+x+"_"+y) == hashVal){
+            console.log("l"+x+"_"+y);
+            break;
+        }
+        if(hash("m"+x+"_"+y) == hashVal){
+            console.log("m"+x+"_"+y);
+            break;
+        }
+    }
+    */
+    hash(str) {
+        let h = 0;
+        for (let i = 0; i < str.length; i++) {
+            h = h * 31 + str.charCodeAt(i);
+        }
+        return (new Int32Array([h]))[0];
+    }
+
+
+
+    load(bytes, id, rscache) {
+        let x, y;
+        let mapInfo = rscache.xteas[id];
+
+        if (mapInfo != undefined) {
+            x = mapInfo.mapsquare >> 8;
+            y = mapInfo.mapsquare & 0xFF;
+            return this.loadLocationDef(bytes, id, x, y);
+        } else {
+            let hashVal = rscache.indicies[5].archives[id].nameHash;
+            console.log(rscache.indicies[5]);
+            console.log(hashVal);
+            for (let i = 0; i < 32768; i++) {
+                let x = i >> 8;
+                let y = i & 0xFF;
+                if (this.hash("l" + x + "_" + y) == hashVal) {
+                    //not much we can do here without xteas
+                    return new Location();
+                }
+                if (this.hash("m" + x + "_" + y) == hashVal) {
+                    console.log("m" + x + "_" + y);
+                    return this.loadMapDef(bytes, id, x, y);
+                }
+            }
+        }
+
+        console.log(bytes, rscache.xteas);
+        console.log(rscache.xteas[id]);
+        console.log(id);
+        console.log(x, y);
+    }
+    loadLocationDef(bytes, id, x, y) {
+        let def = new LocationDefinition();
+        def.id = id;
+        def.regionX = x;
+        def.regionY = y;
+        let dataview = new DataView(bytes.buffer);
+
+        return def;
+    }
+
+    loadMapDef(bytes, id, x, y) {
+        let X = 64;
+        let Y = 64;
+        let Z = 4;
+        let def = new MapDefinition();
+        def.id = id;
+        def.regionX = x;
+        def.regionY = y;
+        let dataview = new DataView(bytes.buffer);
+
+        def.tiles = [];
+
+        for (let z = 0; z < Z; z++) {
+            def.tiles[z] = [];
+            for (let x = 0; x < X; x++) {
+                def.tiles[z][x] = [];
+                for (let y = 0; y < Y; y++) {
+                    def.tiles[z][x][y] = {};
+                    let tile = def.tiles[z][x][y];
+                    while (true) {
+                        let attribute = dataview.readUint8();
+                        if (attribute == 0) {
+                            break;
+                        }
+                        else if (attribute == 1) {
+                            tile.height = dataview.readUint8();
+                            break;
+                        }
+                        else if (attribute <= 49) {
+                            tile.attrOpcode = attribute;
+                            tile.overlayId = dataview.readInt8();
+                            tile.overlayPath = ((attribute - 2) / 4);
+                            tile.overlayRotation = (attribute - 2 & 3);
+                        }
+                        else if (attribute <= 81) {
+                            tile.settings = (attribute - 49);
+                        }
+                        else {
+                            tile.underlayId = (attribute - 81);
+                        }
+                    }
+                    
+                }
+            }
+
+            return def;
+        }
+    }
+
+}
 ;// CONCATENATED MODULE: ./src/cacheReader/loaders/ModelLoader.js
 class ModelDefinition {
 
@@ -4070,7 +4194,7 @@ class ModelLoader {
 
 			if (var16 == 1)
 			{
-				def.faceTextures[var51] = (short) (var7.readUint16() - 1);
+				def.faceTextures[var51] = (var7.readUint16() - 1);
 			}
 
 			if (def.textureCoords != null && def.faceTextures[var51] != -1)
@@ -5467,13 +5591,14 @@ class ModelLoader {
 
 
 
+
 const IndexType = { 
     FRAMES:{id: 0, loader: FramesLoader},
     FRAMEMAPS:{id: 1, loader: FramemapLoader},
     CONFIGS:{id: 2, loader: undefined},
     INTERFACES:{id: 3, loader: undefined},
     SOUNDEFFECTS:{id: 4, loader: undefined},
-    MAPS:{id: 5, loader: undefined},
+    MAPS:{id: 5, loader: MapLoader},
     TRACK1:{id: 6, loader: undefined},
     MODELS:{id: 7, loader: ModelLoader},
     SPRITES:{id: 8, loader: undefined},
@@ -6433,6 +6558,71 @@ class SequenceLoader {
           
 	}
 }
+;// CONCATENATED MODULE: ./src/cacheReader/loaders/OverlayLoader.js
+class OverlayDefinition {
+
+}
+class OverlayLoader {
+
+    load(bytes, id) {
+        let def = new OverlayDefinition();
+        def.id = id;
+        let dataview = new DataView(bytes.buffer);
+        do {
+            var opcode = dataview.readUint8();
+            this.handleOpcode(def, opcode, dataview);
+        } while (opcode != 0);
+
+        return def;
+    }
+
+    handleOpcode(def, opcode, dataview) {
+        if (opcode == 0) {
+            return;
+        }
+
+        if (opcode == 1) {
+            def.color = dataview.readInt24();
+        }
+        else if (opcode == 2) {
+            def.texture = dataview.readUint8();
+        }
+        else if (opcode == 5) {
+            def.hideUnderlay = false;
+        }
+        else if (opcode == 7) {
+            def.secondaryColor = dataview.readInt24();
+        }
+    }
+}
+;// CONCATENATED MODULE: ./src/cacheReader/loaders/UnderlayLoader.js
+class UnderlayDefinition {
+
+}
+class UnderlayLoader {
+
+    load(bytes, id) {
+        let def = new UnderlayDefinition();
+        def.id = id;
+        let dataview = new DataView(bytes.buffer);
+        do {
+            var opcode = dataview.readUint8();
+            this.handleOpcode(def, opcode, dataview);
+        } while (opcode != 0);
+
+        return def;
+    }
+
+    handleOpcode(def, opcode, dataview) {
+        if (opcode == 0) {
+            return;
+        }
+        if (opcode == 1)
+        {
+            def.color = dataview.readInt24();
+        }
+    }
+}
 ;// CONCATENATED MODULE: ./src/cacheReader/cacheTypes/ConfigType.js
 
 
@@ -6440,10 +6630,12 @@ class SequenceLoader {
 
 
 
+
+
 const ConfigType = { 
-    UNDERLAY: {id: 1, loader: undefined},
+    UNDERLAY: {id: 1, loader: UnderlayLoader},
 	IDENTKIT: {id: 3, loader: KitLoader},
-	OVERLAY: {id: 4, loader: undefined},
+	OVERLAY: {id: 4, loader: OverlayLoader},
 	INV: {id: 5, loader: undefined},
 	OBJECT: {id: 6, loader: ObjectLoader},
 	ENUM: {id: 8, loader: undefined},
@@ -6487,8 +6679,15 @@ class CacheDefinitionLoader {
 
 	load(rscache) {
 		return new Promise((resolve, reject) => {
-			var loader;
+			/*
+			if (this.indexType == IndexType.MAPS) {
+				this.loadMaps();
+				resolve();
+				return;
+			}
+			*/
 
+			var loader;
 			if (this.indexType == cacheTypes_IndexType.CONFIGS) {
 				loader = new (cacheTypes_ConfigType.valueOf(this.archiveId).loader)();
 			} else {
@@ -6508,7 +6707,7 @@ class CacheDefinitionLoader {
 					if (this.files.length > 1) {
 						this.files[loadedDef.id].def = loadedDef;
 						this.files[loadedDef.id].content = undefined;
-					}else{
+					} else {
 						this.files[0].def = loadedDef;
 						this.files[0].content = undefined;
 					}
@@ -6519,6 +6718,50 @@ class CacheDefinitionLoader {
 			Promise.all(promises).then(() => resolve());
 			//resolve();
 		});
+	}
+
+	loadMaps() {
+		/*
+		let MAX_REGIONS = 32768;
+		for (let i = 0; i < MAX_REGIONS; ++i)
+		{
+			let x = i >> 8;
+			let y = i & 0xFF;
+
+			Archive map = index.findArchiveByName("m" + x + "_" + y);
+			Archive land = index.findArchiveByName("l" + x + "_" + y);
+
+			assert (map == null) == (land == null);
+
+			if (map == null || land == null)
+			{
+				continue;
+			}
+
+			byte[] data = map.decompress(storage.loadArchive(map));
+			MapDefinition mapDef = new MapLoader().load(x, y, data);
+			LocationsDefinition locDef = null;
+
+			int[] keys = keyManager.getKeys(i);
+			if (keys != null)
+			{
+				try
+				{
+					data = land.decompress(storage.loadArchive(land), keys);
+				}
+				catch (IOException ex)
+				{
+					continue;
+				}
+
+				locDef = new LocationsLoader().load(x, y, data);
+			}
+
+			mapMap.put(mapDef, locDef);
+		}
+
+		return mapMap;
+		*/
 	}
 }
 // EXTERNAL MODULE: ./node_modules/bz2/index.js
@@ -6536,6 +6779,8 @@ function Worker_fn() {
 
 ;// CONCATENATED MODULE: ./src/cacheReader/CacheRequester.js
 var gzip = __webpack_require__(606);
+
+
 
 
 
@@ -6585,6 +6830,10 @@ class CacheRequester {
 
 	}
 
+	setXteas(xteas) {
+		this.xteas = xteas;
+	}
+
 	readDataThreaded(index, size, segment, archiveId = 0) {
 		var promiseResolve;
 		var readPromise = new Promise((resolve, reject) => { promiseResolve = resolve; });
@@ -6623,13 +6872,19 @@ class CacheRequester {
 		return readPromise;
 	}
 
-	readData(index, size, segment, archiveId = 0) {
+	readData(index, size, segment, archiveId = 0, keys) {
 		/*
 		this.worker.onmessage = function(event) {
 			//event.data.decompressedData
 			console.log(event);
 		};
 		*/
+		let key;
+		if (index.id == cacheTypes_IndexType.MAPS.id && this.xteas != undefined) {
+			if (this.xteas[archiveId] != undefined) //if its not a mapdef then it will have a key
+				key = this.xteas[archiveId].key;
+			console.log(key);
+		}
 
 		return Promise.resolve().then(() => {
 			var compressedData = new Uint8Array(size);
@@ -6641,13 +6896,15 @@ class CacheRequester {
 
 			var data;
 			var decompressedData;
-
+			//console.log(compressionOpcode);
 			if (compressionOpcode == 0) { //none
 				data = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
+				data = this.decrypt(data, compressedLength, key);
 				decompressedData = data;
 				index.revision = dataview.getUint16(data.buffer.byteLength)
 			} else if (compressionOpcode == 1) { //bz2
 				data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
+				this.decrypt(data, compressedLength, key);
 				var header = "BZh1";
 				var bzData = new Uint8Array(4 + data.length);
 				bzData[0] = 'B'.charCodeAt(0);
@@ -6657,10 +6914,36 @@ class CacheRequester {
 				bzData.set(data, 4)
 				decompressedData = bz2.decompress(bzData);
 			} else if (compressionOpcode == 2) { //gzip
-				data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
-				//console.log(new Uint8Array(dataview.buffer)+"");
+				//console.log(compressedData);
+				//console.log(compressedLength);
+				//console.log(new Int8Array(dataview.buffer).slice(5, 9 + compressedLength));
+				let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
+				data = this.decrypt(unencryptedData, unencryptedData.length, key);
+				let leftOver = unencryptedData.slice(data.length);
 
-				decompressedData = new Uint8Array(gzip.unzip(data));
+				var mergedArray = new Uint8Array(data.length + leftOver.length);
+				mergedArray.set(data);
+				mergedArray.set(leftOver, data.length);
+
+				//console.log(data);
+				//console.log(leftOver);
+				//console.log(mergedArray);
+				//add the end of the compressed data onto the decrypted?
+				let decryptedDataview = new DataView(mergedArray.buffer);
+
+				data = new Uint8Array(decryptedDataview.buffer.slice(4))
+				//console.log(new Uint8Array(dataview.buffer)+"");
+				let unzipped;
+
+				try {
+					//console.log("unzipping");
+					unzipped = gzip.unzip(data);
+					//console.log("unzipped");
+				} catch {
+					console.log(data);
+				}
+
+				decompressedData = new Uint8Array(unzipped);
 
 			}
 
@@ -6696,12 +6979,50 @@ class CacheRequester {
 			data = new Uint8Array(dataview.buffer.slice(convertedPos + 8, convertedPos + 520));
 		else
 			data = new Uint8Array(dataview.buffer.slice(convertedPos + 8, convertedPos + 8 + (buffer.byteLength % 512)));
-		
+
 		buffer.set(data, dataview.getInt16(convertedPos + 2) * 512);
 
 		if (nextSector != 0)
 			this.readSector(buffer, nextSector);
+
 	}
+
+	decrypt(data, len, key) {
+		if (key == undefined) {
+			return data;
+		}
+
+		let GOLDEN_RATIO = 0x9E3779B9;
+		let ROUNDS = 32;
+
+		let dataview = new DataView(data.buffer);
+		let out = [];
+
+		let numBlocks = Math.floor(len / 8);
+		console.log(numBlocks);
+		for (let block = 0; block < numBlocks; ++block) {
+			let v0 = dataview.readInt32();
+			let v1 = dataview.readInt32();
+			let sum = GOLDEN_RATIO * ROUNDS;
+			for (let i = 0; i < ROUNDS; ++i) {
+				v1 -= (((v0 << 4) ^ (v0 >>> 5)) + v0) ^ (sum + key[(sum >>> 11) & 3]);
+				sum -= GOLDEN_RATIO;
+				v0 -= (((v1 << 4) ^ (v1 >>> 5)) + v1) ^ (sum + key[sum & 3]);
+			}
+			out.push((v0 >> 24) & 0xFF);
+			out.push((v0 >> 16) & 0xFF);
+			out.push((v0 >> 8) & 0xFF);
+			out.push(v0 & 0xFF);
+
+			out.push((v1 >> 24) & 0xFF);
+			out.push((v1 >> 16) & 0xFF);
+			out.push((v1 >> 8) & 0xFF);
+			out.push(v1 & 0xFF);
+		}
+
+		return new Uint8Array(out);
+	}
+
 
 }
 ;// CONCATENATED MODULE: ./src/cacheReader/cacheTypes/Archive.js
@@ -6939,9 +7260,11 @@ class RSCache {
 	constructor(cacheRootDir = "./", progressFunc = () => { }, nameRootDir = undefined) {
 		this.indicies = {};
 		this.progressFunc = progressFunc;
-
 		this.cacheRequester = new CacheRequester(cacheRootDir);
-		this.onload = this.loadCacheFiles(cacheRootDir, nameRootDir);
+
+		this.onload = this.loadCacheFiles(cacheRootDir, "./", nameRootDir).then(() => {
+			this.cacheRequester.setXteas(this.xteas);
+		});
 	}
 
 	progress(amount) {
@@ -6976,7 +7299,7 @@ class RSCache {
 					//console.log(x);
 					archive = index.archives[x.archiveId];
 
-					//console.log(archive);
+					console.log(archive);
 					//console.log(x);
 					//console.log(archive.filesLoaded);
 					if (archive.filesLoaded) {
@@ -7009,7 +7332,7 @@ class RSCache {
 		return this.getAllFiles(indexId, archiveId, threaded).then((x) => x[fileId]);
 	}
 
-	loadCacheFiles(rootDir, namesRootDir) {
+	loadCacheFiles(rootDir, xteasDir, namesRootDir) {
 
 		//this is basically relying on loading faster than the other stuff. probably should merge this with something
 		if (namesRootDir != undefined) {
@@ -7019,6 +7342,17 @@ class RSCache {
 					let tabSplit = splitNameData[i].split("\t");
 					HashConverter[tabSplit[3]] = tabSplit[4]; //3 = hash, 4 = name
 				}
+			});
+		}
+
+		if (xteasDir != undefined) {
+			getFile(xteasDir + "xteas.json").then((xteasData) => {
+				let xteas = JSON.parse(xteasData);
+				this.xteas = {};
+				for (var i = 0; i < xteas.length; i++) {
+					this.xteas[xteas[i].group] = xteas[i];
+				}
+				
 			});
 		}
 
@@ -7103,17 +7437,19 @@ class RSCache {
 
 
 /*
-var cache = new RSCache("./", (x) => { console.log(x) });
+var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 
 cache.onload.then(() => {
   console.log(cache);
   //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
   //cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
   //42852
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 7986, false).then(x => {
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => {console.log(x)});
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => {console.log(x)});
+  cache.getFile(IndexType.MAPS.id, 4).then(x => {
     console.log(x);
-    for (let i = 0; i < x.def.models.length; i++)
-      cache.getFile(IndexType.MODELS.id, x.def.models[i], 0, false).then(y => console.log(y))
+    //for (let i = 0; i < x.def.models.length; i++)
+    //  cache.getFile(IndexType.MODELS.id, x.def.models[i], 0, false).then(y => console.log(y))
   });
 });
 */
