@@ -2,6 +2,8 @@ var gzip = require('gzip-js');
 import * as Ajax from './helpers/ajax.js'
 import { decompress } from 'bz2';
 import Worker from "./Worker.worker.js";
+import IndexType from './cacheTypes/IndexType.js'
+import ConfigType from './cacheTypes/ConfigType.js'
 
 
 export default class CacheRequester {
@@ -48,6 +50,10 @@ export default class CacheRequester {
 
 	}
 
+	setXteas(xteas) {
+		this.xteas = xteas;
+	}
+
 	readDataThreaded(index, size, segment, archiveId = 0) {
 		var promiseResolve;
 		var readPromise = new Promise((resolve, reject) => { promiseResolve = resolve; });
@@ -86,13 +92,19 @@ export default class CacheRequester {
 		return readPromise;
 	}
 
-	readData(index, size, segment, archiveId = 0) {
+	readData(index, size, segment, archiveId = 0, keys) {
 		/*
 		this.worker.onmessage = function(event) {
 			//event.data.decompressedData
 			console.log(event);
 		};
 		*/
+		let key;
+		if (index.id == IndexType.MAPS.id && this.xteas != undefined) {
+			if (this.xteas[archiveId] != undefined) //if its not a mapdef then it will have a key
+				key = this.xteas[archiveId].key;
+			//console.log(key);
+		}
 
 		return Promise.resolve().then(() => {
 			var compressedData = new Uint8Array(size);
@@ -104,13 +116,15 @@ export default class CacheRequester {
 
 			var data;
 			var decompressedData;
-
+			//console.log(compressionOpcode);
 			if (compressionOpcode == 0) { //none
 				data = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
+				data = this.decrypt(data, compressedLength, key);
 				decompressedData = data;
 				index.revision = dataview.getUint16(data.buffer.byteLength)
 			} else if (compressionOpcode == 1) { //bz2
 				data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
+				this.decrypt(data, compressedLength, key);
 				var header = "BZh1";
 				var bzData = new Uint8Array(4 + data.length);
 				bzData[0] = 'B'.charCodeAt(0);
@@ -120,10 +134,36 @@ export default class CacheRequester {
 				bzData.set(data, 4)
 				decompressedData = bz2.decompress(bzData);
 			} else if (compressionOpcode == 2) { //gzip
-				data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
-				//console.log(new Uint8Array(dataview.buffer)+"");
+				//console.log(compressedData);
+				//console.log(compressedLength);
+				//console.log(new Int8Array(dataview.buffer).slice(5, 9 + compressedLength));
+				let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
+				data = this.decrypt(unencryptedData, unencryptedData.length, key);
+				let leftOver = unencryptedData.slice(data.length);
 
-				decompressedData = new Uint8Array(gzip.unzip(data));
+				var mergedArray = new Uint8Array(data.length + leftOver.length);
+				mergedArray.set(data);
+				mergedArray.set(leftOver, data.length);
+
+				//console.log(data);
+				//console.log(leftOver);
+				//console.log(mergedArray);
+				//add the end of the compressed data onto the decrypted?
+				let decryptedDataview = new DataView(mergedArray.buffer);
+
+				data = new Uint8Array(decryptedDataview.buffer.slice(4))
+				//console.log(new Uint8Array(dataview.buffer)+"");
+				let unzipped;
+
+				try {
+					//console.log("unzipping");
+					unzipped = gzip.unzip(data);
+					//console.log("unzipped");
+				} catch {
+					console.log(data);
+				}
+
+				decompressedData = new Uint8Array(unzipped);
 
 			}
 
@@ -159,11 +199,49 @@ export default class CacheRequester {
 			data = new Uint8Array(dataview.buffer.slice(convertedPos + 8, convertedPos + 520));
 		else
 			data = new Uint8Array(dataview.buffer.slice(convertedPos + 8, convertedPos + 8 + (buffer.byteLength % 512)));
-		
+
 		buffer.set(data, dataview.getInt16(convertedPos + 2) * 512);
 
 		if (nextSector != 0)
 			this.readSector(buffer, nextSector);
+
 	}
+
+	decrypt(data, len, key) {
+		if (key == undefined) {
+			return data;
+		}
+
+		let GOLDEN_RATIO = 0x9E3779B9;
+		let ROUNDS = 32;
+
+		let dataview = new DataView(data.buffer);
+		let out = [];
+
+		let numBlocks = Math.floor(len / 8);
+		//console.log(numBlocks);
+		for (let block = 0; block < numBlocks; ++block) {
+			let v0 = dataview.readInt32();
+			let v1 = dataview.readInt32();
+			let sum = GOLDEN_RATIO * ROUNDS;
+			for (let i = 0; i < ROUNDS; ++i) {
+				v1 -= (((v0 << 4) ^ (v0 >>> 5)) + v0) ^ (sum + key[(sum >>> 11) & 3]);
+				sum -= GOLDEN_RATIO;
+				v0 -= (((v1 << 4) ^ (v1 >>> 5)) + v1) ^ (sum + key[sum & 3]);
+			}
+			out.push((v0 >> 24) & 0xFF);
+			out.push((v0 >> 16) & 0xFF);
+			out.push((v0 >> 8) & 0xFF);
+			out.push(v0 & 0xFF);
+
+			out.push((v1 >> 24) & 0xFF);
+			out.push((v1 >> 16) & 0xFF);
+			out.push((v1 >> 8) & 0xFF);
+			out.push(v1 & 0xFF);
+		}
+
+		return new Uint8Array(out);
+	}
+
 
 }

@@ -11,9 +11,11 @@ export default class RSCache {
 	constructor(cacheRootDir = "./", progressFunc = () => { }, nameRootDir = undefined) {
 		this.indicies = {};
 		this.progressFunc = progressFunc;
-
 		this.cacheRequester = new CacheRequester(cacheRootDir);
-		this.onload = this.loadCacheFiles(cacheRootDir, nameRootDir);
+
+		this.onload = this.loadCacheFiles(cacheRootDir, "./", nameRootDir).then(() => {
+			this.cacheRequester.setXteas(this.xteas);
+		});
 	}
 
 	progress(amount) {
@@ -81,7 +83,7 @@ export default class RSCache {
 		return this.getAllFiles(indexId, archiveId, threaded).then((x) => x[fileId]);
 	}
 
-	loadCacheFiles(rootDir, namesRootDir) {
+	loadCacheFiles(rootDir, xteasDir, namesRootDir) {
 
 		//this is basically relying on loading faster than the other stuff. probably should merge this with something
 		if (namesRootDir != undefined) {
@@ -91,6 +93,17 @@ export default class RSCache {
 					let tabSplit = splitNameData[i].split("\t");
 					nameHashLookup[tabSplit[3]] = tabSplit[4]; //3 = hash, 4 = name
 				}
+			});
+		}
+
+		if (xteasDir != undefined) {
+			Ajax.getFile(xteasDir + "xteas.json").then((xteasData) => {
+				let xteas = JSON.parse(xteasData);
+				this.xteas = {};
+				for (var i = 0; i < xteas.length; i++) {
+					this.xteas[xteas[i].group] = xteas[i];
+				}
+				
 			});
 		}
 
