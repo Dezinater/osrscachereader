@@ -4,17 +4,19 @@ import ConfigType from './cacheReader/cacheTypes/ConfigType.js'
 
 export { RSCache, IndexType, ConfigType };
 /*
-var cache = new RSCache("./", (x) => { console.log(x) });
+var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 
 cache.onload.then(() => {
   console.log(cache);
   //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
   //cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
   //42852
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 7986, false).then(x => {
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => {console.log(x)});
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => {console.log(x)});
+  cache.getFile(IndexType.MAPS.id, 4).then(x => {
     console.log(x);
-    for (let i = 0; i < x.def.models.length; i++)
-      cache.getFile(IndexType.MODELS.id, x.def.models[i], 0, false).then(y => console.log(y))
+    //for (let i = 0; i < x.def.models.length; i++)
+    //  cache.getFile(IndexType.MODELS.id, x.def.models[i], 0, false).then(y => console.log(y))
   });
 });
 */
