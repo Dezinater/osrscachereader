@@ -3,21 +3,30 @@ import IndexType from './cacheReader/cacheTypes/IndexType.js'
 import ConfigType from './cacheReader/cacheTypes/ConfigType.js'
 
 export { RSCache, IndexType, ConfigType };
+
 /*
 var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 
 cache.onload.then(() => {
   console.log(cache);
+  cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id).then(zulrah => {
+    console.log(zulrah);
+  });
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(zulrah => {
+    console.log(zulrah);
+  });
+  */
   //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
-  //cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
+  // cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
   //42852
+  /*
   for(let i=0;i<10;i++){
   cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 1300+i).then(object => {
     console.log(object);
   });
-
 }
-  
+*/
+  /*
   cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => {console.log(x)});
   cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => {console.log(x)});
   cache.getFile(IndexType.MAPS.id, 4).then(x => {
@@ -25,9 +34,9 @@ cache.onload.then(() => {
     //for (let i = 0; i < x.def.models.length; i++)
     //  cache.getFile(IndexType.MODELS.id, x.def.models[i], 0, false).then(y => console.log(y))
   });
-  
 });
 */
+
 /*
 var cache;
 
