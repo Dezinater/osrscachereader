@@ -4,6 +4,9 @@ export class MapDefinition {
 export class LocationDefinition {
 
 }
+export class EmptyMapDefinition {
+
+}
 export default class MapLoader {
 
     /*
@@ -31,6 +34,7 @@ export default class MapLoader {
 
 
     load(bytes, id, rscache) {
+        if(bytes == undefined) return new MapDefinition();
         let x, y;
         let mapInfo = rscache.xteas[id];
 
@@ -40,26 +44,27 @@ export default class MapLoader {
             return this.loadLocationDef(bytes, id, x, y);
         } else {
             let hashVal = rscache.indicies[5].archives[id].nameHash;
-            console.log(rscache.indicies[5]);
-            console.log(hashVal);
+            //console.log(rscache.indicies[5]);
+            //console.log(hashVal);
             for (let i = 0; i < 32768; i++) {
                 let x = i >> 8;
                 let y = i & 0xFF;
                 if (this.hash("l" + x + "_" + y) == hashVal) {
                     //not much we can do here without xteas
-                    return new Location();
+                    return new LocationDefinition();
                 }
                 if (this.hash("m" + x + "_" + y) == hashVal) {
-                    console.log("m" + x + "_" + y);
+                    //console.log("m" + x + "_" + y);
                     return this.loadMapDef(bytes, id, x, y);
                 }
             }
         }
 
-        console.log(bytes, rscache.xteas);
-        console.log(rscache.xteas[id]);
-        console.log(id);
-        console.log(x, y);
+        return new EmptyMapDefinition();
+        //console.log(bytes, rscache.xteas);
+        //console.log(rscache.xteas[id]);
+        //console.log(id);
+        //console.log(x, y);
     }
     loadLocationDef(bytes, id, x, y) {
         let def = new LocationDefinition();
