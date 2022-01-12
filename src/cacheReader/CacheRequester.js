@@ -160,7 +160,7 @@ export default class CacheRequester {
 					unzipped = gzip.unzip(data);
 					//console.log("unzipped");
 				} catch {
-					console.log(data);
+					console.log("Could not unzip with key:" + key);
 				}
 
 				decompressedData = new Uint8Array(unzipped);
