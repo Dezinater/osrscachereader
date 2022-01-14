@@ -39,13 +39,18 @@ export default class CacheDefinitionLoader {
 				//ex 11232 maps to 11253 but 11253 maps to 11293
 				loadPromise.then((loadedDef) => {
 					//console.log(loadedDef.id);
-					if (newFiles[loadedDef.id] == undefined) {
-						newFiles[loadedDef.id] = this.archive.files[loadPromise.iterator];
-					}
+
+
 					if (this.archive.files.length > 1) {
+						if (newFiles[loadedDef.id] == undefined)
+							newFiles[loadedDef.id] = this.archive.files[loadPromise.iterator];
+
 						newFiles[loadedDef.id].def = loadedDef;
 						newFiles[loadedDef.id].content = undefined;
 					} else {
+						if (newFiles[0] == undefined)
+							newFiles[0] = this.archive.files[0];
+
 						newFiles[0].def = loadedDef;
 						newFiles[0].content = undefined;
 					}
