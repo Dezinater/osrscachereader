@@ -5598,23 +5598,27 @@ class ModelLoader {
 
 
 const IndexType = { 
-    FRAMES:{id: 0, loader: FramesLoader},
-    FRAMEMAPS:{id: 1, loader: FramemapLoader},
-    CONFIGS:{id: 2, loader: undefined},
-    INTERFACES:{id: 3, loader: undefined},
-    SOUNDEFFECTS:{id: 4, loader: undefined},
-    MAPS:{id: 5, loader: MapLoader},
-    TRACK1:{id: 6, loader: undefined},
-    MODELS:{id: 7, loader: ModelLoader},
-    SPRITES:{id: 8, loader: undefined},
-    TEXTURES:{id: 9, loader: undefined},
-    BINARY:{id: 10, loader: undefined},
-    TRACK2:{id: 11, loader: undefined},
-    CLIENTSCRIPT:{id: 12, loader: undefined},
-    FONTS:{id: 13, loader: undefined},
-    VORBIS:{id: 14, loader: undefined},
-    INSTRUMENTS:{id: 15, loader: undefined},
-    WORLDMAP:{id: 16, loader: undefined},
+    FRAMES:{id: 0, loader: FramesLoader},       // Animations
+    FRAMEMAPS:{id: 1, loader: FramemapLoader},  // Skeletons
+    CONFIGS:{id: 2, loader: undefined},         // Configs
+    INTERFACES:{id: 3, loader: undefined},      // Interfaces
+    SOUNDEFFECTS:{id: 4, loader: undefined},    // Sound FX
+    MAPS:{id: 5, loader: MapLoader},            // Maps
+    TRACK1:{id: 6, loader: undefined},          // Music Tracks (ex: "scape main")
+    MODELS:{id: 7, loader: ModelLoader},        // Models
+    SPRITES:{id: 8, loader: undefined},         // Sprites
+    TEXTURES:{id: 9, loader: undefined},        // Textures
+    BINARY:{id: 10, loader: undefined},         // Title screen & Huffman?
+    TRACK2:{id: 11, loader: undefined},         // Music Jingles
+    CLIENTSCRIPT:{id: 12, loader: undefined},   // Interface Scripts
+    FONTS:{id: 13, loader: undefined},          // Interface Fonts
+    VORBIS:{id: 14, loader: undefined},         // Music Samples
+    INSTRUMENTS:{id: 15, loader: undefined},    // Music Patches
+    WORLDMAP:{id: 16, loader: undefined},       // World Locations
+    UKNOWN1:{id: 17, loader: undefined},        // Sprite IDs                       
+    UKNOWN2:{id: 18, loader: undefined},        // World Map Geography                     
+    UKNOWN3:{id: 19, loader: undefined},        // World Map                          
+    UKNOWN4:{id: 20, loader: undefined},        // World Map Ground           
 
     valueOf(id){
         var values = Object.values(IndexType);
@@ -6638,25 +6642,44 @@ class UnderlayLoader {
 
 
 const ConfigType = { 
-    UNDERLAY: {id: 1, loader: UnderlayLoader},
-	IDENTKIT: {id: 3, loader: KitLoader},
-	OVERLAY: {id: 4, loader: OverlayLoader},
-	INV: {id: 5, loader: undefined},
-	OBJECT: {id: 6, loader: ObjectLoader},
-	ENUM: {id: 8, loader: undefined},
-	NPC: {id: 9, loader: NpcLoader},
-	ITEM: {id: 10, loader: ItemLoader},
-	PARAMS: {id: 11, loader: undefined},
-	SEQUENCE: {id: 12, loader: SequenceLoader},
-	SPOTANIM: {id: 13, loader: undefined},
-	VARBIT: {id: 14, loader: undefined},
-	VARCLIENT: {id: 19, loader: undefined},
+    UNDERLAY: {id: 1, loader: UnderlayLoader}, 		//Underlay
+	UNKNOWN2: {id: 2, loader: undefined},			//
+	IDENTKIT: {id: 3, loader: KitLoader},			//Kit
+	OVERLAY: {id: 4, loader: OverlayLoader},		//Overlay
+	INV: {id: 5, loader: undefined},				//Inventory
+	OBJECT: {id: 6, loader: ObjectLoader},			//Objects
+	UNKNOWN7: {id: 7, loader: undefined},			//
+	ENUM: {id: 8, loader: undefined},				//Enum
+	NPC: {id: 9, loader: NpcLoader},				//NPC
+	ITEM: {id: 10, loader: ItemLoader},				//Items
+	PARAMS: {id: 11, loader: undefined},			//Params
+	SEQUENCE: {id: 12, loader: SequenceLoader},		//Sequence
+	SPOTANIM: {id: 13, loader: undefined},			//Spot anim
+	VARBIT: {id: 14, loader: undefined}, 			//Varbit
 	VARCLIENTSTRING: {id: 15, loader: undefined},
-	VARPLAYER: {id: 16, loader: undefined},
-	HITSPLAT: {id: 32, loader: undefined},
+	VARPLAYER: {id: 16, loader: undefined},			//Varp
+	UNKNOWN18: {id: 18, loader: undefined},			//
+	VARCLIENT: {id: 19, loader: undefined},			//Varc
+	UNKNOWN20: {id: 20, loader: undefined},			//
+	UNKNOWN22: {id: 22, loader: undefined},			//
+	UNKNOWN24: {id: 24, loader: undefined},			//
+	UNKNOWN25: {id: 25, loader: undefined},			//
+	UNKNOWN26: {id: 26, loader: undefined},			//
+	UNKNOWN27: {id: 27, loader: undefined},			//
+	UNKNOWN28: {id: 28, loader: undefined},			//
+	UNKNOWN29: {id: 29, loader: undefined},			//
+	UNKNOWN30: {id: 30, loader: undefined},			//
+	UNKNOWN31: {id: 31, loader: undefined},			//
+	HITSPLAT: {id: 32, loader: undefined},			//Hitsplat
 	HEALTHBAR: {id: 33, loader: undefined},
-	STRUCT: {id: 34, loader: undefined},
+	STRUCT: {id: 34, loader: undefined},			//Struct
 	AREA: {id: 35, loader: undefined},
+
+	UNKNOWN47: {id: 47, loader: undefined}, //Possible scripts
+	UNKNOWN54: {id: 54, loader: undefined}, //Possible scripts
+	UNKNOWN70: {id: 70, loader: undefined},
+
+
 
 	valueOf(id){
         var values = Object.values(ConfigType);
@@ -7063,9 +7086,11 @@ class ArchiveData {
 		for (let i = 0; i < chunks; i++) {
 			let chunkSize = 0;
 			for (let id = 0; id < this.files.length; id++) {
-				if (streamPosition == 1445124){
+				
+				if (streamPosition == 1444353){
 					if (data[streamPosition] == 0) data[streamPosition] = 255;
 				}
+				
 				//console.log(data[streamPosition], data[streamPosition + 1], data[streamPosition + 2], data[streamPosition + 3]);
 				
 				let delta  = dataview.getInt32(streamPosition);
@@ -7074,6 +7099,8 @@ class ArchiveData {
 				chunkSizes[id][i] = chunkSize;
 				fileSizes[id] += chunkSize;
 				//if (id > 32915 && id < 32950)
+					//console.log(id, delta, streamPosition);
+				//if (id > 32210 && id < 32220)
 					//console.log(id, delta, streamPosition);
 			}
 		}
@@ -7321,7 +7348,6 @@ class RSCache {
 			archive = index.archives[x.archiveId];
 
 			archive.loadFiles(x.decompressedData);
-
 			new CacheDefinitionLoader(x.index.id, x.archiveId, archive.files).load(this).then(() => {
 				archive.filesLoaded = true;
 				//console.log(this.loadRequests[indexId][archiveId]);
@@ -7483,14 +7509,26 @@ class RSCache {
 var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 
 cache.onload.then(() => {
+  console.log(cache);
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 2042).then(zulrah => {
+    console.log(zulrah);
+  });
+  cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.OBJECT.id).then(zulrah => {
+    console.log(zulrah);
+  });
+  */
+
+  /*
   for(let i=3900;i<5934;i++){
-		cache.getFile(IndexType.MAPS.id, i).then(x => {
+    cache.getFile(IndexType.MAPS.id, i).then(x => {
       //console.log(x);
       //if(x.def == undefined) console.log(i, x);
 			//if(x.def.regionX == 50 && x.def.regionY == 53) console.log(x);
 		});
 	}
 });
+*/
+/*
   console.log(cache);
   cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id).then(zulrah => {
     console.log(zulrah);
