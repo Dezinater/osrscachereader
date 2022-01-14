@@ -6699,10 +6699,10 @@ Object.freeze(ConfigType);
 
 
 class CacheDefinitionLoader {
-	constructor(indexId, archiveId, files) {
+	constructor(indexId, archive) {
 		this.indexType = cacheTypes_IndexType.valueOf(indexId);
-		this.archiveId = archiveId;
-		this.files = files;
+		this.archive = archive;
+		//this.files = files;
 	}
 
 	load(rscache) {
@@ -6717,33 +6717,43 @@ class CacheDefinitionLoader {
 
 			var loader;
 			if (this.indexType == cacheTypes_IndexType.CONFIGS) {
-				loader = new (cacheTypes_ConfigType.valueOf(this.archiveId).loader)();
+				loader = new (cacheTypes_ConfigType.valueOf(this.archive.id).loader)();
 			} else {
 				loader = new this.indexType.loader();
 			}
 
 			var promises = [];
+			let newFiles = [];
 			//console.log(this.files.length);
-			for (var i = 0; i < this.files.length; i++) {
-				var defId = this.files.length > 1 ? i : this.archiveId;
+			for (var i = 0; i < this.archive.files.length; i++) {
+				var defId = this.archive.files.length > 1 ? this.archive.files[i].id : this.archive.id;
 				//unload archive file memory to replace it with definition info
 				//console.log(defId);
-				let loadPromise = Promise.resolve(loader.load(this.files[i].content, defId, rscache));
-
+				let loadPromise = Promise.resolve(loader.load(this.archive.files[i].content, defId, rscache));
+				loadPromise.iterator = i;
+				//map it to a whole new array
+				//otherwise values wil map over themselves
+				//ex 11232 maps to 11253 but 11253 maps to 11293
 				loadPromise.then((loadedDef) => {
 					//console.log(loadedDef.id);
-					if (this.files.length > 1) {
-						this.files[loadedDef.id].def = loadedDef;
-						this.files[loadedDef.id].content = undefined;
+					if (newFiles[loadedDef.id] == undefined) {
+						newFiles[loadedDef.id] = this.archive.files[loadPromise.iterator];
+					}
+					if (this.archive.files.length > 1) {
+						newFiles[loadedDef.id].def = loadedDef;
+						newFiles[loadedDef.id].content = undefined;
 					} else {
-						this.files[0].def = loadedDef;
-						this.files[0].content = undefined;
+						newFiles[0].def = loadedDef;
+						newFiles[0].content = undefined;
 					}
 				})
 				promises.push(loadPromise);
 				//this.files[i].def = loader.load(this.files[i].content, rscache);
 			}
-			Promise.all(promises).then(() => resolve());
+			Promise.all(promises).then(() => {
+				this.archive.files = newFiles;
+				resolve();
+			});
 			//resolve();
 		});
 	}
@@ -7254,7 +7264,9 @@ class Index {
 				} else {
 					fileID += dataview.readUint16();
 				}
+
 				this.archives[archiveKeys[i]].files[j] = new FileData(fileID);
+				//this.archives[archiveKeys[i]].files[fileID] = new FileData(fileID);
 			}
 		}
 
@@ -7348,7 +7360,7 @@ class RSCache {
 			archive = index.archives[x.archiveId];
 
 			archive.loadFiles(x.decompressedData);
-			new CacheDefinitionLoader(x.index.id, x.archiveId, archive.files).load(this).then(() => {
+			new CacheDefinitionLoader(x.index.id, archive).load(this).then(() => {
 				archive.filesLoaded = true;
 				//console.log(this.loadRequests[indexId][archiveId]);
 				for(let i=0;i<this.loadRequests[indexId][archiveId].length;i++){
@@ -7505,6 +7517,7 @@ class RSCache {
 
 
 
+
 /*
 var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 
@@ -7513,12 +7526,11 @@ cache.onload.then(() => {
   cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 2042).then(zulrah => {
     console.log(zulrah);
   });
-  cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.OBJECT.id).then(zulrah => {
+  cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id).then(zulrah => {
     console.log(zulrah);
   });
-  */
+  
 
-  /*
   for(let i=3900;i<5934;i++){
     cache.getFile(IndexType.MAPS.id, i).then(x => {
       //console.log(x);

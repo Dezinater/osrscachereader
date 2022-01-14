@@ -67,7 +67,7 @@ export default class RSCache {
 			archive = index.archives[x.archiveId];
 
 			archive.loadFiles(x.decompressedData);
-			new CacheDefinitionLoader(x.index.id, x.archiveId, archive.files).load(this).then(() => {
+			new CacheDefinitionLoader(x.index.id, archive).load(this).then(() => {
 				archive.filesLoaded = true;
 				//console.log(this.loadRequests[indexId][archiveId]);
 				for(let i=0;i<this.loadRequests[indexId][archiveId].length;i++){
