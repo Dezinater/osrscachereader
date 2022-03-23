@@ -4,23 +4,27 @@ import MapLoader from '../loaders/MapLoader.js';
 import ModelLoader from '../loaders/ModelLoader.js'
 
 const IndexType = { 
-    FRAMES:{id: 0, loader: FramesLoader},
-    FRAMEMAPS:{id: 1, loader: FramemapLoader},
-    CONFIGS:{id: 2, loader: undefined},
-    INTERFACES:{id: 3, loader: undefined},
-    SOUNDEFFECTS:{id: 4, loader: undefined},
-    MAPS:{id: 5, loader: MapLoader},
-    TRACK1:{id: 6, loader: undefined},
-    MODELS:{id: 7, loader: ModelLoader},
-    SPRITES:{id: 8, loader: undefined},
-    TEXTURES:{id: 9, loader: undefined},
-    BINARY:{id: 10, loader: undefined},
-    TRACK2:{id: 11, loader: undefined},
-    CLIENTSCRIPT:{id: 12, loader: undefined},
-    FONTS:{id: 13, loader: undefined},
-    VORBIS:{id: 14, loader: undefined},
-    INSTRUMENTS:{id: 15, loader: undefined},
-    WORLDMAP:{id: 16, loader: undefined},
+    FRAMES:{id: 0, loader: FramesLoader},       // Animations
+    FRAMEMAPS:{id: 1, loader: FramemapLoader},  // Skeletons
+    CONFIGS:{id: 2, loader: undefined},         // Configs
+    INTERFACES:{id: 3, loader: undefined},      // Interfaces
+    SOUNDEFFECTS:{id: 4, loader: undefined},    // Sound FX
+    MAPS:{id: 5, loader: MapLoader},            // Maps
+    TRACK1:{id: 6, loader: undefined},          // Music Tracks (ex: "scape main")
+    MODELS:{id: 7, loader: ModelLoader},        // Models
+    SPRITES:{id: 8, loader: undefined},         // Sprites
+    TEXTURES:{id: 9, loader: undefined},        // Textures
+    BINARY:{id: 10, loader: undefined},         // Title screen & Huffman?
+    TRACK2:{id: 11, loader: undefined},         // Music Jingles
+    CLIENTSCRIPT:{id: 12, loader: undefined},   // Interface Scripts
+    FONTS:{id: 13, loader: undefined},          // Interface Fonts
+    VORBIS:{id: 14, loader: undefined},         // Music Samples
+    INSTRUMENTS:{id: 15, loader: undefined},    // Music Patches
+    WORLDMAP:{id: 16, loader: undefined},       // World Locations
+    UKNOWN1:{id: 17, loader: undefined},        // Sprite IDs                       
+    UKNOWN2:{id: 18, loader: undefined},        // World Map Geography                     
+    UKNOWN3:{id: 19, loader: undefined},        // World Map                          
+    UKNOWN4:{id: 20, loader: undefined},        // World Map Ground           
 
     valueOf(id){
         var values = Object.values(IndexType);
