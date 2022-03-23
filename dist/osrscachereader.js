@@ -6728,7 +6728,8 @@ class CacheDefinitionLoader {
 			for (var i = 0; i < this.archive.files.length; i++) {
 				var defId = this.archive.files.length > 1 ? this.archive.files[i].id : this.archive.id;
 				//unload archive file memory to replace it with definition info
-				//console.log(defId);
+				//if (this.archive.files[i].id > 25000)
+				//	console.log(this.archive.files[i], this.archive.files[i].content.length);
 				let loadPromise = Promise.resolve(loader.load(this.archive.files[i].content, defId, rscache));
 				loadPromise.iterator = i;
 				//map it to a whole new array
@@ -7101,10 +7102,10 @@ class ArchiveData {
 		for (let i = 0; i < chunks; i++) {
 			let chunkSize = 0;
 			for (let id = 0; id < this.files.length; id++) {
-				
-				if (streamPosition == 1444353){
-					if (data[streamPosition] == 0) data[streamPosition] = 255;
-				}
+				//magic number - only needed sometimes. really must be some type of js issue
+				//if (streamPosition == 1444353){
+				//	if (data[streamPosition] == 0) data[streamPosition] = 255;
+				//}
 				
 				//console.log(data[streamPosition], data[streamPosition + 1], data[streamPosition + 2], data[streamPosition + 3]);
 				
@@ -7359,6 +7360,7 @@ class RSCache {
 		else
 			data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
 
+
 		data.then(x => {
 			archive = index.archives[x.archiveId];
 
@@ -7444,6 +7446,7 @@ class RSCache {
 
 		return idx255.then((idx255Data) => {
 			//console.log("idx255 loaded");
+			//console.log(idx255Data);
 			let indiciesAmount = idx255Data.length / 6; //each section is 6 bits
 
 			for (let i = 0; i < indiciesAmount; i++) {
@@ -7466,6 +7469,7 @@ class RSCache {
 					for (let j = 0; j < dataview.byteLength; j += 6) {
 						let size = dataview.readUint24();
 						let segment = dataview.readUint24();
+						//console.log(size, segment);
 
 						this.indicies[i].indexSegments.push({ size, segment });
 					}
@@ -7526,10 +7530,10 @@ var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 
 cache.onload.then(() => {
   console.log(cache);
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 2042).then(zulrah => {
-    console.log(zulrah);
+  cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.OBJECT.id).then(objs => {
+    console.log(objs);
   });
-  cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id).then(zulrah => {
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 2042).then(zulrah => {
     console.log(zulrah);
   });
   

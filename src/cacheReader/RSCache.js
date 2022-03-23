@@ -63,6 +63,7 @@ export default class RSCache {
 		else
 			data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
 
+
 		data.then(x => {
 			archive = index.archives[x.archiveId];
 
@@ -148,6 +149,7 @@ export default class RSCache {
 
 		return idx255.then((idx255Data) => {
 			//console.log("idx255 loaded");
+			//console.log(idx255Data);
 			let indiciesAmount = idx255Data.length / 6; //each section is 6 bits
 
 			for (let i = 0; i < indiciesAmount; i++) {
@@ -170,6 +172,7 @@ export default class RSCache {
 					for (let j = 0; j < dataview.byteLength; j += 6) {
 						let size = dataview.readUint24();
 						let segment = dataview.readUint24();
+						//console.log(size, segment);
 
 						this.indicies[i].indexSegments.push({ size, segment });
 					}

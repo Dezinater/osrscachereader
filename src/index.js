@@ -4,20 +4,20 @@ import ConfigType from './cacheReader/cacheTypes/ConfigType.js'
 
 export { RSCache, IndexType, ConfigType };
 
+
 /*
 var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 
 cache.onload.then(() => {
   console.log(cache);
+  cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.OBJECT.id).then(objs => {
+    console.log(objs);
+  });
   cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 2042).then(zulrah => {
     console.log(zulrah);
   });
-  cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.OBJECT.id).then(zulrah => {
-    console.log(zulrah);
-  });
-  */
+  
 
-  /*
   for(let i=3900;i<5934;i++){
     cache.getFile(IndexType.MAPS.id, i).then(x => {
       //console.log(x);
