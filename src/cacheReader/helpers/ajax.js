@@ -21,7 +21,7 @@ export function getFileBytes(file) {
             resolve(new Uint8Array(this.response));
           }
         };
-        xhttp.open("GET", "cache/"+file, true);
+        xhttp.open("GET", file, true);
         xhttp.responseType = "arraybuffer";
         try{
           xhttp.send();

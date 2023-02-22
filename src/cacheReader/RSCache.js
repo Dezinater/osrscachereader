@@ -144,7 +144,7 @@ export default class RSCache {
 			});
 		}
 
-		let idx255 = Ajax.getFileBytes(rootDir + "main_file_cache.idx255");
+		let idx255 = Ajax.getFileBytes(rootDir + "cache/main_file_cache.idx255");
 		let idxFiles = [];
 
 		return idx255.then((idx255Data) => {
@@ -153,7 +153,7 @@ export default class RSCache {
 			let indiciesAmount = idx255Data.length / 6; //each section is 6 bits
 
 			for (let i = 0; i < indiciesAmount; i++) {
-				idxFiles.push(Ajax.getFileBytes(rootDir + "main_file_cache.idx" + i));
+				idxFiles.push(Ajax.getFileBytes(rootDir + "cache/main_file_cache.idx" + i));
 			}
 
 			//theres probably a better way of doing this
