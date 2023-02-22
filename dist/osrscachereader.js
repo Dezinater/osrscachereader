@@ -3633,7 +3633,7 @@ function getFileBytes(file) {
             resolve(new Uint8Array(this.response));
           }
         };
-        xhttp.open("GET", "cache/"+file, true);
+        xhttp.open("GET", file, true);
         xhttp.responseType = "arraybuffer";
         try{
           xhttp.send();
@@ -7450,7 +7450,7 @@ class RSCache {
 			});
 		}
 
-		let idx255 = getFileBytes(rootDir + "main_file_cache.idx255");
+		let idx255 = getFileBytes(rootDir + "cache/main_file_cache.idx255");
 		let idxFiles = [];
 
 		return idx255.then((idx255Data) => {
@@ -7459,7 +7459,7 @@ class RSCache {
 			let indiciesAmount = idx255Data.length / 6; //each section is 6 bits
 
 			for (let i = 0; i < indiciesAmount; i++) {
-				idxFiles.push(getFileBytes(rootDir + "main_file_cache.idx" + i));
+				idxFiles.push(getFileBytes(rootDir + "cache/main_file_cache.idx" + i));
 			}
 
 			//theres probably a better way of doing this
@@ -7534,9 +7534,9 @@ class RSCache {
 
 
 
-/*
-var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 
+var cache = new RSCache("./", (x) => { console.log(x) }, "./");
+/*
 cache.onload.then(() => {
   console.log(cache);
   cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.OBJECT.id).then(objs => {
@@ -7547,13 +7547,13 @@ cache.onload.then(() => {
   });
   
 
-  for(let i=3900;i<5934;i++){
-    cache.getFile(IndexType.MAPS.id, i).then(x => {
+  //for(let i=3900;i<5934;i++){
+  //  cache.getFile(IndexType.MAPS.id, i).then(x => {
       //console.log(x);
       //if(x.def == undefined) console.log(i, x);
 			//if(x.def.regionX == 50 && x.def.regionY == 53) console.log(x);
-		});
-	}
+	//	});
+	//}
 });
 */
 /*
