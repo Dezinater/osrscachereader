@@ -125,7 +125,7 @@ DataView.prototype.readBigSmart = function () {
 	}
 }
 
-DataView.prototype.readBigSmart2()
+DataView.prototype.readBigSmart2 = function () {
 {
 	let peek = this.getUint8(this.pos);
 	if (peek < 0) {
