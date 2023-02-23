@@ -5,7 +5,7 @@ import ConfigType from './cacheReader/cacheTypes/ConfigType.js'
 export { RSCache, IndexType, ConfigType };
 
 
-
+/*
 var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 
 cache.onload.then(() => {
@@ -26,7 +26,7 @@ cache.onload.then(() => {
 		});
 	}
 });
-
+*/
 /*
   console.log(cache);
   cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id).then(zulrah => {

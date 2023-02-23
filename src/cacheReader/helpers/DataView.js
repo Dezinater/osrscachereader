@@ -126,7 +126,6 @@ DataView.prototype.readBigSmart = function () {
 }
 
 DataView.prototype.readBigSmart2 = function () {
-{
 	let peek = this.getUint8(this.pos);
 	if (peek < 0) {
 		return this.readInt32() & 0x7fffffff; // and off sign bit

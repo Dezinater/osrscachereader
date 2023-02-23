@@ -3341,7 +3341,7 @@ module.exports = function (content, workerConstructor, workerOptions, url) {
 /***/ }),
 
 /***/ 423:
-/***/ (function() {
+/***/ (() => {
 
 DataView.prototype.addPosition = function (pos) {
 	if (this.pos == undefined)
@@ -3470,8 +3470,7 @@ DataView.prototype.readBigSmart = function () {
 	}
 }
 
-DataView.prototype.readBigSmart2()
-{
+DataView.prototype.readBigSmart2 = function () {
 	let peek = this.getUint8(this.pos);
 	if (peek < 0) {
 		return this.readInt32() & 0x7fffffff; // and off sign bit
@@ -3530,7 +3529,7 @@ DataView.prototype.getString = function (pos) {
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -7108,7 +7107,6 @@ class ArchiveData {
 	}
 
 	loadFiles(data) {
-		console.log(this.files.length)
 		if (this.files.length == 1) {
 			this.files[0].content = data;
 			return;
@@ -7466,7 +7464,7 @@ class RSCache {
 
 			});
 		}
-		
+
 		let idx255 = getFileBytes(rootDir + "cache/main_file_cache.idx255");
 		let idxFiles = [];
 
@@ -7513,7 +7511,6 @@ class RSCache {
 	}
 
 	loadIndicies(idxData) {
-		console.log(idxData)
 		let dataview = new DataView(idxData.buffer);
 		//could probably use the indexSegments or remove the weird i = 255 part from loadCacheFiles
 		//might look better if j++, but works for now
