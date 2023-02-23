@@ -96,7 +96,7 @@ export default class MapLoader {
                     def.tiles[z][x][y] = {};
                     let tile = def.tiles[z][x][y];
                     while (true) {
-                        let attribute = dataview.readUint8();
+                        let attribute = dataview.readUint16();
                         if (attribute == 0) {
                             break;
                         }
@@ -106,7 +106,7 @@ export default class MapLoader {
                         }
                         else if (attribute <= 49) {
                             tile.attrOpcode = attribute;
-                            tile.overlayId = dataview.readInt8();
+                            tile.overlayId = dataview.readInt16();
                             tile.overlayPath = ((attribute - 2) / 4);
                             tile.overlayRotation = (attribute - 2 & 3);
                         }

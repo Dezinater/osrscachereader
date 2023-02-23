@@ -3341,7 +3341,7 @@ module.exports = function (content, workerConstructor, workerOptions, url) {
 /***/ }),
 
 /***/ 423:
-/***/ (() => {
+/***/ (function() {
 
 DataView.prototype.addPosition = function (pos) {
 	if (this.pos == undefined)
@@ -3404,11 +3404,16 @@ DataView.prototype.readUint32 = function () { //int
 	this.addPosition(4);
 	return val;
 }
+
 DataView.prototype.readUnsignedShortSmart = function () {
 	let peek = this.getUint8(this.pos) & 0xFF;
 	return peek < 128 ? this.readUint8() : this.readUint16() - 0x8000;
 }
 
+DataView.prototype.readUnsignedShortSmartMinusOne = function () {
+	let peek = this.getUint8(this.pos) & 0xFF;
+	return peek < 128 ? this.readUint8() - 1 : this.readUint16() - 0x8001;
+}
 
 DataView.prototype.readInt8 = function () { //byte
 	let val = 0;
@@ -3465,6 +3470,16 @@ DataView.prototype.readBigSmart = function () {
 	}
 }
 
+DataView.prototype.readBigSmart2()
+{
+	let peek = this.getUint8(this.pos);
+	if (peek < 0) {
+		return this.readInt32() & 0x7fffffff; // and off sign bit
+	}
+	let value = this.readUint16();
+	return value == 32767 ? -1 : value;
+}
+
 DataView.prototype.readString = function () {
 	let val = this.getString(this.getPosition());
 	this.addPosition(val.length + 1);
@@ -3515,7 +3530,7 @@ DataView.prototype.getString = function (pos) {
 /******/ 		};
 /******/ 	
 /******/ 		// Execute the module function
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -3865,7 +3880,7 @@ class MapLoader {
                     def.tiles[z][x][y] = {};
                     let tile = def.tiles[z][x][y];
                     while (true) {
-                        let attribute = dataview.readUint8();
+                        let attribute = dataview.readUint16();
                         if (attribute == 0) {
                             break;
                         }
@@ -3875,7 +3890,7 @@ class MapLoader {
                         }
                         else if (attribute <= 49) {
                             tile.attrOpcode = attribute;
-                            tile.overlayId = dataview.readInt8();
+                            tile.overlayId = dataview.readInt16();
                             tile.overlayPath = ((attribute - 2) / 4);
                             tile.overlayRotation = (attribute - 2 & 3);
                         }
@@ -5982,7 +5997,7 @@ class ObjectLoader {
 }
 ;// CONCATENATED MODULE: ./src/cacheReader/loaders/NpcLoader.js
 class NpcDefinition {
-		
+
 }
 class NpcLoader {
 
@@ -5993,170 +6008,157 @@ class NpcLoader {
 		do {
 			var opcode = dataview.readUint8();
 			this.handleOpcode(def, opcode, dataview);
-		} while(opcode != 0);
-		
+		} while (opcode != 0);
+
 		return def;
 	}
-	
-	handleOpcode(def, opcode, dataview){
+
+	handleOpcode(def, opcode, dataview) {
 		var length;
 		var index;
-		if (opcode == 1)
-		{
+		if (opcode == 1) {
 			length = dataview.readUint8();
 			def.models = [];
 
-			for (index = 0; index < length; ++index)
-			{
+			for (index = 0; index < length; ++index) {
 				def.models.push(dataview.readUint16());
 			}
-		}else if (opcode == 2)
-		{
+		} else if (opcode == 2) {
 			var name = dataview.readString();
 			def.name = name;
 		}
-		else if (opcode == 12)
-		{
+		else if (opcode == 12) {
 			def.size = dataview.readUint8();
 		}
-		else if (opcode == 13)
-		{
+		else if (opcode == 13) {
 			def.standingAnimation = dataview.readUint16();
 		}
-		else if (opcode == 14)
-		{
+		else if (opcode == 14) {
 			def.walkingAnimation = dataview.readUint16();
 		}
-		else if (opcode == 15)
-		{
+		else if (opcode == 15) {
 			def.rotateLeftAnimation = dataview.readUint16();
 		}
-		else if (opcode == 16)
-		{
+		else if (opcode == 16) {
 			def.rotateRightAnimation = dataview.readUint16();
 		}
-		else if (opcode == 17)
-		{
+		else if (opcode == 17) {
 			def.walkingAnimation = dataview.readUint16();
 			def.rotate180Animation = dataview.readUint16();
 			def.rotate90RightAnimation = dataview.readUint16();
 			def.rotate90LeftAnimation = dataview.readUint16();
 		}
-		else if (opcode == 18)
-		{
+		else if (opcode == 18) {
 			def.category = dataview.readUint16();
 		}
-		else if (opcode >= 30 && opcode < 35)
-		{
-			if(def.actions == undefined)
+		else if (opcode >= 30 && opcode < 35) {
+			if (def.actions == undefined)
 				def.actions = [];
-			
+
 			var readString = dataview.readString();
 			def.actions[opcode - 30] = readString;
-			
-			if (def.actions[opcode - 30] == "Hidden")
-			{
+
+			if (def.actions[opcode - 30] == "Hidden") {
 				def.actions[opcode - 30] = undefined;
 			}
 		}
-		else if (opcode == 40)
-		{
+		else if (opcode == 40) {
 			length = dataview.readUint8();
 			def.recolorToFind = [];
 			def.recolorToReplace = [];
 
-			for (index = 0; index < length; ++index)
-			{
+			for (index = 0; index < length; ++index) {
 				def.recolorToFind.push(dataview.readUint16());
 				def.recolorToReplace.push(dataview.readUint16());
 			}
 
 		}
-		else if (opcode == 41)
-		{
+		else if (opcode == 41) {
 			length = dataview.readUint8();
 			def.retextureToFind = [];
 			def.retextureToReplace = [];
 
-			for (index = 0; index < length; ++index)
-			{
+			for (index = 0; index < length; ++index) {
 				def.retextureToFind.push(dataview.readUint16());
 				def.retextureToReplace.push(dataview.readUint16());
 			}
 
 		}
-		else if (opcode == 60)
-		{
+		else if (opcode == 60) {
 			length = dataview.readUint8();
 			def.chatheadModels = [];
 
-			for (index = 0; index < length; ++index)
-			{
+			for (index = 0; index < length; ++index) {
 				def.chatheadModels.push(dataview.readUint16());
 			}
 
 		}
-		else if (opcode == 93)
-		{
+		else if (opcode == 93) {
 			def.isMinimapVisible = false;
 		}
-		else if (opcode == 95)
-		{
+		else if (opcode == 95) {
 			def.combatLevel = dataview.readUint16();
 		}
-		else if (opcode == 97)
-		{
+		else if (opcode == 97) {
 			this.widthScale = dataview.readUint16();
 		}
-		else if (opcode == 98)
-		{
+		else if (opcode == 98) {
 			def.heightScale = dataview.readUint16();
 		}
-		else if (opcode == 99)
-		{
+		else if (opcode == 99) {
 			def.hasRenderPriority = true;
 		}
-		else if (opcode == 100)
-		{
+		else if (opcode == 100) {
 			def.ambient = dataview.readInt8();
 		}
-		else if (opcode == 101)
-		{
+		else if (opcode == 101) {
 			def.contrast = dataview.readInt8();
 		}
-		else if (opcode == 102)
-		{
-			def.headIcon = dataview.readUint16();
+		else if (opcode == 102) {
+			//def.headIcon = dataview.readUint16(); //before rev210
+			let bitfield = dataview.readUint8();
+			let len = 0;
+			for (let var5 = bitfield; var5 != 0; var5 >>= 1) {
+				++len;
+			}
+
+			def.headIconArchiveIds = [];
+			def.headIconSpriteIndex = [];
+
+			for (let i = 0; i < len; i++) {
+				if ((bitfield & 1 << i) == 0) {
+					def.headIconArchiveIds.push(-1);
+					def.headIconSpriteIndex.push(1);
+				}
+				else {
+					def.headIconArchiveIds.push(dataview.readBigSmart2());
+					def.headIconSpriteIndex.push(dataview.readUnsignedShortSmartMinusOne());
+				}
+			}
 		}
-		else if (opcode == 103)
-		{
+		else if (opcode == 103) {
 			def.rotationSpeed = dataview.readUint16();
 		}
-		else if (opcode == 106)
-		{
+		else if (opcode == 106) {
 			def.varbitId = dataview.readUint16();
-			if (def.varbitId == 65535)
-			{
+			if (def.varbitId == 65535) {
 				def.varbitId = -1;
 			}
 
 			def.varpIndex = dataview.readUint16();
-			
-			if (def.varpIndex == 65535)
-			{
+
+			if (def.varpIndex == 65535) {
 				def.varpIndex = -1;
 			}
 
 			length = dataview.readUint8();
-			
+
 			def.configs = [];
 
-			for (index = 0; index <= length; ++index)
-			{
+			for (index = 0; index <= length; ++index) {
 				def.configs[index] = dataview.readUint16();
-				
-				if (def.configs[index] == '\uffff')
-				{
+
+				if (def.configs[index] == '\uffff') {
 					def.configs[index] = -1;
 				}
 			}
@@ -6164,48 +6166,40 @@ class NpcLoader {
 			def.configs[length + 1] = -1;
 
 		}
-		else if (opcode == 107)
-		{
+		else if (opcode == 107) {
 			def.isInteractable = false;
 		}
-		else if (opcode == 109)
-		{
+		else if (opcode == 109) {
 			def.rotationFlag = false;
 		}
-		else if (opcode == 111)
-		{
+		else if (opcode == 111) {
 			def.isPet = true;
 		}
-		else if (opcode == 118)
-		{
+		else if (opcode == 118) {
 			def.varbitId = dataview.readUint16();
-			
-			if (def.varbitId == 65535)
-			{
+
+			if (def.varbitId == 65535) {
 				def.varbitId = -1;
 			}
 
 			def.varpIndex = dataview.readUint16();
-			
-			if (def.varpIndex == 65535)
-			{
+
+			if (def.varpIndex == 65535) {
 				def.varpIndex = -1;
 			}
 
 			var varVal = dataview.readUint16();
-			
-			if (varVal == 0xFFFF)
-			{
+
+			if (varVal == 0xFFFF) {
 				varVal = -1;
 			}
 
 			length = dataview.readUint8();
 			def.configs = [];
 
-			for (index = 0; index <= length; ++index)
-			{
+			for (index = 0; index <= length; ++index) {
 				var value = dataview.readUint16();
-				
+
 				if (def.configs[index] == '\uffff') {
 					def.configs.push(-1);
 				} else {
@@ -6215,26 +6209,22 @@ class NpcLoader {
 
 			def.configs.push(varVal);
 		}
-		else if (opcode == 249)
-		{
+		else if (opcode == 249) {
 			length = dataview.readUint8();
-			
+
 			def.params = {};
 
-			for (var i = 0; i < length; i++)
-			{
+			for (var i = 0; i < length; i++) {
 				var isString = dataview.readUint8() == 1;
-				
+
 				var key = dataview.readInt24();
 				var value;
 
-				if (isString)
-				{
+				if (isString) {
 					value = dataview.readString();
 				}
 
-				else
-				{
+				else {
 					value = dataview.readInt32()
 				}
 
@@ -6250,18 +6240,26 @@ class ItemDefinition {
 class ItemLoader {
 
     load(bytes, id) {
+        //console.log(id, bytes)
         let def = new ItemDefinition();
         def.id = id;
         let dataview = new DataView(bytes.buffer);
+        let lastOpCode = 0;
         do {
             var opcode = dataview.readUint8();
-            this.handleOpcode(def, opcode, dataview);
+            this.handleOpcode(def, opcode, dataview, lastOpCode);
+            lastOpCode = opcode;
         } while (opcode != 0);
+
+        if (def.stackable == 1)
+		{
+			def.weight = 0;
+		}
 
         return def;
     }
 
-    handleOpcode(def, opcode, dataview) {
+    handleOpcode(def, opcode, dataview, lastOpCode) {
         if (opcode == 1) {
             def.inventoryModel = dataview.readUint16();
         }
@@ -6298,6 +6296,14 @@ class ItemLoader {
         else if (opcode == 12) {
             def.cost = dataview.readInt32();
         }
+        else if (opcode == 13)
+		{
+			def.wearPos1 = dataview.readInt8();
+		}
+		else if (opcode == 14)
+		{
+			def.wearPos2 = dataview.readInt8();
+		}
         else if (opcode == 16) {
             def.members = true;
         }
@@ -6315,6 +6321,10 @@ class ItemLoader {
         else if (opcode == 26) {
             def.femaleModel1 = dataview.readUint16();
         }
+        else if (opcode == 27)
+		{
+			def.wearPos3 = dataview.readInt8();
+		}
         else if (opcode >= 30 && opcode < 35) {
             if (def.options == undefined)
                 def.options = [];
@@ -6357,6 +6367,10 @@ class ItemLoader {
         else if (opcode == 65) {
             def.isTradeable = true;
         }
+        else if (opcode == 75)
+		{
+			def.weight = dataview.readInt16();
+		}
         else if (opcode == 78) {
             def.maleModel2 = dataview.readUint16();
         }
@@ -6445,6 +6459,8 @@ class ItemLoader {
 
                 def.params[key] = value;
             }
+        }else{
+            //console.error("UNHANDLED OPCODE [ItemLoader]: " + opcode + " last: " + lastOpCode)
         }
     }
 }
@@ -7092,6 +7108,7 @@ class ArchiveData {
 	}
 
 	loadFiles(data) {
+		console.log(this.files.length)
 		if (this.files.length == 1) {
 			this.files[0].content = data;
 			return;
@@ -7449,7 +7466,7 @@ class RSCache {
 
 			});
 		}
-
+		
 		let idx255 = getFileBytes(rootDir + "cache/main_file_cache.idx255");
 		let idxFiles = [];
 
@@ -7496,6 +7513,7 @@ class RSCache {
 	}
 
 	loadIndicies(idxData) {
+		console.log(idxData)
 		let dataview = new DataView(idxData.buffer);
 		//could probably use the indexSegments or remove the weird i = 255 part from loadCacheFiles
 		//might look better if j++, but works for now
@@ -7534,9 +7552,9 @@ class RSCache {
 
 
 
-
-var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 /*
+var cache = new RSCache("./", (x) => { console.log(x) }, "./");
+
 cache.onload.then(() => {
   console.log(cache);
   cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.OBJECT.id).then(objs => {
@@ -7547,13 +7565,13 @@ cache.onload.then(() => {
   });
   
 
-  //for(let i=3900;i<5934;i++){
-  //  cache.getFile(IndexType.MAPS.id, i).then(x => {
+  for(let i=3900;i<5934;i++){
+    cache.getFile(IndexType.MAPS.id, i).then(x => {
       //console.log(x);
       //if(x.def == undefined) console.log(i, x);
 			//if(x.def.regionX == 50 && x.def.regionY == 53) console.log(x);
-	//	});
-	//}
+		});
+	}
 });
 */
 /*

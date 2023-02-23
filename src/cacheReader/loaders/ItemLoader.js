@@ -4,18 +4,26 @@ export class ItemDefinition {
 export default class ItemLoader {
 
     load(bytes, id) {
+        //console.log(id, bytes)
         let def = new ItemDefinition();
         def.id = id;
         let dataview = new DataView(bytes.buffer);
+        let lastOpCode = 0;
         do {
             var opcode = dataview.readUint8();
-            this.handleOpcode(def, opcode, dataview);
+            this.handleOpcode(def, opcode, dataview, lastOpCode);
+            lastOpCode = opcode;
         } while (opcode != 0);
+
+        if (def.stackable == 1)
+		{
+			def.weight = 0;
+		}
 
         return def;
     }
 
-    handleOpcode(def, opcode, dataview) {
+    handleOpcode(def, opcode, dataview, lastOpCode) {
         if (opcode == 1) {
             def.inventoryModel = dataview.readUint16();
         }
@@ -52,6 +60,14 @@ export default class ItemLoader {
         else if (opcode == 12) {
             def.cost = dataview.readInt32();
         }
+        else if (opcode == 13)
+		{
+			def.wearPos1 = dataview.readInt8();
+		}
+		else if (opcode == 14)
+		{
+			def.wearPos2 = dataview.readInt8();
+		}
         else if (opcode == 16) {
             def.members = true;
         }
@@ -69,6 +85,10 @@ export default class ItemLoader {
         else if (opcode == 26) {
             def.femaleModel1 = dataview.readUint16();
         }
+        else if (opcode == 27)
+		{
+			def.wearPos3 = dataview.readInt8();
+		}
         else if (opcode >= 30 && opcode < 35) {
             if (def.options == undefined)
                 def.options = [];
@@ -111,6 +131,10 @@ export default class ItemLoader {
         else if (opcode == 65) {
             def.isTradeable = true;
         }
+        else if (opcode == 75)
+		{
+			def.weight = dataview.readInt16();
+		}
         else if (opcode == 78) {
             def.maleModel2 = dataview.readUint16();
         }
@@ -199,6 +223,8 @@ export default class ItemLoader {
 
                 def.params[key] = value;
             }
+        }else{
+            //console.error("UNHANDLED OPCODE [ItemLoader]: " + opcode + " last: " + lastOpCode)
         }
     }
 }
