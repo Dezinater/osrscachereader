@@ -3642,6 +3642,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.d(__webpack_exports__, {
   "ConfigType": () => (/* reexport */ cacheTypes_ConfigType),
   "IndexType": () => (/* reexport */ cacheTypes_IndexType),
+  "Matrix": () => (/* reexport */ FramemapLoader_Matrix),
   "RSCache": () => (/* reexport */ RSCache)
 });
 

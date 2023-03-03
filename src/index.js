@@ -3,7 +3,7 @@ import IndexType from './cacheReader/cacheTypes/IndexType.js'
 import ConfigType from './cacheReader/cacheTypes/ConfigType.js'
 import { Matrix } from './cacheReader/loaders/FramemapLoader.js';
 
-export { RSCache, IndexType, ConfigType };
+export { RSCache, IndexType, ConfigType, Matrix };
 
 
 
