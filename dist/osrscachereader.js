@@ -3364,6 +3364,28 @@ DataView.prototype.getPosition = function () {
 	return this.pos;
 }
 
+DataView.prototype.readFloat32 = function () { //byte
+	let val = 0;
+	try {
+		val = this.getFloat32(this.getPosition());
+	} catch (error) {
+		console.error(error);
+	}
+	this.addPosition(4);
+	return val;
+}
+
+DataView.prototype.readFloat64 = function () { //byte
+	let val = 0;
+	try {
+		val = this.getFloat64(this.getPosition());
+	} catch (error) {
+		console.error(error);
+	}
+	this.addPosition(8);
+	return val;
+}
+
 DataView.prototype.readUint8 = function () { //byte
 	let val = 0;
 	try {
@@ -3661,6 +3683,400 @@ class FramemapDefinition {
 
 }
 
+class AnimayaSkeleton {
+    constructor(var1, bonesCount) {
+        this.bones = new Array(bonesCount);
+        this.field1981 = var1.readUint8();
+
+        for (let i = 0; i < this.bones.length; ++i) {
+            this.bones[i] = new Bone(this.field1981, var1, false);
+        }
+
+        this.attachBones();
+    }
+
+    attachBones() {
+        let bones = this.bones;
+
+        for (let i = 0; i < bones.length; ++i) {
+            let bone = bones[i];
+            if (bone.id >= 0) {
+                bone.childBone = this.bones[bone.id];
+            }
+        }
+    }
+
+    getBone(index) {
+        return index >= this.bones.length ? null : this.bones[index];
+    }
+}
+
+class Bone {
+    constructor(size, buffer, var3) {
+        this.field1179 = true;
+        this.field1180 = new FramemapLoader_Matrix();
+        this.field1186 = true;
+        this.field1187 = new FramemapLoader_Matrix()
+        this.field1189 = new FramemapLoader_Matrix();
+        this.id = buffer.readInt16();
+        this.field1182 = new Array(size);
+        this.field1183 = new Array(size);
+        this.field1188 = new Array(size);
+        this.field1181 = new Array(size);
+
+        for (let var4 = 0; var4 < size; ++var4) {
+            this.field1182[var4] = new FramemapLoader_Matrix(buffer, var3);
+
+            this.field1181[var4] = new Array(3);
+            this.field1181[var4][0] = buffer.readFloat32();
+            this.field1181[var4][1] = buffer.readFloat32();
+            this.field1181[var4][2] = buffer.readFloat32();
+        }
+        this.method683();
+    }
+
+    method677() {
+        return this.field1189;
+    }
+
+    method678(var1) {
+        if (this.field1179) {
+            this.field1180.copy(this.method685(var1));
+            this.field1180.method2175(this.method680());
+            this.field1179 = false;
+        }
+
+        return this.field1180;
+    }
+
+    method680() {
+        if (this.field1186) {
+            this.field1187.copy(this.method677());
+            if (this.field1192 != null) {
+                this.field1187.method2175(this.field1192.method680());
+            }
+
+            this.field1186 = false;
+        }
+
+        return this.field1187;
+    }
+
+    method683() {
+        this.field1190 = new Array(this.field1182.length).fill().map(x => new Array(3));
+        this.field1191 = new Array(this.field1182.length).fill().map(x => new Array(3));
+        this.field1185 = new Array(this.field1182.length).fill().map(x => new Array(3));
+        let var2 = FramemapLoader_Matrix.field3775;
+        let var1;
+        if (FramemapLoader_Matrix.field3777 == 0) {
+            var1 = new FramemapLoader_Matrix();
+        } else {
+            FramemapLoader_Matrix.field3775[--FramemapLoader_Matrix.field3777].identity();
+            var1 = FramemapLoader_Matrix.field3775[FramemapLoader_Matrix.field3777];
+        }
+
+        let var7 = var1;
+
+        for (let var5 = 0; var5 < this.field1182.length; ++var5) {
+            let var4 = this.field1182[var5];
+            var7.copy(var4);
+            var7.method2181();
+            this.field1190[var5] = var7.method2174();
+            this.field1191[var5][0] = var4.matrixVals[12];
+            this.field1191[var5][1] = var4.matrixVals[13];
+            this.field1191[var5][2] = var4.matrixVals[14];
+            this.field1185[var5] = var4.method2183();
+        }
+
+        var7.method2172();
+    }
+
+    method675(var1) {
+        return this.field1182[var1];
+    }
+
+    method684(var1) {
+        if (this.field1183[var1] == null) {
+            this.field1183[var1] = new FramemapLoader_Matrix(this.method675(var1));
+            if (this.field1192 != null) {
+                this.field1183[var1].method2175(this.field1192.method684(var1));
+            } else {
+                this.field1183[var1].method2175(FramemapLoader_Matrix.field3779);
+            }
+        }
+
+        return this.field1183[var1];
+    }
+
+    method685(var1) {
+        if (this.field1188[var1] == null || this.field1188[var1] == undefined) {
+            this.field1188[var1] = new FramemapLoader_Matrix(this.method684(var1));
+            this.field1188[var1].method2181();
+        }
+
+        return this.field1188[var1];
+    }
+}
+class class415 {
+    constructor(var1, var2, var3) {
+        this.field3768 = var1;
+        this.field3767 = var2;
+        this.field3766 = var3;
+    }
+
+    method2166() {
+        return Math.sqrt(this.field3766 * this.field3766 + this.field3767 * this.field3767 + this.field3768 * this.field3768);
+    }
+}
+
+class FramemapLoader_Matrix {
+    static field3775 = new Array(0);
+    static field3777 = 0;
+    static field3779 = new FramemapLoader_Matrix();
+
+    constructor(var1, var2) {
+        this.matrixVals = new Array(16);
+        if (var1 == undefined && var2 == undefined) {
+            this.identity();
+            return;
+        }
+
+        if (var2 == undefined) {
+            this.copy(var1);
+            return;
+        }
+
+        if (var2) {
+            var3 = new class418();
+            let var6 = var1.readInt16();
+            var6 &= 16383;
+            let var5 = (6.283185307179586 * (var6 / 16384.0));
+            var3.method2189(var5);
+            let var9 = var1.readInt16();
+            var9 &= 16383;
+            let var8 = (6.283185307179586 * (var9 / 16384.0));
+            var3.method2192(var8);
+            let var12 = var1.readInt16();
+            var12 &= 16383;
+            let var11 = (var12 / 16384.0) * 6.283185307179586;
+            var3.method2190(var11);
+            var3.method2191(var1.readInt16(), var1.readInt16(), var1.readInt16());
+            this.method2179(var3);
+        } else {
+            for (let var13 = 0; var13 < 16; ++var13) {
+                this.matrixVals[var13] = var1.readFloat32();
+            }
+        }
+    }
+
+    add(otherMatrix) {
+        for (let var2 = 0; var2 < this.matrixVals.length; ++var2) {
+            this.matrixVals[var2] += otherMatrix.matrixVals[var2];
+        }
+    }
+
+    scaleUniform(var1) {
+        this.scale(var1, var1, var1);
+    }
+
+    scale(var1, var2, var3) {
+        this.identity();
+        this.matrixVals[0] = var1;
+        this.matrixVals[5] = var2;
+        this.matrixVals[10] = var3;
+    }
+
+    method2172() {
+        if (this.field3777 < this.field3776 - 1) {
+            this.field3775[++this.field3777 - 1] = this;
+        }
+    }
+
+    method2183() {
+        let var1 = new Array(3);
+        let var2 = new class415(this.matrixVals[0], this.matrixVals[1], this.matrixVals[2]);
+        let var3 = new class415(this.matrixVals[4], this.matrixVals[5], this.matrixVals[6]);
+        let var4 = new class415(this.matrixVals[8], this.matrixVals[9], this.matrixVals[10]);
+        var1[0] = var2.method2166();
+        var1[1] = var3.method2166();
+        var1[2] = var4.method2166();
+        return var1;
+    }
+
+    copy(otherMatrix) {
+        if (otherMatrix == undefined) {
+            debugger;
+        }
+        for (let i = 0; i < 16; i++) {
+            this.matrixVals[i] = otherMatrix.matrixVals[i];
+        }
+    }
+
+    identity() {
+        this.matrixVals = new Array(16);
+        this.matrixVals[0] = 1.0;
+        this.matrixVals[1] = 0.0;
+        this.matrixVals[2] = 0.0;
+        this.matrixVals[3] = 0.0;
+        this.matrixVals[4] = 0.0;
+        this.matrixVals[5] = 1.0;
+        this.matrixVals[6] = 0.0;
+        this.matrixVals[7] = 0.0;
+        this.matrixVals[8] = 0.0;
+        this.matrixVals[9] = 0.0;
+        this.matrixVals[10] = 1.0;
+        this.matrixVals[11] = 0.0;
+        this.matrixVals[12] = 0.0;
+        this.matrixVals[13] = 0.0;
+        this.matrixVals[14] = 0.0;
+        this.matrixVals[15] = 1.0;
+    }
+
+    zero() {
+        this.matrixVals[0] = 0.0;
+        this.matrixVals[1] = 0.0;
+        this.matrixVals[2] = 0.0;
+        this.matrixVals[3] = 0.0;
+        this.matrixVals[4] = 0.0;
+        this.matrixVals[5] = 0.0;
+        this.matrixVals[6] = 0.0;
+        this.matrixVals[7] = 0.0;
+        this.matrixVals[8] = 0.0;
+        this.matrixVals[9] = 0.0;
+        this.matrixVals[10] = 0.0;
+        this.matrixVals[11] = 0.0;
+        this.matrixVals[12] = 0.0;
+        this.matrixVals[13] = 0.0;
+        this.matrixVals[14] = 0.0;
+        this.matrixVals[15] = 0.0;
+    }
+
+    method2175(var1) {
+        if (var1 == undefined) {
+            debugger;
+        }
+        let var2 = var1.matrixVals[0] * this.matrixVals[0] + var1.matrixVals[4] * this.matrixVals[1] + var1.matrixVals[8] * this.matrixVals[2] + var1.matrixVals[12] * this.matrixVals[3];
+        let var3 = this.matrixVals[3] * var1.matrixVals[13] + this.matrixVals[1] * var1.matrixVals[5] + this.matrixVals[0] * var1.matrixVals[1] + var1.matrixVals[9] * this.matrixVals[2];
+        let var4 = this.matrixVals[3] * var1.matrixVals[14] + var1.matrixVals[2] * this.matrixVals[0] + var1.matrixVals[6] * this.matrixVals[1] + this.matrixVals[2] * var1.matrixVals[10];
+        let var5 = this.matrixVals[3] * var1.matrixVals[15] + this.matrixVals[2] * var1.matrixVals[11] + this.matrixVals[0] * var1.matrixVals[3] + var1.matrixVals[7] * this.matrixVals[1];
+        let var6 = this.matrixVals[7] * var1.matrixVals[12] + this.matrixVals[6] * var1.matrixVals[8] + var1.matrixVals[0] * this.matrixVals[4] + this.matrixVals[5] * var1.matrixVals[4];
+        let var7 = this.matrixVals[5] * var1.matrixVals[5] + this.matrixVals[4] * var1.matrixVals[1] + var1.matrixVals[9] * this.matrixVals[6] + this.matrixVals[7] * var1.matrixVals[13];
+        let var8 = var1.matrixVals[14] * this.matrixVals[7] + var1.matrixVals[10] * this.matrixVals[6] + var1.matrixVals[6] * this.matrixVals[5] + var1.matrixVals[2] * this.matrixVals[4];
+        let var9 = var1.matrixVals[11] * this.matrixVals[6] + this.matrixVals[5] * var1.matrixVals[7] + this.matrixVals[4] * var1.matrixVals[3] + this.matrixVals[7] * var1.matrixVals[15];
+        let var10 = this.matrixVals[9] * var1.matrixVals[4] + var1.matrixVals[0] * this.matrixVals[8] + this.matrixVals[10] * var1.matrixVals[8] + this.matrixVals[11] * var1.matrixVals[12];
+        let var11 = var1.matrixVals[13] * this.matrixVals[11] + this.matrixVals[10] * var1.matrixVals[9] + var1.matrixVals[5] * this.matrixVals[9] + var1.matrixVals[1] * this.matrixVals[8];
+        let var12 = this.matrixVals[11] * var1.matrixVals[14] + var1.matrixVals[6] * this.matrixVals[9] + var1.matrixVals[2] * this.matrixVals[8] + this.matrixVals[10] * var1.matrixVals[10];
+        let var13 = var1.matrixVals[15] * this.matrixVals[11] + var1.matrixVals[3] * this.matrixVals[8] + this.matrixVals[9] * var1.matrixVals[7] + this.matrixVals[10] * var1.matrixVals[11];
+        let var14 = this.matrixVals[14] * var1.matrixVals[8] + this.matrixVals[12] * var1.matrixVals[0] + this.matrixVals[13] * var1.matrixVals[4] + var1.matrixVals[12] * this.matrixVals[15];
+        let var15 = var1.matrixVals[13] * this.matrixVals[15] + this.matrixVals[12] * var1.matrixVals[1] + this.matrixVals[13] * var1.matrixVals[5] + var1.matrixVals[9] * this.matrixVals[14];
+        let var16 = this.matrixVals[15] * var1.matrixVals[14] + var1.matrixVals[2] * this.matrixVals[12] + var1.matrixVals[6] * this.matrixVals[13] + this.matrixVals[14] * var1.matrixVals[10];
+        let var17 = this.matrixVals[15] * var1.matrixVals[15] + this.matrixVals[14] * var1.matrixVals[11] + this.matrixVals[13] * var1.matrixVals[7] + this.matrixVals[12] * var1.matrixVals[3];
+        this.matrixVals[0] = var2;
+        this.matrixVals[1] = var3;
+        this.matrixVals[2] = var4;
+        this.matrixVals[3] = var5;
+        this.matrixVals[4] = var6;
+        this.matrixVals[5] = var7;
+        this.matrixVals[6] = var8;
+        this.matrixVals[7] = var9;
+        this.matrixVals[8] = var10;
+        this.matrixVals[9] = var11;
+        this.matrixVals[10] = var12;
+        this.matrixVals[11] = var13;
+        this.matrixVals[12] = var14;
+        this.matrixVals[13] = var15;
+        this.matrixVals[14] = var16;
+        this.matrixVals[15] = var17;
+    }
+
+    method2180() {
+        return this.matrixVals[8] * this.matrixVals[5] * this.matrixVals[3] * this.matrixVals[14] + this.matrixVals[13] * this.matrixVals[10] * this.matrixVals[3] * this.matrixVals[4] + (this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[6] * this.matrixVals[15] + this.matrixVals[14] * this.matrixVals[1] * this.matrixVals[4] * this.matrixVals[11] + (this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[0] * this.matrixVals[7] + this.matrixVals[11] * this.matrixVals[6] * this.matrixVals[0] * this.matrixVals[13] + (this.matrixVals[15] * this.matrixVals[10] * this.matrixVals[5] * this.matrixVals[0] - this.matrixVals[11] * this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[14] - this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[0] * this.matrixVals[6]) - this.matrixVals[0] * this.matrixVals[7] * this.matrixVals[10] * this.matrixVals[13] - this.matrixVals[1] * this.matrixVals[4] * this.matrixVals[10] * this.matrixVals[15]) - this.matrixVals[12] * this.matrixVals[6] * this.matrixVals[1] * this.matrixVals[11] - this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[14] + this.matrixVals[12] * this.matrixVals[10] * this.matrixVals[7] * this.matrixVals[1] + this.matrixVals[2] * this.matrixVals[4] * this.matrixVals[9] * this.matrixVals[15] - this.matrixVals[13] * this.matrixVals[11] * this.matrixVals[4] * this.matrixVals[2] - this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[8] * this.matrixVals[15] + this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[5] * this.matrixVals[2] + this.matrixVals[13] * this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[8] - this.matrixVals[7] * this.matrixVals[2] * this.matrixVals[9] * this.matrixVals[12] - this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[3] * this.matrixVals[9]) - this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[10] * this.matrixVals[12] - this.matrixVals[13] * this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[8] + this.matrixVals[9] * this.matrixVals[6] * this.matrixVals[3] * this.matrixVals[12];
+    }
+
+    method2181() {
+        const var1 = 1.0 / this.method2180();
+        const var2 = var1 * (this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[11] + (this.matrixVals[10] * this.matrixVals[5] * this.matrixVals[15] - this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[5] - this.matrixVals[6] * this.matrixVals[9] * this.matrixVals[15]) + this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[14] - this.matrixVals[13] * this.matrixVals[10] * this.matrixVals[7]);
+        const var3 = var1 * (this.matrixVals[13] * this.matrixVals[10] * this.matrixVals[3] + (this.matrixVals[10] * -this.matrixVals[1] * this.matrixVals[15] + this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[1] + this.matrixVals[9] * this.matrixVals[2] * this.matrixVals[15] - this.matrixVals[13] * this.matrixVals[11] * this.matrixVals[2] - this.matrixVals[3] * this.matrixVals[9] * this.matrixVals[14]));
+        const var4 = (this.matrixVals[15] * this.matrixVals[1] * this.matrixVals[6] - this.matrixVals[14] * this.matrixVals[7] * this.matrixVals[1] - this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[15] + this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[13] + this.matrixVals[5] * this.matrixVals[3] * this.matrixVals[14] - this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[3]) * var1;
+        const var5 = (this.matrixVals[9] * this.matrixVals[6] * this.matrixVals[3] + (this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[11] + this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[10] + this.matrixVals[11] * this.matrixVals[6] * -this.matrixVals[1] - this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[2] - this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[10])) * var1;
+        const var6 = (this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[15] + this.matrixVals[15] * -this.matrixVals[4] * this.matrixVals[10] + this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[11] - this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[6] - this.matrixVals[7] * this.matrixVals[8] * this.matrixVals[14] + this.matrixVals[12] * this.matrixVals[10] * this.matrixVals[7]) * var1;
+        const var7 = var1 * (this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[14] + this.matrixVals[2] * this.matrixVals[11] * this.matrixVals[12] + (this.matrixVals[10] * this.matrixVals[0] * this.matrixVals[15] - this.matrixVals[0] * this.matrixVals[11] * this.matrixVals[14] - this.matrixVals[15] * this.matrixVals[8] * this.matrixVals[2]) - this.matrixVals[3] * this.matrixVals[10] * this.matrixVals[12]);
+        const var8 = var1 * (this.matrixVals[2] * this.matrixVals[4] * this.matrixVals[15] + this.matrixVals[15] * this.matrixVals[6] * -this.matrixVals[0] + this.matrixVals[7] * this.matrixVals[0] * this.matrixVals[14] - this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[2] - this.matrixVals[14] * this.matrixVals[3] * this.matrixVals[4] + this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[12]);
+        const var9 = (this.matrixVals[4] * this.matrixVals[3] * this.matrixVals[10] + this.matrixVals[11] * this.matrixVals[0] * this.matrixVals[6] - this.matrixVals[10] * this.matrixVals[7] * this.matrixVals[0] - this.matrixVals[11] * this.matrixVals[4] * this.matrixVals[2] + this.matrixVals[8] * this.matrixVals[2] * this.matrixVals[7] - this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[6]) * var1;
+        const var10 = (this.matrixVals[13] * this.matrixVals[7] * this.matrixVals[8] + this.matrixVals[11] * this.matrixVals[5] * this.matrixVals[12] + (this.matrixVals[9] * this.matrixVals[4] * this.matrixVals[15] - this.matrixVals[4] * this.matrixVals[11] * this.matrixVals[13] - this.matrixVals[15] * this.matrixVals[5] * this.matrixVals[8]) - this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[9]) * var1;
+        const var11 = (this.matrixVals[3] * this.matrixVals[9] * this.matrixVals[12] + (this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[15] + this.matrixVals[9] * -this.matrixVals[0] * this.matrixVals[15] + this.matrixVals[11] * this.matrixVals[0] * this.matrixVals[13] - this.matrixVals[1] * this.matrixVals[11] * this.matrixVals[12] - this.matrixVals[13] * this.matrixVals[3] * this.matrixVals[8])) * var1;
+        const var12 = (this.matrixVals[15] * this.matrixVals[5] * this.matrixVals[0] - this.matrixVals[0] * this.matrixVals[7] * this.matrixVals[13] - this.matrixVals[1] * this.matrixVals[4] * this.matrixVals[15] + this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[12] + this.matrixVals[13] * this.matrixVals[4] * this.matrixVals[3] - this.matrixVals[12] * this.matrixVals[5] * this.matrixVals[3]) * var1;
+        const var13 = var1 * (this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[8] + (this.matrixVals[11] * this.matrixVals[4] * this.matrixVals[1] + -this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[11] + this.matrixVals[7] * this.matrixVals[0] * this.matrixVals[9] - this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[8] - this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[9]));
+        const var14 = var1 * (this.matrixVals[14] * this.matrixVals[9] * -this.matrixVals[4] + this.matrixVals[13] * this.matrixVals[4] * this.matrixVals[10] + this.matrixVals[8] * this.matrixVals[5] * this.matrixVals[14] - this.matrixVals[12] * this.matrixVals[10] * this.matrixVals[5] - this.matrixVals[8] * this.matrixVals[6] * this.matrixVals[13] + this.matrixVals[12] * this.matrixVals[9] * this.matrixVals[6]);
+        const var15 = (this.matrixVals[14] * this.matrixVals[0] * this.matrixVals[9] - this.matrixVals[13] * this.matrixVals[0] * this.matrixVals[10] - this.matrixVals[14] * this.matrixVals[8] * this.matrixVals[1] + this.matrixVals[12] * this.matrixVals[1] * this.matrixVals[10] + this.matrixVals[2] * this.matrixVals[8] * this.matrixVals[13] - this.matrixVals[12] * this.matrixVals[2] * this.matrixVals[9]) * var1;
+        const var16 = var1 * (this.matrixVals[14] * this.matrixVals[1] * this.matrixVals[4] + this.matrixVals[5] * -this.matrixVals[0] * this.matrixVals[14] + this.matrixVals[6] * this.matrixVals[0] * this.matrixVals[13] - this.matrixVals[12] * this.matrixVals[6] * this.matrixVals[1] - this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[13] + this.matrixVals[12] * this.matrixVals[2] * this.matrixVals[5]);
+        const var17 = (this.matrixVals[9] * this.matrixVals[2] * this.matrixVals[4] + this.matrixVals[1] * this.matrixVals[6] * this.matrixVals[8] + (this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[10] - this.matrixVals[0] * this.matrixVals[6] * this.matrixVals[9] - this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[10]) - this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[8]) * var1;
+        this.matrixVals[0] = var2;
+        this.matrixVals[1] = var3;
+        this.matrixVals[2] = var4;
+        this.matrixVals[3] = var5;
+        this.matrixVals[4] = var6;
+        this.matrixVals[5] = var7;
+        this.matrixVals[6] = var8;
+        this.matrixVals[7] = var9;
+        this.matrixVals[8] = var10;
+        this.matrixVals[9] = var11;
+        this.matrixVals[10] = var12;
+        this.matrixVals[11] = var13;
+        this.matrixVals[12] = var14;
+        this.matrixVals[13] = var15;
+        this.matrixVals[14] = var16;
+        this.matrixVals[15] = var17;
+    }
+
+    method2174() {
+        let var1 = new Array()
+        var1.push(-Math.asin(this.matrixVals[6]));
+        var1.push(0.0);
+        var1.push(0.0);
+        let var2 = Math.cos(var1[0]);
+        let var4;
+        let var6;
+        if (Math.abs(var2) > 0.005) {
+            var4 = this.matrixVals[2];
+            var6 = this.matrixVals[10];
+            let var8 = this.matrixVals[4];
+            let var10 = this.matrixVals[5];
+            var1[1] = Math.atan2(var4, var6);
+            var1[2] = Math.atan2(var8, var10);
+        } else {
+            var4 = this.matrixVals[1];
+            var6 = this.matrixVals[0];
+            if (this.matrixVals[6] < 0.0) {
+                var1[1] = Math.atan2(var4, var6);
+            } else {
+                var1[1] = (-Math.atan2(var4, var6));
+            }
+
+            var1[2] = 0.0;
+        }
+
+        return var1;
+    }
+}
+
+class class418 {
+    constructor() {
+        this.field3780 = 0.0;
+        this.field3790 = 0.0;
+        this.field3789 = 0.0;
+        this.field3788 = 0.0;
+        this.field3787 = 0.0;
+        this.field3786 = 0.0;
+        this.field3783 = 0.0;
+        this.field3782 = 0.0;
+        this.field3781 = 0.0;
+        this.field3791 = 1.0;
+        this.field3784 = 1.0;
+        this.field3785 = 1.0;
+    }
+}
+
 class FramemapLoader {
 
     load(bytes, id) {
@@ -3684,6 +4100,13 @@ class FramemapLoader {
                 def.frameMaps[i][j] = dataview.readUint8();
             }
         }
+
+        if (dataview.getPosition() < dataview.byteLength) {
+            let var4 = dataview.readUint16();
+            if (var4 > 0) {
+                def.animayaSkeleton = new AnimayaSkeleton(dataview, var4);
+            }
+        }
         return def;
     }
 }
@@ -3705,6 +4128,31 @@ class FramesLoader {
 
         let framemapArchiveIndex = inview.readUint16();
         let length = inview.readUint8();
+
+
+        let animFormat = dataview.readUint8();
+        let skeletonId = dataview.readUint16();
+
+        //console.log(animFormat, skeletonId);
+        if (animFormat == 1) { //new animmaya system
+
+            return cache.getFile(cacheTypes_IndexType.FRAMEMAPS.id, skeletonId).then((framemap) => {
+                framemap = framemap.def;
+                //console.log(framemap);
+
+                dataview.readUint16();
+                dataview.readUint16();
+                def.field1264 = dataview.readUint8();
+                let var3 = dataview.readUint16();
+                this.field1267 = new Array(framemap.animayaSkeleton.bones.length);
+                this.field1266 = new Array(framemap.count);
+                let var4 = new Array(var3);
+                def.framemap = framemap;
+
+                return def;
+            });
+        }
+
 
         dataview.setPosition(3 + length);
 
@@ -5611,7 +6059,7 @@ class ModelLoader {
 
 
 
-const IndexType = { 
+const IndexType_IndexType = { 
     FRAMES:{id: 0, loader: FramesLoader},       // Animations
     FRAMEMAPS:{id: 1, loader: FramemapLoader},  // Skeletons
     CONFIGS:{id: 2, loader: undefined},         // Configs
@@ -5635,18 +6083,18 @@ const IndexType = {
     UKNOWN4:{id: 20, loader: undefined},        // World Map Ground           
 
     valueOf(id){
-        var values = Object.values(IndexType);
-        var keys = Object.keys(IndexType);
+        var values = Object.values(IndexType_IndexType);
+        var keys = Object.keys(IndexType_IndexType);
         for(var i=0;i<values.length;i++) {
             if(id == values[i].id)
-                return IndexType[keys[i]];
+                return IndexType_IndexType[keys[i]];
         }
         return undefined;
     }
 };
-Object.freeze(IndexType);
+Object.freeze(IndexType_IndexType);
 
-/* harmony default export */ const cacheTypes_IndexType = (IndexType);
+/* harmony default export */ const cacheTypes_IndexType = (IndexType_IndexType);
 ;// CONCATENATED MODULE: ./src/cacheReader/loaders/KitLoader.js
 class KitDefinition {
 		
@@ -6665,7 +7113,7 @@ class UnderlayLoader {
 
 
 
-const ConfigType = { 
+const ConfigType_ConfigType = { 
     UNDERLAY: {id: 1, loader: UnderlayLoader}, 		//Underlay
 	UNKNOWN2: {id: 2, loader: undefined},			//
 	IDENTKIT: {id: 3, loader: KitLoader},			//Kit
@@ -6706,18 +7154,18 @@ const ConfigType = {
 
 
 	valueOf(id){
-        var values = Object.values(ConfigType);
-        var keys = Object.keys(ConfigType);
+        var values = Object.values(ConfigType_ConfigType);
+        var keys = Object.keys(ConfigType_ConfigType);
         for(var i=0;i<values.length;i++) {
             if(id == values[i].id)
-                return ConfigType[keys[i]];
+                return ConfigType_ConfigType[keys[i]];
         }
         return undefined;
     }
 }
-Object.freeze(ConfigType);
+Object.freeze(ConfigType_ConfigType);
 
-/* harmony default export */ const cacheTypes_ConfigType = (ConfigType);
+/* harmony default export */ const cacheTypes_ConfigType = (ConfigType_ConfigType);
 ;// CONCATENATED MODULE: ./src/cacheReader/CacheDefinitionLoader.js
 
 
@@ -7549,55 +7997,149 @@ class RSCache {
 
 
 
-/*
-var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 
+
+//var cache = new RSCache("./", (x) => { console.log(x) }, "./");
+
+/*
 cache.onload.then(() => {
   console.log(cache);
-  cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.OBJECT.id).then(objs => {
-    console.log(objs);
-  });
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 2042).then(zulrah => {
-    console.log(zulrah);
-  });
-  
 
-  for(let i=3900;i<5934;i++){
-    cache.getFile(IndexType.MAPS.id, i).then(x => {
-      //console.log(x);
-      //if(x.def == undefined) console.log(i, x);
-			//if(x.def.regionX == 50 && x.def.regionY == 53) console.log(x);
-		});
-	}
+  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 12077).then(npc => {
+    cache.getFile(IndexType.MODELS.id, npc.def.models[0]).then(model => {
+      console.log(model);
+      playAnimation(model.def, 9536);
+    });
+  });
 });
 */
+
+function newAnimate(model, animayaSkeleton, var2) {
+  model.verticesX = Object.assign([], model.vertexPositionsX);
+  model.verticesY = Object.assign([], model.vertexPositionsY);
+  model.verticesZ = Object.assign([], model.vertexPositionsZ);
+
+  if (model.animayaGroups != null) {
+    for (let vertexIndex = 0; vertexIndex < model.vertexCount; ++vertexIndex) {
+      let bones = model.animayaGroups[vertexIndex];
+      if (bones != null && bones.length != 0) {
+        let scales = model.animayaScales[vertexIndex];
+
+        let matrix = new Matrix();
+        matrix.zero();
+
+        for (let i = 0; i < bones.length; ++i) {
+          let boneIndex = bones[i];
+          let bone = animayaSkeleton.getBone(boneIndex);
+          if (bone != null) {
+            let matrix2 = new Matrix();
+            let matrix3 = new Matrix();
+
+            matrix2.scaleUniform(scales[i] / 255);
+            matrix3.copy(bone.method678(var2));
+            matrix3.method2175(matrix2);
+            matrix.add(matrix3);
+          }
+        }
+
+        method1283(model, vertexIndex, matrix);
+      }
+    }
+    console.log(model);
+  }
+}
+
+function method1283(model, var1, var2) {
+  let var3 = model.verticesX[var1];
+  let var4 = (-model.verticesY[var1]);
+  let var5 = (-model.verticesZ[var1]);
+  let var6 = 1.0;
+  model.verticesX[var1] = var2.matrixVals[0] * var3 + var2.matrixVals[4] * var4 + var2.matrixVals[8] * var5 + var2.matrixVals[12] * var6;
+  model.verticesY[var1] = -(var2.matrixVals[1] * var3 + var2.matrixVals[5] * var4 + var2.matrixVals[9] * var5 + var2.matrixVals[13] * var6);
+  model.verticesZ[var1] = -(var2.matrixVals[2] * var3 + var2.matrixVals[6] * var4 + var2.matrixVals[10] * var5 + var2.matrixVals[14] * var6);
+}
+
+function playAnimation(model, id) {
+  return cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, id).then(animationInfo => {
+    console.log(animationInfo);
+    if (animationInfo.def.animMayaID != undefined && animationInfo.def.animMayaID >= 0) {
+      let var7 = animationInfo.def.animMayaID;
+
+      /*
+      for (let i = 0; i < 2112; i++) {
+        cache.getAllFiles(IndexType.FRAMEMAPS.id, i);
+      }
+      */
+
+      return cache.getAllFiles(IndexType.FRAMES.id, var7 >> 16).then(framesInfo => {
+        //this line is the same as making a new class133
+        //var6 = Login.method425(SequenceDefinition_animationsArchive, class16.SequenceDefinition_skeletonsArchive, var7, false);
+        console.log(framesInfo);
+
+        newAnimate(model, framesInfo[0].def.framemap.animayaSkeleton, framesInfo[0].def.field1264)
+        /*
+                      if (var3 == null) {
+                          return var1.toSharedSequenceModel(true);
+                      } else {
+                         Model var9 = var1.toSharedSequenceModel(!var3.method720());
+                          var9.method1285(var3, var2);
+                          return var9;
+                      }
+                      */
+      });
+    } else { //no animMaya - old way kind of
+      var shiftedId = (animationInfo.def.frameIDs[0] >> 16);
+      return cache.getAllFiles(IndexType.FRAMES.id, shiftedId).then(frameInfo => {
+        console.log(frameInfo);
+        var frameDefs = frameInfo.map(x => {
+          x.def.id = x.id;
+          return x.def;
+        });
+        //renderer.scene[0].loadAnimation(animationInfo.def, frameDefs);
+      });
+    }
+  });
+}
+
+
 /*
-  console.log(cache);
-  cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id).then(zulrah => {
-    console.log(zulrah);
+
+for(let i=3900;i<5934;i++){
+  cache.getFile(IndexType.MAPS.id, i).then(x => {
+    //console.log(x);
+    //if(x.def == undefined) console.log(i, x);
+    //if(x.def.regionX == 50 && x.def.regionY == 53) console.log(x);
   });
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(zulrah => {
-    console.log(zulrah);
-  });
-  */
+}
+});
+*
+/*
+console.log(cache);
+cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id).then(zulrah => {
+  console.log(zulrah);
+});
+cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(zulrah => {
+  console.log(zulrah);
+});
+*/
   //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
   // cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
   //42852
-  /*
-  for(let i=0;i<10;i++){
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 1300+i).then(object => {
-    console.log(object);
-  });
+/*
+for(let i=0;i<10;i++){
+cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 1300+i).then(object => {
+  console.log(object);
+});
 }
 */
-  /*
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => {console.log(x)});
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => {console.log(x)});
-  cache.getFile(IndexType.MAPS.id, 4).then(x => {
-    console.log(x);
-    //for (let i = 0; i < x.def.models.length; i++)
-    //  cache.getFile(IndexType.MODELS.id, x.def.models[i], 0, false).then(y => console.log(y))
-  });
+/*
+cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => {console.log(x)});
+cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => {console.log(x)});
+cache.getFile(IndexType.MAPS.id, 4).then(x => {
+  console.log(x);
+  //for (let i = 0; i < x.def.models.length; i++)
+  //  cache.getFile(IndexType.MODELS.id, x.def.models[i], 0, false).then(y => console.log(y))
+});
 });
 */
 

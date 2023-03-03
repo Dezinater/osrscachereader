@@ -16,6 +16,31 @@ export default class FramesLoader {
         let framemapArchiveIndex = inview.readUint16();
         let length = inview.readUint8();
 
+
+        let animFormat = dataview.readUint8();
+        let skeletonId = dataview.readUint16();
+
+        //console.log(animFormat, skeletonId);
+        if (animFormat == 1) { //new animmaya system
+
+            return cache.getFile(IndexType.FRAMEMAPS.id, skeletonId).then((framemap) => {
+                framemap = framemap.def;
+                //console.log(framemap);
+
+                dataview.readUint16();
+                dataview.readUint16();
+                def.field1264 = dataview.readUint8();
+                let var3 = dataview.readUint16();
+                this.field1267 = new Array(framemap.animayaSkeleton.bones.length);
+                this.field1266 = new Array(framemap.count);
+                let var4 = new Array(var3);
+                def.framemap = framemap;
+
+                return def;
+            });
+        }
+
+
         dataview.setPosition(3 + length);
 
         def.indexFrameIds = [];

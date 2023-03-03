@@ -19,6 +19,28 @@ DataView.prototype.getPosition = function () {
 	return this.pos;
 }
 
+DataView.prototype.readFloat32 = function () { //byte
+	let val = 0;
+	try {
+		val = this.getFloat32(this.getPosition());
+	} catch (error) {
+		console.error(error);
+	}
+	this.addPosition(4);
+	return val;
+}
+
+DataView.prototype.readFloat64 = function () { //byte
+	let val = 0;
+	try {
+		val = this.getFloat64(this.getPosition());
+	} catch (error) {
+		console.error(error);
+	}
+	this.addPosition(8);
+	return val;
+}
+
 DataView.prototype.readUint8 = function () { //byte
 	let val = 0;
 	try {
