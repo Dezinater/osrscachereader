@@ -176,7 +176,7 @@ export default class FramesLoader {
         let animFormat = dataview.readUint8();
         let skeletonId = dataview.readUint16();
 
-        //console.log(animFormat, skeletonId);
+        console.log(animFormat, skeletonId);
         if (animFormat == 1) { //new animmaya system
 
             return cache.getFile(IndexType.FRAMEMAPS.id, skeletonId).then((framemap) => {
@@ -232,7 +232,7 @@ export default class FramesLoader {
         }
 
 
-        //dataview.setPosition(3 + length);
+        dataview.setPosition(3 + length);
 
         def.indexFrameIds = [];
         def.translator_x = [];
