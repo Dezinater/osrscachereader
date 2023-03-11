@@ -28,7 +28,13 @@ class AnimayaSkeleton {
     getBone(index) {
         return index >= this.bones.length ? null : this.bones[index];
     }
+
+    getAllBones() {
+        return this.bones;
+    }
 }
+
+let boneValues = {};
 
 class Bone {
     constructor(size, buffer, var3) {
@@ -50,9 +56,27 @@ class Bone {
             this.field1181[var4][0] = buffer.readFloat32();
             this.field1181[var4][1] = buffer.readFloat32();
             this.field1181[var4][2] = buffer.readFloat32();
+
+            //this.field1181[var4][0] = buffer.readInt32();
+            //this.field1181[var4][1] = buffer.readInt32();
+            //this.field1181[var4][2] = buffer.readInt32();
+            //console.log(this.field1181[var4][0].toString(2));
+            //console.log(this.field1181[var4][1].toString(2));
+            //console.log(this.field1181[var4][2].toString(2));
+
+            boneValues[this.field1181[var4][0]] = true;
+            boneValues[this.field1181[var4][1]] = true;
+            boneValues[this.field1181[var4][2]] = true;
         }
         this.method683();
+        //console.log(boneValues);
     }
+
+    method676(var1) {
+        this.field1189.copy(var1);
+        this.field1186 = true;
+        this.field1179 = true;
+     }
 
     method677() {
         return this.field1189;
@@ -81,18 +105,20 @@ class Bone {
         return this.field1187;
     }
 
+    method682(var1) {
+        return this.field1191[var1];
+    }
+
+    method679(var1) {
+        return this.field1190[var1];
+    }
+
     method683() {
         this.field1190 = new Array(this.field1182.length).fill().map(x => new Array(3));
         this.field1191 = new Array(this.field1182.length).fill().map(x => new Array(3));
         this.field1185 = new Array(this.field1182.length).fill().map(x => new Array(3));
         let var2 = Matrix.field3775;
-        let var1;
-        if (Matrix.field3777 == 0) {
-            var1 = new Matrix();
-        } else {
-            Matrix.field3775[--Matrix.field3777].identity();
-            var1 = Matrix.field3775[Matrix.field3777];
-        }
+        let var1 = new Matrix();
 
         let var7 = var1;
 
@@ -125,6 +151,10 @@ class Bone {
         }
 
         return this.field1183[var1];
+    }
+
+    method681(var1) {
+        return this.field1185[var1];
     }
 
     method685(var1) {
@@ -220,6 +250,28 @@ export class Matrix {
         var1[1] = var3.method2166();
         var1[2] = var4.method2166();
         return var1;
+    }
+
+    method2178(var1) {
+        let var2 = var1.field3774 * var1.field3774;
+        let var3 = var1.field3771 * var1.field3774;
+        let var4 = var1.field3774 * var1.field3772;
+        let var5 = var1.field3773 * var1.field3774;
+        let var6 = var1.field3771 * var1.field3771;
+        let var7 = var1.field3772 * var1.field3771;
+        let var8 = var1.field3771 * var1.field3773;
+        let var9 = var1.field3772 * var1.field3772;
+        let var10 = var1.field3773 * var1.field3772;
+        let var11 = var1.field3773 * var1.field3773;
+        this.matrixVals[0] = var2 + var6 - var11 - var9;
+        this.matrixVals[1] = var5 + var5 + var7 + var7;
+        this.matrixVals[2] = var8 - var4 - var4 + var8;
+        this.matrixVals[4] = var7 + (var7 - var5 - var5);
+        this.matrixVals[5] = var2 + var9 - var6 - var11;
+        this.matrixVals[6] = var10 + var3 + var10 + var3;
+        this.matrixVals[8] = var4 + var8 + var8 + var4;
+        this.matrixVals[9] = var10 - var3 - var3 + var10;
+        this.matrixVals[10] = var2 + var11 - var9 - var6;
     }
 
     copy(otherMatrix) {
@@ -423,7 +475,9 @@ export default class FramemapLoader {
         if (dataview.getPosition() < dataview.byteLength) {
             let var4 = dataview.readUint16();
             if (var4 > 0) {
+                //console.log(id);
                 def.animayaSkeleton = new AnimayaSkeleton(dataview, var4);
+                //console.log(dataview);
             }
         }
         return def;

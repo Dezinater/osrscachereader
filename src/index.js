@@ -6,107 +6,122 @@ import { Matrix } from './cacheReader/loaders/FramemapLoader.js';
 export { RSCache, IndexType, ConfigType, Matrix };
 
 
-
-//var cache = new RSCache("./", (x) => { console.log(x) }, "./");
-
 /*
+var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 cache.onload.then(() => {
   console.log(cache);
-
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 12077).then(npc => {
-    cache.getFile(IndexType.MODELS.id, npc.def.models[0]).then(model => {
-      console.log(model);
-      playAnimation(model.def, 9536);
+  
+  
+  /*
+    cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 12077).then(npc => {
+        cache.getFile(IndexType.MODELS.id, 47150).then(model => {
+            console.log(model);
+            playAnimation(model.def, 9913);
+        });
     });
+    
   });
-});
-*/
-
+  */
+  
 function newAnimate(model, animayaSkeleton, var2) {
-  model.verticesX = Object.assign([], model.vertexPositionsX);
-  model.verticesY = Object.assign([], model.vertexPositionsY);
-  model.verticesZ = Object.assign([], model.vertexPositionsZ);
+    model.verticesX = Object.assign([], model.vertexPositionsX);
+    model.verticesY = Object.assign([], model.vertexPositionsY);
+    model.verticesZ = Object.assign([], model.vertexPositionsZ);
 
-  if (model.animayaGroups != null) {
-    for (let vertexIndex = 0; vertexIndex < model.vertexCount; ++vertexIndex) {
-      let bones = model.animayaGroups[vertexIndex];
-      if (bones != null && bones.length != 0) {
-        let scales = model.animayaScales[vertexIndex];
+    if (model.animayaGroups != null) {
+        for (let vertexIndex = 0; vertexIndex < model.vertexCount; ++vertexIndex) {
+            let bones = model.animayaGroups[vertexIndex];
+            if (bones != null && bones.length != 0) {
+                let scales = model.animayaScales[vertexIndex];
 
-        let matrix = new Matrix();
-        matrix.zero();
+                let matrix = new Matrix();
+                matrix.zero();
 
-        for (let i = 0; i < bones.length; ++i) {
-          let boneIndex = bones[i];
-          let bone = animayaSkeleton.getBone(boneIndex);
-          if (bone != null) {
-            let matrix2 = new Matrix();
-            let matrix3 = new Matrix();
+                for (let i = 0; i < bones.length; ++i) {
+                    let boneIndex = bones[i];
+                    let bone = animayaSkeleton.getBone(boneIndex);
+                    if (bone != null) {
+                        let matrix2 = new Matrix();
+                        let matrix3 = new Matrix();
 
-            matrix2.scaleUniform(scales[i] / 255);
-            matrix3.copy(bone.method678(var2));
-            matrix3.method2175(matrix2);
-            matrix.add(matrix3);
-          }
+                        matrix2.scaleUniform(scales[i] / 255);
+                        matrix3.copy(bone.method678(var2));
+                        matrix3.method2175(matrix2);
+                        matrix.add(matrix3);
+                    }
+                }
+
+                method1283(model, vertexIndex, matrix);
+            }
         }
-
-        method1283(model, vertexIndex, matrix);
-      }
+        console.log(model);
     }
-    console.log(model);
-  }
 }
 
 function method1283(model, var1, var2) {
-  let var3 = model.verticesX[var1];
-  let var4 = (-model.verticesY[var1]);
-  let var5 = (-model.verticesZ[var1]);
-  let var6 = 1.0;
-  model.verticesX[var1] = var2.matrixVals[0] * var3 + var2.matrixVals[4] * var4 + var2.matrixVals[8] * var5 + var2.matrixVals[12] * var6;
-  model.verticesY[var1] = -(var2.matrixVals[1] * var3 + var2.matrixVals[5] * var4 + var2.matrixVals[9] * var5 + var2.matrixVals[13] * var6);
-  model.verticesZ[var1] = -(var2.matrixVals[2] * var3 + var2.matrixVals[6] * var4 + var2.matrixVals[10] * var5 + var2.matrixVals[14] * var6);
+    let var3 = model.verticesX[var1];
+    let var4 = (-model.verticesY[var1]);
+    let var5 = (-model.verticesZ[var1]);
+    let var6 = 1.0;
+    model.verticesX[var1] = var2.matrixVals[0] * var3 + var2.matrixVals[4] * var4 + var2.matrixVals[8] * var5 + var2.matrixVals[12] * var6;
+    model.verticesY[var1] = -(var2.matrixVals[1] * var3 + var2.matrixVals[5] * var4 + var2.matrixVals[9] * var5 + var2.matrixVals[13] * var6);
+    model.verticesZ[var1] = -(var2.matrixVals[2] * var3 + var2.matrixVals[6] * var4 + var2.matrixVals[10] * var5 + var2.matrixVals[14] * var6);
+}
+
+function method1175(frameDef, field1264, var2) {
+    let var5 = field1264;
+    let var6 = 0;
+    let bones = frameDef.framemap.animayaSkeleton.getAllBones();
+
+    for (let index = 0; index < bones.length; ++index) {
+        let bone = bones[index];
+        frameDef.method721(var2, bone, var6, var5);
+
+        ++var6;
+    }
 }
 
 function playAnimation(model, id) {
-  return cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, id).then(animationInfo => {
-    console.log(animationInfo);
-    if (animationInfo.def.animMayaID != undefined && animationInfo.def.animMayaID >= 0) {
-      let var7 = animationInfo.def.animMayaID;
+    return cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, id).then(animationInfo => {
+        console.log(animationInfo);
+        if (animationInfo.def.animMayaID != undefined && animationInfo.def.animMayaID >= 0) {
+            let var7 = animationInfo.def.animMayaID;
 
-      /*
-      for (let i = 0; i < 2112; i++) {
-        cache.getAllFiles(IndexType.FRAMEMAPS.id, i);
-      }
-      */
+            /*
+            for (let i = 0; i < 2112; i++) {
+              cache.getAllFiles(IndexType.FRAMEMAPS.id, i);
+            }
+            */
 
-      return cache.getAllFiles(IndexType.FRAMES.id, var7 >> 16).then(framesInfo => {
-        //this line is the same as making a new class133
-        //var6 = Login.method425(SequenceDefinition_animationsArchive, class16.SequenceDefinition_skeletonsArchive, var7, false);
-        console.log(framesInfo);
+            return cache.getAllFiles(IndexType.FRAMES.id, var7 >> 16).then(framesInfo => {
+                //this line is the same as making a new class133
+                //var6 = Login.method425(SequenceDefinition_animationsArchive, class16.SequenceDefinition_skeletonsArchive, var7, false);
+                console.log(framesInfo);
 
-        newAnimate(model, framesInfo[0].def.framemap.animayaSkeleton, framesInfo[0].def.field1264)
-        /*
-                      if (var3 == null) {
-                          return var1.toSharedSequenceModel(true);
-                      } else {
-                         Model var9 = var1.toSharedSequenceModel(!var3.method720());
-                          var9.method1285(var3, var2);
-                          return var9;
-                      }
-                      */
-      });
-    } else { //no animMaya - old way kind of
-      var shiftedId = (animationInfo.def.frameIDs[0] >> 16);
-      return cache.getAllFiles(IndexType.FRAMES.id, shiftedId).then(frameInfo => {
-        console.log(frameInfo);
-        var frameDefs = frameInfo.map(x => {
-          x.def.id = x.id;
-          return x.def;
-        });
-        //renderer.scene[0].loadAnimation(animationInfo.def, frameDefs);
-      });
-    }
-  });
+                method1175(framesInfo[0].def, framesInfo[0].def.field1264, animationInfo.def.frameIDs[0]);
+                newAnimate(model, framesInfo[0].def.framemap.animayaSkeleton, framesInfo[0].def.field1264)
+                /*
+                              if (var3 == null) {
+                                  return var1.toSharedSequenceModel(true);
+                              } else {
+                                 Model var9 = var1.toSharedSequenceModel(!var3.method720());
+                                  var9.method1285(var3, var2);
+                                  return var9;
+                              }
+                              */
+            });
+        } else { //no animMaya - old way kind of
+            var shiftedId = (animationInfo.def.frameIDs[0] >> 16);
+            return cache.getAllFiles(IndexType.FRAMES.id, shiftedId).then(frameInfo => {
+                console.log(frameInfo);
+                var frameDefs = frameInfo.map(x => {
+                    x.def.id = x.id;
+                    return x.def;
+                });
+                //renderer.scene[0].loadAnimation(animationInfo.def, frameDefs);
+            });
+        }
+    });
 }
 
 
