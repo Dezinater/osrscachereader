@@ -2,9 +2,10 @@ import IndexType from './cacheTypes/IndexType.js'
 import ConfigType from './cacheTypes/ConfigType.js'
 
 export default class CacheDefinitionLoader {
-	constructor(indexId, archive) {
+	constructor(indexId, archive, options = {}) {
 		this.indexType = IndexType.valueOf(indexId);
 		this.archive = archive;
+		this.options = options;
 		//this.files = files;
 	}
 
@@ -33,7 +34,7 @@ export default class CacheDefinitionLoader {
 				//unload archive file memory to replace it with definition info
 				//if (this.archive.files[i].id > 25000)
 				//	console.log(this.archive.files[i], this.archive.files[i].content.length);
-				let loadPromise = Promise.resolve(loader.load(this.archive.files[i].content, defId, rscache));
+				let loadPromise = Promise.resolve(loader.load(this.archive.files[i].content, defId, rscache, this.options));
 				loadPromise.iterator = i;
 				//map it to a whole new array
 				//otherwise values wil map over themselves

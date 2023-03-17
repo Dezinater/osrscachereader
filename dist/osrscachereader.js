@@ -3340,7 +3340,7 @@ module.exports = function (content, workerConstructor, workerOptions, url) {
 
 /***/ }),
 
-/***/ 275:
+/***/ 423:
 /***/ (() => {
 
 DataView.prototype.addPosition = function (pos) {
@@ -3642,7 +3642,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.d(__webpack_exports__, {
   "ConfigType": () => (/* reexport */ cacheTypes_ConfigType),
   "IndexType": () => (/* reexport */ cacheTypes_IndexType),
-  "Matrix": () => (/* reexport */ FramemapLoader_Matrix),
+  "Matrix": () => (/* reexport */ Matrix),
   "RSCache": () => (/* reexport */ RSCache)
 });
 
@@ -3678,415 +3678,90 @@ function getFileBytes(file) {
     })
   }
 // EXTERNAL MODULE: ./src/cacheReader/helpers/DataView.js
-var helpers_DataView = __webpack_require__(275);
-;// CONCATENATED MODULE: ./src/cacheReader/loaders/FramemapLoader.js
-class FramemapDefinition {
-
-}
-
-class AnimayaSkeleton {
-    constructor(var1, bonesCount) {
-        this.bones = new Array(bonesCount);
-        this.field1981 = var1.readUint8();
-
-        for (let i = 0; i < this.bones.length; ++i) {
-            this.bones[i] = new Bone(this.field1981, var1, false);
-        }
-
-        this.attachBones();
-    }
-
-    attachBones() {
-        let bones = this.bones;
-
-        for (let i = 0; i < bones.length; ++i) {
-            let bone = bones[i];
-            if (bone.id >= 0) {
-                bone.childBone = this.bones[bone.id];
-            }
-        }
-    }
-
-    getBone(index) {
-        return index >= this.bones.length ? null : this.bones[index];
-    }
-
-    getAllBones() {
-        return this.bones;
-    }
-}
-
-let boneValues = {};
-
-class Bone {
-    constructor(size, buffer, var3) {
-        this.field1179 = true;
-        this.field1180 = new FramemapLoader_Matrix();
-        this.field1186 = true;
-        this.field1187 = new FramemapLoader_Matrix()
-        this.field1189 = new FramemapLoader_Matrix();
-        this.id = buffer.readInt16();
-        this.field1182 = new Array(size);
-        this.field1183 = new Array(size);
-        this.field1188 = new Array(size);
-        this.field1181 = new Array(size);
-
-        for (let var4 = 0; var4 < size; ++var4) {
-            this.field1182[var4] = new FramemapLoader_Matrix(buffer, var3);
-
-            this.field1181[var4] = new Array(3);
-            this.field1181[var4][0] = buffer.readFloat32();
-            this.field1181[var4][1] = buffer.readFloat32();
-            this.field1181[var4][2] = buffer.readFloat32();
-
-            //this.field1181[var4][0] = buffer.readInt32();
-            //this.field1181[var4][1] = buffer.readInt32();
-            //this.field1181[var4][2] = buffer.readInt32();
-            //console.log(this.field1181[var4][0].toString(2));
-            //console.log(this.field1181[var4][1].toString(2));
-            //console.log(this.field1181[var4][2].toString(2));
-
-            boneValues[this.field1181[var4][0]] = true;
-            boneValues[this.field1181[var4][1]] = true;
-            boneValues[this.field1181[var4][2]] = true;
-        }
-        this.method683();
-        //console.log(boneValues);
-    }
-
-    method676(var1) {
-        this.field1189.copy(var1);
-        this.field1186 = true;
-        this.field1179 = true;
-     }
-
-    method677() {
-        return this.field1189;
-    }
-
-    method678(var1) {
-        if (this.field1179) {
-            this.field1180.copy(this.method685(var1));
-            this.field1180.method2175(this.method680());
-            this.field1179 = false;
-        }
-
-        return this.field1180;
-    }
-
-    method680() {
-        if (this.field1186) {
-            this.field1187.copy(this.method677());
-            if (this.field1192 != null) {
-                this.field1187.method2175(this.field1192.method680());
-            }
-
-            this.field1186 = false;
-        }
-
-        return this.field1187;
-    }
-
-    method682(var1) {
-        return this.field1191[var1];
-    }
-
-    method679(var1) {
-        return this.field1190[var1];
-    }
-
-    method683() {
-        this.field1190 = new Array(this.field1182.length).fill().map(x => new Array(3));
-        this.field1191 = new Array(this.field1182.length).fill().map(x => new Array(3));
-        this.field1185 = new Array(this.field1182.length).fill().map(x => new Array(3));
-        let var2 = FramemapLoader_Matrix.field3775;
-        let var1 = new FramemapLoader_Matrix();
-
-        let var7 = var1;
-
-        for (let var5 = 0; var5 < this.field1182.length; ++var5) {
-            let var4 = this.field1182[var5];
-            var7.copy(var4);
-            var7.method2181();
-            this.field1190[var5] = var7.method2174();
-            this.field1191[var5][0] = var4.matrixVals[12];
-            this.field1191[var5][1] = var4.matrixVals[13];
-            this.field1191[var5][2] = var4.matrixVals[14];
-            this.field1185[var5] = var4.method2183();
-        }
-
-        var7.method2172();
-    }
-
-    method675(var1) {
-        return this.field1182[var1];
-    }
-
-    method684(var1) {
-        if (this.field1183[var1] == null) {
-            this.field1183[var1] = new FramemapLoader_Matrix(this.method675(var1));
-            if (this.field1192 != null) {
-                this.field1183[var1].method2175(this.field1192.method684(var1));
-            } else {
-                this.field1183[var1].method2175(FramemapLoader_Matrix.field3779);
-            }
-        }
-
-        return this.field1183[var1];
-    }
-
-    method681(var1) {
-        return this.field1185[var1];
-    }
-
-    method685(var1) {
-        if (this.field1188[var1] == null || this.field1188[var1] == undefined) {
-            this.field1188[var1] = new FramemapLoader_Matrix(this.method684(var1));
-            this.field1188[var1].method2181();
-        }
-
-        return this.field1188[var1];
-    }
-}
-class class415 {
+var helpers_DataView = __webpack_require__(423);
+;// CONCATENATED MODULE: ./src/cacheReader/cacheTypes/anim/MatrixTest.js
+class class419 {
     constructor(var1, var2, var3) {
-        this.field3768 = var1;
-        this.field3767 = var2;
-        this.field3766 = var3;
+        this.field3733 = var1;
+        this.field3731 = var2;
+        this.field3734 = var3;
     }
 
-    method2166() {
-        return Math.sqrt(this.field3766 * this.field3766 + this.field3767 * this.field3767 + this.field3768 * this.field3768);
+    method2178() {
+        return Math.sqrt(this.field3731 * this.field3731 + this.field3733 * this.field3733 + this.field3734 * this.field3734);
     }
 }
 
-class FramemapLoader_Matrix {
-    static field3775 = new Array(0);
-    static field3777 = 0;
-    static field3779 = new FramemapLoader_Matrix();
+class Matrix {
+    matrixVals = new Array(16);
+    field3744 = 100;
+
+
+    static field3746 = new Array(0);
+    static field3745;
+    static field3747;
+    static field3746 = new Array(100);
+    static field3745 = 0;
+    static field3747 = new Matrix();
+
 
     constructor(var1, var2) {
-        this.matrixVals = new Array(16);
         if (var1 == undefined && var2 == undefined) {
-            this.identity();
-            return;
-        }
-
-        if (var2 == undefined) {
+            this.method2193();
+        } else if (var2 == undefined) {
             this.copy(var1);
-            return;
+        } else {
+            this.method2198(var1, var2);
         }
+    }
 
+    method2200() {
+        //release pooling
+    }
+
+    method2198(var1, var2) {
         if (var2) {
-            var3 = new class418();
+            let var3 = new class422();
             let var6 = var1.readInt16();
             var6 &= 16383;
-            let var5 = (6.283185307179586 * (var6 / 16384.0));
-            var3.method2189(var5);
+            let var5 = ((var6 / 16384.0) * 6.283185307179586);
+            var3.method2203(var5);
             let var9 = var1.readInt16();
             var9 &= 16383;
-            let var8 = (6.283185307179586 * (var9 / 16384.0));
-            var3.method2192(var8);
+            let var8 = (6.283185307179586 * (double)(var9 / 16384.0));
+            var3.method2204(var8);
             let var12 = var1.readInt16();
             var12 &= 16383;
-            let var11 = (var12 / 16384.0) * 6.283185307179586;
-            var3.method2190(var11);
-            var3.method2191(var1.readInt16(), var1.readInt16(), var1.readInt16());
-            this.method2179(var3);
+            let var11 = (6.283185307179586 * (var12 / 16384.0));
+            var3.method2205(var11);
+            var3.method2206(var1.readInt16(), var1.readInt16(), var1.readInt16());
+            this.method2201(var3);
         } else {
             for (let var13 = 0; var13 < 16; ++var13) {
                 this.matrixVals[var13] = var1.readFloat32();
             }
         }
+
     }
 
-    add(otherMatrix) {
-        for (let var2 = 0; var2 < this.matrixVals.length; ++var2) {
-            this.matrixVals[var2] += otherMatrix.matrixVals[var2];
+    method2185() {
+        let var1 = new float[3];
+        if (this.matrixVals[2] < 0.999 && this.matrixVals[2] > -0.999) {
+            var1[1] = (-Math.asin(this.matrixVals[2]));
+            let var2 = Math.cos(var1[1]);
+            var1[0] = Math.atan2(this.matrixVals[6] / var2, this.matrixVals[10] / var2);
+            var1[2] = Math.atan2(this.matrixVals[1] / var2, this.matrixVals[0] / var2);
+        } else {
+            var1[0] = 0.0;
+            var1[1] = Math.atan2(this.matrixVals[2], 0.0);
+            var1[2] = Math.atan2((-this.matrixVals[9]), this.matrixVals[5]);
         }
-    }
 
-    scaleUniform(var1) {
-        this.scale(var1, var1, var1);
-    }
-
-    scale(var1, var2, var3) {
-        this.identity();
-        this.matrixVals[0] = var1;
-        this.matrixVals[5] = var2;
-        this.matrixVals[10] = var3;
-    }
-
-    method2172() {
-        if (this.field3777 < this.field3776 - 1) {
-            this.field3775[++this.field3777 - 1] = this;
-        }
-    }
-
-    method2183() {
-        let var1 = new Array(3);
-        let var2 = new class415(this.matrixVals[0], this.matrixVals[1], this.matrixVals[2]);
-        let var3 = new class415(this.matrixVals[4], this.matrixVals[5], this.matrixVals[6]);
-        let var4 = new class415(this.matrixVals[8], this.matrixVals[9], this.matrixVals[10]);
-        var1[0] = var2.method2166();
-        var1[1] = var3.method2166();
-        var1[2] = var4.method2166();
         return var1;
     }
 
-    method2178(var1) {
-        let var2 = var1.field3774 * var1.field3774;
-        let var3 = var1.field3771 * var1.field3774;
-        let var4 = var1.field3774 * var1.field3772;
-        let var5 = var1.field3773 * var1.field3774;
-        let var6 = var1.field3771 * var1.field3771;
-        let var7 = var1.field3772 * var1.field3771;
-        let var8 = var1.field3771 * var1.field3773;
-        let var9 = var1.field3772 * var1.field3772;
-        let var10 = var1.field3773 * var1.field3772;
-        let var11 = var1.field3773 * var1.field3773;
-        this.matrixVals[0] = var2 + var6 - var11 - var9;
-        this.matrixVals[1] = var5 + var5 + var7 + var7;
-        this.matrixVals[2] = var8 - var4 - var4 + var8;
-        this.matrixVals[4] = var7 + (var7 - var5 - var5);
-        this.matrixVals[5] = var2 + var9 - var6 - var11;
-        this.matrixVals[6] = var10 + var3 + var10 + var3;
-        this.matrixVals[8] = var4 + var8 + var8 + var4;
-        this.matrixVals[9] = var10 - var3 - var3 + var10;
-        this.matrixVals[10] = var2 + var11 - var9 - var6;
-    }
-
-    copy(otherMatrix) {
-        if (otherMatrix == undefined) {
-            debugger;
-        }
-        for (let i = 0; i < 16; i++) {
-            this.matrixVals[i] = otherMatrix.matrixVals[i];
-        }
-    }
-
-    identity() {
-        this.matrixVals = new Array(16);
-        this.matrixVals[0] = 1.0;
-        this.matrixVals[1] = 0.0;
-        this.matrixVals[2] = 0.0;
-        this.matrixVals[3] = 0.0;
-        this.matrixVals[4] = 0.0;
-        this.matrixVals[5] = 1.0;
-        this.matrixVals[6] = 0.0;
-        this.matrixVals[7] = 0.0;
-        this.matrixVals[8] = 0.0;
-        this.matrixVals[9] = 0.0;
-        this.matrixVals[10] = 1.0;
-        this.matrixVals[11] = 0.0;
-        this.matrixVals[12] = 0.0;
-        this.matrixVals[13] = 0.0;
-        this.matrixVals[14] = 0.0;
-        this.matrixVals[15] = 1.0;
-    }
-
-    zero() {
-        this.matrixVals[0] = 0.0;
-        this.matrixVals[1] = 0.0;
-        this.matrixVals[2] = 0.0;
-        this.matrixVals[3] = 0.0;
-        this.matrixVals[4] = 0.0;
-        this.matrixVals[5] = 0.0;
-        this.matrixVals[6] = 0.0;
-        this.matrixVals[7] = 0.0;
-        this.matrixVals[8] = 0.0;
-        this.matrixVals[9] = 0.0;
-        this.matrixVals[10] = 0.0;
-        this.matrixVals[11] = 0.0;
-        this.matrixVals[12] = 0.0;
-        this.matrixVals[13] = 0.0;
-        this.matrixVals[14] = 0.0;
-        this.matrixVals[15] = 0.0;
-    }
-
-    method2175(var1) {
-        if (var1 == undefined) {
-            debugger;
-        }
-        let var2 = var1.matrixVals[0] * this.matrixVals[0] + var1.matrixVals[4] * this.matrixVals[1] + var1.matrixVals[8] * this.matrixVals[2] + var1.matrixVals[12] * this.matrixVals[3];
-        let var3 = this.matrixVals[3] * var1.matrixVals[13] + this.matrixVals[1] * var1.matrixVals[5] + this.matrixVals[0] * var1.matrixVals[1] + var1.matrixVals[9] * this.matrixVals[2];
-        let var4 = this.matrixVals[3] * var1.matrixVals[14] + var1.matrixVals[2] * this.matrixVals[0] + var1.matrixVals[6] * this.matrixVals[1] + this.matrixVals[2] * var1.matrixVals[10];
-        let var5 = this.matrixVals[3] * var1.matrixVals[15] + this.matrixVals[2] * var1.matrixVals[11] + this.matrixVals[0] * var1.matrixVals[3] + var1.matrixVals[7] * this.matrixVals[1];
-        let var6 = this.matrixVals[7] * var1.matrixVals[12] + this.matrixVals[6] * var1.matrixVals[8] + var1.matrixVals[0] * this.matrixVals[4] + this.matrixVals[5] * var1.matrixVals[4];
-        let var7 = this.matrixVals[5] * var1.matrixVals[5] + this.matrixVals[4] * var1.matrixVals[1] + var1.matrixVals[9] * this.matrixVals[6] + this.matrixVals[7] * var1.matrixVals[13];
-        let var8 = var1.matrixVals[14] * this.matrixVals[7] + var1.matrixVals[10] * this.matrixVals[6] + var1.matrixVals[6] * this.matrixVals[5] + var1.matrixVals[2] * this.matrixVals[4];
-        let var9 = var1.matrixVals[11] * this.matrixVals[6] + this.matrixVals[5] * var1.matrixVals[7] + this.matrixVals[4] * var1.matrixVals[3] + this.matrixVals[7] * var1.matrixVals[15];
-        let var10 = this.matrixVals[9] * var1.matrixVals[4] + var1.matrixVals[0] * this.matrixVals[8] + this.matrixVals[10] * var1.matrixVals[8] + this.matrixVals[11] * var1.matrixVals[12];
-        let var11 = var1.matrixVals[13] * this.matrixVals[11] + this.matrixVals[10] * var1.matrixVals[9] + var1.matrixVals[5] * this.matrixVals[9] + var1.matrixVals[1] * this.matrixVals[8];
-        let var12 = this.matrixVals[11] * var1.matrixVals[14] + var1.matrixVals[6] * this.matrixVals[9] + var1.matrixVals[2] * this.matrixVals[8] + this.matrixVals[10] * var1.matrixVals[10];
-        let var13 = var1.matrixVals[15] * this.matrixVals[11] + var1.matrixVals[3] * this.matrixVals[8] + this.matrixVals[9] * var1.matrixVals[7] + this.matrixVals[10] * var1.matrixVals[11];
-        let var14 = this.matrixVals[14] * var1.matrixVals[8] + this.matrixVals[12] * var1.matrixVals[0] + this.matrixVals[13] * var1.matrixVals[4] + var1.matrixVals[12] * this.matrixVals[15];
-        let var15 = var1.matrixVals[13] * this.matrixVals[15] + this.matrixVals[12] * var1.matrixVals[1] + this.matrixVals[13] * var1.matrixVals[5] + var1.matrixVals[9] * this.matrixVals[14];
-        let var16 = this.matrixVals[15] * var1.matrixVals[14] + var1.matrixVals[2] * this.matrixVals[12] + var1.matrixVals[6] * this.matrixVals[13] + this.matrixVals[14] * var1.matrixVals[10];
-        let var17 = this.matrixVals[15] * var1.matrixVals[15] + this.matrixVals[14] * var1.matrixVals[11] + this.matrixVals[13] * var1.matrixVals[7] + this.matrixVals[12] * var1.matrixVals[3];
-        this.matrixVals[0] = var2;
-        this.matrixVals[1] = var3;
-        this.matrixVals[2] = var4;
-        this.matrixVals[3] = var5;
-        this.matrixVals[4] = var6;
-        this.matrixVals[5] = var7;
-        this.matrixVals[6] = var8;
-        this.matrixVals[7] = var9;
-        this.matrixVals[8] = var10;
-        this.matrixVals[9] = var11;
-        this.matrixVals[10] = var12;
-        this.matrixVals[11] = var13;
-        this.matrixVals[12] = var14;
-        this.matrixVals[13] = var15;
-        this.matrixVals[14] = var16;
-        this.matrixVals[15] = var17;
-    }
-
-    method2180() {
-        return this.matrixVals[8] * this.matrixVals[5] * this.matrixVals[3] * this.matrixVals[14] + this.matrixVals[13] * this.matrixVals[10] * this.matrixVals[3] * this.matrixVals[4] + (this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[6] * this.matrixVals[15] + this.matrixVals[14] * this.matrixVals[1] * this.matrixVals[4] * this.matrixVals[11] + (this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[0] * this.matrixVals[7] + this.matrixVals[11] * this.matrixVals[6] * this.matrixVals[0] * this.matrixVals[13] + (this.matrixVals[15] * this.matrixVals[10] * this.matrixVals[5] * this.matrixVals[0] - this.matrixVals[11] * this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[14] - this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[0] * this.matrixVals[6]) - this.matrixVals[0] * this.matrixVals[7] * this.matrixVals[10] * this.matrixVals[13] - this.matrixVals[1] * this.matrixVals[4] * this.matrixVals[10] * this.matrixVals[15]) - this.matrixVals[12] * this.matrixVals[6] * this.matrixVals[1] * this.matrixVals[11] - this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[14] + this.matrixVals[12] * this.matrixVals[10] * this.matrixVals[7] * this.matrixVals[1] + this.matrixVals[2] * this.matrixVals[4] * this.matrixVals[9] * this.matrixVals[15] - this.matrixVals[13] * this.matrixVals[11] * this.matrixVals[4] * this.matrixVals[2] - this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[8] * this.matrixVals[15] + this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[5] * this.matrixVals[2] + this.matrixVals[13] * this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[8] - this.matrixVals[7] * this.matrixVals[2] * this.matrixVals[9] * this.matrixVals[12] - this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[3] * this.matrixVals[9]) - this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[10] * this.matrixVals[12] - this.matrixVals[13] * this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[8] + this.matrixVals[9] * this.matrixVals[6] * this.matrixVals[3] * this.matrixVals[12];
-    }
-
-    method2181() {
-        const var1 = 1.0 / this.method2180();
-        const var2 = var1 * (this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[11] + (this.matrixVals[10] * this.matrixVals[5] * this.matrixVals[15] - this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[5] - this.matrixVals[6] * this.matrixVals[9] * this.matrixVals[15]) + this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[14] - this.matrixVals[13] * this.matrixVals[10] * this.matrixVals[7]);
-        const var3 = var1 * (this.matrixVals[13] * this.matrixVals[10] * this.matrixVals[3] + (this.matrixVals[10] * -this.matrixVals[1] * this.matrixVals[15] + this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[1] + this.matrixVals[9] * this.matrixVals[2] * this.matrixVals[15] - this.matrixVals[13] * this.matrixVals[11] * this.matrixVals[2] - this.matrixVals[3] * this.matrixVals[9] * this.matrixVals[14]));
-        const var4 = (this.matrixVals[15] * this.matrixVals[1] * this.matrixVals[6] - this.matrixVals[14] * this.matrixVals[7] * this.matrixVals[1] - this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[15] + this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[13] + this.matrixVals[5] * this.matrixVals[3] * this.matrixVals[14] - this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[3]) * var1;
-        const var5 = (this.matrixVals[9] * this.matrixVals[6] * this.matrixVals[3] + (this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[11] + this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[10] + this.matrixVals[11] * this.matrixVals[6] * -this.matrixVals[1] - this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[2] - this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[10])) * var1;
-        const var6 = (this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[15] + this.matrixVals[15] * -this.matrixVals[4] * this.matrixVals[10] + this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[11] - this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[6] - this.matrixVals[7] * this.matrixVals[8] * this.matrixVals[14] + this.matrixVals[12] * this.matrixVals[10] * this.matrixVals[7]) * var1;
-        const var7 = var1 * (this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[14] + this.matrixVals[2] * this.matrixVals[11] * this.matrixVals[12] + (this.matrixVals[10] * this.matrixVals[0] * this.matrixVals[15] - this.matrixVals[0] * this.matrixVals[11] * this.matrixVals[14] - this.matrixVals[15] * this.matrixVals[8] * this.matrixVals[2]) - this.matrixVals[3] * this.matrixVals[10] * this.matrixVals[12]);
-        const var8 = var1 * (this.matrixVals[2] * this.matrixVals[4] * this.matrixVals[15] + this.matrixVals[15] * this.matrixVals[6] * -this.matrixVals[0] + this.matrixVals[7] * this.matrixVals[0] * this.matrixVals[14] - this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[2] - this.matrixVals[14] * this.matrixVals[3] * this.matrixVals[4] + this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[12]);
-        const var9 = (this.matrixVals[4] * this.matrixVals[3] * this.matrixVals[10] + this.matrixVals[11] * this.matrixVals[0] * this.matrixVals[6] - this.matrixVals[10] * this.matrixVals[7] * this.matrixVals[0] - this.matrixVals[11] * this.matrixVals[4] * this.matrixVals[2] + this.matrixVals[8] * this.matrixVals[2] * this.matrixVals[7] - this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[6]) * var1;
-        const var10 = (this.matrixVals[13] * this.matrixVals[7] * this.matrixVals[8] + this.matrixVals[11] * this.matrixVals[5] * this.matrixVals[12] + (this.matrixVals[9] * this.matrixVals[4] * this.matrixVals[15] - this.matrixVals[4] * this.matrixVals[11] * this.matrixVals[13] - this.matrixVals[15] * this.matrixVals[5] * this.matrixVals[8]) - this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[9]) * var1;
-        const var11 = (this.matrixVals[3] * this.matrixVals[9] * this.matrixVals[12] + (this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[15] + this.matrixVals[9] * -this.matrixVals[0] * this.matrixVals[15] + this.matrixVals[11] * this.matrixVals[0] * this.matrixVals[13] - this.matrixVals[1] * this.matrixVals[11] * this.matrixVals[12] - this.matrixVals[13] * this.matrixVals[3] * this.matrixVals[8])) * var1;
-        const var12 = (this.matrixVals[15] * this.matrixVals[5] * this.matrixVals[0] - this.matrixVals[0] * this.matrixVals[7] * this.matrixVals[13] - this.matrixVals[1] * this.matrixVals[4] * this.matrixVals[15] + this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[12] + this.matrixVals[13] * this.matrixVals[4] * this.matrixVals[3] - this.matrixVals[12] * this.matrixVals[5] * this.matrixVals[3]) * var1;
-        const var13 = var1 * (this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[8] + (this.matrixVals[11] * this.matrixVals[4] * this.matrixVals[1] + -this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[11] + this.matrixVals[7] * this.matrixVals[0] * this.matrixVals[9] - this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[8] - this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[9]));
-        const var14 = var1 * (this.matrixVals[14] * this.matrixVals[9] * -this.matrixVals[4] + this.matrixVals[13] * this.matrixVals[4] * this.matrixVals[10] + this.matrixVals[8] * this.matrixVals[5] * this.matrixVals[14] - this.matrixVals[12] * this.matrixVals[10] * this.matrixVals[5] - this.matrixVals[8] * this.matrixVals[6] * this.matrixVals[13] + this.matrixVals[12] * this.matrixVals[9] * this.matrixVals[6]);
-        const var15 = (this.matrixVals[14] * this.matrixVals[0] * this.matrixVals[9] - this.matrixVals[13] * this.matrixVals[0] * this.matrixVals[10] - this.matrixVals[14] * this.matrixVals[8] * this.matrixVals[1] + this.matrixVals[12] * this.matrixVals[1] * this.matrixVals[10] + this.matrixVals[2] * this.matrixVals[8] * this.matrixVals[13] - this.matrixVals[12] * this.matrixVals[2] * this.matrixVals[9]) * var1;
-        const var16 = var1 * (this.matrixVals[14] * this.matrixVals[1] * this.matrixVals[4] + this.matrixVals[5] * -this.matrixVals[0] * this.matrixVals[14] + this.matrixVals[6] * this.matrixVals[0] * this.matrixVals[13] - this.matrixVals[12] * this.matrixVals[6] * this.matrixVals[1] - this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[13] + this.matrixVals[12] * this.matrixVals[2] * this.matrixVals[5]);
-        const var17 = (this.matrixVals[9] * this.matrixVals[2] * this.matrixVals[4] + this.matrixVals[1] * this.matrixVals[6] * this.matrixVals[8] + (this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[10] - this.matrixVals[0] * this.matrixVals[6] * this.matrixVals[9] - this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[10]) - this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[8]) * var1;
-        this.matrixVals[0] = var2;
-        this.matrixVals[1] = var3;
-        this.matrixVals[2] = var4;
-        this.matrixVals[3] = var5;
-        this.matrixVals[4] = var6;
-        this.matrixVals[5] = var7;
-        this.matrixVals[6] = var8;
-        this.matrixVals[7] = var9;
-        this.matrixVals[8] = var10;
-        this.matrixVals[9] = var11;
-        this.matrixVals[10] = var12;
-        this.matrixVals[11] = var13;
-        this.matrixVals[12] = var14;
-        this.matrixVals[13] = var15;
-        this.matrixVals[14] = var16;
-        this.matrixVals[15] = var17;
-    }
-
-    method2174() {
-        let var1 = new Array()
-        var1.push(-Math.asin(this.matrixVals[6]));
-        var1.push(0.0);
-        var1.push(0.0);
+    method2195() {
+        let var1 = [(-Math.asin(this.matrixVals[6])), 0.0, 0.0];
         let var2 = Math.cos(var1[0]);
         let var4;
         let var6;
@@ -4111,7 +3786,436 @@ class FramemapLoader_Matrix {
 
         return var1;
     }
+
+    method2193() {
+        this.matrixVals[0] = 1.0;
+        this.matrixVals[1] = 0.0;
+        this.matrixVals[2] = 0.0;
+        this.matrixVals[3] = 0.0;
+        this.matrixVals[4] = 0.0;
+        this.matrixVals[5] = 1.0;
+        this.matrixVals[6] = 0.0;
+        this.matrixVals[7] = 0.0;
+        this.matrixVals[8] = 0.0;
+        this.matrixVals[9] = 0.0;
+        this.matrixVals[10] = 1.0;
+        this.matrixVals[11] = 0.0;
+        this.matrixVals[12] = 0.0;
+        this.matrixVals[13] = 0.0;
+        this.matrixVals[14] = 0.0;
+        this.matrixVals[15] = 1.0;
+    }
+
+    method2196() {
+        this.matrixVals[0] = 0.0;
+        this.matrixVals[1] = 0.0;
+        this.matrixVals[2] = 0.0;
+        this.matrixVals[3] = 0.0;
+        this.matrixVals[4] = 0.0;
+        this.matrixVals[5] = 0.0;
+        this.matrixVals[6] = 0.0;
+        this.matrixVals[7] = 0.0;
+        this.matrixVals[8] = 0.0;
+        this.matrixVals[9] = 0.0;
+        this.matrixVals[10] = 0.0;
+        this.matrixVals[11] = 0.0;
+        this.matrixVals[12] = 0.0;
+        this.matrixVals[13] = 0.0;
+        this.matrixVals[14] = 0.0;
+        this.matrixVals[15] = 0.0;
+    }
+
+    copy(otherMatrix) {
+        if (otherMatrix == undefined) {
+            debugger;
+        }
+        for (let i = 0; i < 16; i++) {
+            this.matrixVals[i] = otherMatrix.matrixVals[i];
+        }
+    }
+
+    method2187(var1) {
+        this.method2186(var1, var1, var1);
+    }
+
+    method2186(var1, var2, var3) {
+        this.method2193();
+        this.matrixVals[0] = var1;
+        this.matrixVals[5] = var2;
+        this.matrixVals[10] = var3;
+    }
+
+    method2199(var1) {
+        for (let var2 = 0; var2 < this.matrixVals.length; ++var2) {
+            this.matrixVals[var2] += var1.matrixVals[var2];
+        }
+
+    }
+
+    method2189(var1) {
+        let var2 = this.matrixVals[1] * var1.matrixVals[4] + this.matrixVals[0] * var1.matrixVals[0] + this.matrixVals[2] * var1.matrixVals[8] + this.matrixVals[3] * var1.matrixVals[12];
+        let var3 = this.matrixVals[3] * var1.matrixVals[13] + this.matrixVals[2] * var1.matrixVals[9] + this.matrixVals[1] * var1.matrixVals[5] + var1.matrixVals[1] * this.matrixVals[0];
+        let var4 = var1.matrixVals[10] * this.matrixVals[2] + var1.matrixVals[2] * this.matrixVals[0] + var1.matrixVals[6] * this.matrixVals[1] + this.matrixVals[3] * var1.matrixVals[14];
+        let var5 = var1.matrixVals[7] * this.matrixVals[1] + var1.matrixVals[3] * this.matrixVals[0] + this.matrixVals[2] * var1.matrixVals[11] + var1.matrixVals[15] * this.matrixVals[3];
+        let var6 = this.matrixVals[7] * var1.matrixVals[12] + this.matrixVals[6] * var1.matrixVals[8] + this.matrixVals[4] * var1.matrixVals[0] + this.matrixVals[5] * var1.matrixVals[4];
+        let var7 = this.matrixVals[7] * var1.matrixVals[13] + var1.matrixVals[9] * this.matrixVals[6] + this.matrixVals[5] * var1.matrixVals[5] + var1.matrixVals[1] * this.matrixVals[4];
+        let var8 = this.matrixVals[6] * var1.matrixVals[10] + this.matrixVals[5] * var1.matrixVals[6] + this.matrixVals[4] * var1.matrixVals[2] + var1.matrixVals[14] * this.matrixVals[7];
+        let var9 = var1.matrixVals[15] * this.matrixVals[7] + this.matrixVals[4] * var1.matrixVals[3] + var1.matrixVals[7] * this.matrixVals[5] + this.matrixVals[6] * var1.matrixVals[11];
+        let var10 = var1.matrixVals[12] * this.matrixVals[11] + var1.matrixVals[0] * this.matrixVals[8] + this.matrixVals[9] * var1.matrixVals[4] + this.matrixVals[10] * var1.matrixVals[8];
+        let var11 = var1.matrixVals[13] * this.matrixVals[11] + var1.matrixVals[9] * this.matrixVals[10] + var1.matrixVals[5] * this.matrixVals[9] + var1.matrixVals[1] * this.matrixVals[8];
+        let var12 = this.matrixVals[11] * var1.matrixVals[14] + var1.matrixVals[10] * this.matrixVals[10] + this.matrixVals[8] * var1.matrixVals[2] + var1.matrixVals[6] * this.matrixVals[9];
+        let var13 = var1.matrixVals[11] * this.matrixVals[10] + var1.matrixVals[7] * this.matrixVals[9] + this.matrixVals[8] * var1.matrixVals[3] + var1.matrixVals[15] * this.matrixVals[11];
+        let var14 = this.matrixVals[15] * var1.matrixVals[12] + this.matrixVals[13] * var1.matrixVals[4] + var1.matrixVals[0] * this.matrixVals[12] + this.matrixVals[14] * var1.matrixVals[8];
+        let var15 = this.matrixVals[14] * var1.matrixVals[9] + this.matrixVals[12] * var1.matrixVals[1] + var1.matrixVals[5] * this.matrixVals[13] + var1.matrixVals[13] * this.matrixVals[15];
+        let var16 = this.matrixVals[14] * var1.matrixVals[10] + var1.matrixVals[6] * this.matrixVals[13] + this.matrixVals[12] * var1.matrixVals[2] + this.matrixVals[15] * var1.matrixVals[14];
+        let var17 = var1.matrixVals[15] * this.matrixVals[15] + this.matrixVals[14] * var1.matrixVals[11] + this.matrixVals[13] * var1.matrixVals[7] + this.matrixVals[12] * var1.matrixVals[3];
+        this.matrixVals[0] = var2;
+        this.matrixVals[1] = var3;
+        this.matrixVals[2] = var4;
+        this.matrixVals[3] = var5;
+        this.matrixVals[4] = var6;
+        this.matrixVals[5] = var7;
+        this.matrixVals[6] = var8;
+        this.matrixVals[7] = var9;
+        this.matrixVals[8] = var10;
+        this.matrixVals[9] = var11;
+        this.matrixVals[10] = var12;
+        this.matrixVals[11] = var13;
+        this.matrixVals[12] = var14;
+        this.matrixVals[13] = var15;
+        this.matrixVals[14] = var16;
+        this.matrixVals[15] = var17;
+    }
+
+    method2190(var1) {
+        let var2 = var1.field3738 * var1.field3738;
+        let var3 = var1.field3738 * var1.field3737;
+        let var4 = var1.field3739 * var1.field3738;
+        let var5 = var1.field3740 * var1.field3738;
+        let var6 = var1.field3737 * var1.field3737;
+        let var7 = var1.field3739 * var1.field3737;
+        let var8 = var1.field3737 * var1.field3740;
+        let var9 = var1.field3739 * var1.field3739;
+        let var10 = var1.field3740 * var1.field3739;
+        let var11 = var1.field3740 * var1.field3740;
+        this.matrixVals[0] = var6 + var2 - var11 - var9;
+        this.matrixVals[1] = var7 + var7 + var5 + var5;
+        this.matrixVals[2] = var8 - var4 - var4 + var8;
+        this.matrixVals[4] = var7 + (var7 - var5 - var5);
+        this.matrixVals[5] = var9 + var2 - var6 - var11;
+        this.matrixVals[6] = var3 + var3 + var10 + var10;
+        this.matrixVals[8] = var8 + var8 + var4 + var4;
+        this.matrixVals[9] = var10 + (var10 - var3 - var3);
+        this.matrixVals[10] = var11 + var2 - var9 - var6;
+    }
+
+    method2201(var1) {
+        this.matrixVals[0] = var1.field3754;
+        this.matrixVals[1] = var1.field3759;
+        this.matrixVals[2] = var1.field3750;
+        this.matrixVals[3] = 0.;
+        this.matrixVals[4] = var1.field3751;
+        this.matrixVals[5] = var1.field3752;
+        this.matrixVals[6] = var1.field3753;
+        this.matrixVals[7] = 0.0;
+        this.matrixVals[8] = var1.field3748;
+        this.matrixVals[9] = var1.field3755;
+        this.matrixVals[10] = var1.field3756;
+        this.matrixVals[11] = 0.0;
+        this.matrixVals[12] = var1.field3757;
+        this.matrixVals[13] = var1.field3749;
+        this.matrixVals[14] = var1.field3758;
+        this.matrixVals[15] = 1.0;
+    }
+
+    method2191() {
+        return this.matrixVals[12] * this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[9] + (this.matrixVals[10] * this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[13] + (this.matrixVals[1] * this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[15] + this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[10] * this.matrixVals[15] - this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[11] * this.matrixVals[14] - this.matrixVals[0] * this.matrixVals[6] * this.matrixVals[9] * this.matrixVals[15] + this.matrixVals[6] * this.matrixVals[0] * this.matrixVals[11] * this.matrixVals[13] + this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[0] - this.matrixVals[10] * this.matrixVals[7] * this.matrixVals[0] * this.matrixVals[13] - this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[4] * this.matrixVals[15] + this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[11] - this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[6] * this.matrixVals[1] - this.matrixVals[7] * this.matrixVals[1] * this.matrixVals[8] * this.matrixVals[14] + this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[1] * this.matrixVals[10] + this.matrixVals[9] * this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[15] - this.matrixVals[13] * this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[11] - this.matrixVals[15] * this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[8] + this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[11] * this.matrixVals[12] + this.matrixVals[13] * this.matrixVals[8] * this.matrixVals[7] * this.matrixVals[2] - this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[2] * this.matrixVals[12] - this.matrixVals[14] * this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[9]) + this.matrixVals[14] * this.matrixVals[8] * this.matrixVals[5] * this.matrixVals[3] - this.matrixVals[5] * this.matrixVals[3] * this.matrixVals[10] * this.matrixVals[12] - this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[13]);
+    }
+
+    method2192() {
+        let var1 = 1.0 / this.method2191();
+        let var2 = var1 * (this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[7] + this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[11] + (this.matrixVals[10] * this.matrixVals[5] * this.matrixVals[15] - this.matrixVals[11] * this.matrixVals[5] * this.matrixVals[14] - this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[6]) - this.matrixVals[13] * this.matrixVals[7] * this.matrixVals[10]);
+        let var3 = var1 * (this.matrixVals[3] * this.matrixVals[10] * this.matrixVals[13] + (this.matrixVals[15] * -this.matrixVals[1] * this.matrixVals[10] + this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[1] + this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[2] - this.matrixVals[13] * this.matrixVals[2] * this.matrixVals[11] - this.matrixVals[3] * this.matrixVals[9] * this.matrixVals[14]));
+        let var4 = var1 * (this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[13] + (this.matrixVals[15] * this.matrixVals[6] * this.matrixVals[1] - this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[14] - this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[15]) + this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[14] - this.matrixVals[13] * this.matrixVals[3] * this.matrixVals[6]);
+        let var5 = (this.matrixVals[6] * -this.matrixVals[1] * this.matrixVals[11] + this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[7] + this.matrixVals[11] * this.matrixVals[2] * this.matrixVals[5] - this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[9] - this.matrixVals[10] * this.matrixVals[3] * this.matrixVals[5] + this.matrixVals[9] * this.matrixVals[3] * this.matrixVals[6]) * var1;
+        let var6 = var1 * (this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[10] + (this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[11] + -this.matrixVals[4] * this.matrixVals[10] * this.matrixVals[15] + this.matrixVals[8] * this.matrixVals[6] * this.matrixVals[15] - this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[6] - this.matrixVals[7] * this.matrixVals[8] * this.matrixVals[14]));
+        let var7 = (this.matrixVals[12] * this.matrixVals[2] * this.matrixVals[11] + (this.matrixVals[15] * this.matrixVals[0] * this.matrixVals[10] - this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[0] - this.matrixVals[8] * this.matrixVals[2] * this.matrixVals[15]) + this.matrixVals[14] * this.matrixVals[3] * this.matrixVals[8] - this.matrixVals[12] * this.matrixVals[10] * this.matrixVals[3]) * var1;
+        let var8 = (this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[15] + this.matrixVals[15] * this.matrixVals[6] * -this.matrixVals[0] + this.matrixVals[14] * this.matrixVals[0] * this.matrixVals[7] - this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[12] - this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[3] + this.matrixVals[6] * this.matrixVals[3] * this.matrixVals[12]) * var1;
+        let var9 = var1 * (this.matrixVals[11] * this.matrixVals[0] * this.matrixVals[6] - this.matrixVals[10] * this.matrixVals[0] * this.matrixVals[7] - this.matrixVals[11] * this.matrixVals[4] * this.matrixVals[2] + this.matrixVals[7] * this.matrixVals[2] * this.matrixVals[8] + this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[10] - this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[6]);
+        let var10 = (this.matrixVals[13] * this.matrixVals[8] * this.matrixVals[7] + this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[4] - this.matrixVals[4] * this.matrixVals[11] * this.matrixVals[13] - this.matrixVals[5] * this.matrixVals[8] * this.matrixVals[15] + this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[5] - this.matrixVals[7] * this.matrixVals[9] * this.matrixVals[12]) * var1;
+        let var11 = (-this.matrixVals[0] * this.matrixVals[9] * this.matrixVals[15] + this.matrixVals[13] * this.matrixVals[11] * this.matrixVals[0] + this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[15] - this.matrixVals[11] * this.matrixVals[1] * this.matrixVals[12] - this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[13] + this.matrixVals[12] * this.matrixVals[9] * this.matrixVals[3]) * var1;
+        let var12 = (this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[13] + this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[12] + (this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[15] - this.matrixVals[13] * this.matrixVals[0] * this.matrixVals[7] - this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[15]) - this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[12]) * var1;
+        let var13 = var1 * (this.matrixVals[0] * this.matrixVals[7] * this.matrixVals[9] + -this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[11] + this.matrixVals[11] * this.matrixVals[1] * this.matrixVals[4] - this.matrixVals[8] * this.matrixVals[7] * this.matrixVals[1] - this.matrixVals[9] * this.matrixVals[3] * this.matrixVals[4] + this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[5]);
+        let var14 = var1 * (this.matrixVals[12] * this.matrixVals[9] * this.matrixVals[6] + (this.matrixVals[14] * this.matrixVals[9] * -this.matrixVals[4] + this.matrixVals[4] * this.matrixVals[10] * this.matrixVals[13] + this.matrixVals[14] * this.matrixVals[8] * this.matrixVals[5] - this.matrixVals[5] * this.matrixVals[10] * this.matrixVals[12] - this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[13]));
+        let var15 = var1 * (this.matrixVals[2] * this.matrixVals[8] * this.matrixVals[13] + this.matrixVals[12] * this.matrixVals[1] * this.matrixVals[10] + (this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[0] - this.matrixVals[10] * this.matrixVals[0] * this.matrixVals[13] - this.matrixVals[1] * this.matrixVals[8] * this.matrixVals[14]) - this.matrixVals[2] * this.matrixVals[9] * this.matrixVals[12]);
+        let var16 = (this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[12] + (this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[14] + -this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[14] + this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[0] - this.matrixVals[12] * this.matrixVals[1] * this.matrixVals[6] - this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[13])) * var1;
+        let var17 = var1 * (this.matrixVals[9] * this.matrixVals[4] * this.matrixVals[2] + this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[6] + (this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[10] - this.matrixVals[9] * this.matrixVals[0] * this.matrixVals[6] - this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[4]) - this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[8]);
+        this.matrixVals[0] = var2;
+        this.matrixVals[1] = var3;
+        this.matrixVals[2] = var4;
+        this.matrixVals[3] = var5;
+        this.matrixVals[4] = var6;
+        this.matrixVals[5] = var7;
+        this.matrixVals[6] = var8;
+        this.matrixVals[7] = var9;
+        this.matrixVals[8] = var10;
+        this.matrixVals[9] = var11;
+        this.matrixVals[10] = var12;
+        this.matrixVals[11] = var13;
+        this.matrixVals[12] = var14;
+        this.matrixVals[13] = var15;
+        this.matrixVals[14] = var16;
+        this.matrixVals[15] = var17;
+    }
+
+    method2194() {
+        let var1 = new Array(3);
+        let var2 = new class419(this.matrixVals[0], this.matrixVals[1], this.matrixVals[2]);
+        let var3 = new class419(this.matrixVals[4], this.matrixVals[5], this.matrixVals[6]);
+        let var4 = new class419(this.matrixVals[8], this.matrixVals[9], this.matrixVals[10]);
+        var1[0] = var2.method2178();
+        var1[1] = var3.method2178();
+        var1[2] = var4.method2178();
+        return var1;
+    }
+
+
+    toString() {
+        let var1 = new StringBuilder();
+        this.method2195();
+        this.method2185();
+
+        for (let var2 = 0; var2 < 4; ++var2) {
+            for (let var3 = 0; var3 < 4; ++var3) {
+                if (var3 > 0) {
+                    var1.append("\t");
+                }
+
+                let var4 = this.matrixVals[var3 + var2 * 4];
+                if (Math.sqrt((var4 * var4)) < 9.999999747378752E-5) {
+                    var4 = 0.0;
+                }
+
+                var1.append(var4);
+            }
+
+            var1.append("\n");
+        }
+
+        return var1.toString();
+    }
+
+    hashCode() {
+        let var1 = true;
+        let var2 = 1;
+        let var3 = var2 * 31 + Arrays.hashCode(this.matrixVals);
+        return var3;
+    }
+
+
+    equals(var1) {
+        if (!(var1 instanceof Matrix)) {
+            return false;
+        } else {
+            let var2 = var1;
+
+            for (let var3 = 0; var3 < 16; ++var3) {
+                if (this.matrixVals[var3] != var2.matrixVals[var3]) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+    }
+
 }
+
+;// CONCATENATED MODULE: ./src/cacheReader/cacheTypes/anim/Bone.js
+
+
+class Bone {
+    field1181 = true;
+    field1172 = true;
+    field1178 = new Matrix();
+    field1180 = new Matrix()
+    field1174 = new Matrix();
+
+    constructor(size, buffer, var3) {
+        this.id = buffer.readInt16();
+        this.field1175 = new Array(size);
+        this.field1176 = new Array(size);
+        this.field1177 = new Array(size);
+        this.field1187 = new Array(size);
+
+        for (let var4 = 0; var4 < size; ++var4) {
+            this.field1175[var4] = new Matrix(buffer, var3);
+
+            this.field1187[var4] = new Array(3);
+            this.field1187[var4][0] = buffer.readFloat32();
+            this.field1187[var4][1] = buffer.readFloat32();
+            this.field1187[var4][2] = buffer.readFloat32();
+
+            //this.field1187[var4][0] = buffer.readInt32();
+            //this.field1187[var4][1] = buffer.readInt32();
+            //this.field1187[var4][2] = buffer.readInt32();
+            //console.log(this.field1187[var4][0].toString(2));
+            //console.log(this.field1187[var4][1].toString(2));
+            //console.log(this.field1187[var4][2].toString(2));
+        }
+        this.method682();
+        //console.log(boneValues);
+    }
+
+    method682() {
+        this.field1183 = new Array(this.field1175.length).fill().map(x => new Array(3));
+        this.field1184 = new Array(this.field1175.length).fill().map(x => new Array(3));
+        this.field1185 = new Array(this.field1175.length).fill().map(x => new Array(3));
+        let var2 = Matrix.field3746;
+        let var1 = new Matrix();
+
+        let var7 = var1;
+
+        for (let var5 = 0; var5 < this.field1175.length; ++var5) {
+            let var4 = this.method683(var5);
+            var7.copy(var4);
+            var7.method2192();
+            this.field1183[var5] = var7.method2195();
+            this.field1184[var5][0] = var4.matrixVals[12];
+            this.field1184[var5][1] = var4.matrixVals[13];
+            this.field1184[var5][2] = var4.matrixVals[14];
+            this.field1185[var5] = var4.method2194();
+        }
+
+        var7.method2200();
+    }
+
+    method683(var1) {
+        return this.field1175[var1];
+    }
+
+    method684(var1) {
+        if (this.field1176[var1] == null) {
+            this.field1176[var1] = new Matrix(this.method683(var1));
+            if (this.field1182 != null) {
+                this.field1176[var1].method2189(this.field1182.method684(var1));
+            } else {
+                this.field1176[var1].method2189(Matrix.field3747);
+            }
+        }
+
+        return this.field1176[var1];
+    }
+
+
+    method685(var1) {
+        if (this.field1177[var1] == null || this.field1177[var1] == undefined) {
+            this.field1177[var1] = new Matrix(this.method684(var1));
+            this.field1177[var1].method2192();
+        }
+
+        return this.field1177[var1];
+    }
+
+    method691(var1) {
+        this.field1178.copy(var1);
+        this.field1172 = true;
+        this.field1181 = true;
+    }
+
+    method681() {
+        return this.field1178;
+    }
+
+    method686() {
+        if (this.field1172) {
+            this.field1180.copy(this.method681());
+            if (this.field1182 != null) {
+                this.field1180.method2189(this.field1182.method686());
+            }
+
+            this.field1172 = false;
+        }
+
+        return this.field1180;
+    }
+
+    method687(var1) {
+        if (this.field1181) {
+            this.field1174.copy(this.method685(var1));
+            this.field1174.method2189(this.method686());
+            this.field1181 = false;
+        }
+
+        return this.field1174;
+    }
+
+    method688(var1) {
+        return this.field1183[var1];
+    }
+
+    method689(var1) {
+        return this.field1184[var1];
+    }
+
+    method690(var1) {
+        return this.field1185[var1];
+    }
+
+}
+;// CONCATENATED MODULE: ./src/cacheReader/loaders/FramemapLoader.js
+
+
+class FramemapDefinition {
+
+}
+
+class AnimayaSkeleton {
+    constructor(var1, bonesCount) {
+        this.bones = new Array(bonesCount);
+        this.field1979 = var1.readUint8();
+
+        for (let i = 0; i < this.bones.length; ++i) {
+            this.bones[i] = new Bone(this.field1979, var1, false);
+        }
+
+        this.attachBones();
+    }
+
+    attachBones() {
+        let bones = this.bones;
+
+        for (let i = 0; i < bones.length; ++i) {
+            let bone = bones[i];
+            if (bone.id >= 0) {
+                bone.childBone = this.bones[bone.id];
+            }
+        }
+
+        this.method1178();
+    }
+
+    method1178() {
+        let var1 = this.bones;
+
+        for (let var2 = 0; var2 < var1.length; ++var2) {
+            let var3 = var1[var2];
+            if (var3.id >= 0) {
+                var3.field1182 = this.bones[var3.id];
+            }
+        }
+
+    }
+
+    getBone(index) {
+        return index >= this.bones.length ? null : this.bones[index];
+    }
+
+    getAllBones() {
+        return this.bones;
+    }
+}
+
 
 class class418 {
     constructor() {
@@ -4165,65 +4269,838 @@ class FramemapLoader {
         return def;
     }
 }
+;// CONCATENATED MODULE: ./src/cacheReader/cacheTypes/anim/Static.js
+class AttackOption {
+    static method590(var0, var1) {
+        if (var0 != null && var0.method703() != 0) {
+            if (var1 < var0.field1203[0].field1165) {
+                return var0.field1201 == 0 ? var0.field1203[0].field1158 : class181.method922(var0, var1, true);
+            } else if (var1 > var0.field1203[var0.method703() - 1].field1165) {
+                return var0.field1214 == 0 ? var0.field1203[var0.method703() - 1].field1158 : class181.method922(var0, var1, false);
+            } else if (var0.field1200) {
+                return var0.field1203[0].field1158;
+            } else {
+                let var2 = var0.method702(var1);
+                let var3 = false;
+                let var4 = false;
+                if (var2 == null) {
+                    return 0.0;
+                } else {
+                    if (var2.field1161 == 0.0 && var2.field1162 == 0.0) {
+                        var3 = true;
+                    } else if (var2.field1161 == 3.4028234663852886e+38 && 3.4028234663852886e+38 == var2.field1162) {
+                        var4 = true;
+                    } else if (var2.field1163 != null) {
+                        if (var0.field1215) {
+                            let var5 = var2.field1165;
+                            let var9 = var2.field1158;
+                            let var6 = var2.field1161 * 0.33333334 + var5;
+                            let var10 = var9 + var2.field1162 * 0.33333334;
+                            let var8 = var2.field1163.field1165;
+                            let var12 = var2.field1163.field1158;
+                            let var7 = var8 - var2.field1163.field1159 * 0.33333334;
+                            let var11 = var12 - var2.field1163.field1160 * 0.33333334;
+                            if (var0.field1210) {
+                                class145.method767(var0, var5, var6, var7, var8, var9, var10, var11, var12);
+                            } else {
+                                class136.method735(var0, var5, var6, var7, var8, var9, var10, var11, var12);
+                            }
+
+                            var0.field1215 = false;
+                        }
+                    } else {
+                        var3 = true;
+                    }
+
+                    if (var3) {
+                        return var2.field1158;
+                    } else if (var4) {
+                        return var2.field1165 != var1 && var2.field1163 != null ? var2.field1163.field1158 : var2.field1158;
+                    } else {
+                        return var0.field1210 ? Tiles.method453(var0, var1) : class467.method2360(var0, var1);
+                    }
+                }
+            }
+        } else {
+            return 0.0;
+        }
+    }
+}
+
+class class467 {
+    static method2360(var0, var1) {
+        if (var0 == null) {
+            return 0.0;
+        } else {
+            let var2 = var1 - var0.field1207;
+            return var0.field1202 + var2 * (var2 * (var2 * var0.field1223 + var0.field1208) + var0.field1209);
+        }
+    }
+}
+
+class class181 {
+    static method922(var0, var1, var2) {
+        let var3 = 0.0;
+        if (var0 != null && var0.method703() != 0) {
+            let var4 = var0.field1203[0].field1165;
+            let var5 = var0.field1203[var0.method703() - 1].field1165;
+            let var6 = var5 - var4;
+            if (0.0 == var6) {
+                return var0.field1203[0].field1158;
+            } else {
+                let var7 = 0.0;
+                if (var1 > var5) {
+                    var7 = (var1 - var5) / var6;
+                } else {
+                    var7 = (var1 - var4) / var6;
+                }
+
+                let var8 = (var7);
+                let var10 = Math.abs((float)(var7 - var8));
+                let var11 = var10 * var6;
+                var8 = Math.abs(var8 + 1.0);
+                let var12 = var8 / 2.0;
+                let var14 = (var12);
+                var10 = (var12 - var14);
+                let var16;
+                let var17;
+                if (var2) {
+                    if (var0.field1201 == class125.field1190) {
+                        if (var10 != 0.0) {
+                            var11 += var4;
+                        } else {
+                            var11 = var5 - var11;
+                        }
+                    } else if (var0.field1201 != class125.field1189 && var0.field1201 != class125.field1188) {
+                        if (var0.field1201 == class125.field1193) {
+                            var11 = var4 - var1;
+                            var16 = var0.field1203[0].field1159;
+                            var17 = var0.field1203[0].field1160;
+                            var3 = var0.field1203[0].field1158;
+                            if (var16 != 0.0) {
+                                var3 -= var11 * var17 / var16;
+                            }
+
+                            return var3;
+                        }
+                    } else {
+                        var11 = var5 - var11;
+                    }
+                } else if (var0.field1214 == class125.field1190) {
+                    if (0.0 != var10) {
+                        var11 = var5 - var11;
+                    } else {
+                        var11 += var4;
+                    }
+                } else if (var0.field1214 != class125.field1189 && var0.field1214 != class125.field1188) {
+                    if (var0.field1214 == class125.field1193) {
+                        var11 = var1 - var5;
+                        var16 = var0.field1203[var0.method703() - 1].field1161;
+                        var17 = var0.field1203[var0.method703() - 1].field1162;
+                        var3 = var0.field1203[var0.method703() - 1].field1158;
+                        if (0.0 != var16) {
+                            var3 += var11 * var17 / var16;
+                        }
+
+                        return var3;
+                    }
+                } else {
+                    var11 += var4;
+                }
+
+                var3 = AttackOption.method590(var0, var11);
+                let var18;
+                if (var2 && var0.field1201 == class125.field1188) {
+                    var18 = var0.field1203[var0.method703() - 1].field1158 - var0.field1203[0].field1158;
+                    var3 = (var3 - var8 * var18);
+                } else if (!var2 && var0.field1214 == class125.field1188) {
+                    var18 = var0.field1203[var0.method703() - 1].field1158 - var0.field1203[0].field1158;
+                    var3 = (var3 + var8 * var18);
+                }
+
+                return var3;
+            }
+        } else {
+            return var3;
+        }
+    }
+}
+
+class class145 {
+    static method767(var0, var1, var2, var3, var4, var5, var6, var7, var8) {
+        if (var0 != null) {
+            let var9 = var4 - var1;
+            if (0.0 != var9) {
+                let var10 = var2 - var1;
+                let var11 = var3 - var1;
+                let var12 = [var10 / var9, var11 / var9];
+                var0.field1221 = var12[0] == 0.33333334 && 0.6666667 == var12[1];
+                let var13 = var12[0];
+                let var14 = var12[1];
+                if (var12[0] < 0.0) {
+                    var12[0] = 0.0;
+                }
+
+                if (var12[1] > 1.0) {
+                    var12[1] = 1.0;
+                }
+
+                let var15;
+                if (var12[0] > 1.0 || var12[1] < -1.0) {
+                    var12[1] = 1.0 - var12[1];
+                    if (var12[0] < 0.0) {
+                        var12[0] = 0.0;
+                    }
+
+                    if (var12[1] < 0.0) {
+                        var12[1] = 0.0;
+                    }
+
+                    if (var12[0] > 1.0 || var12[1] > 1.0) {
+                        var15 = (1.0 + var12[1] * (var12[1] - 2.0) + (var12[0] * (var12[1] + (var12[0] - 2.0))));
+                        if (var15 + class123.field1167 > 0.0) {
+                            Client.method384(var12);
+                        }
+                    }
+
+                    var12[1] = 1.0 - var12[1];
+                }
+
+                let var10000;
+                if (var13 != var12[0]) {
+                    var10000 = var1 + var9 * var12[0];
+                    if (0.0 != var13) {
+                        var6 = var5 + var12[0] * (var6 - var5) / var13;
+                    }
+                }
+
+                if (var12[1] != var14) {
+                    var10000 = var1 + var12[1] * var9;
+                    if (1.0 != var14) {
+                        var7 = (var8 - (var8 - var7) * (1.0 - var12[1]) / (1.0 - var14));
+                    }
+                }
+
+                var0.field1207 = var1;
+                var0.field1206 = var4;
+                var15 = var12[0];
+                let var16 = var12[1];
+                let var17 = var15 - 0.0;
+                let var18 = var16 - var15;
+                let var19 = 1.0 - var16;
+                let var20 = var18 - var17;
+                var0.field1202 = var19 - var18 - var20;
+                var0.field1209 = var20 + var20 + var20;
+                var0.field1208 = var17 + var17 + var17;
+                var0.field1223 = 0.0;
+                DesktopPlatformInfoProvider.method2241(var5, var6, var7, var8, var0);
+            }
+        }
+    }
+
+}
+
+class Client {
+    method384(var0) {
+        if (class123.field1167 + var0[0] < 1.3333334) {
+            let var1 = var0[0] - 2.0;
+            let var2 = var0[0] - 1.0;
+            let var3 = Math.sqrt((double)(var1 * var1 - var2 * var2 * 4.0));
+            let var4 = 0.5 * (var3 + -var1);
+            if (var0[1] + class123.field1167 > var4) {
+                var0[1] = var4 - class123.field1167;
+            } else {
+                var4 = (-var1 - var3) * 0.5;
+                if (var0[1] < var4 + class123.field1167) {
+                    var0[1] = var4 + class123.field1167;
+                }
+            }
+        } else {
+            var0[0] = 1.3333334 - class123.field1167;
+            var0[1] = 0.33333334 - class123.field1167;
+        }
+
+    }
+}
+
+class DesktopPlatformInfoProvider {
+    static method2241(var0, var1, var2, var3, var4) {
+        let var5 = var1 - var0;
+        let var6 = var2 - var1;
+        let var7 = var3 - var2;
+        let var8 = var6 - var5;
+        var4.field1222 = var7 - var6 - var8;
+        var4.field1213 = var8 + var8 + var8;
+        var4.field1212 = var5 + var5 + var5;
+        var4.field1211 = var0;
+    }
+}
+
+class class136 {
+    static method735(var0, var1, var2, var3, var4, var5, var6, var7, var8) {
+        if (var0 != null) {
+            var0.field1207 = var1;
+            let var9 = var4 - var1;
+            let var10 = var8 - var5;
+            let var11 = var2 - var1;
+            let var12 = 0.0;
+            let var13 = 0.0;
+            if (var11 != 0.0) {
+                var12 = (var6 - var5) / var11;
+            }
+
+            var11 = var4 - var3;
+            if (0.0 != var11) {
+                var13 = (var8 - var7) / var11;
+            }
+
+            let var14 = 1.0 / (var9 * var9);
+            let var15 = var9 * var12;
+            let var16 = var13 * var9;
+            var0.field1223 = (var16 + var15 - var10 - var10) * var14 / var9;
+            var0.field1208 = (var10 + var10 + var10 - var15 - var15 - var16) * var14;
+            var0.field1209 = var12;
+            var0.field1202 = var5;
+        }
+    }
+}
+
+class Tiles {
+    static method453(var0, var1) {
+        if (var0 == null) {
+            return 0.0;
+        } else {
+            let var2;
+            if (var0.field1207 == var1) {
+                var2 = 0.0;
+            } else if (var0.field1206 == var1) {
+                var2 = 1.0;
+            } else {
+                var2 = (var1 - var0.field1207) / (var0.field1206 - var0.field1207);
+            }
+
+            let var3;
+            if (var0.field1221) {
+                var3 = var2;
+            } else {
+                class123.field1168[3] = var0.field1202;
+                class123.field1168[2] = var0.field1209;
+                class123.field1168[1] = var0.field1208;
+                class123.field1168[0] = var0.field1223 - var2;
+                class123.field1169[0] = 0.0;
+                class123.field1169[1] = 0.0;
+                class123.field1169[2] = 0.0;
+                class123.field1169[3] = 0.0;
+                class123.field1169[4] = 0.0;
+                let var4 = class368.method1942(class123.field1168, 3, 0.0, true, 1.0, true, class123.field1169);
+                if (var4 == 1) {
+                    var3 = class123.field1169[0];
+                } else {
+                    var3 = 0.0;
+                }
+            }
+
+            return var0.field1211 + (var0.field1212 + (var3 * var0.field1222 + var0.field1213) * var3) * var3;
+        }
+    }
+}
+
+class class368 {
+    static method1942(var0, var1, var2, var3, var4, var5, var6) {
+        let var7 = 0.0;
+
+        for (let var8 = 0; var8 < var1 + 1; ++var8) {
+            var7 += Math.abs(var0[var8]);
+        }
+
+        let var24 = (Math.abs(var2) + Math.abs(var4)) * (float)(var1 + 1) * class123.field1167;
+        if (var7 <= var24) {
+            return -1;
+        } else {
+            let var9 = new Array(var1 + 1);
+
+            let var10;
+            for (var10 = 0; var10 < var1 + 1; ++var10) {
+                var9[var10] = var0[var10] * (1.0 / var7);
+            }
+
+            while (Math.abs(var9[var1]) < var24) {
+                --var1;
+            }
+
+            var10 = 0;
+            if (var1 == 0) {
+                return var10;
+            } else if (var1 == 1) {
+                var6[0] = -var9[0] / var9[1];
+                let var11 = var3 ? var2 < var24 + var6[0] : var2 < var6[0] - var24;
+                let var12 = var5 ? var4 > var6[0] - var24 : var4 > var24 + var6[0];
+                var10 = var11 && var12 ? 1 : 0;
+                if (var10 > 0) {
+                    if (var3 && var6[0] < var2) {
+                        var6[0] = var2;
+                    } else if (var5 && var6[0] > var4) {
+                        var6[0] = var4;
+                    }
+                }
+
+                return var10;
+            } else {
+                let var21 = new class423(var9, var1);
+                let var22 = new Array(var1 + 1);
+
+                for (let var13 = 1; var13 <= var1; ++var13) {
+                    var22[var13 - 1] = var13 * var9[var13];
+                }
+
+                let var23 = new Array(var1 + 1);
+                let var14 = this.method1942(var22, var1 - 1, var2, false, var4, false, var23);
+                if (var14 == -1) {
+                    return 0;
+                } else {
+                    let var15 = false;
+                    let var17 = 0.0;
+                    let var18 = 0.0;
+                    let var19 = 0.0;
+
+                    for (let var20 = 0; var20 <= var14; ++var20) {
+                        if (var10 > var1) {
+                            return var10;
+                        }
+
+                        let var16;
+                        if (var20 == 0) {
+                            var16 = var2;
+                            var18 = class102.method598(var9, var1, var2);
+                            if (Math.abs(var18) <= var24 && var3) {
+                                var6[var10++] = var2;
+                            }
+                        } else {
+                            var16 = var19;
+                            var18 = var17;
+                        }
+
+                        if (var20 == var14) {
+                            var19 = var4;
+                            var15 = false;
+                        } else {
+                            var19 = var23[var20];
+                        }
+
+                        var17 = class102.method598(var9, var1, var19);
+                        if (var15) {
+                            var15 = false;
+                        } else if (Math.abs(var17) < var24) {
+                            if (var14 != var20 || var5) {
+                                var6[var10++] = var19;
+                                var15 = true;
+                            }
+                        } else if (var18 < 0.0 && var17 > 0.0 || var18 > 0.0 && var17 < 0.0) {
+                            var6[var10++] = class88.method478(var21, var16, var19, 0.0);
+                            if (var10 > 1 && var6[var10 - 2] >= var6[var10 - 1] - var24) {
+                                var6[var10 - 2] = (var6[var10 - 2] + var6[var10 - 1]) * 0.5;
+                                --var10;
+                            }
+                        }
+                    }
+
+                    return var10;
+                }
+            }
+        }
+    }
+}
+
+class class102 {
+    static method598(var0, var1, var2) {
+        let var3 = var0[var1];
+
+        for (let var4 = var1 - 1; var4 >= 0; --var4) {
+            var3 = var0[var4] + var3 * var2;
+        }
+
+        return var3;
+    }
+}
+
+class class188 {
+    static method478(var0, var1, var2, var3) {
+        let var4 = class102.method598(var0.field3760, var0.field3761, var1);
+        if (Math.abs(var4) < class123.field1167) {
+            return var1;
+        } else {
+            let var5 = class102.method598(var0.field3760, var0.field3761, var2);
+            if (Math.abs(var5) < class123.field1167) {
+                return var2;
+            } else {
+                let var6 = 0.0;
+                let var7 = 0.0;
+                let var8 = 0.0;
+                let var13 = 0.0;
+                let var14 = true;
+                let var15 = false;
+
+                do {
+                    var15 = false;
+                    if (var14) {
+                        var6 = var1;
+                        var13 = var4;
+                        var7 = var2 - var1;
+                        var8 = var7;
+                        var14 = false;
+                    }
+
+                    if (Math.abs(var13) < Math.abs(var5)) {
+                        var1 = var2;
+                        var2 = var6;
+                        var6 = var1;
+                        var4 = var5;
+                        var5 = var13;
+                        var13 = var4;
+                    }
+
+                    let var16 = class123.field1166 * Math.abs(var2) + var3 * 0.5;
+                    let var17 = (var6 - var2) * 0.5;
+                    let var18 = Math.abs(var17) > var16 && 0.0 != var5;
+                    if (var18) {
+                        if (Math.abs(var8) >= var16 && Math.abs(var4) > Math.abs(var5)) {
+                            let var12 = var5 / var4;
+                            let var9;
+                            let var10;
+                            if (var1 == var6) {
+                                var9 = var17 * 2.0 * var12;
+                                var10 = 1.0 - var12;
+                            } else {
+                                var10 = var4 / var13;
+                                let var11 = var5 / var13;
+                                var9 = (var17 * 2.0 * var10 * (var10 - var11) - (var2 - var1) * (var11 - 1.0)) * var12;
+                                var10 = (var10 - 1.0) * (var11 - 1.0) * (var12 - 1.0);
+                            }
+
+                            if (var9 > 0.0) {
+                                var10 = -var10;
+                            } else {
+                                var9 = -var9;
+                            }
+
+                            var12 = var8;
+                            var8 = var7;
+                            if (var9 * 2.0 < var10 * var17 * 3.0 - Math.abs(var16 * var10) && var9 < Math.abs(var10 * var12 * 0.5)) {
+                                var7 = var9 / var10;
+                            } else {
+                                var7 = var17;
+                                var8 = var17;
+                            }
+                        } else {
+                            var7 = var17;
+                            var8 = var17;
+                        }
+
+                        var1 = var2;
+                        var4 = var5;
+                        if (Math.abs(var7) > var16) {
+                            var2 += var7;
+                        } else if (var17 > 0.0) {
+                            var2 += var16;
+                        } else {
+                            var2 -= var16;
+                        }
+
+                        var5 = class102.method598(var0.field3760, var0.field3761, var2);
+                        if ((var5 * (var13 / Math.abs(var13))) > 0.0) {
+                            var14 = true;
+                            var15 = true;
+                        } else {
+                            var15 = true;
+                        }
+                    }
+                } while (var15);
+
+                return var2;
+            }
+        }
+    }
+}
 ;// CONCATENATED MODULE: ./src/cacheReader/loaders/AnimayaLoader.js
+
+
+
+
+class class122 {
+    field1165;
+    field1158;
+    field1159 = 3.4028234663852886e+38; //Java Float MAX_VALUE
+    field1160 = 3.4028234663852886e+38;
+    field1161 = 3.4028234663852886e+38;
+    field1162 = 3.4028234663852886e+38;
+
+    method673(var1, var2) {
+        this.field1165 = var1.readInt16();
+        this.field1158 = var1.readFloat32();
+        this.field1159 = var1.readFloat32();
+        this.field1160 = var1.readFloat32();
+        this.field1161 = var1.readFloat32();
+        this.field1162 = var1.readFloat32();
+    }
+}
+
+class class127 {
+    field1215 = true;
+    field1205 = 0;
+
+    method698(var1, var2) {
+        let var3 = var1.readUint16();
+        var1.readUint8();
+        this.field1201 = var1.readUint8(); //rsordinal
+        this.field1214 = var1.readUint8(); //rsordinal
+        this.field1210 = var1.readUint8() != 0;
+        this.field1203 = new Array(var3);
+        let var4 = null;
+
+        for (let var5 = 0; var5 < var3; ++var5) {
+            let var6 = new class122();
+            var6.method673(var1, var2);
+            this.field1203[var5] = var6;
+            if (var4 != null) {
+                var4.field1163 = var6;
+            }
+
+            var4 = var6;
+        }
+
+        return var3;
+    }
+
+    method702(var1) {
+        let var2 = this.method706(var1);
+        return var2 >= 0 && var2 < this.field1203.length ? this.field1203[var2] : null;
+    }
+
+    method705() {
+        this.field1218 = this.field1203[0].field1165;
+        this.field1219 = this.field1203[this.method703() - 1].field1165;
+        this.field1217 = new Array(this.method701() + 1).fill(0);
+
+        for (let var1 = this.method704(); var1 <= this.method700(); ++var1) {
+            this.field1217[var1 - this.method704()] = AttackOption.method590(this, var1);
+        }
+
+        this.field1203 = null;
+        this.field1220 = AttackOption.method590(this, this.method704() - 1);
+        this.field1216 = AttackOption.method590(this, this.method700() + 1);
+    }
+
+    method699(var1) {
+        if (var1 < this.method704()) {
+            return this.field1220;
+        } else {
+            return var1 > this.method700() ? this.field1216 : this.field1217[var1 - this.method704()];
+        }
+    }
+
+    method706(var1) {
+        if (this.field1205 < 0 || this.field1203[this.field1205].field1165 > var1 || this.field1203[this.field1205].field1163 != null && this.field1203[this.field1205].field1163.field1165 <= var1) {
+            if (var1 >= this.method704() && var1 <= this.method700()) {
+                let var2 = this.method703();
+                let var3 = this.field1205;
+                if (var2 > 0) {
+                    let var4 = 0;
+                    let var5 = var2 - 1;
+
+                    do {
+                        let var6 = var4 + var5 >> 1;
+                        if (var1 < this.field1203[var6].field1165) {
+                            if (var1 > this.field1203[var6 - 1].field1165) {
+                                var3 = var6 - 1;
+                                break;
+                            }
+
+                            var5 = var6 - 1;
+                        } else {
+                            if (var1 <= this.field1203[var6].field1165) {
+                                var3 = var6;
+                                break;
+                            }
+
+                            if (var1 < this.field1203[var6 + 1].field1165) {
+                                var3 = var6;
+                                break;
+                            }
+
+                            var4 = var6 + 1;
+                        }
+                    } while (var4 <= var5);
+                }
+
+                if (var3 != this.field1205) {
+                    this.field1205 = var3;
+                    this.field1215 = true;
+                }
+
+                return this.field1205;
+            } else {
+                return -1;
+            }
+        } else {
+            return this.field1205;
+        }
+    }
+
+    method700() {
+        return this.field1219;
+    }
+
+    method701() {
+        return this.method700() - this.method704();
+    }
+
+    method703() {
+        return this.field1203 == null ? 0 : this.field1203.length;
+    }
+
+    method704() {
+        return this.field1218;
+    }
+
+}
+
 class AnimayaDefinition {
 
 }
 
+class class129 {
+    static values = [
+        [0, 0, null, -1, -1],
+        [1, 1, null, 0, 2],
+        [2, 2, null, 1, 2],
+        [3, 3, null, 2, 2],
+        [4, 4, null, 3, 1],
+        [5, 5, null, 4, 1],
+        [6, 6, null, 5, 1],
+        [7, 7, null, 6, 3],
+        [8, 8, null, 7, 3],
+        [9, 9, null, 8, 3],
+        [10, 10, null, 0, 7],
+        [11, 11, null, 1, 7],
+        [12, 12, null, 2, 7],
+        [13, 13, null, 3, 7],
+        [14, 14, null, 4, 7],
+        [15, 15, null, 5, 7],
+        [16, 16, null, 0, 5],
+    ];
+    static findEnumerated(val) {
+        let foundValue = this.values.find(x => x[1] == val);
+        if (foundValue == undefined) {
+            foundValue = this.values[0];
+        }
+
+        return new this(foundValue[0], foundValue[1], foundValue[2], foundValue[3], foundValue[5]);
+    }
+
+    constructor(var1, var2, var3, var4, var5) {
+        this.field1253 = var1;
+        this.field1251 = var2;
+        this.field1252 = var4;
+    }
+
+    method711() {
+        return this.field1252;
+    }
+}
+
+class class128 {
+    static values = [
+        [0, 0, null, 0],
+        [1, 1, null, 9],
+        [2, 2, null, 3],
+        [3, 3, null, 6],
+        [4, 4, null, 1],
+        [5, 5, null, 3],
+    ];
+    static findEnumerated(val) {
+        let foundValue = this.values.find(x => x[1] == val);
+        if (foundValue == undefined) {
+            foundValue = this.values[0];
+        }
+
+        return new this(foundValue[0], foundValue[1], foundValue[2], foundValue[3], foundValue[5]);
+    }
+
+    constructor(var1, var2, var3, var4) {
+        this.field1230 = var1;
+        this.field1224 = var2;
+        this.field1232 = var4;
+    }
+
+    method707() {
+        return this.field1232;
+    }
+}
+
 class AnimayaLoader {
-    load(bytes, id, cache) {
-        let def = new FramesDefinition();
-        def.id = id;
+
+    load(def, bytes, cache) {
         let dataview = new DataView(bytes.buffer);
 
-        let unknown = dataview.readUint8();
+        let version = dataview.readUint8();
         let skeletonId = dataview.readUint16();
-
-        return cache.getFile(IndexType.FRAMEMAPS.id, skeletonId).then((framemap) => {
+        //console.log(version, skeletonId, "TEST");
+        return cache.getFile(cacheTypes_IndexType.FRAMEMAPS.id, skeletonId).then((framemap) => {
             framemap = framemap.def;
-            //console.log(framemap);
 
             dataview.readUint16();
             dataview.readUint16();
-            def.field1264 = dataview.readUint8();
+            def.field1257 = dataview.readUint8();
             let var3 = dataview.readUint16();
-            def.field1267 = new Array(framemap.animayaSkeleton.bones.length);
-            def.field1266 = new Array(framemap.count);
+            def.field1265 = new Array(framemap.animayaSkeleton.bones.length);
+            def.field1258 = new Array(framemap.length);
             let var4 = new Array(var3);
 
             let var5;
             let var7;
-            let var16;
+            let tasks = []; //osrs uses some pool or something
             for (var5 = 0; var5 < var3; ++var5) {
-                var7 = dataview.readUint8();
-                var16 = dataview.readShortSmart();
-                let var11 = dataview.readUint8();
-                //console.log(var16, var11);
-                /*
-                class127 var12 = (class127)class4.findEnumerated(class122.method688(), var11);
-                if (var12 == null) {
-                   var12 = class127.field1244;
-                }
-       
-                class125 var13 = new class125();
-                var13.method704(var1, var2);
-                var4[var5] = new class124(this, var13, var9, var12, var16);
-                int var14 = var9.method708();
-                class125[][] var15;
-                if (var9 == class126.field1229) {
-                   var15 = this.field1267;
+                let var6 = class128.findEnumerated(dataview.readUint8());
+                var7 = dataview.readShortSmart();
+                let var8 = class129.findEnumerated(dataview.readUint8());
+
+                let var9 = new class127();
+                var9.method698(dataview, version);
+                let var10 = var6.method707();
+
+                let var11;
+
+                if (var6.field1230 == 1) { // var6 == class128.field1234
+                    var11 = def.field1265;
                 } else {
-                   var15 = this.field1266;
+                    var11 = def.field1258;
                 }
-       
-                if (var15[var16] == null) {
-                   var15[var16] = new class125[var14];
+
+                if (var11[var7] == null) {
+                    var11[var7] = new Array(var10);
                 }
-       
-                if (var9 == class126.field1232) {
-                   this.field1262 = true;
+
+                if (var6.field1230 == 4) { // var6 == class128.field1228
+                    def.field1259 = true;
                 }
-                */
+
+                tasks.push({ var9, var6, var8, var7 });
+            }
+
+            tasks.forEach(task => {
+                task.var9.method705();
+
+                let var1;
+                if (task.var6.field1230 == 1) { //var8 == class128.field1234
+                    var1 = def.field1265;
+                } else {
+                    var1 = def.field1258;
+                }
+
+                var1[task.var7][task.var8.method711()] = task.var9;
+            });
+            for (var5 = 0; var5 < var3; ++var5) {
+
             }
 
             def.framemap = framemap;
@@ -4236,127 +5113,125 @@ class AnimayaLoader {
 
 
 
-class class416 {
+class class420 {
     constructor() {
-        this.method2168();
+        this.method2179();
     }
 
-    method2168() {
-        this.field3773 = 0.0;
-        this.field3772 = 0.0;
-        this.field3771 = 0.0;
-        this.field3774 = 1.0;
+    method2179() {
+        this.field3740 = 0.0;
+        this.field3739 = 0.0;
+        this.field3737 = 0.0;
+        this.field3738 = 1.0;
     }
 
-    method2171(var1, var2, var3, var4) {
+    method2181(var1, var2, var3, var4) {
         let var5 = Math.sin(var4 * 0.5);
         let var6 = Math.cos(var4 * 0.5);
-        this.field3771 = var1 * var5;
-        this.field3772 = var2 * var5;
-        this.field3773 = var5 * var3;
-        this.field3774 = var6;
+        this.field3737 = var1 * var5;
+        this.field3739 = var2 * var5;
+        this.field3740 = var5 * var3;
+        this.field3738 = var6;
     }
 
-    method2169(var1) {
-        this.method2167(var1.field3772 * this.field3773 + this.field3774 * var1.field3771 + var1.field3774 * this.field3771 - this.field3772 * var1.field3773, this.field3771 * var1.field3773 + this.field3772 * var1.field3774 - var1.field3771 * this.field3773 + var1.field3772 * this.field3774, var1.field3774 * this.field3773 + var1.field3771 * this.field3772 - this.field3771 * var1.field3772 + var1.field3773 * this.field3774, var1.field3774 * this.field3774 - this.field3771 * var1.field3771 - var1.field3772 * this.field3772 - var1.field3773 * this.field3773);
-    }
+    method2180(var1) {
+        this.method2182(this.field3740 * var1.field3739 + this.field3738 * var1.field3737 + this.field3737 * var1.field3738 - var1.field3740 * this.field3739, this.field3738 * var1.field3739 + (var1.field3738 * this.field3739 - this.field3740 * var1.field3737) + this.field3737 * var1.field3740, this.field3739 * var1.field3737 + this.field3740 * var1.field3738 - var1.field3739 * this.field3737 + var1.field3740 * this.field3738, this.field3738 * var1.field3738 - var1.field3737 * this.field3737 - this.field3739 * var1.field3739 - this.field3740 * var1.field3740);
+     }
 
-    method2167(var1, var2, var3, var4) {
-        this.field3771 = var1;
-        this.field3772 = var2;
-        this.field3773 = var3;
-        this.field3774 = var4;
+     method2182(var1, var2, var3, var4) {
+        this.field3737 = var1;
+        this.field3739 = var2;
+        this.field3740 = var3;
+        this.field3738 = var4;
     }
 
 
 }
 
-class FramesLoader_FramesDefinition {
-    method721(var1, var2, var3) {
-        let var5 = new FramemapLoader_Matrix();
+class FramesDefinition {
+    method727(var1, var2, var3) {
+        let var5 = new Matrix();
 
-        this.method718(var5, var3, var2, var1);
-        this.method724(var5, var3, var2, var1);
-        this.method723(var5, var3, var2, var1);
-        var2.method676(var5);
-        //var5.method2172(); //release back into pooling system?
+        this.method728(var5, var3, var2, var1);
+        this.method726(var5, var3, var2, var1);
+        this.method730(var5, var3, var2, var1);
+        //console.log(var2.id, var5);
+
+        var2.method691(var5);
+        //var5.method2200(); //release back into pooling system?
     }
 
-    method718(var1, var2, var3, var4) {
-        let var5 = var3.method679(this.field1264);
+    method728(var1, var2, var3, var4) {
+        let var5 = var3.method688(this.field1257);
         let var6 = var5[0];
         let var7 = var5[1];
         let var8 = var5[2];
 
-        if (this.field1267[var2] != null) {
-            let var9 = this.field1267[var2][0];
-            let var10 = this.field1267[var2][1];
-            let var11 = this.field1267[var2][2];
+        if (this.field1265[var2] != null) {
+            let var9 = this.field1265[var2][0];
+            let var10 = this.field1265[var2][1];
+            let var11 = this.field1265[var2][2];
             if (var9 != null) {
-                var6 = var9.method696(var4);
+                var6 = var9.method699(var4);
             }
 
-
             if (var10 != null) {
-                var7 = var10.method696(var4);
+                var7 = var10.method699(var4);
             }
 
             if (var11 != null) {
-                var8 = var11.method696(var4);
+                var8 = var11.method699(var4);
             }
         }
-        let var26 = class416.field3770;
-        let var25 = new class416();
+        
+        let var17 = new class420();
+        var17.method2181(1.0, 0.0, 0.0, var6);
+        
+        let var18 = new class420();
+        var18.method2181(0.0, 1.0, 0.0, var7);
+        
+        let var19 = new class420();
+        var19.method2181(0.0, 0.0, 1.0, var8);
+        
+        let var12 = new class420();
 
-        var25.method2171(1.0, 0.0, 0.0, var6);
-        let var12 = class416.field3770;
-        let var27 = new class416();
+        var12.method2180(var19);
+        var12.method2180(var17);
+        var12.method2180(var18);
 
-        var27.method2171(0.0, 1.0, 0.0, var7);
-        let var14 = class416.field3770;
-        let var13 = new class416();
+        let var13 = new Matrix();
 
-        var13.method2171(0.0, 0.0, 1.0, var8);
-        let var16 = class416.field3770;
-        let var15 = new class416();
-
-        var15.method2169(var13);
-        var15.method2169(var25);
-        var15.method2169(var27);
-        let var18 = FramemapLoader_Matrix.field3775;
-        let var17 = new FramemapLoader_Matrix();
-
-        var17.method2178(var15);
-        var1.method2175(var17);
+        var13.method2190(var12);
+        var1.method2189(var13);
         /*
         var25.method2170();
         var27.method2170();
         var13.method2170();
         var15.method2170();
-        var17.method2172();
+        var17.method2200();
         */
     }
 
 
-    method723(var1, var2, var3, var4) {
-        let var5 = var3.method682(this.field1264);
+    method730(var1, var2, var3, var4) {
+        let var5 = var3.method689(this.field1257);
         let var6 = var5[0];
         let var7 = var5[1];
         let var8 = var5[2];
-        if (this.field1267[var2] != null) {
-            let var9 = this.field1267[var2][3];
-            let var10 = this.field1267[var2][4];
-            let var11 = this.field1267[var2][5];
+        if (this.field1265[var2] != null) {
+            let var9 = this.field1265[var2][3];
+            let var10 = this.field1265[var2][4];
+            let var11 = this.field1265[var2][5];
             if (var9 != null) {
-                var6 = var9.method696(var4);
+                var6 = var9.method699(var4);
             }
 
             if (var10 != null) {
-                var7 = var10.method696(var4);
+                var7 = var10.method699(var4);
             }
 
             if (var11 != null) {
-                var8 = var11.method696(var4);
+                var8 = var11.method699(var4);
             }
         }
 
@@ -4365,49 +5240,51 @@ class FramesLoader_FramesDefinition {
         var1.matrixVals[14] = var8;
     }
 
-    method724(var1, var2, var3, var4) {
-        let var5 = var3.method681(this.field1264);
+    method726(var1, var2, var3, var4) {
+        let var5 = var3.method690(this.field1257);
         let var6 = var5[0];
         let var7 = var5[1];
         let var8 = var5[2];
-        if (this.field1267[var2] != null) {
-            let var9 = this.field1267[var2][6];
-            let var10 = this.field1267[var2][7];
-            let var11 = this.field1267[var2][8];
+        if (this.field1265[var2] != null) {
+            let var9 = this.field1265[var2][6];
+            let var10 = this.field1265[var2][7];
+            let var11 = this.field1265[var2][8];
             if (var9 != null) {
-                var6 = var9.method696(var4);
+                var6 = var9.method699(var4);
             }
 
             if (var10 != null) {
-                var7 = var10.method696(var4);
+                var7 = var10.method699(var4);
             }
 
             if (var11 != null) {
-                var8 = var11.method696(var4);
+                var8 = var11.method699(var4);
             }
         }
 
-        let var14 = FramemapLoader_Matrix.field3775;
-        let var15 = new FramemapLoader_Matrix();
-        var15.scale(var6, var7, var8);
-        var1.method2175(var15);
-        var15.method2172();
+        let var15 = new Matrix();
+        var15.method2186(var6, var7, var8);
+        var1.method2189(var15);
+        //var15.method2200();
     }
 }
 
 class FramesLoader {
 
-    load(bytes, id, cache) {
+    load(bytes, id, cache, options) {
         //console.log(id);
-        let def = new FramesLoader_FramesDefinition();
+        let def = new FramesDefinition();
         def.id = id;
         let inview = new DataView(bytes.buffer);
         let dataview = new DataView(bytes.buffer);
 
         let framemapArchiveIndex = inview.readUint16();
         let length = inview.readUint8();
+        
+        if (options.isAnimaya) {
+            return new AnimayaLoader().load(def, bytes, cache);
+        }
 
-        def.animayaDef = new AnimayaDefinition(bytes, id, cache);
         dataview.setPosition(3 + length);
 
         def.indexFrameIds = [];
@@ -6315,7 +7192,7 @@ class ModelLoader {
 
 
 
-const IndexType_IndexType = { 
+const IndexType = { 
     FRAMES:{id: 0, loader: FramesLoader},       // Animations
     FRAMEMAPS:{id: 1, loader: FramemapLoader},  // Skeletons
     CONFIGS:{id: 2, loader: undefined},         // Configs
@@ -6339,18 +7216,18 @@ const IndexType_IndexType = {
     UKNOWN4:{id: 20, loader: undefined},        // World Map Ground           
 
     valueOf(id){
-        var values = Object.values(IndexType_IndexType);
-        var keys = Object.keys(IndexType_IndexType);
+        var values = Object.values(IndexType);
+        var keys = Object.keys(IndexType);
         for(var i=0;i<values.length;i++) {
             if(id == values[i].id)
-                return IndexType_IndexType[keys[i]];
+                return IndexType[keys[i]];
         }
         return undefined;
     }
 };
-Object.freeze(IndexType_IndexType);
+Object.freeze(IndexType);
 
-/* harmony default export */ const cacheTypes_IndexType = (IndexType_IndexType);
+/* harmony default export */ const cacheTypes_IndexType = (IndexType);
 ;// CONCATENATED MODULE: ./src/cacheReader/loaders/KitLoader.js
 class KitDefinition {
 		
@@ -7369,7 +8246,7 @@ class UnderlayLoader {
 
 
 
-const ConfigType_ConfigType = { 
+const ConfigType = { 
     UNDERLAY: {id: 1, loader: UnderlayLoader}, 		//Underlay
 	UNKNOWN2: {id: 2, loader: undefined},			//
 	IDENTKIT: {id: 3, loader: KitLoader},			//Kit
@@ -7410,26 +8287,27 @@ const ConfigType_ConfigType = {
 
 
 	valueOf(id){
-        var values = Object.values(ConfigType_ConfigType);
-        var keys = Object.keys(ConfigType_ConfigType);
+        var values = Object.values(ConfigType);
+        var keys = Object.keys(ConfigType);
         for(var i=0;i<values.length;i++) {
             if(id == values[i].id)
-                return ConfigType_ConfigType[keys[i]];
+                return ConfigType[keys[i]];
         }
         return undefined;
     }
 }
-Object.freeze(ConfigType_ConfigType);
+Object.freeze(ConfigType);
 
-/* harmony default export */ const cacheTypes_ConfigType = (ConfigType_ConfigType);
+/* harmony default export */ const cacheTypes_ConfigType = (ConfigType);
 ;// CONCATENATED MODULE: ./src/cacheReader/CacheDefinitionLoader.js
 
 
 
 class CacheDefinitionLoader {
-	constructor(indexId, archive) {
+	constructor(indexId, archive, options = {}) {
 		this.indexType = cacheTypes_IndexType.valueOf(indexId);
 		this.archive = archive;
+		this.options = options;
 		//this.files = files;
 	}
 
@@ -7458,7 +8336,7 @@ class CacheDefinitionLoader {
 				//unload archive file memory to replace it with definition info
 				//if (this.archive.files[i].id > 25000)
 				//	console.log(this.archive.files[i], this.archive.files[i].content.length);
-				let loadPromise = Promise.resolve(loader.load(this.archive.files[i].content, defId, rscache));
+				let loadPromise = Promise.resolve(loader.load(this.archive.files[i].content, defId, rscache, this.options));
 				loadPromise.iterator = i;
 				//map it to a whole new array
 				//otherwise values wil map over themselves
@@ -8049,7 +8927,7 @@ class RSCache {
 
 
 
-	async getAllFiles(indexId, archiveId, threaded = false) {
+	async getAllFiles(indexId, archiveId, options = {}) {
 		let index = this.indicies[indexId];
 		if (index == undefined) {
 			throw "Index " + indexId + " does not exist";
@@ -8083,7 +8961,7 @@ class RSCache {
 
 		let data;
 
-		if (threaded)
+		if (options.threaded)
 			data = this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
 		else
 			data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
@@ -8093,7 +8971,7 @@ class RSCache {
 			archive = index.archives[x.archiveId];
 
 			archive.loadFiles(x.decompressedData);
-			new CacheDefinitionLoader(x.index.id, archive).load(this).then(() => {
+			new CacheDefinitionLoader(x.index.id, archive, options).load(this).then(() => {
 				archive.filesLoaded = true;
 				//console.log(this.loadRequests[indexId][archiveId]);
 				for(let i=0;i<this.loadRequests[indexId][archiveId].length;i++){
@@ -8140,9 +9018,9 @@ class RSCache {
 	}
 
 	//some archives only contain 1 file so a fileId is only needed in some cases
-	getFile(indexId, archiveId, fileId = 0, threaded = false) {
+	getFile(indexId, archiveId, fileId = 0, options) {
 		//console.log("Archive ID", archiveId);
-		return this.getAllFiles(indexId, archiveId, threaded).then((x) => x[fileId]);
+		return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
 	}
 
 	loadCacheFiles(rootDir, xteasDir, namesRootDir) {
@@ -8252,224 +9130,6 @@ class RSCache {
 
 
 
-
-
-/*
-var cache = new RSCache("./", (x) => { console.log(x) }, "./");
-cache.onload.then(() => {
-  console.log(cache);
-
-  cache.getAllFiles(0, 13566188 >> 16).then(frameInfo => {
-    console.log(frameInfo);
-  });
-
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 7986).then(npc => {
-    cache.getFile(IndexType.MODELS.id, 47150).then(model => {
-      console.log(model);
-      playAnimation(model.def, 9913);
-    });
-  });
-
-});
-*/
-
-function newAnimate(model, animayaSkeleton, var2) {
-  model.verticesX = Object.assign([], model.vertexPositionsX);
-  model.verticesY = Object.assign([], model.vertexPositionsY);
-  model.verticesZ = Object.assign([], model.vertexPositionsZ);
-
-  if (model.animayaGroups != null) {
-    for (let vertexIndex = 0; vertexIndex < model.vertexCount; ++vertexIndex) {
-      let bones = model.animayaGroups[vertexIndex];
-      if (bones != null && bones.length != 0) {
-        let scales = model.animayaScales[vertexIndex];
-
-        let matrix = new Matrix();
-        matrix.zero();
-
-        for (let i = 0; i < bones.length; ++i) {
-          let boneIndex = bones[i];
-          let bone = animayaSkeleton.getBone(boneIndex);
-          if (bone != null) {
-            let matrix2 = new Matrix();
-            let matrix3 = new Matrix();
-
-            matrix2.scaleUniform(scales[i] / 255);
-            matrix3.copy(bone.method678(var2));
-            matrix3.method2175(matrix2);
-            matrix.add(matrix3);
-          }
-        }
-
-        method1283(model, vertexIndex, matrix);
-      }
-    }
-    console.log(model);
-  }
-}
-
-function method1283(model, var1, var2) {
-  let var3 = model.verticesX[var1];
-  let var4 = (-model.verticesY[var1]);
-  let var5 = (-model.verticesZ[var1]);
-  let var6 = 1.0;
-  model.verticesX[var1] = var2.matrixVals[0] * var3 + var2.matrixVals[4] * var4 + var2.matrixVals[8] * var5 + var2.matrixVals[12] * var6;
-  model.verticesY[var1] = -(var2.matrixVals[1] * var3 + var2.matrixVals[5] * var4 + var2.matrixVals[9] * var5 + var2.matrixVals[13] * var6);
-  model.verticesZ[var1] = -(var2.matrixVals[2] * var3 + var2.matrixVals[6] * var4 + var2.matrixVals[10] * var5 + var2.matrixVals[14] * var6);
-}
-
-function method1175(frameDef, field1264, var2) {
-  let var5 = field1264;
-  let var6 = 0;
-  let bones = frameDef.framemap.animayaSkeleton.getAllBones();
-
-  for (let index = 0; index < bones.length; ++index) {
-    let bone = bones[index];
-    frameDef.method721(var2, bone, var6, var5);
-
-    ++var6;
-  }
-}
-
-function playAnimation(model, id) {
-  return cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, id).then(animationInfo => {
-    console.log(animationInfo);
-    if (animationInfo.def.animMayaID != undefined && animationInfo.def.animMayaID >= 0) {
-      let var7 = animationInfo.def.animMayaID;
-
-      /*
-      for (let i = 0; i < 2112; i++) {
-        cache.getAllFiles(IndexType.FRAMEMAPS.id, i);
-      }
-      */
-
-      return cache.getAllFiles(IndexType.FRAMES.id, var7 >> 16).then(framesInfo => {
-        //this line is the same as making a new class133
-        //var6 = Login.method425(SequenceDefinition_animationsArchive, class16.SequenceDefinition_skeletonsArchive, var7, false);
-        console.log(framesInfo);
-
-        method1175(framesInfo[0].def, framesInfo[0].def.field1264, animationInfo.def.frameIDs[0]);
-        newAnimate(model, framesInfo[0].def.framemap.animayaSkeleton, framesInfo[0].def.field1264)
-        /*
-                      if (var3 == null) {
-                          return var1.toSharedSequenceModel(true);
-                      } else {
-                         Model var9 = var1.toSharedSequenceModel(!var3.method720());
-                          var9.method1285(var3, var2);
-                          return var9;
-                      }
-                      */
-      });
-    } else { //no animMaya - old way kind of
-      var shiftedId = (animationInfo.def.frameIDs[0] >> 16);
-      return cache.getAllFiles(IndexType.FRAMES.id, shiftedId).then(frameInfo => {
-        console.log(frameInfo);
-        var frameDefs = frameInfo.map(x => {
-          x.def.id = x.id;
-          return x.def;
-        });
-        //renderer.scene[0].loadAnimation(animationInfo.def, frameDefs);
-      });
-    }
-  });
-}
-
-
-/*
-
-for(let i=3900;i<5934;i++){
-  cache.getFile(IndexType.MAPS.id, i).then(x => {
-    //console.log(x);
-    //if(x.def == undefined) console.log(i, x);
-    //if(x.def.regionX == 50 && x.def.regionY == 53) console.log(x);
-  });
-}
-});
-*
-/*
-console.log(cache);
-cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id).then(zulrah => {
-  console.log(zulrah);
-});
-cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(zulrah => {
-  console.log(zulrah);
-});
-*/
-  //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
-  // cache.getFile(IndexType.MODELS.id, 15981, 0, false).then(x => console.log(x));
-  //42852
-/*
-for(let i=0;i<10;i++){
-cache.getFile(IndexType.CONFIGS.id, ConfigType.OBJECT.id, 1300+i).then(object => {
-  console.log(object);
-});
-}
-*/
-/*
-cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => {console.log(x)});
-cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => {console.log(x)});
-cache.getFile(IndexType.MAPS.id, 4).then(x => {
-  console.log(x);
-  //for (let i = 0; i < x.def.models.length; i++)
-  //  cache.getFile(IndexType.MODELS.id, x.def.models[i], 0, false).then(y => console.log(y))
-});
-});
-*/
-
-/*
-var cache;
-
-
-var t0 = performance.now()
-cache = new RSCache("./", (x) => { console.log(x) });
-
-var promise1, promise2;
-console.log("loading");
-cache.onload.then(() => {
-  console.log(cache);
-  console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
-
-
-  /*
-  cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(zulrah => {
-    console.log(zulrah);
-    var models = zulrah.def.models;
-    var modelPromises = [];
-    console.log(models);
-    for (var i = 0; i < models.length; i++) {
-      modelPromises.push(cache.getFile(IndexType.MODELS.id, models[i], 0, false));
-    }
-
-    Promise.all(modelPromises).then(x => {
-      console.log(x);
-    });
-  });
-  */
-  //console.log("loaded");
-  //var zulrah = cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042);
-  //console.log(await cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042));
-
-
-  //cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(entityInfo => {
-/*
-cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 7053).then(entityInfo2 => {
-  //console.log(entityInfo.def);
-  console.log(entityInfo2.def);
-  var shiftedId = (entityInfo2.def.frameIDs[0] >> 16);
-  console.log(shiftedId);
-  cache.getAllFiles(IndexType.FRAMES.id, shiftedId).then(frameInfo => {
-    console.log(frameInfo);
-  });
-
-  var t1 = performance.now()
-  console.log("Call to doSomething took " + (t1 - t0) + " milliseconds.")
-});
- 
-//});
- 
-});
-
-*/
 })();
 
 /******/ 	return __webpack_exports__;

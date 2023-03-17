@@ -24,7 +24,7 @@ export default class RSCache {
 
 
 
-	async getAllFiles(indexId, archiveId, threaded = false) {
+	async getAllFiles(indexId, archiveId, options = {}) {
 		let index = this.indicies[indexId];
 		if (index == undefined) {
 			throw "Index " + indexId + " does not exist";
@@ -58,7 +58,7 @@ export default class RSCache {
 
 		let data;
 
-		if (threaded)
+		if (options.threaded)
 			data = this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
 		else
 			data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
@@ -68,7 +68,7 @@ export default class RSCache {
 			archive = index.archives[x.archiveId];
 
 			archive.loadFiles(x.decompressedData);
-			new CacheDefinitionLoader(x.index.id, archive).load(this).then(() => {
+			new CacheDefinitionLoader(x.index.id, archive, options).load(this).then(() => {
 				archive.filesLoaded = true;
 				//console.log(this.loadRequests[indexId][archiveId]);
 				for(let i=0;i<this.loadRequests[indexId][archiveId].length;i++){
@@ -115,9 +115,9 @@ export default class RSCache {
 	}
 
 	//some archives only contain 1 file so a fileId is only needed in some cases
-	getFile(indexId, archiveId, fileId = 0, threaded = false) {
+	getFile(indexId, archiveId, fileId = 0, options) {
 		//console.log("Archive ID", archiveId);
-		return this.getAllFiles(indexId, archiveId, threaded).then((x) => x[fileId]);
+		return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
 	}
 
 	loadCacheFiles(rootDir, xteasDir, namesRootDir) {
