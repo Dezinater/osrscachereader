@@ -215,11 +215,14 @@ export class class128 {
 
 export default class AnimayaLoader {
 
-    load(def, bytes, cache) {
+    load(def, bytes, cache, options) {
         let dataview = new DataView(bytes.buffer);
 
         def.version = dataview.readUint8();
         def.skeletonId = dataview.readUint16();
+        if(options.earlyStop) {
+            return def;
+        }
         //console.log(version, skeletonId, "TEST");
         return cache.getFile(IndexType.FRAMEMAPS.id, def.skeletonId).then((framemap) => {
             framemap = framemap.def;

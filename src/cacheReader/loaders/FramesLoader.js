@@ -170,7 +170,7 @@ export default class FramesLoader {
         let length = inview.readUint8();
         
         if (options.isAnimaya) {
-            def = new AnimayaLoader().load(def, bytes, cache);
+            def = new AnimayaLoader().load(def, bytes, cache, options);
             return def;
         }
 

@@ -5049,11 +5049,14 @@ class class128 {
 
 class AnimayaLoader {
 
-    load(def, bytes, cache) {
+    load(def, bytes, cache, options) {
         let dataview = new DataView(bytes.buffer);
 
         def.version = dataview.readUint8();
         def.skeletonId = dataview.readUint16();
+        if(options.earlyStop) {
+            return def;
+        }
         //console.log(version, skeletonId, "TEST");
         return cache.getFile(cacheTypes_IndexType.FRAMEMAPS.id, def.skeletonId).then((framemap) => {
             framemap = framemap.def;
@@ -5291,7 +5294,7 @@ class FramesLoader {
         let length = inview.readUint8();
         
         if (options.isAnimaya) {
-            def = new AnimayaLoader().load(def, bytes, cache);
+            def = new AnimayaLoader().load(def, bytes, cache, options);
             return def;
         }
 
