@@ -161,7 +161,7 @@ export class FramesDefinition {
 export default class FramesLoader {
 
     load(bytes, id, cache, options) {
-        //console.log(id);
+        console.log(id, bytes);
         let def = new FramesDefinition();
         def.id = id;
         let inview = new DataView(bytes.buffer);
@@ -171,7 +171,8 @@ export default class FramesLoader {
         let length = inview.readUint8();
         
         if (options.isAnimaya) {
-            return new AnimayaLoader().load(def, bytes, cache);
+            def = new AnimayaLoader().load(def, bytes, cache);
+            return def;
         }
 
         dataview.setPosition(3 + length);

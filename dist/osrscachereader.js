@@ -5042,10 +5042,10 @@ class AnimayaLoader {
     load(def, bytes, cache) {
         let dataview = new DataView(bytes.buffer);
 
-        let version = dataview.readUint8();
-        let skeletonId = dataview.readUint16();
+        def.version = dataview.readUint8();
+        def.skeletonId = dataview.readUint16();
         //console.log(version, skeletonId, "TEST");
-        return cache.getFile(cacheTypes_IndexType.FRAMEMAPS.id, skeletonId).then((framemap) => {
+        return cache.getFile(cacheTypes_IndexType.FRAMEMAPS.id, def.skeletonId).then((framemap) => {
             framemap = framemap.def;
 
             dataview.readUint16();
@@ -5065,7 +5065,7 @@ class AnimayaLoader {
                 let var8 = class129.findEnumerated(dataview.readUint8());
 
                 let var9 = new class127();
-                var9.method698(dataview, version);
+                var9.method698(dataview, def.version);
                 let var10 = var6.method707();
 
                 let var11;
@@ -5272,7 +5272,7 @@ class FramesDefinition {
 class FramesLoader {
 
     load(bytes, id, cache, options) {
-        //console.log(id);
+        console.log(id, bytes);
         let def = new FramesDefinition();
         def.id = id;
         let inview = new DataView(bytes.buffer);
@@ -5282,7 +5282,8 @@ class FramesLoader {
         let length = inview.readUint8();
         
         if (options.isAnimaya) {
-            return new AnimayaLoader().load(def, bytes, cache);
+            def = new AnimayaLoader().load(def, bytes, cache);
+            return def;
         }
 
         dataview.setPosition(3 + length);

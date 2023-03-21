@@ -218,10 +218,10 @@ export default class AnimayaLoader {
     load(def, bytes, cache) {
         let dataview = new DataView(bytes.buffer);
 
-        let version = dataview.readUint8();
-        let skeletonId = dataview.readUint16();
+        def.version = dataview.readUint8();
+        def.skeletonId = dataview.readUint16();
         //console.log(version, skeletonId, "TEST");
-        return cache.getFile(IndexType.FRAMEMAPS.id, skeletonId).then((framemap) => {
+        return cache.getFile(IndexType.FRAMEMAPS.id, def.skeletonId).then((framemap) => {
             framemap = framemap.def;
 
             dataview.readUint16();
@@ -241,7 +241,7 @@ export default class AnimayaLoader {
                 let var8 = class129.findEnumerated(dataview.readUint8());
 
                 let var9 = new class127();
-                var9.method698(dataview, version);
+                var9.method698(dataview, def.version);
                 let var10 = var6.method707();
 
                 let var11;
