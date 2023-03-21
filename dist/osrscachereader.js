@@ -4505,7 +4505,7 @@ class class123 {
     static field1166;
     static field1168 = [];
     static field1169 = [];
-    static field1166 = field1167 * 2;
+    static field1166 = class123.field1167 * 2;
     static field1168 = [];
     static field1169 = [];
 }

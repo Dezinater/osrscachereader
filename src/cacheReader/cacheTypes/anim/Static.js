@@ -228,6 +228,16 @@ export class class145 {
 
 }
 
+export class class123 {
+    static field1167 = 1.1920929E-7;
+    static field1166;
+    static field1168 = [];
+    static field1169 = [];
+    static field1166 = class123.field1167 * 2;
+    static field1168 = [];
+    static field1169 = [];
+}
+
 export class Client {
     method384(var0) {
         if (class123.field1167 + var0[0] < 1.3333334) {
