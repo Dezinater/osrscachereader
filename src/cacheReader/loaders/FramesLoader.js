@@ -161,7 +161,6 @@ export class FramesDefinition {
 export default class FramesLoader {
 
     load(bytes, id, cache, options) {
-        console.log(id, bytes);
         let def = new FramesDefinition();
         def.id = id;
         let inview = new DataView(bytes.buffer);
@@ -170,6 +169,8 @@ export default class FramesLoader {
         let framemapArchiveIndex = inview.readUint16();
         let length = inview.readUint8();
         
+        def.version = dataview.readUint8();
+        def.skeletonId = dataview.readUint16();
         if (options.isAnimaya) {
             def = new AnimayaLoader().load(def, bytes, cache);
             return def;

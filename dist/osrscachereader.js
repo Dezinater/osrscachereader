@@ -5042,8 +5042,7 @@ class AnimayaLoader {
     load(def, bytes, cache) {
         let dataview = new DataView(bytes.buffer);
 
-        def.version = dataview.readUint8();
-        def.skeletonId = dataview.readUint16();
+        
         //console.log(version, skeletonId, "TEST");
         return cache.getFile(cacheTypes_IndexType.FRAMEMAPS.id, def.skeletonId).then((framemap) => {
             framemap = framemap.def;
@@ -5272,7 +5271,6 @@ class FramesDefinition {
 class FramesLoader {
 
     load(bytes, id, cache, options) {
-        console.log(id, bytes);
         let def = new FramesDefinition();
         def.id = id;
         let inview = new DataView(bytes.buffer);
@@ -5281,6 +5279,8 @@ class FramesLoader {
         let framemapArchiveIndex = inview.readUint16();
         let length = inview.readUint8();
         
+        def.version = dataview.readUint8();
+        def.skeletonId = dataview.readUint16();
         if (options.isAnimaya) {
             def = new AnimayaLoader().load(def, bytes, cache);
             return def;
