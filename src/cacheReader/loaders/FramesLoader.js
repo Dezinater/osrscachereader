@@ -169,8 +169,6 @@ export default class FramesLoader {
         let framemapArchiveIndex = inview.readUint16();
         let length = inview.readUint8();
         
-        def.version = dataview.readUint8();
-        def.skeletonId = dataview.readUint16();
         if (options.isAnimaya) {
             def = new AnimayaLoader().load(def, bytes, cache);
             return def;
