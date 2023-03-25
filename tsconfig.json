@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target": "ESNext",
+        "module": "ESNext",
+        "outDir": "./dist",
+        "esModuleInterop": true,
+        "rootDir": "src",
+        "noEmit": false,
+        "allowJs": true,
+        "moduleResolution": "node",
+        "declaration": true,
+        "experimentalDecorators": true
+    },
+    "ts-node": {
+        "experimentalResolver": true,
+        "esm": true
+    },
+    "include": [
+        "src/",
+        "test/index.spec.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}

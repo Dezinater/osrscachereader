@@ -1,6 +1,6 @@
-import { FramesDefinition } from "./FramesLoader";
-import IndexType from "../cacheTypes/IndexType";
-import { AttackOption } from "../cacheTypes/anim/Static";
+import { FramesDefinition } from "./FramesLoader.js";
+import IndexType from "../cacheTypes/IndexType.js";
+import { AttackOption } from "../cacheTypes/anim/Static.js";
 
 class class122 {
     field1165;

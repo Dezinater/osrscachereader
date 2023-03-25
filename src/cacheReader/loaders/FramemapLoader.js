@@ -1,4 +1,4 @@
-import Bone from "../cacheTypes/anim/Bone";
+import Bone from "../cacheTypes/anim/Bone.js";
 
 export class FramemapDefinition {
 

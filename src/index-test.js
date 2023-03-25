@@ -2,6 +2,13 @@ import RSCache from './cacheReader/RSCache.js'
 import IndexType from './cacheReader/cacheTypes/IndexType.js'
 import ConfigType from './cacheReader/cacheTypes/ConfigType.js'
 import Matrix from './cacheReader/cacheTypes/anim/MatrixTest.js';
+import CacheLoader from './cacheReader/CacheLoader.ts';
+
+const cacheLoader = new CacheLoader("./cache", () => {});
+cacheLoader.getResults().then(x => {
+  console.log(x);
+});
+console.log(cacheLoader);
 
 export { RSCache, IndexType, ConfigType, Matrix };
 
@@ -11,7 +18,7 @@ var cache = new RSCache("./", (x) => { console.log(x) }, "./");
 cache.onload.then(() => {
     console.log(cache);
 
-    cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 12125).then(npc => {
+    cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 12125, {threaded: true}).then(npc => {
         cache.getFile(IndexType.MODELS.id, npc.def.models[0]).then(model => {
             console.log(model);
             playAnimation(model.def, 9577); //9572 kephri idle - 9577 kephri attack

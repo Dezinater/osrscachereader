@@ -1,21 +1,14 @@
-var gzip = require('gzip-js');
+import * as gzip from 'gzip-js'
 import * as Ajax from './helpers/ajax.js'
-import { decompress } from 'bz2';
-import Worker from "./Worker.worker.js";
+import Worker from "web-worker"
 import IndexType from './cacheTypes/IndexType.js'
-import ConfigType from './cacheTypes/ConfigType.js'
-
+import * as bz2 from "bz2";
+//import { decompress } from 'bz2';
 
 export default class CacheRequester {
-	//should be used to make read requests from the cache
-	//this should make it easier to multithread/async this later on
 	constructor(rootDir) {
 		this.promises = {};
-		this.worker = new Worker();
 
-
-
-		//console.log(this.worker);
 		if ('caches' in window) { //if we are able to use cache api
 			var request = rootDir + "cache/" + "main_file_cache.dat2";
 			this.datDataPromise = caches.open('osrsrenderer').then((browserCache) => {
@@ -69,7 +62,7 @@ export default class CacheRequester {
 
 			compressedData = compressedData.buffer;
 			//console.log(compressedData);
-			var localWorker = new Worker();
+			var localWorker = new Worker(new URL('./worker.cjs', import.meta.url));
 
 			localWorker.postMessage({ index, segment, archiveId, compressedData }, [compressedData]);
 			//console.log(compressedData);

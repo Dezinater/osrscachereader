@@ -1,7 +1,6 @@
 let gzip = require('gzip-js');
-import * as Ajax from './helpers/ajax.js'
-import { decompress } from 'bz2';
-import * as bz2 from 'bz2';
+//import * as bz2 from 'bz2';
+let bz2 = require('bz2');
 
 onmessage = function (e) {
     //let workerResult = 'Result: ' + (e.data[0]);
