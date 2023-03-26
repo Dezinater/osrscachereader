@@ -6,16 +6,27 @@ import CacheRequester from './CacheRequester.js'
 
 import Index from './cacheTypes/Index.js'
 import nameHashLookup from './HashConverter.js'
+import CacheLoader from './CacheLoader.ts'
 
 export default class RSCache {
 	constructor(cacheRootDir = "./", progressFunc = () => { }, nameRootDir = undefined) {
+
 		this.indicies = {};
 		this.progressFunc = progressFunc;
-		this.cacheRequester = new CacheRequester(cacheRootDir);
 
-		this.onload = this.loadCacheFiles(cacheRootDir, "./", nameRootDir).then(() => {
-			this.cacheRequester.setXteas(this.xteas);
+		const cacheLoader = new CacheLoader(cacheRootDir);
+
+		this.onload = cacheLoader.getResults().then(result => {
+			console.log(result);
+			this.cacheRequester = new CacheRequester(result.datFile);
+
+			return this.loadCacheFiles(result.indexFiles, "./", nameRootDir).then(() => {
+				this.cacheRequester.setXteas(this.xteas);
+			});
+
 		});
+
+
 	}
 
 	progress(amount) {
@@ -71,47 +82,13 @@ export default class RSCache {
 			new CacheDefinitionLoader(x.index.id, archive, options).load(this).then(() => {
 				archive.filesLoaded = true;
 				//console.log(this.loadRequests[indexId][archiveId]);
-				for(let i=0;i<this.loadRequests[indexId][archiveId].length;i++){
+				for (let i = 0; i < this.loadRequests[indexId][archiveId].length; i++) {
 					this.loadRequests[indexId][archiveId][i](archive.files);
 				}
 			});
 		});
 
 		return newPromise;
-		//console.log(indexId, archiveId, archive.filesLoaded)
-		/*
-				return new Promise((resolve, reject) => {
-					//files should only be loaded when they are required. need a better memory management system or something in the future
-					//console.log(archive.filesLoaded);
-					if (archive.filesLoaded == false) {
-						let data;
-		
-						if (threaded)
-							data = this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
-						else
-							data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
-		
-						return data.then(x => {
-							archive = index.archives[x.archiveId];
-		
-							if (archive.filesLoaded) {
-								resolve(archive.files);
-								return;
-							}
-							archive.loadFiles(x.decompressedData);
-							new CacheDefinitionLoader(x.index.id, x.archiveId, archive.files).load(this).then(() => {
-								archive.filesLoaded = true;
-								resolve(archive.files)
-							});
-						});
-					} else {
-						resolve(archive.files);
-					}
-		
-					//resolve(archive.files);
-		
-				});
-		*/
 	}
 
 	//some archives only contain 1 file so a fileId is only needed in some cases
@@ -120,7 +97,7 @@ export default class RSCache {
 		return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
 	}
 
-	loadCacheFiles(rootDir, xteasDir, namesRootDir) {
+	loadCacheFiles(indexFiles, xteasDir, namesRootDir) {
 
 		//this is basically relying on loading faster than the other stuff. probably should merge this with something
 		if (namesRootDir != undefined) {
@@ -144,49 +121,34 @@ export default class RSCache {
 			});
 		}
 
-		let idx255 = Ajax.getFileBytes(rootDir + "cache/main_file_cache.idx255");
-		let idxFiles = [];
+		let idx255Data = indexFiles[indexFiles.length - 1];
+		let idxFileData = indexFiles.slice(0, indexFiles.length - 1);
 
-		return idx255.then((idx255Data) => {
-			//console.log("idx255 loaded");
-			//console.log(idx255Data);
-			let indiciesAmount = idx255Data.length / 6; //each section is 6 bits
+		//theres probably a better way of doing this
+		//also not completely sure yet if this really needs to be done for index 255
+		//return Promise.all(idxFiles).then((idxFileData) => {
+		for (let i = 0; i <= idxFileData.length; i++) {
+			let dataview;
+			if (i == idxFileData.length) { //ugly fix, needs to be improved
+				dataview = new DataView(idx255Data.buffer);
+				i = 255;
+			} else {
+				dataview = new DataView(idxFileData[i].buffer);
+			}
+			this.indicies[i] = new Index(i);
+			for (let j = 0; j < dataview.byteLength; j += 6) {
+				let size = dataview.readUint24();
+				let segment = dataview.readUint24();
+				//console.log(size, segment);
 
-			for (let i = 0; i < indiciesAmount; i++) {
-				idxFiles.push(Ajax.getFileBytes(rootDir + "cache/main_file_cache.idx" + i));
+				this.indicies[i].indexSegments.push({ size, segment });
 			}
 
-			//theres probably a better way of doing this
-			//also not completely sure yet if this really needs to be done for index 255
-			return Promise.all(idxFiles).then((idxFileData) => {
-				for (let i = 0; i <= idxFileData.length; i++) {
-					let dataview;
-					if (i == idxFileData.length) { //ugly fix, needs to be improved
-						dataview = new DataView(idx255Data.buffer);
-						i = 255;
-					} else {
-						dataview = new DataView(idxFileData[i].buffer);
-					}
+		};
+		console.log(this.indicies)
 
-					this.indicies[i] = new Index(i);
-					for (let j = 0; j < dataview.byteLength; j += 6) {
-						let size = dataview.readUint24();
-						let segment = dataview.readUint24();
-						//console.log(size, segment);
-
-						this.indicies[i].indexSegments.push({ size, segment });
-					}
-
-				};
-
-				return this.cacheRequester.datDataPromise.then((x) => {
-					this.progress(40);
-					return this.loadIndicies(idx255Data);
-				});
-
-			});
-
-		});
+		this.progress(40);
+		return this.loadIndicies(idx255Data);
 	}
 
 	loadIndicies(idxData) {

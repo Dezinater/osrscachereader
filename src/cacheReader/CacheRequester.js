@@ -2,13 +2,16 @@ import * as gzip from 'gzip-js'
 import * as Ajax from './helpers/ajax.js'
 import Worker from "web-worker"
 import IndexType from './cacheTypes/IndexType.js'
-import * as bz2 from "bz2";
-//import { decompress } from 'bz2';
+//import * as bz2 from "bz2";
+import { decompress } from 'bz2';
 
 export default class CacheRequester {
-	constructor(rootDir) {
+	constructor(datFile) {
+		console.log(bz2)
 		this.promises = {};
+		this.datData = datFile;
 
+/*
 		if ('caches' in window) { //if we are able to use cache api
 			var request = rootDir + "cache/" + "main_file_cache.dat2";
 			this.datDataPromise = caches.open('osrsrenderer').then((browserCache) => {
@@ -38,7 +41,7 @@ export default class CacheRequester {
 				this.datData = x;
 			});
 		}
-
+*/
 
 
 	}
@@ -166,7 +169,6 @@ export default class CacheRequester {
 
 	readSector(buffer, pos, archiveId) {
 		var convertedPos = pos * 520;
-
 		let dataview = new DataView(this.datData.buffer);
 
 		var currentArchive;
