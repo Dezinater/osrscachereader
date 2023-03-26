@@ -2,19 +2,12 @@ import RSCache from './cacheReader/RSCache.js'
 import IndexType from './cacheReader/cacheTypes/IndexType.js'
 import ConfigType from './cacheReader/cacheTypes/ConfigType.js'
 import Matrix from './cacheReader/cacheTypes/anim/MatrixTest.js';
-import CacheLoader from './cacheReader/CacheLoader.ts';
-
-const cacheLoader = new CacheLoader("./cache", () => {});
-cacheLoader.getResults().then(x => {
-  console.log(x);
-});
-console.log(cacheLoader);
 
 export { RSCache, IndexType, ConfigType, Matrix };
 
 
 
-var cache = new RSCache("./", (x) => { console.log(x) }, "./");
+var cache = new RSCache("cache", (x) => { console.log(x) }, "./");
 cache.onload.then(() => {
     console.log(cache);
 
