@@ -24,7 +24,7 @@ DataView.prototype.readFloat32 = function () { //byte
 	try {
 		val = this.getFloat32(this.getPosition());
 	} catch (error) {
-		console.error(error);
+		throw error;
 	}
 	this.addPosition(4);
 	return val;
@@ -35,7 +35,7 @@ DataView.prototype.readFloat64 = function () { //byte
 	try {
 		val = this.getFloat64(this.getPosition());
 	} catch (error) {
-		console.error(error);
+		throw error;
 	}
 	this.addPosition(8);
 	return val;
@@ -46,7 +46,7 @@ DataView.prototype.readUint8 = function () { //byte
 	try {
 		val = this.getUint8(this.getPosition());
 	} catch (error) {
-		console.error(error);
+		throw error;
 	}
 	this.addPosition(1);
 	return val;
@@ -56,7 +56,7 @@ DataView.prototype.readUint16 = function () { //short
 	try {
 		val = this.getUint16(this.getPosition());
 	} catch (error) {
-		console.error(error);
+		throw error;
 	}
 	this.addPosition(2);
 	return val;
@@ -66,7 +66,7 @@ DataView.prototype.readUint24 = function () {
 	try {
 		val = this.getUint24(this.getPosition());
 	} catch (error) {
-		console.error(error);
+		throw error;
 	}
 	this.addPosition(3);
 	return val;
@@ -76,7 +76,7 @@ DataView.prototype.readUint32 = function () { //int
 	try {
 		val = this.getUint32(this.getPosition());
 	} catch (error) {
-		console.error(error);
+		throw error;
 	}
 	this.addPosition(4);
 	return val;
@@ -97,7 +97,7 @@ DataView.prototype.readInt8 = function () { //byte
 	try {
 		val = this.getInt8(this.getPosition());
 	} catch (error) {
-		console.error(error);
+		throw error;
 	}
 	this.addPosition(1);
 	return val;
@@ -107,7 +107,7 @@ DataView.prototype.readInt16 = function () { //short
 	try {
 		val = this.getInt16(this.getPosition());
 	} catch (error) {
-		console.error(error);
+		throw error;
 	}
 	this.addPosition(2);
 	return val;
@@ -117,7 +117,7 @@ DataView.prototype.readInt24 = function () {
 	try {
 		val = this.getInt24(this.getPosition());
 	} catch (error) {
-		console.error(error);
+		throw error;
 	}
 	this.addPosition(3);
 	return val;
@@ -127,7 +127,7 @@ DataView.prototype.readInt32 = function () { //int
 	try {
 		val = this.getInt32(this.getPosition());
 	} catch (error) {
-		console.error(error);
+		throw error;
 	}
 	this.addPosition(4);
 	return val;

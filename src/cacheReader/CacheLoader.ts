@@ -74,7 +74,7 @@ export default class CacheLoader {
         this.indexFiles.forEach(indexFile => {
             this.promises.indexFiles.push(axios.get(url + indexFile, { responseType: 'arraybuffer' }).then(x => new Uint8Array(x.data)));
         });
-        this.promises.xteas = axios.get(url + "xteas.json", { responseType: 'json', }).then(x => this.readXteas(x.data)).catch(e => {});
+        this.promises.xteas = axios.get(url + "xteas.json", { responseType: 'json', }).then(x => this.readXteas(x.data)).catch(e => { });
     }
 
     loadFile(path: string) {
@@ -82,7 +82,10 @@ export default class CacheLoader {
             path += "/";
         }
 
-        this.promises.datFile = new Promise(resolve => fs.readFile(path + this.datFile, (err, data) => resolve(data as Uint8Array)));
+        this.promises.datFile = new Promise((resolve, reject) => fs.readFile(path + this.datFile, (err, data) => {
+            if (err) throw err;
+            resolve(data as Uint8Array)
+        }));
         this.indexFiles.forEach(async indexFile => {
             let newPromise: Promise<Uint8Array> = new Promise(resolve => fs.readFile(path + indexFile, (err, data) => resolve(data as Uint8Array)));
             this.promises.indexFiles.push(newPromise);
@@ -92,7 +95,7 @@ export default class CacheLoader {
     }
 
     readXteas(xteasData) {
-        if(xteasData == undefined) return;
+        if (xteasData == undefined) return;
         let xteas = JSON.parse(xteasData);
         let reOrderedXteas = {};
         for (var i = 0; i < xteas.length; i++) {

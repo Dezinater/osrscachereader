@@ -34,7 +34,14 @@ export default class CacheDefinitionLoader {
 				//unload archive file memory to replace it with definition info
 				//if (this.archive.files[i].id > 25000)
 				//	console.log(this.archive.files[i], this.archive.files[i].content.length);
-				let loadPromise = Promise.resolve(loader.load(this.archive.files[i].content, defId, rscache, this.options));
+				let loadedValue;
+				try {
+					loadedValue = loader.load(this.archive.files[i].content, defId, rscache, this.options);
+				} catch (error) {
+					reject(error);
+					throw error;
+				}
+				let loadPromise = Promise.resolve(loadedValue);
 				loadPromise.iterator = i;
 				//map it to a whole new array
 				//otherwise values wil map over themselves

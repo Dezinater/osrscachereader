@@ -59,7 +59,7 @@ export default class RSCache {
 
 		//console.log(this.loadRequests[indexId][archiveId]);
 		let newPromise = new Promise((resolve, reject) => {
-			this.loadRequests[indexId][archiveId].push(resolve);
+			this.loadRequests[indexId][archiveId].push({ resolve, reject });
 		});
 
 		//if theres already one processing then just add it to the stack
@@ -83,7 +83,11 @@ export default class RSCache {
 				archive.filesLoaded = true;
 				//console.log(this.loadRequests[indexId][archiveId]);
 				for (let i = 0; i < this.loadRequests[indexId][archiveId].length; i++) {
-					this.loadRequests[indexId][archiveId][i](archive.files);
+					this.loadRequests[indexId][archiveId][i].resolve(archive.files);
+				}
+			}).catch((error) => {
+				for (let i = 0; i < this.loadRequests[indexId][archiveId].length; i++) {
+					this.loadRequests[indexId][archiveId][i].reject(error);
 				}
 			});
 		});
@@ -111,18 +115,18 @@ export default class RSCache {
 			});
 		}
 		*/
-/*
-		if (xteasDir != undefined) {
-			Ajax.getFile(xteasDir + "xteas.json").then((xteasData) => {
-				let xteas = JSON.parse(xteasData);
-				this.xteas = {};
-				for (var i = 0; i < xteas.length; i++) {
-					this.xteas[xteas[i].group] = xteas[i];
+		/*
+				if (xteasDir != undefined) {
+					Ajax.getFile(xteasDir + "xteas.json").then((xteasData) => {
+						let xteas = JSON.parse(xteasData);
+						this.xteas = {};
+						for (var i = 0; i < xteas.length; i++) {
+							this.xteas[xteas[i].group] = xteas[i];
+						}
+		
+					});
 				}
-
-			});
-		}
-*/
+		*/
 		let idx255Data = indexFiles[indexFiles.length - 1];
 		let idxFileData = indexFiles.slice(0, indexFiles.length - 1);
 
