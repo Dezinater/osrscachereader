@@ -17,7 +17,7 @@ export default class RSCache {
 		const cacheLoader = new CacheLoader(cacheRootDir);
 
 		this.onload = cacheLoader.getResults().then(result => {
-			console.log(result);
+			//console.log(result);
 			this.cacheRequester = new CacheRequester(result.datFile);
 
 			return this.loadCacheFiles(result.indexFiles, "./", nameRootDir).then(() => {
@@ -100,6 +100,7 @@ export default class RSCache {
 	loadCacheFiles(indexFiles, xteasDir, namesRootDir) {
 
 		//this is basically relying on loading faster than the other stuff. probably should merge this with something
+		/*
 		if (namesRootDir != undefined) {
 			Ajax.getFile(namesRootDir + "names.tsv").then((nameData) => {
 				let splitNameData = nameData.split("\n");
@@ -109,7 +110,8 @@ export default class RSCache {
 				}
 			});
 		}
-
+		*/
+/*
 		if (xteasDir != undefined) {
 			Ajax.getFile(xteasDir + "xteas.json").then((xteasData) => {
 				let xteas = JSON.parse(xteasData);
@@ -120,7 +122,7 @@ export default class RSCache {
 
 			});
 		}
-
+*/
 		let idx255Data = indexFiles[indexFiles.length - 1];
 		let idxFileData = indexFiles.slice(0, indexFiles.length - 1);
 
@@ -145,7 +147,6 @@ export default class RSCache {
 			}
 
 		};
-		console.log(this.indicies)
 
 		this.progress(40);
 		return this.loadIndicies(idx255Data);

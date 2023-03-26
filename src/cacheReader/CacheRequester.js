@@ -2,46 +2,45 @@ import * as gzip from 'gzip-js'
 import * as Ajax from './helpers/ajax.js'
 import Worker from "web-worker"
 import IndexType from './cacheTypes/IndexType.js'
-//import * as bz2 from "bz2";
-import { decompress } from 'bz2';
+
+import bz2Decompress from "bz2";
 
 export default class CacheRequester {
 	constructor(datFile) {
-		console.log(bz2)
 		this.promises = {};
 		this.datData = datFile;
 
-/*
-		if ('caches' in window) { //if we are able to use cache api
-			var request = rootDir + "cache/" + "main_file_cache.dat2";
-			this.datDataPromise = caches.open('osrsrenderer').then((browserCache) => {
-				return caches.has(request).then((cacheExists) => {
-					if (!cacheExists) {
-						return browserCache.add(request).then(() => {
-							//needs to be retrieved after its been added otherwise will return undefined
-							return browserCache.match(request)
-								.then((response) => response.blob())
-								.then((blob) => blob.arrayBuffer());
+		/*
+				if ('caches' in window) { //if we are able to use cache api
+					var request = rootDir + "cache/" + "main_file_cache.dat2";
+					this.datDataPromise = caches.open('osrsrenderer').then((browserCache) => {
+						return caches.has(request).then((cacheExists) => {
+							if (!cacheExists) {
+								return browserCache.add(request).then(() => {
+									//needs to be retrieved after its been added otherwise will return undefined
+									return browserCache.match(request)
+										.then((response) => response.blob())
+										.then((blob) => blob.arrayBuffer());
+								});
+							} else {
+								return browserCache.match(request)
+									.then((response) => response.blob())
+									.then((blob) => blob.arrayBuffer());
+							}
 						});
-					} else {
-						return browserCache.match(request)
-							.then((response) => response.blob())
-							.then((blob) => blob.arrayBuffer());
-					}
-				});
-			});
-
-			this.datDataPromise.then((blobArray) => {
-				this.datData = new Uint8Array(blobArray);
-			});
-
-		} else {
-			this.datDataPromise = Ajax.getFileBytes(rootDir + "main_file_cache.dat2");
-			this.datDataPromise.then((x) => {
-				this.datData = x;
-			});
-		}
-*/
+					});
+		
+					this.datDataPromise.then((blobArray) => {
+						this.datData = new Uint8Array(blobArray);
+					});
+		
+				} else {
+					this.datDataPromise = Ajax.getFileBytes(rootDir + "main_file_cache.dat2");
+					this.datDataPromise.then((x) => {
+						this.datData = x;
+					});
+				}
+		*/
 
 
 	}
@@ -128,7 +127,12 @@ export default class CacheRequester {
 				bzData[2] = 'h'.charCodeAt(0);
 				bzData[3] = '1'.charCodeAt(0);
 				bzData.set(data, 4)
-				decompressedData = bz2.decompress(bzData);
+
+				if (bz2Decompress != undefined && bz2Decompress.decompress != undefined) {
+					decompressedData = bz2Decompress.decompress(bzData);
+				} else {
+					decompressedData = bz2.decompress(bzData);
+				}
 			} else if (compressionOpcode == 2) { //gzip
 				//console.log(compressedData);
 				//console.log(compressedLength);
