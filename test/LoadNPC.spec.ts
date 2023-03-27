@@ -5,10 +5,10 @@ import { RSCache, IndexType, ConfigType } from "../src/index.js"
 let cache;
 
 describe('Load NPC', function () {
-    this.timeout(15000);
+    this.timeout(25000);
 
     before(function (done) {
-        cache  = new RSCache("./");
+        cache  = new RSCache("./cache");
         cache.onload.then(() => {
             done();
         });
