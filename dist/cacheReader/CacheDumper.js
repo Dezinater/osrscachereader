@@ -1,107 +1,94 @@
-
-import RSCache from "./RSCache";
-import IndexType from "./cacheTypes/IndexType.js"
-import ConfigType from "./cacheTypes/ConfigType.js"
+import IndexType from "./cacheTypes/IndexType.js";
+import ConfigType from "./cacheTypes/ConfigType.js";
 import { isBrowser } from "browser-or-node";
 import fs from "fs";
-
 export default class CacheDumper {
-
-    private ignoreList = ["FRAMES", "FRAMEMAPS", "MAPS", "MODELS"];
-
-    private cache: RSCache;
-    private outFolder: string;
-    private progressFunction: Function;
-
-    private completedJobs = 0;
-    private failedJobs = 0;
-    private totalJobs = 0;
-
-    constructor(rscache, outFolder: string, progressFunction: Function = () => { }) {
+    ignoreList = ["FRAMES", "FRAMEMAPS", "MAPS", "MODELS"];
+    cache;
+    outFolder;
+    progressFunction;
+    completedJobs = 0;
+    failedJobs = 0;
+    totalJobs = 0;
+    constructor(rscache, outFolder, progressFunction = () => { }) {
         if (isBrowser) {
             console.error("Run with Node to dump Cache files, web browser dumping currently not implemented");
             return;
         }
-
         if (!outFolder.endsWith("/")) {
-            outFolder += "/"
+            outFolder += "/";
         }
         this.cache = rscache;
         this.outFolder = outFolder;
         this.progressFunction = progressFunction;
     }
-
     outFolderCheck() {
-        if (fs.existsSync(this.outFolder)) return;
+        if (fs.existsSync(this.outFolder))
+            return;
         fs.mkdirSync(this.outFolder);
     }
-
     async dumpAll() {
         for (const [indexType, indexInfo] of Object.entries(IndexType)) {
             if (this.ignoreList.includes(indexType)) {
                 continue;
             }
-
             //@ts-ignore
             if (indexInfo.loader != undefined) {
                 try {
                     await this.dumpIndex(indexInfo, indexType);
-                } catch (e) {
+                }
+                catch (e) {
                     console.log(e);
                 }
             }
         }
-
         for (const [configType, configInfo] of Object.entries(ConfigType)) {
             if (this.ignoreList.includes(configType)) {
                 continue;
             }
-
             //@ts-ignore
             if (configInfo.loader != undefined) {
                 try {
                     //await this.dumpConfig(configInfo, configType);
-                } catch (e) {
+                }
+                catch (e) {
                     console.log(e);
                 }
             }
         }
     }
-
-    updateProgress(jobSuccess: boolean) {
+    updateProgress(jobSuccess) {
         if (jobSuccess) {
             this.completedJobs++;
-        } else {
+        }
+        else {
             this.failedJobs++;
         }
-
         const total = (this.failedJobs + this.completedJobs) / this.totalJobs;
         const errorRate = this.failedJobs / (this.failedJobs + this.completedJobs);
         this.progressFunction(total, errorRate);
     }
-
     async dumpConfig(configInfo, name) {
-        if (!fs.existsSync(this.outFolder + "CONFIGS")) fs.mkdirSync(this.outFolder + "CONFIGS");
-        if (!fs.existsSync(this.outFolder + "CONFIGS/" + name)) fs.mkdirSync(this.outFolder + "CONFIGS/" + name);
+        if (!fs.existsSync(this.outFolder + "CONFIGS"))
+            fs.mkdirSync(this.outFolder + "CONFIGS");
+        if (!fs.existsSync(this.outFolder + "CONFIGS/" + name))
+            fs.mkdirSync(this.outFolder + "CONFIGS/" + name);
         let files = await this.cache.getAllFiles(IndexType.CONFIGS.id, configInfo.id);
         files.forEach(file => {
             fs.writeFileSync(this.outFolder + "CONFIGS/" + name + "/" + file.def.id + ".json", JSON.stringify(file.def, null, 2));
         });
     }
-
     async dumpIndex(indexInfo, name) {
         this.outFolderCheck();
         const archivesCount = this.cache.indicies[indexInfo.id].archivesCount;
-        if (!fs.existsSync(this.outFolder + name)) fs.mkdirSync(this.outFolder + name);
-
-        this.dumpArchives(indexInfo, name, 3591)
+        if (!fs.existsSync(this.outFolder + name))
+            fs.mkdirSync(this.outFolder + name);
+        this.dumpArchives(indexInfo, name, 3591);
         this.totalJobs += archivesCount;
     }
-
-
     async dumpArchives(indexInfo, name, archiveId) {
-        if (archiveId < 0) return;
-
+        if (archiveId < 0)
+            return;
         try {
             let files = await this.cache.getAllFiles(indexInfo.id, archiveId);
             fs.mkdir(this.outFolder + name + "/" + archiveId, () => {
@@ -111,13 +98,12 @@ export default class CacheDumper {
                     });
                 });
             });
-        } catch (e) {
+        }
+        catch (e) {
             this.updateProgress(false);
             console.warn(`Error Loading { Index: ${indexInfo.id} Archive: ${archiveId} }`);
             console.log(e);
         }
-
         //this.dumpArchives(indexInfo, name, archiveId - 1);
     }
-
 }

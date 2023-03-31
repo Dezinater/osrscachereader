@@ -1,6 +1,5 @@
 import CacheDumper from "./cacheReader/CacheDumper.js";
-import { RSCache, IndexType, ConfigType } from "./index.js"
-
+import { RSCache } from "./index.js";
 let cache = new RSCache("./cache");
 cache.onload.then(() => {
     console.log("Loaded");

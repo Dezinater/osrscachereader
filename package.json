@@ -1,9 +1,9 @@
 {
   "name": "osrscachereader",
-  "exports": "./dist/osrscachereader.js",
+  "exports": "./dist/index.js",
   "version": "1.0.0",
   "description": "Read Old-School Runescape Cache files using Javascript",
-  "main": "./dist/osrscachereader",
+  "main": "./dist/index",
   "type": "module",
   "files": [
     "dist"
@@ -47,6 +47,7 @@
     "axios": "^1.3.4",
     "browser-or-node": "^2.1.1",
     "bz2": "^1.0.1",
+    "canvas": "^2.11.0",
     "gzip-js": "^0.3.2",
     "mocha": "^10.2.0",
     "ts-node": "^10.9.1",
