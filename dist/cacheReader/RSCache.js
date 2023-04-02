@@ -4,14 +4,13 @@ import CacheDefinitionLoader from './CacheDefinitionLoader.js';
 import CacheRequester from './CacheRequester.js';
 import Index from './cacheTypes/Index.js';
 import nameHashLookup from './HashConverter.js';
-import CacheLoader from './CacheLoader.ts';
+import CacheLoader from './CacheLoader.js';
 export default class RSCache {
     constructor(cacheRootDir = "./", progressFunc = () => { }, nameRootDir = undefined) {
         this.indicies = {};
         this.progressFunc = progressFunc;
         const cacheLoader = new CacheLoader(cacheRootDir);
         this.onload = cacheLoader.getResults().then(result => {
-            console.log(result);
             this.cacheRequester = new CacheRequester(result.datFile);
             return this.loadCacheFiles(result.indexFiles, "./", nameRootDir).then(() => {
                 this.cacheRequester.setXteas(result.xteas);
