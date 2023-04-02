@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class Matrix {
     static field3775 = new Array(0);
     static field3777 = 0;
@@ -270,4 +272,4 @@ class Matrix {
         return var1;
     }
 }
-export default Matrix;
+exports.default = Matrix;

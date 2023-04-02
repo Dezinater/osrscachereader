@@ -1,8 +1,13 @@
-import IndexType from "./cacheTypes/IndexType.js";
-import ConfigType from "./cacheTypes/ConfigType.js";
-import { isBrowser } from "browser-or-node";
-import fs from "fs";
-export default class CacheDumper {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const IndexType_js_1 = __importDefault(require("./cacheTypes/IndexType.js"));
+const ConfigType_js_1 = __importDefault(require("./cacheTypes/ConfigType.js"));
+const browser_or_node_1 = require("browser-or-node");
+const fs_1 = __importDefault(require("fs"));
+class CacheDumper {
     ignoreList = ["FRAMES", "FRAMEMAPS", "MAPS", "MODELS"];
     cache;
     outFolder;
@@ -11,7 +16,7 @@ export default class CacheDumper {
     failedJobs = 0;
     totalJobs = 0;
     constructor(rscache, outFolder, progressFunction = () => { }) {
-        if (isBrowser) {
+        if (browser_or_node_1.isBrowser) {
             console.error("Run with Node to dump Cache files, web browser dumping currently not implemented");
             return;
         }
@@ -23,12 +28,12 @@ export default class CacheDumper {
         this.progressFunction = progressFunction;
     }
     outFolderCheck() {
-        if (fs.existsSync(this.outFolder))
+        if (fs_1.default.existsSync(this.outFolder))
             return;
-        fs.mkdirSync(this.outFolder);
+        fs_1.default.mkdirSync(this.outFolder);
     }
     async dumpAll() {
-        for (const [indexType, indexInfo] of Object.entries(IndexType)) {
+        for (const [indexType, indexInfo] of Object.entries(IndexType_js_1.default)) {
             if (this.ignoreList.includes(indexType)) {
                 continue;
             }
@@ -42,7 +47,7 @@ export default class CacheDumper {
                 }
             }
         }
-        for (const [configType, configInfo] of Object.entries(ConfigType)) {
+        for (const [configType, configInfo] of Object.entries(ConfigType_js_1.default)) {
             if (this.ignoreList.includes(configType)) {
                 continue;
             }
@@ -69,20 +74,20 @@ export default class CacheDumper {
         this.progressFunction(total, errorRate);
     }
     async dumpConfig(configInfo, name) {
-        if (!fs.existsSync(this.outFolder + "CONFIGS"))
-            fs.mkdirSync(this.outFolder + "CONFIGS");
-        if (!fs.existsSync(this.outFolder + "CONFIGS/" + name))
-            fs.mkdirSync(this.outFolder + "CONFIGS/" + name);
-        let files = await this.cache.getAllFiles(IndexType.CONFIGS.id, configInfo.id);
+        if (!fs_1.default.existsSync(this.outFolder + "CONFIGS"))
+            fs_1.default.mkdirSync(this.outFolder + "CONFIGS");
+        if (!fs_1.default.existsSync(this.outFolder + "CONFIGS/" + name))
+            fs_1.default.mkdirSync(this.outFolder + "CONFIGS/" + name);
+        let files = await this.cache.getAllFiles(IndexType_js_1.default.CONFIGS.id, configInfo.id);
         files.forEach(file => {
-            fs.writeFileSync(this.outFolder + "CONFIGS/" + name + "/" + file.def.id + ".json", JSON.stringify(file.def, null, 2));
+            fs_1.default.writeFileSync(this.outFolder + "CONFIGS/" + name + "/" + file.def.id + ".json", JSON.stringify(file.def, null, 2));
         });
     }
     async dumpIndex(indexInfo, name) {
         this.outFolderCheck();
         const archivesCount = this.cache.indicies[indexInfo.id].archivesCount;
-        if (!fs.existsSync(this.outFolder + name))
-            fs.mkdirSync(this.outFolder + name);
+        if (!fs_1.default.existsSync(this.outFolder + name))
+            fs_1.default.mkdirSync(this.outFolder + name);
         this.dumpArchives(indexInfo, name, 3591);
         this.totalJobs += archivesCount;
     }
@@ -91,9 +96,9 @@ export default class CacheDumper {
             return;
         try {
             let files = await this.cache.getAllFiles(indexInfo.id, archiveId);
-            fs.mkdir(this.outFolder + name + "/" + archiveId, () => {
+            fs_1.default.mkdir(this.outFolder + name + "/" + archiveId, () => {
                 files.forEach(file => {
-                    fs.writeFile(this.outFolder + name + "/" + archiveId + "/" + file.def.id + ".json", JSON.stringify(file.def, null, 2), () => {
+                    fs_1.default.writeFile(this.outFolder + name + "/" + archiveId + "/" + file.def.id + ".json", JSON.stringify(file.def, null, 2), () => {
                         this.updateProgress(true);
                     });
                 });
@@ -107,3 +112,4 @@ export default class CacheDumper {
         //this.dumpArchives(indexInfo, name, archiveId - 1);
     }
 }
+exports.default = CacheDumper;

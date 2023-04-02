@@ -1,23 +1,28 @@
-import KitLoader from '../loaders/KitLoader.js';
-import ObjectLoader from '../loaders/ObjectLoader.js';
-import NpcLoader from '../loaders/NpcLoader.js';
-import ItemLoader from '../loaders/ItemLoader.js';
-import SequenceLoader from '../loaders/SequenceLoader.js';
-import OverlayLoader from '../loaders/OverlayLoader.js';
-import UnderlayLoader from '../loaders/UnderlayLoader.js';
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const KitLoader_js_1 = __importDefault(require("../loaders/KitLoader.js"));
+const ObjectLoader_js_1 = __importDefault(require("../loaders/ObjectLoader.js"));
+const NpcLoader_js_1 = __importDefault(require("../loaders/NpcLoader.js"));
+const ItemLoader_js_1 = __importDefault(require("../loaders/ItemLoader.js"));
+const SequenceLoader_js_1 = __importDefault(require("../loaders/SequenceLoader.js"));
+const OverlayLoader_js_1 = __importDefault(require("../loaders/OverlayLoader.js"));
+const UnderlayLoader_js_1 = __importDefault(require("../loaders/UnderlayLoader.js"));
 const ConfigType = {
-    UNDERLAY: { id: 1, loader: UnderlayLoader },
+    UNDERLAY: { id: 1, loader: UnderlayLoader_js_1.default },
     UNKNOWN2: { id: 2, loader: undefined },
-    IDENTKIT: { id: 3, loader: KitLoader },
-    OVERLAY: { id: 4, loader: OverlayLoader },
+    IDENTKIT: { id: 3, loader: KitLoader_js_1.default },
+    OVERLAY: { id: 4, loader: OverlayLoader_js_1.default },
     INV: { id: 5, loader: undefined },
-    OBJECT: { id: 6, loader: ObjectLoader },
+    OBJECT: { id: 6, loader: ObjectLoader_js_1.default },
     UNKNOWN7: { id: 7, loader: undefined },
     ENUM: { id: 8, loader: undefined },
-    NPC: { id: 9, loader: NpcLoader },
-    ITEM: { id: 10, loader: ItemLoader },
+    NPC: { id: 9, loader: NpcLoader_js_1.default },
+    ITEM: { id: 10, loader: ItemLoader_js_1.default },
     PARAMS: { id: 11, loader: undefined },
-    SEQUENCE: { id: 12, loader: SequenceLoader },
+    SEQUENCE: { id: 12, loader: SequenceLoader_js_1.default },
     SPOTANIM: { id: 13, loader: undefined },
     VARBIT: { id: 14, loader: undefined },
     VARCLIENTSTRING: { id: 15, loader: undefined },
@@ -52,4 +57,4 @@ const ConfigType = {
     }
 };
 Object.freeze(ConfigType);
-export default ConfigType;
+exports.default = ConfigType;

@@ -1,4 +1,6 @@
-export default class ArchiveData {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+class ArchiveData {
     constructor() {
         this.id = 0;
         this.name = "";
@@ -74,3 +76,4 @@ export default class ArchiveData {
         //console.log(this.files[0]);
     }
 }
+exports.default = ArchiveData;

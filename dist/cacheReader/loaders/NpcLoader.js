@@ -1,6 +1,10 @@
-export class NpcDefinition {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.NpcDefinition = void 0;
+class NpcDefinition {
 }
-export default class NpcLoader {
+exports.NpcDefinition = NpcDefinition;
+class NpcLoader {
     load(bytes, id) {
         let def = new NpcDefinition();
         def.id = id;
@@ -199,3 +203,4 @@ export default class NpcLoader {
         }
     }
 }
+exports.default = NpcLoader;

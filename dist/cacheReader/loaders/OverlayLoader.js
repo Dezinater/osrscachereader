@@ -1,6 +1,10 @@
-export class OverlayDefinition {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.OverlayDefinition = void 0;
+class OverlayDefinition {
 }
-export default class OverlayLoader {
+exports.OverlayDefinition = OverlayDefinition;
+class OverlayLoader {
     load(bytes, id) {
         let def = new OverlayDefinition();
         def.id = id;
@@ -29,3 +33,4 @@ export default class OverlayLoader {
         }
     }
 }
+exports.default = OverlayLoader;

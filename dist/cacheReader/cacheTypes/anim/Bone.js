@@ -1,10 +1,15 @@
-import Matrix from "./MatrixTest.js";
-export default class Bone {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const MatrixTest_js_1 = __importDefault(require("./MatrixTest.js"));
+class Bone {
     field1181 = true;
     field1172 = true;
-    field1178 = new Matrix();
-    field1180 = new Matrix();
-    field1174 = new Matrix();
+    field1178 = new MatrixTest_js_1.default();
+    field1180 = new MatrixTest_js_1.default();
+    field1174 = new MatrixTest_js_1.default();
     constructor(size, buffer, var3) {
         this.id = buffer.readInt16();
         this.field1175 = new Array(size);
@@ -12,7 +17,7 @@ export default class Bone {
         this.field1177 = new Array(size);
         this.field1187 = new Array(size);
         for (let var4 = 0; var4 < size; ++var4) {
-            this.field1175[var4] = new Matrix(buffer, var3);
+            this.field1175[var4] = new MatrixTest_js_1.default(buffer, var3);
             this.field1187[var4] = new Array(3);
             this.field1187[var4][0] = buffer.readFloat32();
             this.field1187[var4][1] = buffer.readFloat32();
@@ -31,8 +36,8 @@ export default class Bone {
         this.field1183 = new Array(this.field1175.length).fill().map(x => new Array(3));
         this.field1184 = new Array(this.field1175.length).fill().map(x => new Array(3));
         this.field1185 = new Array(this.field1175.length).fill().map(x => new Array(3));
-        let var2 = Matrix.field3746;
-        let var1 = new Matrix();
+        let var2 = MatrixTest_js_1.default.field3746;
+        let var1 = new MatrixTest_js_1.default();
         let var7 = var1;
         for (let var5 = 0; var5 < this.field1175.length; ++var5) {
             let var4 = this.method683(var5);
@@ -51,19 +56,19 @@ export default class Bone {
     }
     method684(var1) {
         if (this.field1176[var1] == null) {
-            this.field1176[var1] = new Matrix(this.method683(var1));
+            this.field1176[var1] = new MatrixTest_js_1.default(this.method683(var1));
             if (this.field1182 != null) {
                 this.field1176[var1].method2189(this.field1182.method684(var1));
             }
             else {
-                this.field1176[var1].method2189(Matrix.field3747);
+                this.field1176[var1].method2189(MatrixTest_js_1.default.field3747);
             }
         }
         return this.field1176[var1];
     }
     method685(var1) {
         if (this.field1177[var1] == null || this.field1177[var1] == undefined) {
-            this.field1177[var1] = new Matrix(this.method684(var1));
+            this.field1177[var1] = new MatrixTest_js_1.default(this.method684(var1));
             this.field1177[var1].method2192();
         }
         return this.field1177[var1];
@@ -104,3 +109,4 @@ export default class Bone {
         return this.field1185[var1];
     }
 }
+exports.default = Bone;

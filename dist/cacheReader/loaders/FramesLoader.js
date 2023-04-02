@@ -1,7 +1,13 @@
-import Matrix from '../cacheTypes/anim/MatrixTest.js';
-import IndexType from '../cacheTypes/IndexType.js';
-import AnimayaLoader from './AnimayaLoader.js';
-export class class420 {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FramesDefinition = exports.class420 = void 0;
+const MatrixTest_js_1 = __importDefault(require("../cacheTypes/anim/MatrixTest.js"));
+const IndexType_js_1 = __importDefault(require("../cacheTypes/IndexType.js"));
+const AnimayaLoader_js_1 = __importDefault(require("./AnimayaLoader.js"));
+class class420 {
     constructor() {
         this.method2179();
     }
@@ -29,9 +35,10 @@ export class class420 {
         this.field3738 = var4;
     }
 }
-export class FramesDefinition {
+exports.class420 = class420;
+class FramesDefinition {
     method727(var1, var2, var3) {
-        let var5 = new Matrix();
+        let var5 = new MatrixTest_js_1.default();
         this.method728(var5, var3, var2, var1);
         this.method726(var5, var3, var2, var1);
         this.method730(var5, var3, var2, var1);
@@ -68,7 +75,7 @@ export class FramesDefinition {
         var12.method2180(var19);
         var12.method2180(var17);
         var12.method2180(var18);
-        let var13 = new Matrix();
+        let var13 = new MatrixTest_js_1.default();
         var13.method2190(var12);
         var1.method2189(var13);
         /*
@@ -121,13 +128,14 @@ export class FramesDefinition {
                 var8 = var11.method699(var4);
             }
         }
-        let var15 = new Matrix();
+        let var15 = new MatrixTest_js_1.default();
         var15.method2186(var6, var7, var8);
         var1.method2189(var15);
         //var15.method2200();
     }
 }
-export default class FramesLoader {
+exports.FramesDefinition = FramesDefinition;
+class FramesLoader {
     load(bytes, id, cache, options) {
         let def = new FramesDefinition();
         def.id = id;
@@ -136,7 +144,7 @@ export default class FramesLoader {
         let framemapArchiveIndex = inview.readUint16();
         let length = inview.readUint8();
         if (options.isAnimaya) {
-            def = new AnimayaLoader().load(def, bytes, cache, options);
+            def = new AnimayaLoader_js_1.default().load(def, bytes, cache, options);
             return def;
         }
         dataview.setPosition(3 + length);
@@ -147,7 +155,7 @@ export default class FramesLoader {
         let lastI = -1;
         let index = 0;
         //return this.def;
-        return cache.getFile(IndexType.FRAMEMAPS.id, framemapArchiveIndex).then((framemap) => {
+        return cache.getFile(IndexType_js_1.default.FRAMEMAPS.id, framemapArchiveIndex).then((framemap) => {
             def.framemap = framemap.def;
             for (let i = 0; i < length; ++i) {
                 let var9 = inview.readUint8();
@@ -199,3 +207,4 @@ export default class FramesLoader {
         });
     }
 }
+exports.default = FramesLoader;

@@ -1,7 +1,10 @@
-import { createCanvas } from "canvas";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SpriteDefinition = exports.Sprite = void 0;
+const canvas_1 = require("canvas");
 const FLAG_VERTICAL = 0b01;
 const FLAG_ALPHA = 0b10;
-export class Sprite {
+class Sprite {
     getWidth() {
         return this.width;
     }
@@ -12,9 +15,11 @@ export class Sprite {
         this.pixels = pixels;
     }
 }
-export class SpriteDefinition {
+exports.Sprite = Sprite;
+class SpriteDefinition {
 }
-export default class SpriteLoader {
+exports.SpriteDefinition = SpriteDefinition;
+class SpriteLoader {
     load(bytes, id) {
         let def = new SpriteDefinition();
         def.id = id;
@@ -113,7 +118,7 @@ export default class SpriteLoader {
                 pixels[j] = palette[index] | (pixelAlphas[j] << 24);
             }
             sprite.setPixels(pixels);
-            const canvas = createCanvas(sprite.getWidth(), sprite.getHeight());
+            const canvas = (0, canvas_1.createCanvas)(sprite.getWidth(), sprite.getHeight());
             const ctx = canvas.getContext('2d');
             let imageData = ctx.createImageData(sprite.getWidth(), sprite.getHeight());
             for (let i = 0; i < imageData.data.byteLength; i += 4) {
@@ -130,3 +135,4 @@ export default class SpriteLoader {
         return def;
     }
 }
+exports.default = SpriteLoader;

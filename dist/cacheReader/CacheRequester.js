@@ -1,9 +1,37 @@
-import * as gzip from 'gzip-js';
-import * as Ajax from './helpers/ajax.js';
-import Worker from "web-worker";
-import IndexType from './cacheTypes/IndexType.js';
-import bz2Decompress from "bz2";
-export default class CacheRequester {
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const gzip = __importStar(require("gzip-js"));
+const Ajax = __importStar(require("./helpers/ajax.js"));
+const web_worker_1 = __importDefault(require("web-worker"));
+const IndexType_js_1 = __importDefault(require("./cacheTypes/IndexType.js"));
+const bz2_1 = __importDefault(require("bz2"));
+class CacheRequester {
     constructor(datFile) {
         this.promises = {};
         this.datData = datFile;
@@ -53,7 +81,7 @@ export default class CacheRequester {
             this.readSector(compressedData, segment, archiveId);
             compressedData = compressedData.buffer;
             //console.log(compressedData);
-            var localWorker = new Worker(new URL('./worker.cjs', import.meta.url));
+            var localWorker = new web_worker_1.default(new URL('./worker.js', import.meta.url));
             localWorker.postMessage({ index, segment, archiveId, compressedData }, [compressedData]);
             //console.log(compressedData);
             localWorker.onmessage = (event) => {
@@ -79,7 +107,7 @@ export default class CacheRequester {
         };
         */
         let key;
-        if (index.id == IndexType.MAPS.id && this.xteas != undefined) {
+        if (index.id == IndexType_js_1.default.MAPS.id && this.xteas != undefined) {
             if (this.xteas[archiveId] != undefined) { //if its not a mapdef then it will have a key
                 key = this.xteas[archiveId].key;
             }
@@ -109,8 +137,8 @@ export default class CacheRequester {
                 bzData[2] = 'h'.charCodeAt(0);
                 bzData[3] = '1'.charCodeAt(0);
                 bzData.set(data, 4);
-                if (bz2Decompress != undefined && bz2Decompress.decompress != undefined) {
-                    decompressedData = bz2Decompress.decompress(bzData);
+                if (bz2_1.default != undefined && bz2_1.default.decompress != undefined) {
+                    decompressedData = bz2_1.default.decompress(bzData);
                 }
                 else {
                     decompressedData = bz2.decompress(bzData);
@@ -206,3 +234,4 @@ export default class CacheRequester {
         return new Uint8Array(out);
     }
 }
+exports.default = CacheRequester;

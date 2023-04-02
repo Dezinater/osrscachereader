@@ -1,17 +1,45 @@
-import * as Ajax from './helpers/ajax.js';
-import * as DataViewImport from './helpers/DataView.js';
-import CacheDefinitionLoader from './CacheDefinitionLoader.js';
-import CacheRequester from './CacheRequester.js';
-import Index from './cacheTypes/Index.js';
-import nameHashLookup from './HashConverter.js';
-import CacheLoader from './CacheLoader.js';
-export default class RSCache {
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const Ajax = __importStar(require("./helpers/ajax.js"));
+const DataViewImport = __importStar(require("./helpers/DataView.js"));
+const CacheDefinitionLoader_js_1 = __importDefault(require("./CacheDefinitionLoader.js"));
+const CacheRequester_js_1 = __importDefault(require("./CacheRequester.js"));
+const Index_js_1 = __importDefault(require("./cacheTypes/Index.js"));
+const HashConverter_js_1 = __importDefault(require("./HashConverter.js"));
+const CacheLoader_ts_1 = __importDefault(require("./CacheLoader.ts"));
+class RSCache {
     constructor(cacheRootDir = "./", progressFunc = () => { }, nameRootDir = undefined) {
         this.indicies = {};
         this.progressFunc = progressFunc;
-        const cacheLoader = new CacheLoader(cacheRootDir);
+        const cacheLoader = new CacheLoader_ts_1.default(cacheRootDir);
         this.onload = cacheLoader.getResults().then(result => {
-            this.cacheRequester = new CacheRequester(result.datFile);
+            this.cacheRequester = new CacheRequester_js_1.default(result.datFile);
             return this.loadCacheFiles(result.indexFiles, "./", nameRootDir).then(() => {
                 this.cacheRequester.setXteas(result.xteas);
             });
@@ -55,7 +83,7 @@ export default class RSCache {
         data.then(x => {
             archive = index.archives[x.archiveId];
             archive.loadFiles(x.decompressedData);
-            new CacheDefinitionLoader(x.index.id, archive, options).load(this).then(() => {
+            new CacheDefinitionLoader_js_1.default(x.index.id, archive, options).load(this).then(() => {
                 archive.filesLoaded = true;
                 //console.log(this.loadRequests[indexId][archiveId]);
                 for (let i = 0; i < this.loadRequests[indexId][archiveId].length; i++) {
@@ -118,7 +146,7 @@ export default class RSCache {
             else {
                 dataview = new DataView(idxFileData[i].buffer);
             }
-            this.indicies[i] = new Index(i);
+            this.indicies[i] = new Index_js_1.default(i);
             for (let j = 0; j < dataview.byteLength; j += 6) {
                 let size = dataview.readUint24();
                 let segment = dataview.readUint24();
@@ -155,3 +183,4 @@ export default class RSCache {
         return Promise.all(indexPromises);
     }
 }
+exports.default = RSCache;

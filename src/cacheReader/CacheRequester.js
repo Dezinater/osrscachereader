@@ -64,7 +64,7 @@ export default class CacheRequester {
 
 			compressedData = compressedData.buffer;
 			//console.log(compressedData);
-			var localWorker = new Worker(new URL('./worker.cjs', import.meta.url));
+			var localWorker = new Worker(new URL('./worker.js', import.meta.url));
 
 			localWorker.postMessage({ index, segment, archiveId, compressedData }, [compressedData]);
 			//console.log(compressedData);

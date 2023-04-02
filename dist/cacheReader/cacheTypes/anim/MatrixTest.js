@@ -1,3 +1,5 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 class class419 {
     constructor(var1, var2, var3) {
         this.field3733 = var1;
@@ -315,4 +317,4 @@ class Matrix {
         }
     }
 }
-export default Matrix;
+exports.default = Matrix;

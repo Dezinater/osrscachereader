@@ -1,6 +1,12 @@
-import { FramesDefinition } from "./FramesLoader.js";
-import IndexType from "../cacheTypes/IndexType.js";
-import { AttackOption } from "../cacheTypes/anim/Static.js";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.class128 = exports.class129 = exports.AnimayaDefinition = void 0;
+const FramesLoader_js_1 = require("./FramesLoader.js");
+const IndexType_js_1 = __importDefault(require("../cacheTypes/IndexType.js"));
+const Static_js_1 = require("../cacheTypes/anim/Static.js");
 class class122 {
     field1165;
     field1158;
@@ -48,11 +54,11 @@ class class127 {
         this.field1219 = this.field1203[this.method703() - 1].field1165;
         this.field1217 = new Array(this.method701() + 1).fill(0);
         for (let var1 = this.method704(); var1 <= this.method700(); ++var1) {
-            this.field1217[var1 - this.method704()] = AttackOption.method590(this, var1);
+            this.field1217[var1 - this.method704()] = Static_js_1.AttackOption.method590(this, var1);
         }
         this.field1203 = null;
-        this.field1220 = AttackOption.method590(this, this.method704() - 1);
-        this.field1216 = AttackOption.method590(this, this.method700() + 1);
+        this.field1220 = Static_js_1.AttackOption.method590(this, this.method704() - 1);
+        this.field1216 = Static_js_1.AttackOption.method590(this, this.method700() + 1);
     }
     method699(var1) {
         if (var1 < this.method704()) {
@@ -119,8 +125,9 @@ class class127 {
         return this.field1218;
     }
 }
-export class AnimayaDefinition {
+class AnimayaDefinition {
 }
+exports.AnimayaDefinition = AnimayaDefinition;
 class class129 {
     static values = [
         [0, 0, null, -1, -1],
@@ -157,7 +164,7 @@ class class129 {
         return this.field1252;
     }
 }
-export { class129 };
+exports.class129 = class129;
 class class128 {
     static values = [
         [0, 0, null, 0],
@@ -183,8 +190,8 @@ class class128 {
         return this.field1232;
     }
 }
-export { class128 };
-export default class AnimayaLoader {
+exports.class128 = class128;
+class AnimayaLoader {
     load(def, bytes, cache, options) {
         let dataview = new DataView(bytes.buffer);
         def.version = dataview.readUint8();
@@ -193,7 +200,7 @@ export default class AnimayaLoader {
             return def;
         }
         //console.log(version, skeletonId, "TEST");
-        return cache.getFile(IndexType.FRAMEMAPS.id, def.skeletonId).then((framemap) => {
+        return cache.getFile(IndexType_js_1.default.FRAMEMAPS.id, def.skeletonId).then((framemap) => {
             framemap = framemap.def;
             dataview.readUint16();
             dataview.readUint16();
@@ -245,3 +252,4 @@ export default class AnimayaLoader {
         });
     }
 }
+exports.default = AnimayaLoader;
