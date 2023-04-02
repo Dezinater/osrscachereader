@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "description": "Read Old-School Runescape Cache files using Javascript",
   "main": "./dist/index",
-  "type": "module",
   "files": [
     "dist"
   ],

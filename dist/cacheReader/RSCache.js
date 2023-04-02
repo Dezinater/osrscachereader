@@ -13,7 +13,7 @@ import CacheDefinitionLoader from './CacheDefinitionLoader.js';
 import CacheRequester from './CacheRequester.js';
 import Index from './cacheTypes/Index.js';
 import nameHashLookup from './HashConverter.js';
-import CacheLoader from './CacheLoader.ts';
+import CacheLoader from './CacheLoader';
 export default class RSCache {
     constructor(cacheRootDir = "./", progressFunc = () => { }, nameRootDir = undefined) {
         this.indicies = {};

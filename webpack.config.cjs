@@ -15,11 +15,16 @@ module.exports = {
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
+        alias: {
+            ".js": [".js", ".ts"],
+            ".cjs": [".cjs", ".cts"],
+            ".mjs": [".mjs", ".mts"]
+        }
     },
     module: {
         rules: [
             {
-                test: /\.tsx?$/,
+                test: /\.([cm]?ts|tsx)$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
