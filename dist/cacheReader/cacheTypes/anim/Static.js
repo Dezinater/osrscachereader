@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.class188 = exports.class102 = exports.class368 = exports.Tiles = exports.class136 = exports.DesktopPlatformInfoProvider = exports.Client = exports.class123 = exports.class145 = exports.class181 = exports.class467 = exports.AttackOption = void 0;
-class AttackOption {
+export class AttackOption {
     static method590(var0, var1) {
         if (var0 != null && var0.method703() != 0) {
             if (var1 < var0.field1203[0].field1165) {
@@ -66,8 +63,7 @@ class AttackOption {
         }
     }
 }
-exports.AttackOption = AttackOption;
-class class467 {
+export class class467 {
     static method2360(var0, var1) {
         if (var0 == null) {
             return 0.0;
@@ -78,8 +74,7 @@ class class467 {
         }
     }
 }
-exports.class467 = class467;
-class class181 {
+export class class181 {
     static method922(var0, var1, var2) {
         let var3 = 0.0;
         if (var0 != null && var0.method703() != 0) {
@@ -172,8 +167,7 @@ class class181 {
         }
     }
 }
-exports.class181 = class181;
-class class145 {
+export class class145 {
     static method767(var0, var1, var2, var3, var4, var5, var6, var7, var8) {
         if (var0 != null) {
             let var9 = var4 - var1;
@@ -237,18 +231,16 @@ class class145 {
         }
     }
 }
-exports.class145 = class145;
 class class123 {
-    static field1167 = 1.1920929E-7;
-    static field1166;
-    static field1168 = [];
-    static field1169 = [];
-    static field1166 = class123.field1167 * 2;
-    static field1168 = [];
-    static field1169 = [];
 }
-exports.class123 = class123;
-class Client {
+class123.field1167 = 1.1920929E-7;
+class123.field1168 = [];
+class123.field1169 = [];
+class123.field1166 = class123.field1167 * 2;
+class123.field1168 = [];
+class123.field1169 = [];
+export { class123 };
+export class Client {
     method384(var0) {
         if (class123.field1167 + var0[0] < 1.3333334) {
             let var1 = var0[0] - 2.0;
@@ -271,8 +263,7 @@ class Client {
         }
     }
 }
-exports.Client = Client;
-class DesktopPlatformInfoProvider {
+export class DesktopPlatformInfoProvider {
     static method2241(var0, var1, var2, var3, var4) {
         let var5 = var1 - var0;
         let var6 = var2 - var1;
@@ -284,8 +275,7 @@ class DesktopPlatformInfoProvider {
         var4.field1211 = var0;
     }
 }
-exports.DesktopPlatformInfoProvider = DesktopPlatformInfoProvider;
-class class136 {
+export class class136 {
     static method735(var0, var1, var2, var3, var4, var5, var6, var7, var8) {
         if (var0 != null) {
             var0.field1207 = var1;
@@ -311,8 +301,7 @@ class class136 {
         }
     }
 }
-exports.class136 = class136;
-class Tiles {
+export class Tiles {
     static method453(var0, var1) {
         if (var0 == null) {
             return 0.0;
@@ -354,8 +343,7 @@ class Tiles {
         }
     }
 }
-exports.Tiles = Tiles;
-class class368 {
+export class class368 {
     static method1942(var0, var1, var2, var3, var4, var5, var6) {
         let var7 = 0.0;
         for (let var8 = 0; var8 < var1 + 1; ++var8) {
@@ -456,8 +444,7 @@ class class368 {
         }
     }
 }
-exports.class368 = class368;
-class class102 {
+export class class102 {
     static method598(var0, var1, var2) {
         let var3 = var0[var1];
         for (let var4 = var1 - 1; var4 >= 0; --var4) {
@@ -466,8 +453,7 @@ class class102 {
         return var3;
     }
 }
-exports.class102 = class102;
-class class188 {
+export class class188 {
     static method478(var0, var1, var2, var3) {
         let var4 = class102.method598(var0.field3760, var0.field3761, var1);
         if (Math.abs(var4) < class123.field1167) {
@@ -566,4 +552,3 @@ class class188 {
         }
     }
 }
-exports.class188 = class188;

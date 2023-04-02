@@ -1,16 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.EmptyMapDefinition = exports.LocationDefinition = exports.MapDefinition = void 0;
-class MapDefinition {
+export class MapDefinition {
 }
-exports.MapDefinition = MapDefinition;
-class LocationDefinition {
+export class LocationDefinition {
 }
-exports.LocationDefinition = LocationDefinition;
-class EmptyMapDefinition {
+export class EmptyMapDefinition {
 }
-exports.EmptyMapDefinition = EmptyMapDefinition;
-class MapLoader {
+export default class MapLoader {
     /*
     for(let i=0;i<32768;i++){
         let x = i >> 8;
@@ -114,4 +108,3 @@ class MapLoader {
         }
     }
 }
-exports.default = MapLoader;

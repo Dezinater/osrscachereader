@@ -1,10 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.UnderlayDefinition = void 0;
-class UnderlayDefinition {
+export class UnderlayDefinition {
 }
-exports.UnderlayDefinition = UnderlayDefinition;
-class UnderlayLoader {
+export default class UnderlayLoader {
     load(bytes, id) {
         let def = new UnderlayDefinition();
         def.id = id;
@@ -24,4 +20,3 @@ class UnderlayLoader {
         }
     }
 }
-exports.default = UnderlayLoader;

@@ -1,10 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ModelDefinition = void 0;
-class ModelDefinition {
+export class ModelDefinition {
 }
-exports.ModelDefinition = ModelDefinition;
-class ModelLoader {
+export default class ModelLoader {
     load(bytes, id) {
         let def = new ModelDefinition();
         def.id = id;
@@ -1398,4 +1394,3 @@ class ModelLoader {
         }
     }
 }
-exports.default = ModelLoader;

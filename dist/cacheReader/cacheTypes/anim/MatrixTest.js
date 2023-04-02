@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class class419 {
     constructor(var1, var2, var3) {
         this.field3733 = var1;
@@ -11,15 +9,9 @@ class class419 {
     }
 }
 class Matrix {
-    matrixVals = new Array(16);
-    field3744 = 100;
-    static field3746 = new Array(0);
-    static field3745;
-    static field3747;
-    static field3746 = new Array(100);
-    static field3745 = 0;
-    static field3747 = new Matrix();
     constructor(var1, var2) {
+        this.matrixVals = new Array(16);
+        this.field3744 = 100;
         if (var1 == undefined && var2 == undefined) {
             this.method2193();
         }
@@ -317,4 +309,8 @@ class Matrix {
         }
     }
 }
-exports.default = Matrix;
+Matrix.field3746 = new Array(0);
+Matrix.field3746 = new Array(100);
+Matrix.field3745 = 0;
+Matrix.field3747 = new Matrix();
+export default Matrix;

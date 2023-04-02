@@ -1,19 +1,12 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.FramemapDefinition = void 0;
-const Bone_js_1 = __importDefault(require("../cacheTypes/anim/Bone.js"));
-class FramemapDefinition {
+import Bone from "../cacheTypes/anim/Bone.js";
+export class FramemapDefinition {
 }
-exports.FramemapDefinition = FramemapDefinition;
 class AnimayaSkeleton {
     constructor(var1, bonesCount) {
         this.bones = new Array(bonesCount);
         this.field1979 = var1.readUint8();
         for (let i = 0; i < this.bones.length; ++i) {
-            this.bones[i] = new Bone_js_1.default(this.field1979, var1, false);
+            this.bones[i] = new Bone(this.field1979, var1, false);
         }
         this.attachBones();
     }
@@ -59,7 +52,7 @@ class class418 {
         this.field3785 = 1.0;
     }
 }
-class FramemapLoader {
+export default class FramemapLoader {
     load(bytes, id) {
         let def = new FramemapDefinition();
         def.id = id;
@@ -89,4 +82,3 @@ class FramemapLoader {
         return def;
     }
 }
-exports.default = FramemapLoader;

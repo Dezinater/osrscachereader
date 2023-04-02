@@ -1,19 +1,13 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.class128 = exports.class129 = exports.AnimayaDefinition = void 0;
-const FramesLoader_js_1 = require("./FramesLoader.js");
-const IndexType_js_1 = __importDefault(require("../cacheTypes/IndexType.js"));
-const Static_js_1 = require("../cacheTypes/anim/Static.js");
+import { FramesDefinition } from "./FramesLoader.js";
+import IndexType from "../cacheTypes/IndexType.js";
+import { AttackOption } from "../cacheTypes/anim/Static.js";
 class class122 {
-    field1165;
-    field1158;
-    field1159 = 3.4028234663852886e+38; //Java Float MAX_VALUE
-    field1160 = 3.4028234663852886e+38;
-    field1161 = 3.4028234663852886e+38;
-    field1162 = 3.4028234663852886e+38;
+    constructor() {
+        this.field1159 = 3.4028234663852886e+38; //Java Float MAX_VALUE
+        this.field1160 = 3.4028234663852886e+38;
+        this.field1161 = 3.4028234663852886e+38;
+        this.field1162 = 3.4028234663852886e+38;
+    }
     method673(var1, var2) {
         this.field1165 = var1.readInt16();
         this.field1158 = var1.readFloat32();
@@ -24,8 +18,10 @@ class class122 {
     }
 }
 class class127 {
-    field1215 = true;
-    field1205 = 0;
+    constructor() {
+        this.field1215 = true;
+        this.field1205 = 0;
+    }
     method698(var1, var2) {
         let var3 = var1.readUint16();
         var1.readUint8();
@@ -54,11 +50,11 @@ class class127 {
         this.field1219 = this.field1203[this.method703() - 1].field1165;
         this.field1217 = new Array(this.method701() + 1).fill(0);
         for (let var1 = this.method704(); var1 <= this.method700(); ++var1) {
-            this.field1217[var1 - this.method704()] = Static_js_1.AttackOption.method590(this, var1);
+            this.field1217[var1 - this.method704()] = AttackOption.method590(this, var1);
         }
         this.field1203 = null;
-        this.field1220 = Static_js_1.AttackOption.method590(this, this.method704() - 1);
-        this.field1216 = Static_js_1.AttackOption.method590(this, this.method700() + 1);
+        this.field1220 = AttackOption.method590(this, this.method704() - 1);
+        this.field1216 = AttackOption.method590(this, this.method700() + 1);
     }
     method699(var1) {
         if (var1 < this.method704()) {
@@ -125,29 +121,9 @@ class class127 {
         return this.field1218;
     }
 }
-class AnimayaDefinition {
+export class AnimayaDefinition {
 }
-exports.AnimayaDefinition = AnimayaDefinition;
 class class129 {
-    static values = [
-        [0, 0, null, -1, -1],
-        [1, 1, null, 0, 2],
-        [2, 2, null, 1, 2],
-        [3, 3, null, 2, 2],
-        [4, 4, null, 3, 1],
-        [5, 5, null, 4, 1],
-        [6, 6, null, 5, 1],
-        [7, 7, null, 6, 3],
-        [8, 8, null, 7, 3],
-        [9, 9, null, 8, 3],
-        [10, 10, null, 0, 7],
-        [11, 11, null, 1, 7],
-        [12, 12, null, 2, 7],
-        [13, 13, null, 3, 7],
-        [14, 14, null, 4, 7],
-        [15, 15, null, 5, 7],
-        [16, 16, null, 0, 5],
-    ];
     static findEnumerated(val) {
         let foundValue = this.values.find(x => x[1] == val);
         if (foundValue == undefined) {
@@ -164,16 +140,27 @@ class class129 {
         return this.field1252;
     }
 }
-exports.class129 = class129;
+class129.values = [
+    [0, 0, null, -1, -1],
+    [1, 1, null, 0, 2],
+    [2, 2, null, 1, 2],
+    [3, 3, null, 2, 2],
+    [4, 4, null, 3, 1],
+    [5, 5, null, 4, 1],
+    [6, 6, null, 5, 1],
+    [7, 7, null, 6, 3],
+    [8, 8, null, 7, 3],
+    [9, 9, null, 8, 3],
+    [10, 10, null, 0, 7],
+    [11, 11, null, 1, 7],
+    [12, 12, null, 2, 7],
+    [13, 13, null, 3, 7],
+    [14, 14, null, 4, 7],
+    [15, 15, null, 5, 7],
+    [16, 16, null, 0, 5],
+];
+export { class129 };
 class class128 {
-    static values = [
-        [0, 0, null, 0],
-        [1, 1, null, 9],
-        [2, 2, null, 3],
-        [3, 3, null, 6],
-        [4, 4, null, 1],
-        [5, 5, null, 3],
-    ];
     static findEnumerated(val) {
         let foundValue = this.values.find(x => x[1] == val);
         if (foundValue == undefined) {
@@ -190,8 +177,16 @@ class class128 {
         return this.field1232;
     }
 }
-exports.class128 = class128;
-class AnimayaLoader {
+class128.values = [
+    [0, 0, null, 0],
+    [1, 1, null, 9],
+    [2, 2, null, 3],
+    [3, 3, null, 6],
+    [4, 4, null, 1],
+    [5, 5, null, 3],
+];
+export { class128 };
+export default class AnimayaLoader {
     load(def, bytes, cache, options) {
         let dataview = new DataView(bytes.buffer);
         def.version = dataview.readUint8();
@@ -200,7 +195,7 @@ class AnimayaLoader {
             return def;
         }
         //console.log(version, skeletonId, "TEST");
-        return cache.getFile(IndexType_js_1.default.FRAMEMAPS.id, def.skeletonId).then((framemap) => {
+        return cache.getFile(IndexType.FRAMEMAPS.id, def.skeletonId).then((framemap) => {
             framemap = framemap.def;
             dataview.readUint16();
             dataview.readUint16();
@@ -252,4 +247,3 @@ class AnimayaLoader {
         });
     }
 }
-exports.default = AnimayaLoader;

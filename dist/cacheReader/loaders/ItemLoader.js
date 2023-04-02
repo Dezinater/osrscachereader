@@ -1,10 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ItemDefinition = void 0;
-class ItemDefinition {
+export class ItemDefinition {
 }
-exports.ItemDefinition = ItemDefinition;
-class ItemLoader {
+export default class ItemLoader {
     load(bytes, id) {
         //console.log(id, bytes)
         let def = new ItemDefinition();
@@ -213,4 +209,3 @@ class ItemLoader {
         }
     }
 }
-exports.default = ItemLoader;

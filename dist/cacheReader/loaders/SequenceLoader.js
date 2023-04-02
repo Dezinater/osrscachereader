@@ -1,10 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.SequenceDefinition = void 0;
-class SequenceDefinition {
+export class SequenceDefinition {
 }
-exports.SequenceDefinition = SequenceDefinition;
-class SequenceLoader {
+export default class SequenceLoader {
     load(bytes, id) {
         let def = new SequenceDefinition();
         def.id = id;
@@ -109,4 +105,3 @@ class SequenceLoader {
         }
     }
 }
-exports.default = SequenceLoader;

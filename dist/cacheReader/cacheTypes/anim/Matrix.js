@@ -1,9 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 class Matrix {
-    static field3775 = new Array(0);
-    static field3777 = 0;
-    static field3747 = new Matrix();
     constructor(var1, var2) {
         this.matrixVals = new Array(16);
         if (var1 == undefined && var2 == undefined) {
@@ -272,4 +267,7 @@ class Matrix {
         return var1;
     }
 }
-exports.default = Matrix;
+Matrix.field3775 = new Array(0);
+Matrix.field3777 = 0;
+Matrix.field3747 = new Matrix();
+export default Matrix;

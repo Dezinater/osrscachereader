@@ -1,22 +1,23 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-Object.defineProperty(exports, "__esModule", { value: true });
-const IndexType_js_1 = __importDefault(require("./cacheTypes/IndexType.js"));
-const ConfigType_js_1 = __importDefault(require("./cacheTypes/ConfigType.js"));
-const browser_or_node_1 = require("browser-or-node");
-const fs_1 = __importDefault(require("fs"));
-class CacheDumper {
-    ignoreList = ["FRAMES", "FRAMEMAPS", "MAPS", "MODELS"];
-    cache;
-    outFolder;
-    progressFunction;
-    completedJobs = 0;
-    failedJobs = 0;
-    totalJobs = 0;
+import IndexType from "./cacheTypes/IndexType.js";
+import ConfigType from "./cacheTypes/ConfigType.js";
+import { isBrowser } from "browser-or-node";
+import fs from "fs";
+export default class CacheDumper {
     constructor(rscache, outFolder, progressFunction = () => { }) {
-        if (browser_or_node_1.isBrowser) {
+        this.ignoreList = ["FRAMES", "FRAMEMAPS", "MAPS", "MODELS"];
+        this.completedJobs = 0;
+        this.failedJobs = 0;
+        this.totalJobs = 0;
+        if (isBrowser) {
             console.error("Run with Node to dump Cache files, web browser dumping currently not implemented");
             return;
         }
@@ -28,39 +29,41 @@ class CacheDumper {
         this.progressFunction = progressFunction;
     }
     outFolderCheck() {
-        if (fs_1.default.existsSync(this.outFolder))
+        if (fs.existsSync(this.outFolder))
             return;
-        fs_1.default.mkdirSync(this.outFolder);
+        fs.mkdirSync(this.outFolder);
     }
-    async dumpAll() {
-        for (const [indexType, indexInfo] of Object.entries(IndexType_js_1.default)) {
-            if (this.ignoreList.includes(indexType)) {
-                continue;
-            }
-            //@ts-ignore
-            if (indexInfo.loader != undefined) {
-                try {
-                    await this.dumpIndex(indexInfo, indexType);
+    dumpAll() {
+        return __awaiter(this, void 0, void 0, function* () {
+            for (const [indexType, indexInfo] of Object.entries(IndexType)) {
+                if (this.ignoreList.includes(indexType)) {
+                    continue;
                 }
-                catch (e) {
-                    console.log(e);
-                }
-            }
-        }
-        for (const [configType, configInfo] of Object.entries(ConfigType_js_1.default)) {
-            if (this.ignoreList.includes(configType)) {
-                continue;
-            }
-            //@ts-ignore
-            if (configInfo.loader != undefined) {
-                try {
-                    //await this.dumpConfig(configInfo, configType);
-                }
-                catch (e) {
-                    console.log(e);
+                //@ts-ignore
+                if (indexInfo.loader != undefined) {
+                    try {
+                        yield this.dumpIndex(indexInfo, indexType);
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
                 }
             }
-        }
+            for (const [configType, configInfo] of Object.entries(ConfigType)) {
+                if (this.ignoreList.includes(configType)) {
+                    continue;
+                }
+                //@ts-ignore
+                if (configInfo.loader != undefined) {
+                    try {
+                        //await this.dumpConfig(configInfo, configType);
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
+                }
+            }
+        });
     }
     updateProgress(jobSuccess) {
         if (jobSuccess) {
@@ -73,43 +76,48 @@ class CacheDumper {
         const errorRate = this.failedJobs / (this.failedJobs + this.completedJobs);
         this.progressFunction(total, errorRate);
     }
-    async dumpConfig(configInfo, name) {
-        if (!fs_1.default.existsSync(this.outFolder + "CONFIGS"))
-            fs_1.default.mkdirSync(this.outFolder + "CONFIGS");
-        if (!fs_1.default.existsSync(this.outFolder + "CONFIGS/" + name))
-            fs_1.default.mkdirSync(this.outFolder + "CONFIGS/" + name);
-        let files = await this.cache.getAllFiles(IndexType_js_1.default.CONFIGS.id, configInfo.id);
-        files.forEach(file => {
-            fs_1.default.writeFileSync(this.outFolder + "CONFIGS/" + name + "/" + file.def.id + ".json", JSON.stringify(file.def, null, 2));
+    dumpConfig(configInfo, name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!fs.existsSync(this.outFolder + "CONFIGS"))
+                fs.mkdirSync(this.outFolder + "CONFIGS");
+            if (!fs.existsSync(this.outFolder + "CONFIGS/" + name))
+                fs.mkdirSync(this.outFolder + "CONFIGS/" + name);
+            let files = yield this.cache.getAllFiles(IndexType.CONFIGS.id, configInfo.id);
+            files.forEach(file => {
+                fs.writeFileSync(this.outFolder + "CONFIGS/" + name + "/" + file.def.id + ".json", JSON.stringify(file.def, null, 2));
+            });
         });
     }
-    async dumpIndex(indexInfo, name) {
-        this.outFolderCheck();
-        const archivesCount = this.cache.indicies[indexInfo.id].archivesCount;
-        if (!fs_1.default.existsSync(this.outFolder + name))
-            fs_1.default.mkdirSync(this.outFolder + name);
-        this.dumpArchives(indexInfo, name, 3591);
-        this.totalJobs += archivesCount;
+    dumpIndex(indexInfo, name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.outFolderCheck();
+            const archivesCount = this.cache.indicies[indexInfo.id].archivesCount;
+            if (!fs.existsSync(this.outFolder + name))
+                fs.mkdirSync(this.outFolder + name);
+            this.dumpArchives(indexInfo, name, 3591);
+            this.totalJobs += archivesCount;
+        });
     }
-    async dumpArchives(indexInfo, name, archiveId) {
-        if (archiveId < 0)
-            return;
-        try {
-            let files = await this.cache.getAllFiles(indexInfo.id, archiveId);
-            fs_1.default.mkdir(this.outFolder + name + "/" + archiveId, () => {
-                files.forEach(file => {
-                    fs_1.default.writeFile(this.outFolder + name + "/" + archiveId + "/" + file.def.id + ".json", JSON.stringify(file.def, null, 2), () => {
-                        this.updateProgress(true);
+    dumpArchives(indexInfo, name, archiveId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (archiveId < 0)
+                return;
+            try {
+                let files = yield this.cache.getAllFiles(indexInfo.id, archiveId);
+                fs.mkdir(this.outFolder + name + "/" + archiveId, () => {
+                    files.forEach(file => {
+                        fs.writeFile(this.outFolder + name + "/" + archiveId + "/" + file.def.id + ".json", JSON.stringify(file.def, null, 2), () => {
+                            this.updateProgress(true);
+                        });
                     });
                 });
-            });
-        }
-        catch (e) {
-            this.updateProgress(false);
-            console.warn(`Error Loading { Index: ${indexInfo.id} Archive: ${archiveId} }`);
-            console.log(e);
-        }
-        //this.dumpArchives(indexInfo, name, archiveId - 1);
+            }
+            catch (e) {
+                this.updateProgress(false);
+                console.warn(`Error Loading { Index: ${indexInfo.id} Archive: ${archiveId} }`);
+                console.log(e);
+            }
+            //this.dumpArchives(indexInfo, name, archiveId - 1);
+        });
     }
 }
-exports.default = CacheDumper;

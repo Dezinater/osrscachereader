@@ -1,46 +1,26 @@
-"use strict";
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const browser_or_node_1 = require("browser-or-node");
-const axios_1 = __importDefault(require("axios"));
-const fs = __importStar(require("fs"));
-class CacheLoader {
-    onDownloadProgress;
-    datFile = "main_file_cache.dat2";
-    indexFiles = new Array(22).fill(0).map((_, i) => "main_file_cache.idx" + i).concat("main_file_cache.idx255");
-    promises = {
-        datFile: undefined,
-        indexFiles: new Array(),
-        xteas: undefined,
-    };
+import { isBrowser } from "browser-or-node";
+import axios from 'axios';
+import * as fs from "fs";
+export default class CacheLoader {
     constructor(path, onDownloadProgress) {
+        this.datFile = "main_file_cache.dat2";
+        this.indexFiles = new Array(22).fill(0).map((_, i) => "main_file_cache.idx" + i).concat("main_file_cache.idx255");
+        this.promises = {
+            datFile: undefined,
+            indexFiles: new Array(),
+            xteas: undefined,
+        };
         this.onDownloadProgress = onDownloadProgress;
-        if (this.isValidHttpUrl(path) || browser_or_node_1.isBrowser) {
+        if (this.isValidHttpUrl(path) || isBrowser) {
             this.fetchURL(path);
         }
         else {
@@ -48,17 +28,17 @@ class CacheLoader {
         }
     }
     getResults() {
-        return new Promise(async (resolve) => {
-            const datPromiseResults = await this.promises.datFile;
-            const indexPromiseResults = await Promise.all(this.promises.indexFiles);
-            const xteasResults = await this.promises.xteas;
+        return new Promise((resolve) => __awaiter(this, void 0, void 0, function* () {
+            const datPromiseResults = yield this.promises.datFile;
+            const indexPromiseResults = yield Promise.all(this.promises.indexFiles);
+            const xteasResults = yield this.promises.xteas;
             const result = {
                 datFile: datPromiseResults,
                 indexFiles: indexPromiseResults,
                 xteas: xteasResults,
             };
             resolve(result);
-        });
+        }));
     }
     isValidHttpUrl(path) {
         let url;
@@ -78,11 +58,11 @@ class CacheLoader {
         if (!url.endsWith("/")) {
             url += "/";
         }
-        this.promises.datFile = axios_1.default.get(url + this.datFile, { onDownloadProgress: this.onDownloadProgress, responseType: 'arraybuffer', }).then(x => new Uint8Array(x.data));
+        this.promises.datFile = axios.get(url + this.datFile, { onDownloadProgress: this.onDownloadProgress, responseType: 'arraybuffer', }).then(x => new Uint8Array(x.data));
         this.indexFiles.forEach(indexFile => {
-            this.promises.indexFiles.push(axios_1.default.get(url + indexFile, { responseType: 'arraybuffer' }).then(x => new Uint8Array(x.data)));
+            this.promises.indexFiles.push(axios.get(url + indexFile, { responseType: 'arraybuffer' }).then(x => new Uint8Array(x.data)));
         });
-        this.promises.xteas = axios_1.default.get(url + "xteas.json", { responseType: 'json', }).then(x => this.readXteas(x.data)).catch(e => { });
+        this.promises.xteas = axios.get(url + "xteas.json", { responseType: 'json', }).then(x => this.readXteas(x.data)).catch(e => { });
     }
     loadFile(path) {
         if (!path.endsWith("/")) {
@@ -93,10 +73,10 @@ class CacheLoader {
                 throw err;
             resolve(data);
         }));
-        this.indexFiles.forEach(async (indexFile) => {
+        this.indexFiles.forEach((indexFile) => __awaiter(this, void 0, void 0, function* () {
             let newPromise = new Promise(resolve => fs.readFile(path + indexFile, (err, data) => resolve(data)));
             this.promises.indexFiles.push(newPromise);
-        });
+        }));
         this.promises.xteas = new Promise((resolve, reject) => fs.readFile(path + "xteas.json", "utf8", (err, data) => {
             if (err)
                 throw err;
@@ -114,4 +94,3 @@ class CacheLoader {
         return reOrderedXteas;
     }
 }
-exports.default = CacheLoader;

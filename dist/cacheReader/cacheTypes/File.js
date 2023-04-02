@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-class FileData {
+export default class FileData {
     constructor(id) {
         this.id = id;
         this.name = "";
@@ -10,4 +8,3 @@ class FileData {
         this.content = [];
     }
 }
-exports.default = FileData;

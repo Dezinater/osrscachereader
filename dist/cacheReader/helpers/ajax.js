@@ -1,7 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFileBytes = exports.getFile = void 0;
-function getFile(file) {
+export function getFile(file) {
     var xhttp = new XMLHttpRequest();
     return new Promise((resolve, reject) => {
         xhttp.onreadystatechange = function () {
@@ -16,8 +13,7 @@ function getFile(file) {
         catch (e) { }
     });
 }
-exports.getFile = getFile;
-function getFileBytes(file) {
+export function getFileBytes(file) {
     var xhttp = new XMLHttpRequest();
     return new Promise((resolve, reject) => {
         xhttp.onreadystatechange = function () {
@@ -33,4 +29,3 @@ function getFileBytes(file) {
         catch (e) { }
     });
 }
-exports.getFileBytes = getFileBytes;

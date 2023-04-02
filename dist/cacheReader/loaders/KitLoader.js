@@ -1,10 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.KitDefinition = void 0;
-class KitDefinition {
+export class KitDefinition {
 }
-exports.KitDefinition = KitDefinition;
-class KitLoader {
+export default class KitLoader {
     load(bytes, id) {
         let def = new KitDefinition();
         def.id = id;
@@ -61,4 +57,3 @@ class KitLoader {
         }
     }
 }
-exports.default = KitLoader;

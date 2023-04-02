@@ -1,13 +1,8 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const IndexType_js_1 = __importDefault(require("./cacheTypes/IndexType.js"));
-const ConfigType_js_1 = __importDefault(require("./cacheTypes/ConfigType.js"));
-class CacheDefinitionLoader {
+import IndexType from './cacheTypes/IndexType.js';
+import ConfigType from './cacheTypes/ConfigType.js';
+export default class CacheDefinitionLoader {
     constructor(indexId, archive, options = {}) {
-        this.indexType = IndexType_js_1.default.valueOf(indexId);
+        this.indexType = IndexType.valueOf(indexId);
         this.archive = archive;
         this.options = options;
         //this.files = files;
@@ -22,8 +17,8 @@ class CacheDefinitionLoader {
             }
             */
             var loader;
-            if (this.indexType == IndexType_js_1.default.CONFIGS) {
-                loader = new (ConfigType_js_1.default.valueOf(this.archive.id).loader)();
+            if (this.indexType == IndexType.CONFIGS) {
+                loader = new (ConfigType.valueOf(this.archive.id).loader)();
             }
             else {
                 loader = new this.indexType.loader();
@@ -118,4 +113,3 @@ class CacheDefinitionLoader {
         */
     }
 }
-exports.default = CacheDefinitionLoader;

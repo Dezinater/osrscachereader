@@ -1,13 +1,9 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.ObjectDefinition = void 0;
-class ObjectDefinition {
+export class ObjectDefinition {
     constructor() {
         this.shadow = true;
     }
 }
-exports.ObjectDefinition = ObjectDefinition;
-class ObjectLoader {
+export default class ObjectLoader {
     load(bytes, id) {
         //console.log(id, bytes.length);
         let def = new ObjectDefinition();
@@ -249,4 +245,3 @@ class ObjectLoader {
         }
     }
 }
-exports.default = ObjectLoader;

@@ -1,12 +1,7 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const Archive_js_1 = __importDefault(require("./Archive.js"));
-const File_js_1 = __importDefault(require("./File.js"));
-const HashConverter_js_1 = __importDefault(require("../HashConverter.js"));
-class Index {
+import ArchiveData from './Archive.js';
+import FileData from './File.js';
+import nameHashLookup from '../HashConverter.js';
+export default class Index {
     constructor(id) {
         this.id = id;
         this.protocol = 0;
@@ -42,7 +37,7 @@ class Index {
             else {
                 archiveId = lastArchiveId += dataview.readInt16();
             }
-            this.archives[archiveId] = new Archive_js_1.default();
+            this.archives[archiveId] = new ArchiveData();
             this.archives[archiveId].id = archiveId;
         }
         let archiveKeys = Object.keys(this.archives);
@@ -50,8 +45,8 @@ class Index {
             for (let i = 0; i < this.archivesCount; i++) {
                 let nameHash = dataview.readInt32();
                 this.archives[archiveKeys[i]].nameHash = nameHash;
-                if (HashConverter_js_1.default[nameHash] != undefined)
-                    this.archives[archiveKeys[i]].name = HashConverter_js_1.default[nameHash];
+                if (nameHashLookup[nameHash] != undefined)
+                    this.archives[archiveKeys[i]].name = nameHashLookup[nameHash];
             }
         }
         for (let i = 0; i < this.archivesCount; i++) {
@@ -83,7 +78,7 @@ class Index {
                 else {
                     fileID += dataview.readUint16();
                 }
-                this.archives[archiveKeys[i]].files[j] = new File_js_1.default(fileID);
+                this.archives[archiveKeys[i]].files[j] = new FileData(fileID);
             }
         }
         if (this.named) {
@@ -91,8 +86,8 @@ class Index {
                 for (let j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
                     let fileName = dataview.readUint32();
                     this.archives[archiveKeys[i]].files[j].nameHash = fileName;
-                    if (HashConverter_js_1.default[fileName] != undefined)
-                        this.archives[archiveKeys[i]].files[j].name = HashConverter_js_1.default[fileName];
+                    if (nameHashLookup[fileName] != undefined)
+                        this.archives[archiveKeys[i]].files[j].name = nameHashLookup[fileName];
                 }
             }
         }
@@ -101,4 +96,3 @@ class Index {
         return this.id;
     }
 }
-exports.default = Index;

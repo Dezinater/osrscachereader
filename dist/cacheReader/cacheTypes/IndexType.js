@@ -1,23 +1,18 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const FramemapLoader_js_1 = __importDefault(require("../loaders/FramemapLoader.js"));
-const FramesLoader_js_1 = __importDefault(require("../loaders/FramesLoader.js"));
-const MapLoader_js_1 = __importDefault(require("../loaders/MapLoader.js"));
-const ModelLoader_js_1 = __importDefault(require("../loaders/ModelLoader.js"));
-const SpriteLoader_js_1 = __importDefault(require("../loaders/SpriteLoader.js"));
+import FramemapLoader from '../loaders/FramemapLoader.js';
+import FramesLoader from '../loaders/FramesLoader.js';
+import MapLoader from '../loaders/MapLoader.js';
+import ModelLoader from '../loaders/ModelLoader.js';
+import SpriteLoader from '../loaders/SpriteLoader.js';
 const IndexType = {
-    FRAMES: { id: 0, loader: FramesLoader_js_1.default },
-    FRAMEMAPS: { id: 1, loader: FramemapLoader_js_1.default },
+    FRAMES: { id: 0, loader: FramesLoader },
+    FRAMEMAPS: { id: 1, loader: FramemapLoader },
     CONFIGS: { id: 2, loader: undefined },
     INTERFACES: { id: 3, loader: undefined },
     SOUNDEFFECTS: { id: 4, loader: undefined },
-    MAPS: { id: 5, loader: MapLoader_js_1.default },
+    MAPS: { id: 5, loader: MapLoader },
     TRACK1: { id: 6, loader: undefined },
-    MODELS: { id: 7, loader: ModelLoader_js_1.default },
-    SPRITES: { id: 8, loader: SpriteLoader_js_1.default },
+    MODELS: { id: 7, loader: ModelLoader },
+    SPRITES: { id: 8, loader: SpriteLoader },
     TEXTURES: { id: 9, loader: undefined },
     BINARY: { id: 10, loader: undefined },
     TRACK2: { id: 11, loader: undefined },
@@ -41,4 +36,4 @@ const IndexType = {
     }
 };
 Object.freeze(IndexType);
-exports.default = IndexType;
+export default IndexType;
