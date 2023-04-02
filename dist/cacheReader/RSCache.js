@@ -4,17 +4,17 @@ import CacheDefinitionLoader from './CacheDefinitionLoader.js';
 import CacheRequester from './CacheRequester.js';
 import Index from './cacheTypes/Index.js';
 import nameHashLookup from './HashConverter.js';
-import CacheLoader from './CacheLoader.js';
+import CacheLoader from './CacheLoader.ts';
 export default class RSCache {
     constructor(cacheRootDir = "./", progressFunc = () => { }, nameRootDir = undefined) {
         this.indicies = {};
         this.progressFunc = progressFunc;
         const cacheLoader = new CacheLoader(cacheRootDir);
         this.onload = cacheLoader.getResults().then(result => {
-            //console.log(result);
+            console.log(result);
             this.cacheRequester = new CacheRequester(result.datFile);
             return this.loadCacheFiles(result.indexFiles, "./", nameRootDir).then(() => {
-                this.cacheRequester.setXteas(this.xteas);
+                this.cacheRequester.setXteas(result.xteas);
             });
         });
     }
@@ -67,6 +67,10 @@ export default class RSCache {
                     this.loadRequests[indexId][archiveId][i].reject(error);
                 }
             });
+        }).catch(err => {
+            for (let i = 0; i < this.loadRequests[indexId][archiveId].length; i++) {
+                this.loadRequests[indexId][archiveId][i].reject(err);
+            }
         });
         return newPromise;
     }
@@ -75,7 +79,7 @@ export default class RSCache {
         //console.log("Archive ID", archiveId);
         return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
     }
-    loadCacheFiles(indexFiles, xteasDir, namesRootDir) {
+    loadCacheFiles(indexFiles, xteas, namesRootDir) {
         //this is basically relying on loading faster than the other stuff. probably should merge this with something
         /*
         if (namesRootDir != undefined) {
@@ -100,6 +104,7 @@ export default class RSCache {
                     });
                 }
         */
+        //console.log(indexFiles);
         let idx255Data = indexFiles[indexFiles.length - 1];
         let idxFileData = indexFiles.slice(0, indexFiles.length - 1);
         //theres probably a better way of doing this

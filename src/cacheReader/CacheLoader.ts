@@ -91,12 +91,15 @@ export default class CacheLoader {
             this.promises.indexFiles.push(newPromise);
         });
 
-        this.promises.xteas = fs.readFile(path + "xteas.json", "utf8", (err, data) => this.readXteas(data));
+        this.promises.xteas = new Promise((resolve, reject) => fs.readFile(path + "xteas.json", "utf8", (err, data) => {
+            if (err) throw err;
+            resolve(this.readXteas(data));
+        }));
     }
 
     readXteas(xteasData) {
         if (xteasData == undefined) return;
-        let xteas = JSON.parse(xteasData);
+        let xteas = xteasData;
         let reOrderedXteas = {};
         for (var i = 0; i < xteas.length; i++) {
             reOrderedXteas[xteas[i].group] = xteas[i];

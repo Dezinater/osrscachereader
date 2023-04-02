@@ -30,7 +30,8 @@ export default class MapLoader {
         if (bytes == undefined)
             return new MapDefinition();
         let x, y;
-        let mapInfo = rscache.xteas[id];
+        let mapInfo = rscache.cacheRequester.xteas[id];
+        //if there is xteas then its a location def
         if (mapInfo != undefined) {
             x = mapInfo.mapsquare >> 8;
             y = mapInfo.mapsquare & 0xFF;
@@ -38,26 +39,21 @@ export default class MapLoader {
         }
         else {
             let hashVal = rscache.indicies[5].archives[id].nameHash;
-            //console.log(rscache.indicies[5]);
-            //console.log(hashVal);
             for (let i = 0; i < 32768; i++) {
                 let x = i >> 8;
                 let y = i & 0xFF;
+                //no xteas and its a terrain map
+                if (this.hash("m" + x + "_" + y) == hashVal) {
+                    return this.loadMapDef(bytes, id, x, y);
+                } //no xteas and its a location def
                 if (this.hash("l" + x + "_" + y) == hashVal) {
                     //not much we can do here without xteas
                     return new LocationDefinition();
                 }
-                if (this.hash("m" + x + "_" + y) == hashVal) {
-                    //console.log("m" + x + "_" + y);
-                    return this.loadMapDef(bytes, id, x, y);
-                }
             }
         }
+        //no other case matched
         return new EmptyMapDefinition();
-        //console.log(bytes, rscache.xteas);
-        //console.log(rscache.xteas[id]);
-        //console.log(id);
-        //console.log(x, y);
     }
     loadLocationDef(bytes, id, x, y) {
         let def = new LocationDefinition();

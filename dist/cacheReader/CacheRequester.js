@@ -80,9 +80,9 @@ export default class CacheRequester {
         */
         let key;
         if (index.id == IndexType.MAPS.id && this.xteas != undefined) {
-            if (this.xteas[archiveId] != undefined) //if its not a mapdef then it will have a key
+            if (this.xteas[archiveId] != undefined) { //if its not a mapdef then it will have a key
                 key = this.xteas[archiveId].key;
-            //console.log(key);
+            }
         }
         return Promise.resolve().then(() => {
             var compressedData = new Uint8Array(size);
@@ -140,7 +140,7 @@ export default class CacheRequester {
                     //console.log("unzipped");
                 }
                 catch {
-                    console.log("Could not unzip with key:" + key);
+                    throw "Could not unzip with key:" + key;
                 }
                 decompressedData = new Uint8Array(unzipped);
             }

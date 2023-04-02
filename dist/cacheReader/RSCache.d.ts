@@ -8,7 +8,7 @@ export default class RSCache {
     getAllFiles(indexId: any, archiveId: any, options?: {}): Promise<any>;
     loadRequests: any[];
     getFile(indexId: any, archiveId: any, fileId: number, options: any): Promise<any>;
-    loadCacheFiles(indexFiles: any, xteasDir: any, namesRootDir: any): Promise<{
+    loadCacheFiles(indexFiles: any, xteas: any, namesRootDir: any): Promise<{
         index: any;
         archiveId: number;
         decompressedData: any;

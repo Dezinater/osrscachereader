@@ -41,4 +41,4 @@ onmessage = function (e) {
     data = [];
     dataview = {};
 };
-//export {};
+export {};
