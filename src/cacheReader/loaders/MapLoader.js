@@ -117,9 +117,9 @@ export default class MapLoader {
 
                 }
             }
-
-            return def;
         }
+
+        return def;
     }
 
 }
