@@ -31,21 +31,21 @@ export default class ArchiveData {
 			let chunkSize = 0;
 			for (let id = 0; id < this.files.length; id++) {
 				//magic number - only needed sometimes. really must be some type of js issue
-				//if (streamPosition == 1444353){
-				//	if (data[streamPosition] == 0) data[streamPosition] = 255;
-				//}
-				
+				if (streamPosition == 981413) {
+					if (data[streamPosition] == 0) data[streamPosition] = 255;
+				}
+
 				//console.log(data[streamPosition], data[streamPosition + 1], data[streamPosition + 2], data[streamPosition + 3]);
-				
-				let delta  = dataview.getInt32(streamPosition);
+
+				let delta = dataview.getInt32(streamPosition);
 				chunkSize += delta;
 				streamPosition += 4;
 				chunkSizes[id][i] = chunkSize;
 				fileSizes[id] += chunkSize;
 				//if (id > 32915 && id < 32950)
-					//console.log(id, delta, streamPosition);
+				//console.log(id, delta, streamPosition);
 				//if (id > 32210 && id < 32220)
-					//console.log(id, delta, streamPosition);
+				//console.log(id, delta, streamPosition);
 			}
 		}
 		//console.log(data);
