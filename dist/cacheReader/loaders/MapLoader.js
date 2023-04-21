@@ -55,9 +55,9 @@ export default class MapLoader {
         //no other case matched
         return new EmptyMapDefinition();
     }
-    loadLocationDef(bytes, id, x, y) {
+    loadLocationDef(bytes, defId, x, y) {
         let def = new LocationDefinition();
-        def.id = id;
+        def.id = defId;
         def.regionX = x;
         def.regionY = y;
         def.locations = [];
@@ -81,12 +81,12 @@ export default class MapLoader {
         }
         return def;
     }
-    loadMapDef(bytes, id, x, y) {
+    loadMapDef(bytes, defId, x, y) {
         let X = 64;
         let Y = 64;
         let Z = 4;
         let def = new MapDefinition();
-        def.id = id;
+        def.id = defId;
         def.regionX = x;
         def.regionY = y;
         let dataview = new DataView(bytes.buffer);
