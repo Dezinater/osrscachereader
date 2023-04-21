@@ -60,7 +60,25 @@ export default class MapLoader {
         def.id = id;
         def.regionX = x;
         def.regionY = y;
+        def.locations = [];
         let dataview = new DataView(bytes.buffer);
+        let id = -1;
+        let idOffset;
+        while ((idOffset = buf.readUnsignedIntSmartShortCompat()) != 0) {
+            id += idOffset;
+            let position = 0;
+            let positionOffset;
+            while ((positionOffset = buf.readUnsignedShortSmart()) != 0) {
+                position += positionOffset - 1;
+                let localY = position & 0x3F;
+                let localX = position >> 6 & 0x3F;
+                let height = position >> 12 & 0x3;
+                let attributes = buf.readUnsignedByte();
+                let type = attributes >> 2;
+                let orientation = attributes & 0x3;
+                def.locations.push({ id, type, orientation, position: { localX, localY, height } });
+            }
+        }
         return def;
     }
     loadMapDef(bytes, id, x, y) {
@@ -104,7 +122,7 @@ export default class MapLoader {
                     }
                 }
             }
-            return def;
         }
+        return def;
     }
 }
