@@ -38,6 +38,7 @@ export default class CacheDefinitionLoader {
 				try {
 					loadedValue = loader.load(this.archive.files[i].content, defId, rscache, this.options);
 				} catch (error) {
+					console.log(i, this.archive.files.length, defId, this.options)
 					reject(error);
 					throw error;
 				}

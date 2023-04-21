@@ -177,6 +177,28 @@ export default class NpcLoader {
 		else if (opcode == 111) {
 			def.isPet = true;
 		}
+		else if (opcode == 114)
+		{
+			def.runAnimation = dataview.readUint16();
+		}
+		else if (opcode == 115)
+		{
+			def.runAnimation = dataview.readUint16();
+			def.runRotate180Animation = dataview.readUint16();
+			def.runRotateLeftAnimation = dataview.readUint16();
+			def.runRotateRightAnimation = dataview.readUint16();
+		}
+		else if (opcode == 116)
+		{
+			def.crawlAnimation = dataview.readUint16();
+		}
+		else if (opcode == 117)
+		{
+			def.crawlAnimation = dataview.readUint16();
+			def.crawlRotate180Animation = dataview.readUint16();
+			def.crawlRotateLeftAnimation = dataview.readUint16();
+			def.crawlRotateRightAnimation = dataview.readUint16();
+		}
 		else if (opcode == 118) {
 			def.varbitId = dataview.readUint16();
 
