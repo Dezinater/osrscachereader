@@ -147,7 +147,7 @@ export default class ModelLoader {
             def.faceTextures = [];
         }
         if (var16 == 1 && var11 > 0) {
-            def.textureCoords = [];
+            def.textureCoords = new Array(var10).fill(0);
         }
         if (var18 == 1) {
             //def.animayaGroups = new int[var9][];
@@ -234,7 +234,7 @@ export default class ModelLoader {
                 def.faceTextures[var51] = (var7.readUint16() - 1);
             }
             if (def.textureCoords != null && def.faceTextures[var51] != -1) {
-                def.textureCoords[var51] = (var8.readUint16() - 1);
+                def.textureCoords[var51] = (var8.readUint8() - 1);
             }
         }
         var2.setPosition(var35);

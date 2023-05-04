@@ -7,10 +7,13 @@ var cache = new RSCache("cache", (x) => { console.log(x); }, "./");
 cache.onload.then(() => {
     console.log(cache);
     //cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(x => { console.log(x) });
+    /*
     cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id).then(files => {
         let npcDefs = files.map(x => x.def).filter(x => x.varbitId != undefined);
-        console.log(npcDefs);
+        console.log(npcDefs)
     });
+    */
+    cache.getFile(IndexType.MODELS.id, 9640).then(x => { console.log(x); });
     //cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => { console.log(x) });
     //cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => { console.log(x) });
     //console.log(Object.values(cache.cacheRequester.xteas).filter(x => x.name.includes("50_50")));
