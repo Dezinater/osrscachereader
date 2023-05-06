@@ -21,19 +21,19 @@ cache.onload.then(() => {
     cache.getAllFiles(IndexType.TEXTURES.id, 0, { loadSprites:true}).then(textures => {
         console.log(textures.map(y => y.def));
     });
-/*
+
     cache.getAllFiles(IndexType.TEXTURES.id, 0).then(async textures => {
         let animatedTextures = textures.map(y => y.def).filter(y => y.animationSpeed > 0)
         let spriteFiles = await Promise.all(animatedTextures.map(x => cache.getFile(IndexType.SPRITES.id, x.fileIds[0])));
         let sprites = spriteFiles.map(x => x.def);
         console.log(animatedTextures, sprites);
-        sprites.forEach(sprite => {
-            let dataUrl = sprite.sprites[0].createImageUrl();
+        sprites.forEach(async sprite => {
+            let dataUrl = await sprite.sprites[0].createImageUrl(256, 256);
             console.log(sprite)
-            console.log('%c ', 'font-size:256px; background:url(' + dataUrl + ') no-repeat;')
+            console.log('%c ', 'font-size:512px; background:url(' + dataUrl + ') no-repeat;')
         });
     });
-*/
+
     //cache.getFile(IndexType.MODELS.id, 9640).then(x => { console.log(x) });
 
     //cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => { console.log(x) });

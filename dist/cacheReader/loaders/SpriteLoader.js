@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import { createCanvas } from "canvas";
 const FLAG_VERTICAL = 0b01;
 const FLAG_ALPHA = 0b10;
@@ -11,22 +20,35 @@ export class Sprite {
     setPixels(pixels) {
         this.pixels = pixels;
     }
-    createImageUrl() {
-        return this.createImage().toDataURL();
+    createImageUrl(width, height) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (width == undefined)
+                width = this.getWidth();
+            if (height == undefined)
+                height = this.getHeight();
+            return (yield this.createImage(width, height)).toDataURL();
+        });
     }
-    createImage() {
-        const canvas = createCanvas(this.getWidth(), this.getHeight());
-        const ctx = canvas.getContext('2d');
-        let imageData = ctx.createImageData(this.getWidth(), this.getHeight());
-        for (let i = 0; i < imageData.data.byteLength; i += 4) {
-            let pixel = this.pixels[Math.floor(i / 4)];
-            imageData.data[i + 0] = (pixel & 0x00ff0000) >> 16;
-            imageData.data[i + 1] = (pixel & 0x0000ff00) >> 8;
-            imageData.data[i + 2] = pixel & 0x000000ff;
-            imageData.data[i + 3] = 254 - ((pixel & 0xff000000) >> 24);
-        }
-        ctx.putImageData(imageData, 0, 0);
-        return canvas;
+    createImage(width, height) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (width == undefined)
+                width = this.getWidth();
+            if (height == undefined)
+                height = this.getHeight();
+            const canvas = createCanvas(width, height);
+            const ctx = canvas.getContext('2d');
+            let imageData = ctx.createImageData(this.getWidth(), this.getHeight());
+            for (let i = 0; i < imageData.data.byteLength; i += 4) {
+                let pixel = this.pixels[Math.floor(i / 4)];
+                imageData.data[i + 0] = (pixel & 0x00ff0000) >> 16;
+                imageData.data[i + 1] = (pixel & 0x0000ff00) >> 8;
+                imageData.data[i + 2] = pixel & 0x000000ff;
+                imageData.data[i + 3] = 254 - ((pixel & 0xff000000) >> 24);
+            }
+            let bitmap = yield createImageBitmap(imageData);
+            ctx.drawImage(bitmap, 0, 0, this.getWidth(), this.getHeight(), 0, 0, width, height);
+            return canvas;
+        });
     }
 }
 export class SpriteDefinition {

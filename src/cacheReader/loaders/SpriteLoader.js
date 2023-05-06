@@ -16,12 +16,18 @@ export class Sprite {
         this.pixels = pixels;
     }
 
-    createImageUrl() {
-        return this.createImage().toDataURL();
+    async createImageUrl(width, height) {
+        if (width == undefined) width = this.getWidth();
+        if (height == undefined) height = this.getHeight();
+
+        return (await this.createImage(width, height)).toDataURL();
     }
-    
-    createImage() {
-        const canvas = createCanvas(this.getWidth(), this.getHeight())
+
+    async createImage(width, height) {
+        if (width == undefined) width = this.getWidth();
+        if (height == undefined) height = this.getHeight();
+
+        const canvas = createCanvas(width, height)
         const ctx = canvas.getContext('2d');
         let imageData = ctx.createImageData(this.getWidth(), this.getHeight());
         for (let i = 0; i < imageData.data.byteLength; i += 4) {
@@ -31,8 +37,8 @@ export class Sprite {
             imageData.data[i + 2] = pixel & 0x000000ff;
             imageData.data[i + 3] = 254 - ((pixel & 0xff000000) >> 24);
         }
-        ctx.putImageData(imageData, 0, 0);
-
+        let bitmap = await createImageBitmap(imageData)
+        ctx.drawImage(bitmap, 0, 0, this.getWidth(), this.getHeight(), 0, 0, width, height);
         return canvas;
     }
 }

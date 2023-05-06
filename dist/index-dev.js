@@ -1,3 +1,12 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import RSCache from './cacheReader/RSCache.js';
 import IndexType from './cacheReader/cacheTypes/IndexType.js';
 import ConfigType from './cacheReader/cacheTypes/ConfigType.js';
@@ -16,19 +25,17 @@ cache.onload.then(() => {
     cache.getAllFiles(IndexType.TEXTURES.id, 0, { loadSprites: true }).then(textures => {
         console.log(textures.map(y => y.def));
     });
-    /*
-        cache.getAllFiles(IndexType.TEXTURES.id, 0).then(async textures => {
-            let animatedTextures = textures.map(y => y.def).filter(y => y.animationSpeed > 0)
-            let spriteFiles = await Promise.all(animatedTextures.map(x => cache.getFile(IndexType.SPRITES.id, x.fileIds[0])));
-            let sprites = spriteFiles.map(x => x.def);
-            console.log(animatedTextures, sprites);
-            sprites.forEach(sprite => {
-                let dataUrl = sprite.sprites[0].createImageUrl();
-                console.log(sprite)
-                console.log('%c ', 'font-size:256px; background:url(' + dataUrl + ') no-repeat;')
-            });
-        });
-    */
+    cache.getAllFiles(IndexType.TEXTURES.id, 0).then((textures) => __awaiter(void 0, void 0, void 0, function* () {
+        let animatedTextures = textures.map(y => y.def).filter(y => y.animationSpeed > 0);
+        let spriteFiles = yield Promise.all(animatedTextures.map(x => cache.getFile(IndexType.SPRITES.id, x.fileIds[0])));
+        let sprites = spriteFiles.map(x => x.def);
+        console.log(animatedTextures, sprites);
+        sprites.forEach((sprite) => __awaiter(void 0, void 0, void 0, function* () {
+            let dataUrl = yield sprite.sprites[0].createImageUrl(256, 256);
+            console.log(sprite);
+            console.log('%c ', 'font-size:512px; background:url(' + dataUrl + ') no-repeat;');
+        }));
+    }));
     //cache.getFile(IndexType.MODELS.id, 9640).then(x => { console.log(x) });
     //cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => { console.log(x) });
     //cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => { console.log(x) });
