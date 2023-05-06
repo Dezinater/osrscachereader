@@ -75,7 +75,6 @@ export default class SpriteLoader {
         dataview.setPosition(0);
         for (let i = 0; i < spriteCount; ++i) {
             let sprite = sprites[i];
-            console.log(sprite.getWidth());
             let spriteWidth = sprite.getWidth();
             let spriteHeight = sprite.getHeight();
             let dimension = spriteWidth * spriteHeight;

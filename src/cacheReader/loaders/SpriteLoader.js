@@ -98,7 +98,6 @@ export default class SpriteLoader {
 
         for (let i = 0; i < spriteCount; ++i) {
             let sprite = sprites[i];
-            console.log(sprite.getWidth())
             let spriteWidth = sprite.getWidth();
             let spriteHeight = sprite.getHeight();
             let dimension = spriteWidth * spriteHeight;
