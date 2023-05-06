@@ -50,74 +50,73 @@ declare namespace IndexType {
     namespace TEXTURES {
         const id_9: number;
         export { id_9 as id };
-        const loader_4: any;
-        export { loader_4 as loader };
+        export { TextureLoader as loader };
     }
     namespace BINARY {
         const id_10: number;
         export { id_10 as id };
-        const loader_5: any;
-        export { loader_5 as loader };
+        const loader_4: any;
+        export { loader_4 as loader };
     }
     namespace TRACK2 {
         const id_11: number;
         export { id_11 as id };
-        const loader_6: any;
-        export { loader_6 as loader };
+        const loader_5: any;
+        export { loader_5 as loader };
     }
     namespace CLIENTSCRIPT {
         const id_12: number;
         export { id_12 as id };
-        const loader_7: any;
-        export { loader_7 as loader };
+        const loader_6: any;
+        export { loader_6 as loader };
     }
     namespace FONTS {
         const id_13: number;
         export { id_13 as id };
-        const loader_8: any;
-        export { loader_8 as loader };
+        const loader_7: any;
+        export { loader_7 as loader };
     }
     namespace VORBIS {
         const id_14: number;
         export { id_14 as id };
-        const loader_9: any;
-        export { loader_9 as loader };
+        const loader_8: any;
+        export { loader_8 as loader };
     }
     namespace INSTRUMENTS {
         const id_15: number;
         export { id_15 as id };
-        const loader_10: any;
-        export { loader_10 as loader };
+        const loader_9: any;
+        export { loader_9 as loader };
     }
     namespace WORLDMAP {
         const id_16: number;
         export { id_16 as id };
-        const loader_11: any;
-        export { loader_11 as loader };
+        const loader_10: any;
+        export { loader_10 as loader };
     }
     namespace UKNOWN1 {
         const id_17: number;
         export { id_17 as id };
-        const loader_12: any;
-        export { loader_12 as loader };
+        const loader_11: any;
+        export { loader_11 as loader };
     }
     namespace UKNOWN2 {
         const id_18: number;
         export { id_18 as id };
-        const loader_13: any;
-        export { loader_13 as loader };
+        const loader_12: any;
+        export { loader_12 as loader };
     }
     namespace UKNOWN3 {
         const id_19: number;
         export { id_19 as id };
-        const loader_14: any;
-        export { loader_14 as loader };
+        const loader_13: any;
+        export { loader_13 as loader };
     }
     namespace UKNOWN4 {
         const id_20: number;
         export { id_20 as id };
-        const loader_15: any;
-        export { loader_15 as loader };
+        const loader_14: any;
+        export { loader_14 as loader };
     }
     function valueOf(id: any): any;
 }
@@ -126,3 +125,4 @@ import FramemapLoader from '../loaders/FramemapLoader.js';
 import MapLoader from '../loaders/MapLoader.js';
 import ModelLoader from '../loaders/ModelLoader.js';
 import SpriteLoader from '../loaders/SpriteLoader.js';
+import TextureLoader from '../loaders/TextureLoader.js';

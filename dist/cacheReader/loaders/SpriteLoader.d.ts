@@ -3,6 +3,8 @@ export class Sprite {
     getHeight(): any;
     setPixels(pixels: any): void;
     pixels: any;
+    createImageUrl(): string;
+    createImage(): import("canvas").Canvas;
 }
 export class SpriteDefinition {
 }

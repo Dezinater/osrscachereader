@@ -11,6 +11,23 @@ export class Sprite {
     setPixels(pixels) {
         this.pixels = pixels;
     }
+    createImageUrl() {
+        return this.createImage().toDataURL();
+    }
+    createImage() {
+        const canvas = createCanvas(this.getWidth(), this.getHeight());
+        const ctx = canvas.getContext('2d');
+        let imageData = ctx.createImageData(this.getWidth(), this.getHeight());
+        for (let i = 0; i < imageData.data.byteLength; i += 4) {
+            let pixel = this.pixels[Math.floor(i / 4)];
+            imageData.data[i + 0] = (pixel & 0x00ff0000) >> 16;
+            imageData.data[i + 1] = (pixel & 0x0000ff00) >> 8;
+            imageData.data[i + 2] = pixel & 0x000000ff;
+            imageData.data[i + 3] = 254 - ((pixel & 0xff000000) >> 24);
+        }
+        ctx.putImageData(imageData, 0, 0);
+        return canvas;
+    }
 }
 export class SpriteDefinition {
 }
@@ -113,18 +130,6 @@ export default class SpriteLoader {
                 pixels[j] = palette[index] | (pixelAlphas[j] << 24);
             }
             sprite.setPixels(pixels);
-            const canvas = createCanvas(sprite.getWidth(), sprite.getHeight());
-            const ctx = canvas.getContext('2d');
-            let imageData = ctx.createImageData(sprite.getWidth(), sprite.getHeight());
-            for (let i = 0; i < imageData.data.byteLength; i += 4) {
-                let pixel = sprites[0].pixels[Math.floor(i / 4)];
-                imageData.data[i + 0] = (pixel & 0x00ff0000) >> 16;
-                imageData.data[i + 1] = (pixel & 0x0000ff00) >> 8;
-                imageData.data[i + 2] = pixel & 0x000000ff;
-                imageData.data[i + 3] = 254 - ((pixel & 0xff000000) >> 24);
-            }
-            ctx.putImageData(imageData, 0, 0);
-            console.log('<img src="' + canvas.toDataURL() + '" />');
         }
         //ctx.putImageData
         return def;

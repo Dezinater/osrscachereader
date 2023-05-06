@@ -3,6 +3,7 @@ import FramesLoader from '../loaders/FramesLoader.js';
 import MapLoader from '../loaders/MapLoader.js';
 import ModelLoader from '../loaders/ModelLoader.js';
 import SpriteLoader from '../loaders/SpriteLoader.js';
+import TextureLoader from '../loaders/TextureLoader.js';
 const IndexType = {
     FRAMES: { id: 0, loader: FramesLoader },
     FRAMEMAPS: { id: 1, loader: FramemapLoader },
@@ -13,7 +14,7 @@ const IndexType = {
     TRACK1: { id: 6, loader: undefined },
     MODELS: { id: 7, loader: ModelLoader },
     SPRITES: { id: 8, loader: SpriteLoader },
-    TEXTURES: { id: 9, loader: undefined },
+    TEXTURES: { id: 9, loader: TextureLoader },
     BINARY: { id: 10, loader: undefined },
     TRACK2: { id: 11, loader: undefined },
     CLIENTSCRIPT: { id: 12, loader: undefined },
