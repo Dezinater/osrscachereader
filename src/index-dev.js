@@ -18,7 +18,8 @@ cache.onload.then(() => {
         console.log(npcDefs) 
     });
     */
-    cache.getFile(IndexType.MODELS.id, 9640).then(x => { console.log(x) });
+    cache.getFile(IndexType.TEXTURES.id, 0).then(x => { console.log(x) });
+    //cache.getFile(IndexType.MODELS.id, 9640).then(x => { console.log(x) });
 
     //cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => { console.log(x) });
     //cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => { console.log(x) });
