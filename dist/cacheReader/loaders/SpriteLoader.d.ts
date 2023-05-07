@@ -3,8 +3,8 @@ export class Sprite {
     getHeight(): any;
     setPixels(pixels: any): void;
     pixels: any;
-    createImageUrl(width: any, height: any): Promise<string>;
-    createImage(width: any, height: any): Promise<import("canvas").Canvas>;
+    createImageUrl(width: any, height: any): Promise<any>;
+    createImage(width: any, height: any): Promise<any>;
 }
 export class SpriteDefinition {
 }

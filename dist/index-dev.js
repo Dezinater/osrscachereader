@@ -32,7 +32,6 @@ cache.onload.then(() => {
         console.log(animatedTextures, sprites);
         sprites.forEach((sprite) => __awaiter(void 0, void 0, void 0, function* () {
             let dataUrl = yield sprite.sprites[0].createImageUrl(256, 256);
-            console.log(sprite);
             console.log('%c ', 'font-size:512px; background:url(' + dataUrl + ') no-repeat;');
         }));
     }));
