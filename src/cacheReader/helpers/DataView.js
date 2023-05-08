@@ -92,6 +92,19 @@ DataView.prototype.readUnsignedShortSmartMinusOne = function () {
 	return peek < 128 ? this.readUint8() - 1 : this.readUint16() - 0x8001;
 }
 
+DataView.prototype.readUnsignedIntSmartShortCompat = function () {
+	let var1 = 0;
+
+	let var2;
+	for (var2 = this.readUnsignedShortSmart(); var2 == 32767; var2 = this.readUnsignedShortSmart())
+	{
+		var1 += 32767;
+	}
+
+	var1 += var2;
+	return var1;
+}
+
 DataView.prototype.readInt8 = function () { //byte
 	let val = 0;
 	try {
