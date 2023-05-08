@@ -919,7 +919,7 @@ export default class ModelLoader {
 		var vertexYOffset;
 		var var15;
 		var point;
-		for (point = 0; point < verticeCount; ++point) {
+		for (polet = 0; polet < verticeCount; ++point) {
 			var vertexFlags = var2.readUint8();
 			var vertexXOffset = 0;
 			if ((vertexFlags & 1) != 0) {
@@ -955,7 +955,7 @@ export default class ModelLoader {
 		var55.setPosition(texturePos);
 		var51.setPosition(textureCoordPos);
 
-		for (point = 0; point < triangleCount; ++point) {
+		for (polet = 0; polet < triangleCount; ++point) {
 			def.faceColors[point] = var2.readUint16();
 			if (var13 == 1) {
 				def.faceRenderTypes[point] = var24.readInt8();
@@ -1432,104 +1432,134 @@ export default class ModelLoader {
 		// triangleSkinValues is here
 	}
 
-	computeTextureUVCoordinates(def) {
-		def.faceTextureUCoordinates = [];
-		def.faceTextureVCoordinates = [];
+	computeTextureUVCoordinates(def)
+	{
+		console.log(def)
+		def.faceTextureUCoordinates = new Array(def.faceCount).fill([0,0,0]);
+		def.faceTextureVCoordinates = new Array(def.faceCount).fill([0,0,0]);
 
-		for (var i = 0; i < def.faceCount; i++) {
-			var textureCoordinate;
-			if (def.textureCoordinates == undefined) {
-				textureCoordinate = -1;
-			}
-			else {
-				textureCoordinate = def.textureCoordinates[i];
-			}
+		if (def.faceTextures == null)
+		{
+			return;
+		}
 
-			var textureIdx;
-			if (def.faceTextures == undefined) {
-				textureIdx = -1;
-			}
-			else {
-				textureIdx = def.faceTextures[i] & 0xFFFF;
+		for (let i = 0; i < def.faceCount; i++)
+		{
+			if (def.faceTextures[i] == -1)
+			{
+				continue;
 			}
 
-			if (textureIdx != -1) {
-				var u = [];
-				var v = [];
+			let u0, u1, u2, v0, v1, v2;
 
-				if (textureCoordinate == -1) {
-					u[0] = 0.0;
-					v[0] = 1.0;
+			if (def.textureCoords != null && def.textureCoords[i] != -1)
+			{
+				let tfaceIdx = def.textureCoords[i] & 0xff;
+				let triangleA = def.faceVertexIndices1[i];
+				let triangleB = def.faceVertexIndices2[i];
+				let triangleC = def.faceVertexIndices3[i];
+				let texA = def.texIndices1[tfaceIdx];
+				let texB = def.texIndices2[tfaceIdx];
+				let texC = def.texIndices3[tfaceIdx];
 
-					u[1] = 1.0;
-					v[1] = 1.0;
+				// v1 = vertex[texA]
+				let v1x = def.vertexPositionsX[texA];
+				let v1y = def.vertexPositionsY[texA];
+				let v1z = def.vertexPositionsZ[texA];
+				// v2 = vertex[texB] - v1
+				let v2x = def.vertexPositionsX[texB] - v1x;
+				let v2y = def.vertexPositionsY[texB] - v1y;
+				let v2z = def.vertexPositionsZ[texB] - v1z;
+				// v3 = vertex[texC] - v1
+				let v3x = def.vertexPositionsX[texC] - v1x;
+				let v3y = def.vertexPositionsY[texC] - v1y;
+				let v3z = def.vertexPositionsZ[texC] - v1z;
 
-					u[2] = 0.0;
-					v[2] = 0.0;
-				}
-				else {
-					textureCoordinate &= 0xFF;
+				// v4 = vertex[triangleA] - v1
+				let v4x = def.vertexPositionsX[triangleA] - v1x;
+				let v4y = def.vertexPositionsY[triangleA] - v1y;
+				let v4z = def.vertexPositionsZ[triangleA] - v1z;
+				// v5 = vertex[triangleB] - v1
+				let v5x = def.vertexPositionsX[triangleB] - v1x;
+				let v5y = def.vertexPositionsY[triangleB] - v1y;
+				let v5z = def.vertexPositionsZ[triangleB] - v1z;
+				// v6 = vertex[triangleC] - v1
+				let v6x = def.vertexPositionsX[triangleC] - v1x;
+				let v6y = def.vertexPositionsY[triangleC] - v1y;
+				let v6z = def.vertexPositionsZ[triangleC] - v1z;
 
-					var textureRenderType = 0;
-					if (def.textureRenderTypes != undefined) {
-						textureRenderType = def.textureRenderTypes[textureCoordinate];
-					}
+				// v7 = v2 x v3
+				let v7x = v2y * v3z - v2z * v3y;
+				let v7y = v2z * v3x - v2x * v3z;
+				let v7z = v2x * v3y - v2y * v3x;
 
-					if (textureRenderType == 0) {
-						var faceVertexIdx1 = def.faceVertexIndices1[i];
-						var faceVertexIdx2 = def.faceVertexIndices2[i];
-						var faceVertexIdx3 = def.faceVertexIndices3[i];
+				// v8 = v3 x v7
+				let v8x = v3y * v7z - v3z * v7y;
+				let v8y = v3z * v7x - v3x * v7z;
+				let v8z = v3x * v7y - v3y * v7x;
 
-						var triangleVertexIdx1 = def.textureTriangleVertexIndices1[textureCoordinate];
-						var triangleVertexIdx2 = def.textureTriangleVertexIndices2[textureCoordinate];
-						var triangleVertexIdx3 = def.textureTriangleVertexIndices3[textureCoordinate];
+				// f = 1 / (v8 ⋅ v2)
+				let f = 1.0 / (v8x * v2x + v8y * v2y + v8z * v2z);
 
-						var triangleX = def.vertexPositionsX[triangleVertexIdx1];
-						var triangleY = def.vertexPositionsY[triangleVertexIdx1];
-						var triangleZ = def.vertexPositionsZ[triangleVertexIdx1];
+				// u0 = (v8 ⋅ v4) * f
+				u0 = (v8x * v4x + v8y * v4y + v8z * v4z) * f;
+				// u1 = (v8 ⋅ v5) * f
+				u1 = (v8x * v5x + v8y * v5y + v8z * v5z) * f;
+				// u2 = (v8 ⋅ v6) * f
+				u2 = (v8x * v6x + v8y * v6y + v8z * v6z) * f;
 
-						var f_882_ = def.vertexPositionsX[triangleVertexIdx2] - triangleX;
-						var f_883_ = def.vertexPositionsY[triangleVertexIdx2] - triangleY;
-						var f_884_ = def.vertexPositionsZ[triangleVertexIdx2] - triangleZ;
-						var f_885_ = def.vertexPositionsX[triangleVertexIdx3] - triangleX;
-						var f_886_ = def.vertexPositionsY[triangleVertexIdx3] - triangleY;
-						var f_887_ = def.vertexPositionsZ[triangleVertexIdx3] - triangleZ;
-						var f_888_ = def.vertexPositionsX[faceVertexIdx1] - triangleX;
-						var f_889_ = def.vertexPositionsY[faceVertexIdx1] - triangleY;
-						var f_890_ = def.vertexPositionsZ[faceVertexIdx1] - triangleZ;
-						var f_891_ = def.vertexPositionsX[faceVertexIdx2] - triangleX;
-						var f_892_ = def.vertexPositionsY[faceVertexIdx2] - triangleY;
-						var f_893_ = def.vertexPositionsZ[faceVertexIdx2] - triangleZ;
-						var f_894_ = def.vertexPositionsX[faceVertexIdx3] - triangleX;
-						var f_895_ = def.vertexPositionsY[faceVertexIdx3] - triangleY;
-						var f_896_ = def.vertexPositionsZ[faceVertexIdx3] - triangleZ;
+				// v8 = v2 x v7
+				v8x = v2y * v7z - v2z * v7y;
+				v8y = v2z * v7x - v2x * v7z;
+				v8z = v2x * v7y - v2y * v7x;
 
-						var f_897_ = f_883_ * f_887_ - f_884_ * f_886_;
-						var f_898_ = f_884_ * f_885_ - f_882_ * f_887_;
-						var f_899_ = f_882_ * f_886_ - f_883_ * f_885_;
-						var f_900_ = f_886_ * f_899_ - f_887_ * f_898_;
-						var f_901_ = f_887_ * f_897_ - f_885_ * f_899_;
-						var f_902_ = f_885_ * f_898_ - f_886_ * f_897_;
-						var f_903_ = 1.0 / (f_900_ * f_882_ + f_901_ * f_883_ + f_902_ * f_884_);
+				// f = 1 / (v8 ⋅ v3)
+				f = 1.0 / (v8x * v3x + v8y * v3y + v8z * v3z);
 
-						u[0] = (f_900_ * f_888_ + f_901_ * f_889_ + f_902_ * f_890_) * f_903_;
-						u[1] = (f_900_ * f_891_ + f_901_ * f_892_ + f_902_ * f_893_) * f_903_;
-						u[2] = (f_900_ * f_894_ + f_901_ * f_895_ + f_902_ * f_896_) * f_903_;
-
-						f_900_ = f_883_ * f_899_ - f_884_ * f_898_;
-						f_901_ = f_884_ * f_897_ - f_882_ * f_899_;
-						f_902_ = f_882_ * f_898_ - f_883_ * f_897_;
-						f_903_ = 1.0 / (f_900_ * f_885_ + f_901_ * f_886_ + f_902_ * f_887_);
-
-						v[0] = (f_900_ * f_888_ + f_901_ * f_889_ + f_902_ * f_890_) * f_903_;
-						v[1] = (f_900_ * f_891_ + f_901_ * f_892_ + f_902_ * f_893_) * f_903_;
-						v[2] = (f_900_ * f_894_ + f_901_ * f_895_ + f_902_ * f_896_) * f_903_;
-					}
-				}
-
-				def.faceTextureUCoordinates[i] = u;
-				def.faceTextureVCoordinates[i] = v;
+				// v0 = (v8 ⋅ v4) * f
+				v0 = (v8x * v4x + v8y * v4y + v8z * v4z) * f;
+				// v1 = (v8 ⋅ v5) * f
+				v1 = (v8x * v5x + v8y * v5y + v8z * v5z) * f;
+				// v2 = (v8 ⋅ v6) * f
+				v2 = (v8x * v6x + v8y * v6y + v8z * v6z) * f;
 			}
+			else
+			{
+				// Without a texture face, the client assigns tex = triangle, but the resulting
+				// calculations can be reduced:
+				//
+				// v1 = vertex[texA]
+				// v2 = vertex[texB] - v1
+				// v3 = vertex[texC] - v1
+				//
+				// v4 = 0
+				// v5 = v2
+				// v6 = v3
+				//
+				// v7 = v2 x v3
+				//
+				// v8 = v3 x v7
+				// u0 = (v8 . v4) / (v8 . v2) // 0 because v4 is 0
+				// u1 = (v8 . v5) / (v8 . v2) // 1 because v5=v2
+				// u2 = (v8 . v6) / (v8 . v2) // 0 because v8 is perpendicular to v3/v6
+				//
+				// v8 = v2 x v7
+				// v0 = (v8 . v4) / (v8 ⋅ v3) // 0 because v4 is 0
+				// v1 = (v8 . v5) / (v8 ⋅ v3) // 0 because v8 is perpendicular to v5/v2
+				// v2 = (v8 . v6) / (v8 ⋅ v3) // 1 because v6=v3
+
+				u0 = 0;
+				v0 = 0;
+
+				u1 = 1;
+				v1 = 0;
+
+				u2 = 0;
+				v2 = 1;
+			}
+
+			def.faceTextureUCoordinates[i] = [u0, u1, u2];
+			def.faceTextureVCoordinates[i] = [v0, v1, v2];
 		}
 	}
 

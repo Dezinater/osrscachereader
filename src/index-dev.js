@@ -18,6 +18,11 @@ cache.onload.then(() => {
         console.log(npcDefs) 
     });
     */
+    cache.getFile(IndexType.MODELS.id, 9640).then(x => {
+        console.log(x.def);
+    });
+
+    /*
     cache.getAllFiles(IndexType.TEXTURES.id, 0, { loadSprites:true}).then(textures => {
         console.log(textures.map(y => y.def));
     });
@@ -32,7 +37,7 @@ cache.onload.then(() => {
             console.log('%c ', 'font-size:512px; background:url(' + dataUrl + ') no-repeat;')
         });
     });
-
+*/
     //cache.getFile(IndexType.MODELS.id, 9640).then(x => { console.log(x) });
 
     //cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => { console.log(x) });
