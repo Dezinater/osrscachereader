@@ -73,7 +73,7 @@ export default class MapLoader {
                 let localY = position & 0x3F;
                 let localX = position >> 6 & 0x3F;
                 let height = position >> 12 & 0x3;
-                let attributes = dataview.readUnsignedByte();
+                let attributes = dataview.readUint8();
                 let type = attributes >> 2;
                 let orientation = attributes & 0x3;
                 def.locations.push({ id, type, orientation, position: { localX, localY, height } });
