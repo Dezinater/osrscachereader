@@ -5,6 +5,7 @@ export class Sprite {
     pixels: any;
     createImageUrl(width: any, height: any): Promise<any>;
     createImage(width: any, height: any): Promise<any>;
+    createImageData(ctx: any): any;
 }
 export class SpriteDefinition {
 }

@@ -29,14 +29,8 @@ export class Sprite {
 
         const canvas = createCanvas(this.getWidth(), this.getHeight());
         const ctx = canvas.getContext('2d');
-        let imageData = ctx.createImageData(this.getWidth(), this.getHeight());
-        for (let i = 0; i < imageData.data.byteLength; i += 4) {
-            let pixel = this.pixels[Math.floor(i / 4)];
-            imageData.data[i + 0] = (pixel & 0x00ff0000) >> 16;
-            imageData.data[i + 1] = (pixel & 0x0000ff00) >> 8;
-            imageData.data[i + 2] = pixel & 0x000000ff;
-            imageData.data[i + 3] = 254 - ((pixel & 0xff000000) >> 24);
-        }
+
+        let imageData = this.createImageData(ctx);
         ctx.putImageData(imageData, 0, 0);
 
 
@@ -53,6 +47,24 @@ export class Sprite {
         }, reject => { })
 
         return loadPromise;
+    }
+
+    createImageData(ctx) {
+        if(ctx == undefined) {
+            const canvas = createCanvas(this.getWidth(), this.getHeight());
+            ctx = canvas.getContext('2d');
+        }
+
+        let imageData = ctx.createImageData(this.getWidth(), this.getHeight());
+        for (let i = 0; i < imageData.data.byteLength; i += 4) {
+            let pixel = this.pixels[Math.floor(i / 4)];
+            imageData.data[i + 0] = (pixel & 0x00ff0000) >> 16;
+            imageData.data[i + 1] = (pixel & 0x0000ff00) >> 8;
+            imageData.data[i + 2] = pixel & 0x000000ff;
+            imageData.data[i + 3] = 254 - ((pixel & 0xff000000) >> 24);
+        }
+
+        return imageData;
     }
 }
 export class SpriteDefinition {
