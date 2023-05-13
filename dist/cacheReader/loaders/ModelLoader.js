@@ -1171,7 +1171,6 @@ export default class ModelLoader {
         // triangleSkinValues is here
     }
     computeTextureUVCoordinates(def) {
-        console.log(def);
         def.faceTextureUCoordinates = new Array(def.faceCount).fill([0, 0, 0]);
         def.faceTextureVCoordinates = new Array(def.faceCount).fill([0, 0, 0]);
         if (def.faceTextures == null) {
