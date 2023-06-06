@@ -7,9 +7,8 @@ var cache = new RSCache("cache", (x) => { console.log(x); }, "./");
 cache.onload.then(() => {
     console.log(cache);
     //cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(x => { console.log(x) });
-    cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.NPC.id).then(files => {
-        let npcDefs = files.map(x => x.def).filter(x => x.varbitId != undefined);
-        console.log(npcDefs);
+    cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.ITEM.id).then(files => {
+        console.log(files);
     });
     /*
     cache.getAllFiles(IndexType.TEXTURES.id, 0, { loadSprites:true}).then(textures => {

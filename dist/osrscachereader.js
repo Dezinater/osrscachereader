@@ -9117,8 +9117,9 @@ class ArchiveData {
 		for (let i = 0; i < chunks; i++) {
 			let chunkSize = 0;
 			for (let id = 0; id < this.files.length; id++) {
+				console.log(id)
 				//magic number - only needed sometimes. really must be some type of js issue
-				if (streamPosition == 981413) {
+				if (streamPosition == 1205866) {
 					if (data[streamPosition] == 0) data[streamPosition] = 255;
 				}
 
