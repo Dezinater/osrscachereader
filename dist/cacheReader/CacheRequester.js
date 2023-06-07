@@ -1,8 +1,18 @@
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 import * as gzip from 'gzip-js';
 import * as Ajax from './helpers/ajax.js';
 import Worker from "web-worker";
 import IndexType from './cacheTypes/IndexType.js';
 import bz2Decompress from "bz2";
+import Bzip2 from "@foxglove/wasm-bz2";
 export default class CacheRequester {
     constructor(datFile) {
         this.promises = {};
@@ -72,6 +82,8 @@ export default class CacheRequester {
         return readPromise;
     }
     readData(index, size, segment, archiveId = 0, keys) {
+        if (size == 373024)
+            debugger;
         /*
         this.worker.onmessage = function(event) {
             //event.data.decompressedData
@@ -84,7 +96,7 @@ export default class CacheRequester {
                 key = this.xteas[archiveId].key;
             }
         }
-        return Promise.resolve().then(() => {
+        return Promise.resolve().then(() => __awaiter(this, void 0, void 0, function* () {
             var compressedData = new Uint8Array(size);
             this.readSector(compressedData, segment, archiveId);
             let dataview = new DataView(compressedData.buffer);
@@ -100,6 +112,7 @@ export default class CacheRequester {
                 index.revision = dataview.getUint16(data.buffer.byteLength);
             }
             else if (compressionOpcode == 1) { //bz2
+                let decompressedLength = dataview.getInt32(5);
                 data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
                 this.decrypt(data, compressedLength, key);
                 var header = "BZh1";
@@ -115,6 +128,8 @@ export default class CacheRequester {
                 else {
                     decompressedData = bz2.decompress(bzData);
                 }
+                const bzip2 = yield Bzip2.init();
+                decompressedData = bzip2.decompress(bzData, decompressedLength, { small: false });
             }
             else if (compressionOpcode == 2) { //gzip
                 //console.log(compressedData);
@@ -145,7 +160,7 @@ export default class CacheRequester {
                 decompressedData = new Uint8Array(unzipped);
             }
             return { index, archiveId, decompressedData };
-        });
+        }));
     }
     readSector(buffer, pos, archiveId) {
         var convertedPos = pos * 520;
