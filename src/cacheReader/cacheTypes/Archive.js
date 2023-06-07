@@ -30,12 +30,7 @@ export default class ArchiveData {
 		for (let i = 0; i < chunks; i++) {
 			let chunkSize = 0;
 			for (let id = 0; id < this.files.length; id++) {
-				//magic number - only needed sometimes. really must be some type of js issue
-				if (streamPosition == 1205866) {
-					if (data[streamPosition] == 0) data[streamPosition] = 255;
-				}
-
-				//console.log(data[streamPosition], data[streamPosition + 1], data[streamPosition + 2], data[streamPosition + 3]);
+				//rip magic number
 
 				let delta = dataview.getInt32(streamPosition);
 				chunkSize += delta;

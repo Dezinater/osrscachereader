@@ -4,6 +4,7 @@ import Worker from "web-worker"
 import IndexType from './cacheTypes/IndexType.js'
 
 import bz2Decompress from "bz2";
+import Bzip2 from "@foxglove/wasm-bz2";
 
 export default class CacheRequester {
 	constructor(datFile) {
@@ -88,6 +89,8 @@ export default class CacheRequester {
 	}
 
 	readData(index, size, segment, archiveId = 0, keys) {
+		if (size == 373024)
+			debugger;
 		/*
 		this.worker.onmessage = function(event) {
 			//event.data.decompressedData
@@ -101,7 +104,7 @@ export default class CacheRequester {
 			}
 		}
 
-		return Promise.resolve().then(() => {
+		return Promise.resolve().then(async () => {
 			var compressedData = new Uint8Array(size);
 			this.readSector(compressedData, segment, archiveId);
 
@@ -118,6 +121,7 @@ export default class CacheRequester {
 				decompressedData = data;
 				index.revision = dataview.getUint16(data.buffer.byteLength)
 			} else if (compressionOpcode == 1) { //bz2
+				let decompressedLength = dataview.getInt32(5);
 				data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
 				this.decrypt(data, compressedLength, key);
 				var header = "BZh1";
@@ -133,6 +137,10 @@ export default class CacheRequester {
 				} else {
 					decompressedData = bz2.decompress(bzData);
 				}
+
+				const bzip2 = await Bzip2.init();
+				decompressedData = bzip2.decompress(bzData, decompressedLength, { small: false });
+
 			} else if (compressionOpcode == 2) { //gzip
 				//console.log(compressedData);
 				//console.log(compressedLength);

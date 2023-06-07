@@ -19,6 +19,11 @@ module.exports = {
             ".js": [".js", ".ts"],
             ".cjs": [".cjs", ".cts"],
             ".mjs": [".mjs", ".mts"]
+        },
+        fallback: {
+            crypto: false,
+            fs: false,
+            path: false
         }
     },
     module: {
@@ -38,6 +43,10 @@ module.exports = {
                         inline: "fallback"
                     }
                 },
+            },
+            {
+                test: /\.wasm$/,
+                type: "asset/inline",
             },
         ],
     },
