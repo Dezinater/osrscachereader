@@ -89,8 +89,6 @@ export default class CacheRequester {
 	}
 
 	readData(index, size, segment, archiveId = 0, keys) {
-		if (size == 373024)
-			debugger;
 		/*
 		this.worker.onmessage = function(event) {
 			//event.data.decompressedData
@@ -137,8 +135,8 @@ export default class CacheRequester {
 				} else {
 					decompressedData = bz2.decompress(bzData);
 				}
-
-				const bzip2 = await Bzip2.init();
+				
+				const bzip2 = await Bzip2.default.init();
 				decompressedData = bzip2.decompress(bzData, decompressedLength, { small: false });
 
 			} else if (compressionOpcode == 2) { //gzip
