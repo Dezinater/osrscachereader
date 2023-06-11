@@ -7,17 +7,17 @@ import fs from "fs";
 
 export default class CacheDumper {
 
-    private ignoreList = ["FRAMES", "FRAMEMAPS", "MAPS", "MODELS"];
+    ignoreList = ["FRAMES", "FRAMEMAPS", "MAPS", "MODELS"];
 
-    private cache: RSCache;
-    private outFolder: string;
-    private progressFunction: Function;
+    cache;
+    outFolder;
+    progressFunction;
 
-    private completedJobs = 0;
-    private failedJobs = 0;
-    private totalJobs = 0;
+    completedJobs = 0;
+    failedJobs = 0;
+    totalJobs = 0;
 
-    constructor(rscache, outFolder: string, progressFunction: Function = () => { }) {
+    constructor(rscache, outFolder, progressFunction = () => { }) {
         if (isBrowser) {
             console.error("Run with Node to dump Cache files, web browser dumping currently not implemented");
             return;
@@ -68,7 +68,7 @@ export default class CacheDumper {
         }
     }
 
-    updateProgress(jobSuccess: boolean) {
+    updateProgress(jobSuccess) {
         if (jobSuccess) {
             this.completedJobs++;
         } else {

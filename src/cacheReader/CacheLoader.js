@@ -2,30 +2,19 @@ import { isBrowser } from "browser-or-node";
 import axios from 'axios';
 import * as fs from "fs";
 
-interface Promises {
-    datFile;
-    indexFiles: Array<Promise<Uint8Array>>;
-    xteas;
-}
-
-interface LoadedFiles {
-    datFile: Uint8Array;
-    indexFiles: Array<Uint8Array>;
-    xteas;
-}
 
 export default class CacheLoader {
 
-    private onDownloadProgress;
-    private datFile = "main_file_cache.dat2";
-    private indexFiles = new Array(22).fill(0).map((_, i) => "main_file_cache.idx" + i).concat("main_file_cache.idx255");
-    private promises: Promises = {
+    onDownloadProgress;
+    datFile = "main_file_cache.dat2";
+    indexFiles = new Array(22).fill(0).map((_, i) => "main_file_cache.idx" + i).concat("main_file_cache.idx255");
+    promises = {
         datFile: undefined,
         indexFiles: new Array(),
         xteas: undefined,
     };
 
-    constructor(path: string, onDownloadProgress) {
+    constructor(path, onDownloadProgress) {
         this.onDownloadProgress = onDownloadProgress;
 
         if (this.isValidHttpUrl(path) || isBrowser) {
@@ -41,7 +30,7 @@ export default class CacheLoader {
             const datPromiseResults = await this.promises.datFile;
             const indexPromiseResults = await Promise.all(this.promises.indexFiles);
             const xteasResults = await this.promises.xteas;
-            const result: LoadedFiles = {
+            const result = {
                 datFile: datPromiseResults,
                 indexFiles: indexPromiseResults,
                 xteas: xteasResults,
@@ -60,7 +49,7 @@ export default class CacheLoader {
         return url.protocol === "http:" || url.protocol === "https:";
     }
 
-    fetchURL(url: string) {
+    fetchURL(url) {
         if (url.endsWith(".zip")) {
             console.log("decompress zip file " + url);
             return;
@@ -77,17 +66,17 @@ export default class CacheLoader {
         this.promises.xteas = axios.get(url + "xteas.json", { responseType: 'json', }).then(x => this.readXteas(x.data)).catch(e => { });
     }
 
-    loadFile(path: string) {
+    loadFile(path) {
         if (!path.endsWith("/")) {
             path += "/";
         }
 
         this.promises.datFile = new Promise((resolve, reject) => fs.readFile(path + this.datFile, (err, data) => {
             if (err) throw err;
-            resolve(data as Uint8Array)
+            resolve(data)
         }));
         this.indexFiles.forEach(async indexFile => {
-            let newPromise: Promise<Uint8Array> = new Promise(resolve => fs.readFile(path + indexFile, (err, data) => resolve(data as Uint8Array)));
+            let newPromise = new Promise(resolve => fs.readFile(path + indexFile, (err, data) => resolve(data)));
             this.promises.indexFiles.push(newPromise);
         });
 

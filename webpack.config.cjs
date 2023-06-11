@@ -14,12 +14,6 @@ module.exports = {
         minimize: false
     },
     resolve: {
-        extensions: ['.tsx', '.ts', '.js'],
-        alias: {
-            ".js": [".js", ".ts"],
-            ".cjs": [".cjs", ".cts"],
-            ".mjs": [".mjs", ".mts"]
-        },
         fallback: {
             crypto: false,
             fs: false,
@@ -28,11 +22,6 @@ module.exports = {
     },
     module: {
         rules: [
-            {
-                test: /\.([cm]?ts|tsx)$/,
-                use: 'ts-loader',
-                exclude: /node_modules/,
-            },
             {
                 test: /\.worker\.js$/,
                 use: {
