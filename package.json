@@ -1,12 +1,12 @@
 {
   "name": "osrscachereader",
-  "exports": "./dist/index.js",
+  "exports": "./src/index.js",
   "version": "1.0.0",
   "description": "Read Old-School Runescape Cache files using Javascript",
   "main": "./src/index",
   "type": "module",
   "files": [
-    "dist"
+    "src"
   ],
   "directories": {
     "lib": "./src",
