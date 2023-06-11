@@ -3,7 +3,7 @@
   "exports": "./dist/index.js",
   "version": "1.0.0",
   "description": "Read Old-School Runescape Cache files using Javascript",
-  "main": "./dist/index",
+  "main": "./src/index",
   "type": "module",
   "files": [
     "dist"
