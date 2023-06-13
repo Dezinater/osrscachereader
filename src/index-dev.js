@@ -10,82 +10,211 @@ export { RSCache, IndexType, ConfigType, Matrix };
 
 
 
-var cache = new RSCache("cache", (x) => { console.log(x) }, "./");
+let cache = new RSCache("cache", (x) => { console.log(x) }, "./");
 cache.onload.then(() => {
 
     console.log(cache);
-    //cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(x => { console.log(x) });
+    cache.getFile(IndexType.CONFIGS.id, ConfigType.ITEM.id, 2042).then(x => { console.log(x) });
 
-    cache.getAllFiles(IndexType.MODELS.id, 14408).then(([{ def }]) => {
-        console.log(def);
-        //let indicesBytes2 = new Uint8Array([0, 0, 1, 0, 2, 0]);
-        //let verticies = new Uint8Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0]);
-        //
-        let indicesBytes2 = new Uint8Array(new Uint16Array([0, 1, 2]).buffer)
-        let verticiesBytes2 = new Uint8Array(new Float32Array([0, 0, 0, 1, 0, 0, 0, 1, 0]).buffer)
+    cache.getAllFiles(IndexType.MODELS.id, 14408).then(async ([{ def }]) => {
+        let animation = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 5070);
+        let shiftedId = (animation.def.frameIDs[0] >> 16);
+        let frames = await loadSkeletonAnims(def, shiftedId);
 
-        let verticies = [];
-        let max = [0,0,0];
-        let min = [0,0,0];
-        for (let i = 0; i < def.vertexPositionsX.length; i++) {
-            max = [Math.max(max[0], def.vertexPositionsX[i]), Math.max(max[1], -def.vertexPositionsY[i]), Math.max(max[2], -def.vertexPositionsZ[i])];
-            min = [Math.min(min[0], def.vertexPositionsX[i]), Math.min(min[1], -def.vertexPositionsY[i]), Math.min(min[2], -def.vertexPositionsZ[i])];
-            verticies.push([def.vertexPositionsX[i], -def.vertexPositionsY[i], -def.vertexPositionsZ[i]]);
-        }
-
-        console.log(max, min);
-        let indices = [];
-        for (let i = 0; i < def.faceVertexIndices1.length; i++) {
-            indices.push([def.faceVertexIndices1[i], def.faceVertexIndices2[i], def.faceVertexIndices3[i]]);
-        }
-        console.log(verticies.flat(), indices.flat())
-        let indicesBytes = new Uint8Array(new Uint16Array(indices.flat()).buffer)
-        let verticiesBytes = new Uint8Array(new Float32Array(verticies.flat()).buffer)
-        //console.log(indices, verticies, indicesBytes, verticiesBytes)
-
-        let gltfExporter = new GLTFExporter();
-        let gltfFile = gltfExporter.export(indicesBytes, verticiesBytes, max, min);
+        let gltfExporter = new GLTFExporter(def);
+        frames.forEach(frame => gltfExporter.addMorphTarget(frame.vertices));
+        let gltfFile = gltfExporter.export();
 
         let objExporter = new OBJExporter();
-        let objFile = objExporter.export(indices, verticies);
+        let objFile = objExporter.export(def);
 
         console.log(gltfFile)
     });
 
-
-    /*
-    cache.getAllFiles(IndexType.TEXTURES.id, 0, { loadSprites:true}).then(textures => {
-        console.log(textures.map(y => y.def));
-    });
-
-    cache.getAllFiles(IndexType.TEXTURES.id, 0).then(async textures => {
-        let animatedTextures = textures.map(y => y.def).filter(y => y.animationSpeed > 0)
-        let spriteFiles = await Promise.all(animatedTextures.map(x => cache.getFile(IndexType.SPRITES.id, x.fileIds[0])));
-        let sprites = spriteFiles.map(x => x.def);
-        console.log(animatedTextures, sprites);
-        sprites.forEach(async sprite => {
-            let dataUrl = await sprite.sprites[0].createImageUrl(256, 256);
-            console.log('%c ', 'font-size:512px; background:url(' + dataUrl + ') no-repeat;')
-        });
-    });
-*/
-    //cache.getFile(IndexType.MODELS.id, 9640).then(x => { console.log(x) });
-
-    //cache.getFile(IndexType.CONFIGS.id, ConfigType.UNDERLAY.id).then(x => { console.log(x) });
-    //cache.getFile(IndexType.CONFIGS.id, ConfigType.OVERLAY.id).then(x => { console.log(x) });
-    //console.log(Object.values(cache.cacheRequester.xteas).filter(x => x.name.includes("50_50")));
-    /*
-    for (let i = 0; i < cache.indicies[5].archivesCount; i++) {
-        cache.getFile(IndexType.MAPS.id, i).then(x => {
-            //console.log(x);
-            //if (x.def == undefined) console.log(i, x);
-            if (x.def.regionX == 50 && x.def.regionY == 53) console.log(x);
-        }).catch(x => {});
-    }
-    */
 });
 
 //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
 
 
 
+async function loadSkeletonAnims(model, id) {
+    let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, id)).map(x => x.def);
+    let loadedAnims = frameDefs.map(frameDef => loadFrame(model, frameDef));
+
+    return loadedAnims;
+}
+
+function loadFrame(model, frame) {
+    let verticesX = [...model.vertexPositionsX];
+    let verticesY = [...model.vertexPositionsY];
+    let verticesZ = [...model.vertexPositionsZ];
+    let framemap = frame.framemap;
+    let animOffsets = {
+        x: 0,
+        y: 0,
+        z: 0,
+    };
+
+    for (let j = 0; j < frame.translator_x.length; ++j) {
+        let type = frame.indexFrameIds[j];
+        let fmType = framemap.types[type];
+        let fm = framemap.frameMaps[type];
+        let dx = frame.translator_x[j];
+        let dy = frame.translator_y[j];
+        let dz = frame.translator_z[j];
+
+        animate(model.vertexGroups, verticesX, verticesY, verticesZ, fmType, fm, dx, dy, dz, animOffsets);
+    }
+
+    frame.vertices = [];
+    for(let i=0;i<verticesX.length;i++) {
+        frame.vertices.push([verticesX[i], -verticesY[i], -verticesZ[i]]);
+    }
+
+    return frame;
+}
+
+function animate(vertexGroups, verticesX, verticesY, verticesZ, type, frameMap, dx, dy, dz, animOffsets) {
+    let var6 = frameMap.length;
+    let var7;
+    let var8;
+    let var11;
+    let var12;
+
+    if (type == 0) //change rotation origin
+    {
+        var7 = 0;
+        animOffsets.x = 0;
+        animOffsets.y = 0;
+        animOffsets.z = 0;
+
+        for (var8 = 0; var8 < frameMap.length; ++var8) {
+            let boneGroup = frameMap[var8];
+            if (boneGroup < vertexGroups.length) {
+                let bones = vertexGroups[boneGroup];
+
+                for (var11 = 0; var11 < bones.length; ++var11) {
+                    var12 = bones[var11];
+                    animOffsets.x += verticesX[var12];
+                    animOffsets.y += verticesY[var12];
+                    animOffsets.z += verticesZ[var12];
+                    ++var7;
+                }
+            }
+        }
+
+        if (var7 > 0) {
+            animOffsets.x = dx + animOffsets.x / var7;
+            animOffsets.y = dy + animOffsets.y / var7;
+            animOffsets.z = dz + animOffsets.z / var7;
+        }
+        else {
+            animOffsets.x = dx;
+            animOffsets.y = dy;
+            animOffsets.z = dz;
+        }
+
+    }
+    else {
+        let var18;
+        let var19;
+        if (type == 1) //translation
+        {
+            for (var7 = 0; var7 < frameMap.length; ++var7) {
+                var8 = frameMap[var7];
+                if (var8 < vertexGroups.length) {
+                    var18 = vertexGroups[var8];
+
+                    for (var19 = 0; var19 < var18.length; ++var19) {
+                        var11 = var18[var19];
+                        verticesX[var11] += dx;
+                        verticesY[var11] += dy;
+                        verticesZ[var11] += dz;
+                    }
+                }
+            }
+
+        }
+        else if (type == 2) //rotation
+        {
+
+            for (var7 = 0; var7 < frameMap.length; ++var7) {
+                var8 = frameMap[var7];
+                if (var8 < vertexGroups.length) {
+                    var18 = vertexGroups[var8];
+
+                    for (var19 = 0; var19 < var18.length; ++var19) {
+                        var11 = var18[var19];
+                        verticesX[var11] -= animOffsets.x;
+                        verticesY[var11] -= animOffsets.y;
+                        verticesZ[var11] -= animOffsets.z;
+                        var12 = (dx & 255) * 8;
+                        let var13 = (dy & 255) * 8;
+                        let var14 = (dz & 255) * 8;
+                        let var15;
+                        let var16;
+                        let var17;
+                        if (var14 != 0) {
+                            var15 = Math.floor(65536 * Math.sin(var14 * Math.PI / 1024));
+                            var16 = Math.floor(65536 * Math.cos(var14 * Math.PI / 1024));
+                            var17 = var15 * verticesY[var11] + var16 * verticesX[var11] >> 16;
+                            verticesY[var11] = var16 * verticesY[var11] - var15 * verticesX[var11] >> 16;
+                            verticesX[var11] = var17;
+
+                        }
+
+                        if (var12 != 0) {
+                            var15 = Math.floor(65536 * Math.sin(var12 * Math.PI / 1024));
+                            var16 = Math.floor(65536 * Math.cos(var12 * Math.PI / 1024));
+                            var17 = var16 * verticesY[var11] - var15 * verticesZ[var11] >> 16;
+                            verticesZ[var11] = var15 * verticesY[var11] + var16 * verticesZ[var11] >> 16;
+                            verticesY[var11] = var17;
+                        }
+
+                        if (var13 != 0) {
+                            var15 = Math.floor(65536 * Math.sin(var13 * Math.PI / 1024));
+                            var16 = Math.floor(65536 * Math.cos(var13 * Math.PI / 1024));
+                            var17 = var15 * verticesZ[var11] + var16 * verticesX[var11] >> 16;
+                            verticesZ[var11] = var16 * verticesZ[var11] - var15 * verticesX[var11] >> 16;
+                            verticesX[var11] = var17;
+                        }
+
+
+                        verticesX[var11] += animOffsets.x;
+                        verticesY[var11] += animOffsets.y;
+                        verticesZ[var11] += animOffsets.z;
+                    }
+                }
+            }
+
+        }
+        else if (type == 3) //scaling
+        {
+            for (var7 = 0; var7 < frameMap.length; ++var7) {
+                var8 = frameMap[var7];
+                if (var8 < vertexGroups.length) {
+                    var18 = vertexGroups[var8];
+
+                    for (var19 = 0; var19 < var18.length; ++var19) {
+                        var11 = var18[var19];
+                        verticesX[var11] -= animOffsets.x;
+                        verticesY[var11] -= animOffsets.y;
+                        verticesZ[var11] -= animOffsets.z;
+                        verticesX[var11] = dx * verticesX[var11] / 128;
+                        verticesY[var11] = dy * verticesY[var11] / 128;
+                        verticesZ[var11] = dz * verticesZ[var11] / 128;
+                        verticesX[var11] += animOffsets.x;
+                        verticesY[var11] += animOffsets.y;
+                        verticesZ[var11] += animOffsets.z;
+                    }
+                }
+            }
+
+
+        }
+        else if (type == 5) {
+
+        }
+    }
+
+}
