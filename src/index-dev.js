@@ -6,23 +6,30 @@ import Matrix from './cacheReader/cacheTypes/anim/MatrixTest.js';
 import GLTFExporter from './cacheReader/exporters/GLTFExporter.js';
 import OBJExporter from './cacheReader/exporters/OBJExporter.js';
 
+import * as base64 from "./cacheReader/helpers/base64.js"
+
 export { RSCache, IndexType, ConfigType, Matrix };
 
 
 
 let cache = new RSCache("cache", (x) => { console.log(x) }, "./");
 cache.onload.then(() => {
-
-    console.log(cache);
+    let float = new Float32Array(base64.base64ToBytes("AAAAAAAAgD8AAABAAABAQAAAgEAAAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAA").buffer);
+    float[4] = 40;
+    console.log(cache, float);
+    console.log(base64.bytesToBase64(new Uint8Array(float.buffer)));
     cache.getFile(IndexType.CONFIGS.id, ConfigType.ITEM.id, 2042).then(x => { console.log(x) });
 
     cache.getAllFiles(IndexType.MODELS.id, 14408).then(async ([{ def }]) => {
         let animation = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 5070);
+        let animation2 = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 5071);
         let shiftedId = (animation.def.frameIDs[0] >> 16);
         let frames = await loadSkeletonAnims(def, shiftedId);
 
         let gltfExporter = new GLTFExporter(def);
         frames.forEach(frame => gltfExporter.addMorphTarget(frame.vertices));
+        gltfExporter.addAnimation(animation2.def);
+        gltfExporter.addAnimation(animation.def);
         let gltfFile = gltfExporter.export();
 
         let objExporter = new OBJExporter();
@@ -67,7 +74,7 @@ function loadFrame(model, frame) {
     }
 
     frame.vertices = [];
-    for(let i=0;i<verticesX.length;i++) {
+    for (let i = 0; i < verticesX.length; i++) {
         frame.vertices.push([verticesX[i], -verticesY[i], -verticesZ[i]]);
     }
 
