@@ -130,12 +130,13 @@ export default class CacheRequester {
 				bzData[3] = '1'.charCodeAt(0);
 				bzData.set(data, 4)
 
+				/*
 				if (bz2Decompress != undefined && bz2Decompress.decompress != undefined) {
 					decompressedData = bz2Decompress.decompress(bzData);
 				} else {
 					decompressedData = bz2.decompress(bzData);
 				}
-				
+				*/
 				const bzip2 = await Bzip2.default.init();
 				decompressedData = bzip2.decompress(bzData, decompressedLength, { small: false });
 

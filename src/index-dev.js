@@ -14,10 +14,14 @@ export { RSCache, IndexType, ConfigType, Matrix };
 
 let cache = new RSCache("cache", (x) => { console.log(x) }, "./");
 cache.onload.then(() => {
-    let float = new Float32Array(base64.base64ToBytes("AAAAAAAAgD8AAABAAABAQAAAgEAAAAAAAAAAAAAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAA").buffer);
-    float[4] = 40;
-    console.log(cache, float);
-    console.log(base64.bytesToBase64(new Uint8Array(float.buffer)));
+    /*
+    let bytes = base64.base64ToBytes("AAABAAIAAQADAAIAAAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPwAAAAAAAAAA").slice(12, 12+96);
+    let vecs = new Float32Array(bytes.slice(0,48).buffer);
+    let uvs = new Float32Array(bytes.slice(48, bytes.length).buffer);
+    console.log(new Float32Array(bytes.buffer));
+    //console.log(bytes,vecs, uvs);
+    //console.log(base64.bytesToBase64(new Uint8Array(float.buffer)));
+    */
     cache.getFile(IndexType.CONFIGS.id, ConfigType.ITEM.id, 2042).then(x => { console.log(x) });
 
     cache.getAllFiles(IndexType.MODELS.id, 14408).then(async ([{ def }]) => {
@@ -27,17 +31,18 @@ cache.onload.then(() => {
         let frames = await loadSkeletonAnims(def, shiftedId);
 
         let gltfExporter = new GLTFExporter(def);
-        frames.forEach(frame => gltfExporter.addMorphTarget(frame.vertices));
-        gltfExporter.addAnimation(animation2.def);
-        gltfExporter.addAnimation(animation.def);
+        gltfExporter.addColors(def);
+        //frames.forEach(frame => gltfExporter.addMorphTarget(frame.vertices));
+        //gltfExporter.addAnimation(animation2.def);
+        //gltfExporter.addAnimation(animation.def);
         let gltfFile = gltfExporter.export();
 
-        let objExporter = new OBJExporter();
-        let objFile = objExporter.export(def);
+        //let objExporter = new OBJExporter();
+        //let objFile = objExporter.export(def);
 
         console.log(gltfFile)
+        
     });
-
 });
 
 //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));

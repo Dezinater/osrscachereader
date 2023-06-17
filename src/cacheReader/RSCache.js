@@ -10,7 +10,6 @@ import CacheLoader from './CacheLoader.js'
 
 export default class RSCache {
 	constructor(cacheRootDir = "./", progressFunc = () => { }, nameRootDir = undefined) {
-
 		this.indicies = {};
 		this.progressFunc = progressFunc;
 
