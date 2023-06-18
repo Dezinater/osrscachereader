@@ -1,12 +1,11 @@
-let gzip = require('gzip-js');
-//import * as bz2 from 'bz2';
-let bz2 = require('bz2');
+import * as gzip from 'gzip-js'
+import Bzip2 from "@foxglove/wasm-bz2";
 
-onmessage = function (e) {
+onmessage = async function (e) {
     //let workerResult = 'Result: ' + (e.data[0]);
     //console.log(e);
     //postMessage(workerResult);
-    
+
     let index = e.data.index;
     let segment = e.data.segment;
     let archiveId = e.data.archiveId;
@@ -32,14 +31,42 @@ onmessage = function (e) {
         bzData[2] = 'h'.charCodeAt(0);
         bzData[3] = '1'.charCodeAt(0);
         bzData.set(data, 4)
-        decompressedData = bz2.decompress(bzData);
+
+        const bzip2 = await Bzip2.default.init();
+        decompressedData = bzip2.decompress(bzData, decompressedLength, { small: false });
+
     } else if (compressionOpcode == 2) { //gzip
-        data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
-        decompressedData = new Uint8Array(gzip.unzip(data));
+        let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
+        data = this.decrypt(unencryptedData, unencryptedData.length, key);
+        let leftOver = unencryptedData.slice(data.length);
+
+        var mergedArray = new Uint8Array(data.length + leftOver.length);
+        mergedArray.set(data);
+        mergedArray.set(leftOver, data.length);
+
+        //console.log(data);
+        //console.log(leftOver);
+        //console.log(mergedArray);
+        //add the end of the compressed data onto the decrypted?
+        let decryptedDataview = new DataView(mergedArray.buffer);
+
+        data = new Uint8Array(decryptedDataview.buffer.slice(4))
+        //console.log(new Uint8Array(dataview.buffer)+"");
+        let unzipped;
+
+        try {
+            //console.log("unzipping");
+            unzipped = gzip.unzip(data);
+            //console.log("unzipped");
+        } catch {
+            throw "Could not unzip with key:" + key;
+        }
+
+        decompressedData = new Uint8Array(unzipped);
     }
 
     let length = decompressedData.byteLength;
-    postMessage({index, archiveId, decompressedData: decompressedData.buffer.slice(0,length)}, [decompressedData.buffer.slice(0,length)]);
+    postMessage({ index, archiveId, decompressedData: decompressedData.buffer.slice(0, length) }, [decompressedData.buffer.slice(0, length)]);
     decompressedData = [];
     compressedData = [];
     data = [];
