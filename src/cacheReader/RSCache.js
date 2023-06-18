@@ -102,32 +102,6 @@ export default class RSCache {
 	}
 
 	loadCacheFiles(indexFiles, xteas, namesRootDir) {
-
-		//this is basically relying on loading faster than the other stuff. probably should merge this with something
-		/*
-		if (namesRootDir != undefined) {
-			Ajax.getFile(namesRootDir + "names.tsv").then((nameData) => {
-				let splitNameData = nameData.split("\n");
-				for (let i = 0; i < splitNameData.length; i++) {
-					let tabSplit = splitNameData[i].split("\t");
-					nameHashLookup[tabSplit[3]] = tabSplit[4]; //3 = hash, 4 = name
-				}
-			});
-		}
-		*/
-		/*
-				if (xteasDir != undefined) {
-					Ajax.getFile(xteasDir + "xteas.json").then((xteasData) => {
-						let xteas = JSON.parse(xteasData);
-						this.xteas = {};
-						for (var i = 0; i < xteas.length; i++) {
-							this.xteas[xteas[i].group] = xteas[i];
-						}
-		
-					});
-				}
-		*/
-		//console.log(indexFiles);
 		let idx255Data = indexFiles[indexFiles.length - 1];
 		let idxFileData = indexFiles.slice(0, indexFiles.length - 1);
 
@@ -140,6 +114,7 @@ export default class RSCache {
 				dataview = new DataView(idx255Data.buffer);
 				i = 255;
 			} else {
+				if(idxFileData[i] == undefined) continue;
 				dataview = new DataView(idxFileData[i].buffer);
 			}
 			this.indicies[i] = new Index(i);
@@ -168,6 +143,7 @@ export default class RSCache {
 			let size = dataview.readUint24();
 			let segment = dataview.readUint24();
 			let index = this.indicies[j / 6];
+			if(index == undefined) continue;
 			let data = this.cacheRequester.readData(index, size, segment);
 			//since this is async now the onload is considered complete before its completed
 			//this call is completed before loadIndexData is completed

@@ -61,7 +61,8 @@ export default class CacheLoader {
 
         this.promises.datFile = axios.get(url + this.datFile, { onDownloadProgress: this.onDownloadProgress, responseType: 'arraybuffer', }).then(x => new Uint8Array(x.data));
         this.indexFiles.forEach(indexFile => {
-            this.promises.indexFiles.push(axios.get(url + indexFile, { responseType: 'arraybuffer' }).then(x => new Uint8Array(x.data)));
+            let indexPromise = axios.get(url + indexFile, { responseType: 'arraybuffer' }).then(x => new Uint8Array(x.data)).catch(_ => {});
+            this.promises.indexFiles.push(indexPromise);
         });
         this.promises.xteas = axios.get(url + "xteas.json", { responseType: 'json', }).then(x => this.readXteas(x.data)).catch(e => { });
     }
