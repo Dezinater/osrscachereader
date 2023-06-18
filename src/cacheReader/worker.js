@@ -25,7 +25,7 @@ onmessage = async function (e) {
     } else if (compressionOpcode == 1) { //bz2
         let decompressedLength = dataview.getInt32(5);
         data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
-        this.decrypt(data, compressedLength, e?.key);
+        this.decrypt(data, compressedLength, e?.key); 
         let bzData = new Uint8Array(4 + data.length);
         bzData[0] = 'B'.charCodeAt(0);
         bzData[1] = 'Z'.charCodeAt(0);
