@@ -50,7 +50,14 @@ export default class CacheRequester {
 		this.xteas = xteas;
 	}
 
-	readDataThreaded(index, size, segment, archiveId = 0) {
+	readDataThreaded(index, size, segment, archiveId = 0, keys) {
+		let key;
+		if (index.id == IndexType.MAPS.id && this.xteas != undefined) {
+			if (this.xteas[archiveId] != undefined) {//if its not a mapdef then it will have a key
+				key = this.xteas[archiveId].key;
+			}
+		}
+
 		var promiseResolve;
 		var readPromise = new Promise((resolve, reject) => { promiseResolve = resolve; });
 
@@ -67,7 +74,7 @@ export default class CacheRequester {
 			//console.log(compressedData);
 			var localWorker = new Worker(new URL('./worker.js', import.meta.url));
 
-			localWorker.postMessage({ index, segment, archiveId, compressedData }, [compressedData]);
+			localWorker.postMessage({ index, segment, archiveId, compressedData, key }, [compressedData]);
 			//console.log(compressedData);
 			localWorker.onmessage = (event) => {
 				event.data.decompressedData = new Uint8Array(event.data.decompressedData);

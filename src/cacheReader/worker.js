@@ -37,7 +37,7 @@ onmessage = async function (e) {
 
     } else if (compressionOpcode == 2) { //gzip
         let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
-        data = this.decrypt(unencryptedData, unencryptedData.length, key);
+        data = this.decrypt(unencryptedData, unencryptedData.length, e.key);
         let leftOver = unencryptedData.slice(data.length);
 
         var mergedArray = new Uint8Array(data.length + leftOver.length);
@@ -59,7 +59,7 @@ onmessage = async function (e) {
             unzipped = gzip.unzip(data);
             //console.log("unzipped");
         } catch {
-            throw "Could not unzip with key:" + key;
+            throw "Could not unzip with key:" + e.key;
         }
 
         decompressedData = new Uint8Array(unzipped);
