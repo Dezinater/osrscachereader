@@ -25,7 +25,7 @@ class GLTFFile {
     images = [];
     samplers = [];
     materials = [];
-    //animations = [];
+    animations = [];
 
     buffers = [];
     bufferViews = [];
@@ -113,28 +113,28 @@ class GLTFFile {
             this.meshes[0].weights = [];
         }
 
-        const morphTargetsAmount = this.meshes[0].primitives[0].targets.length;
+        let buffersAmount = this.buffers.length;
 
         if (this.meshes[0].weights.length == 0) {
             this.meshes[0].weights.push(1);
         } else {
             this.meshes[0].weights.push(0);
         }
-        this.meshes[0].primitives[0].targets.push({ "POSITION": morphTargetsAmount + 2 });
+        this.meshes[0].primitives[0].targets.push({ "POSITION": buffersAmount });
 
         this.buffers.push({
             uri: "data:application/octet-stream;base64," + base64.bytesToBase64(verticiesBytes),
             byteLength: verticiesBytes.length,
         });
         this.bufferViews.push({
-            buffer: morphTargetsAmount + 2,
+            buffer: buffersAmount,
             byteOffset: 0,
             byteLength: verticiesBytes.length,
             target: 34962
         });
 
         this.accessors.push({
-            bufferView: morphTargetsAmount + 2,
+            bufferView: buffersAmount,
             byteOffset: 0,
             componentType: 5126,
             count: verticies.length,

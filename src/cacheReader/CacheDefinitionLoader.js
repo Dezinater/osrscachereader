@@ -30,6 +30,7 @@ export default class CacheDefinitionLoader {
 			let newFiles = [];
 			//console.log(this.files.length);
 			for (var i = 0; i < this.archive.files.length; i++) {
+				if(this.archive.files[i].content.length == 0) continue;
 				var defId = this.archive.files.length > 1 ? this.archive.files[i].id : this.archive.id;
 				//unload archive file memory to replace it with definition info
 				//if (this.archive.files[i].id > 25000)

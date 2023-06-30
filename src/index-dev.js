@@ -22,7 +22,9 @@ cache.onload.then(() => {
     //console.log(bytes,vecs, uvs);
     //console.log(base64.bytesToBase64(new Uint8Array(float.buffer)));
     */
-    cache.getFile(IndexType.CONFIGS.id, ConfigType.ITEM.id, 2042).then(x => { console.log(x) });
+   for(let i=0;i<cache.indicies[IndexType.FRAMES.id].archivesCount;i++) {
+       cache.getAllFiles(IndexType.FRAMES.id, i);//.then(x => { console.log(x) });
+   }
 
     cache.getAllFiles(IndexType.MODELS.id, 14408).then(async ([{ def }]) => {
         let animation = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 5070);
@@ -32,9 +34,10 @@ cache.onload.then(() => {
 
         let gltfExporter = new GLTFExporter(def);
         gltfExporter.addColors(def);
-        //frames.forEach(frame => gltfExporter.addMorphTarget(frame.vertices));
-        //gltfExporter.addAnimation(animation2.def);
-        //gltfExporter.addAnimation(animation.def);
+        //gltfExporter.addMorphTarget(frames[0].vertices)
+        frames.forEach(frame => gltfExporter.addMorphTarget(frame.vertices));
+        gltfExporter.addAnimation(animation2.def);
+        gltfExporter.addAnimation(animation.def);
         let gltfFile = gltfExporter.export();
 
         //let objExporter = new OBJExporter();
