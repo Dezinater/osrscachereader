@@ -22,15 +22,11 @@ cache.onload.then(() => {
     //console.log(bytes,vecs, uvs);
     //console.log(base64.bytesToBase64(new Uint8Array(float.buffer)));
     */
-   for(let i=0;i<cache.indicies[IndexType.FRAMES.id].archivesCount;i++) {
-       cache.getAllFiles(IndexType.FRAMES.id, i);//.then(x => { console.log(x) });
-   }
-
     cache.getAllFiles(IndexType.MODELS.id, 14408).then(async ([{ def }]) => {
         let animation = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 5070);
         let animation2 = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 5071);
         let shiftedId = (animation.def.frameIDs[0] >> 16);
-        let frames = await loadSkeletonAnims(def, shiftedId);
+        let frames = await def.loadSkeletonAnims(cache, def, shiftedId);
 
         let gltfExporter = new GLTFExporter(def);
         gltfExporter.addColors(def);

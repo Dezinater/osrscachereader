@@ -1,3 +1,5 @@
+import IndexType from "../cacheTypes/IndexType.js";
+
 export class ModelDefinition {
 	async loadSkeletonAnims(cache, model, id) {
 		let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, id)).map(x => x.def);
