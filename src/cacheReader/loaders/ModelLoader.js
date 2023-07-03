@@ -1,9 +1,4 @@
 export class ModelDefinition {
-
-}
-
-export default class ModelLoader {
-
 	async loadSkeletonAnims(cache, model, id) {
 		let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, id)).map(x => x.def);
 		let loadedAnims = frameDefs.map(frameDef => this.loadFrame(model, frameDef));
@@ -185,6 +180,11 @@ export default class ModelLoader {
 		}
 
 	}
+}
+
+export default class ModelLoader {
+
+
 
 	load(bytes, id) {
 		let def = new ModelDefinition();
