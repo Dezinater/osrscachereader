@@ -316,7 +316,7 @@ export default class GLTFExporter {
 
     addAnimation(def) {
         let frames = def.frameIDs.map(x => x & 65535);
-        let lengths = Object.assign({}, def.frameLengths);
+        let lengths = Object.assign([], def.frameLengths);
         for (let i = 1; i < lengths.length; i++) {
             lengths[i] += lengths[i - 1];
         }
