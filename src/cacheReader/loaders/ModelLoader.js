@@ -4,6 +4,188 @@ export class ModelDefinition {
 
 export default class ModelLoader {
 
+	async loadSkeletonAnims(cache, model, id) {
+		let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, id)).map(x => x.def);
+		let loadedAnims = frameDefs.map(frameDef => loadFrame(model, frameDef));
+
+		return loadedAnims;
+	}
+
+	loadFrame(model, frame) {
+		let verticesX = [...model.vertexPositionsX];
+		let verticesY = [...model.vertexPositionsY];
+		let verticesZ = [...model.vertexPositionsZ];
+		let framemap = frame.framemap;
+		let animOffsets = {
+			x: 0,
+			y: 0,
+			z: 0,
+		};
+
+		for (let j = 0; j < frame.translator_x.length; ++j) {
+			let type = frame.indexFrameIds[j];
+			let fmType = framemap.types[type];
+			let fm = framemap.frameMaps[type];
+			let dx = frame.translator_x[j];
+			let dy = frame.translator_y[j];
+			let dz = frame.translator_z[j];
+
+			animate(model.vertexGroups, verticesX, verticesY, verticesZ, fmType, fm, dx, dy, dz, animOffsets);
+		}
+
+		frame.vertices = [];
+		for (let i = 0; i < verticesX.length; i++) {
+			frame.vertices.push([verticesX[i], -verticesY[i], -verticesZ[i]]);
+		}
+
+		return frame;
+	}
+
+	animate(vertexGroups, verticesX, verticesY, verticesZ, type, frameMap, dx, dy, dz, animOffsets) {
+		let var6 = frameMap.length;
+		let var7;
+		let var8;
+		let var11;
+		let var12;
+
+		if (type == 0) //change rotation origin
+		{
+			var7 = 0;
+			animOffsets.x = 0;
+			animOffsets.y = 0;
+			animOffsets.z = 0;
+
+			for (var8 = 0; var8 < frameMap.length; ++var8) {
+				let boneGroup = frameMap[var8];
+				if (boneGroup < vertexGroups.length) {
+					let bones = vertexGroups[boneGroup];
+
+					for (var11 = 0; var11 < bones.length; ++var11) {
+						var12 = bones[var11];
+						animOffsets.x += verticesX[var12];
+						animOffsets.y += verticesY[var12];
+						animOffsets.z += verticesZ[var12];
+						++var7;
+					}
+				}
+			}
+
+			if (var7 > 0) {
+				animOffsets.x = dx + animOffsets.x / var7;
+				animOffsets.y = dy + animOffsets.y / var7;
+				animOffsets.z = dz + animOffsets.z / var7;
+			}
+			else {
+				animOffsets.x = dx;
+				animOffsets.y = dy;
+				animOffsets.z = dz;
+			}
+
+		}
+		else {
+			let var18;
+			let var19;
+			if (type == 1) //translation
+			{
+				for (var7 = 0; var7 < frameMap.length; ++var7) {
+					var8 = frameMap[var7];
+					if (var8 < vertexGroups.length) {
+						var18 = vertexGroups[var8];
+
+						for (var19 = 0; var19 < var18.length; ++var19) {
+							var11 = var18[var19];
+							verticesX[var11] += dx;
+							verticesY[var11] += dy;
+							verticesZ[var11] += dz;
+						}
+					}
+				}
+
+			}
+			else if (type == 2) //rotation
+			{
+
+				for (var7 = 0; var7 < frameMap.length; ++var7) {
+					var8 = frameMap[var7];
+					if (var8 < vertexGroups.length) {
+						var18 = vertexGroups[var8];
+
+						for (var19 = 0; var19 < var18.length; ++var19) {
+							var11 = var18[var19];
+							verticesX[var11] -= animOffsets.x;
+							verticesY[var11] -= animOffsets.y;
+							verticesZ[var11] -= animOffsets.z;
+							var12 = (dx & 255) * 8;
+							let var13 = (dy & 255) * 8;
+							let var14 = (dz & 255) * 8;
+							let var15;
+							let var16;
+							let var17;
+							if (var14 != 0) {
+								var15 = Math.floor(65536 * Math.sin(var14 * Math.PI / 1024));
+								var16 = Math.floor(65536 * Math.cos(var14 * Math.PI / 1024));
+								var17 = var15 * verticesY[var11] + var16 * verticesX[var11] >> 16;
+								verticesY[var11] = var16 * verticesY[var11] - var15 * verticesX[var11] >> 16;
+								verticesX[var11] = var17;
+
+							}
+
+							if (var12 != 0) {
+								var15 = Math.floor(65536 * Math.sin(var12 * Math.PI / 1024));
+								var16 = Math.floor(65536 * Math.cos(var12 * Math.PI / 1024));
+								var17 = var16 * verticesY[var11] - var15 * verticesZ[var11] >> 16;
+								verticesZ[var11] = var15 * verticesY[var11] + var16 * verticesZ[var11] >> 16;
+								verticesY[var11] = var17;
+							}
+
+							if (var13 != 0) {
+								var15 = Math.floor(65536 * Math.sin(var13 * Math.PI / 1024));
+								var16 = Math.floor(65536 * Math.cos(var13 * Math.PI / 1024));
+								var17 = var15 * verticesZ[var11] + var16 * verticesX[var11] >> 16;
+								verticesZ[var11] = var16 * verticesZ[var11] - var15 * verticesX[var11] >> 16;
+								verticesX[var11] = var17;
+							}
+
+
+							verticesX[var11] += animOffsets.x;
+							verticesY[var11] += animOffsets.y;
+							verticesZ[var11] += animOffsets.z;
+						}
+					}
+				}
+
+			}
+			else if (type == 3) //scaling
+			{
+				for (var7 = 0; var7 < frameMap.length; ++var7) {
+					var8 = frameMap[var7];
+					if (var8 < vertexGroups.length) {
+						var18 = vertexGroups[var8];
+
+						for (var19 = 0; var19 < var18.length; ++var19) {
+							var11 = var18[var19];
+							verticesX[var11] -= animOffsets.x;
+							verticesY[var11] -= animOffsets.y;
+							verticesZ[var11] -= animOffsets.z;
+							verticesX[var11] = dx * verticesX[var11] / 128;
+							verticesY[var11] = dy * verticesY[var11] / 128;
+							verticesZ[var11] = dz * verticesZ[var11] / 128;
+							verticesX[var11] += animOffsets.x;
+							verticesY[var11] += animOffsets.y;
+							verticesZ[var11] += animOffsets.z;
+						}
+					}
+				}
+
+
+			}
+			else if (type == 5) {
+
+			}
+		}
+
+	}
+
 	load(bytes, id) {
 		let def = new ModelDefinition();
 		def.id = id;
@@ -57,26 +239,21 @@ export default class ModelLoader {
 		let var26 = 0;
 		let var27 = 0;
 		let var28;
-		if (var11 > 0)
-		{
+		if (var11 > 0) {
 			def.textureRenderTypes = [];
 			var2.setPosition(0);
 
-			for (var28 = 0; var28 < var11; ++var28)
-			{
+			for (var28 = 0; var28 < var11; ++var28) {
 				let var29 = def.textureRenderTypes[var28] = var2.readInt8();
-				if (var29 == 0)
-				{
+				if (var29 == 0) {
 					++var25;
 				}
 
-				if (var29 >= 1 && var29 <= 3)
-				{
+				if (var29 >= 1 && var29 <= 3) {
 					++var26;
 				}
 
-				if (var29 == 2)
-				{
+				if (var29 == 2) {
 					++var27;
 				}
 			}
@@ -84,38 +261,33 @@ export default class ModelLoader {
 
 		var28 = var11 + var9;
 		let var58 = var28;
-		if (var12 == 1)
-		{
+		if (var12 == 1) {
 			var28 += var10;
 		}
 
 		let var30 = var28;
 		var28 += var10;
 		let var31 = var28;
-		if (var13 == 255)
-		{
+		if (var13 == 255) {
 			var28 += var10;
 		}
 
 		let var32 = var28;
-		if (var15 == 1)
-		{
+		if (var15 == 1) {
 			var28 += var10;
 		}
 
 		let var33 = var28;
 		var28 += var24;
 		let var34 = var28;
-		if (var14 == 1)
-		{
+		if (var14 == 1) {
 			var28 += var10;
 		}
 
 		let var35 = var28;
 		var28 += var22;
 		let var36 = var28;
-		if (var16 == 1)
-		{
+		if (var16 == 1) {
 			var28 += var10 * 2;
 		}
 
@@ -150,47 +322,38 @@ export default class ModelLoader {
 		def.faceVertexIndices1 = [];
 		def.faceVertexIndices2 = [];
 		def.faceVertexIndices3 = [];
-		if (var17 == 1)
-		{
+		if (var17 == 1) {
 			def.vertexSkins = [];
 		}
 
-		if (var12 == 1)
-		{
+		if (var12 == 1) {
 			def.faceRenderTypes = [];
 		}
 
-		if (var13 == 255)
-		{
+		if (var13 == 255) {
 			def.faceRenderPriorities = [];
 		}
-		else
-		{
+		else {
 			def.priority = var13;
 		}
 
-		if (var14 == 1)
-		{
+		if (var14 == 1) {
 			def.faceAlphas = [];
 		}
 
-		if (var15 == 1)
-		{
+		if (var15 == 1) {
 			def.faceSkins = [];
 		}
 
-		if (var16 == 1)
-		{
+		if (var16 == 1) {
 			def.faceTextures = [];
 		}
 
-		if (var16 == 1 && var11 > 0)
-		{
+		if (var16 == 1 && var11 > 0) {
 			def.textureCoords = new Array(var10).fill(0);
 		}
 
-		if (var18 == 1)
-		{
+		if (var18 == 1) {
 			//def.animayaGroups = new int[var9][];
 			//def.animayaScales = new int[var9][];
 			def.animayaGroups = new Array(var9);
@@ -198,8 +361,7 @@ export default class ModelLoader {
 		}
 
 		def.faceColors = [];
-		if (var11 > 0)
-		{
+		if (var11 > 0) {
 			def.texIndices1 = [];
 			def.texIndices2 = [];
 			def.texIndices3 = [];
@@ -219,24 +381,20 @@ export default class ModelLoader {
 		let var53;
 		let var54;
 		let var55;
-		for (var51 = 0; var51 < var9; ++var51)
-		{
+		for (var51 = 0; var51 < var9; ++var51) {
 			var52 = var2.readUint8();
 			var53 = 0;
-			if ((var52 & 1) != 0)
-			{
+			if ((var52 & 1) != 0) {
 				var53 = var3.readShortSmart();
 			}
 
 			var54 = 0;
-			if ((var52 & 2) != 0)
-			{
+			if ((var52 & 2) != 0) {
 				var54 = var4.readShortSmart();
 			}
 
 			var55 = 0;
-			if ((var52 & 4) != 0)
-			{
+			if ((var52 & 4) != 0) {
 				var55 = var5.readShortSmart();
 			}
 
@@ -246,22 +404,18 @@ export default class ModelLoader {
 			var48 = def.vertexPositionsX[var51];
 			var49 = def.vertexPositionsY[var51];
 			var50 = def.vertexPositionsZ[var51];
-			if (var17 == 1)
-			{
+			if (var17 == 1) {
 				def.vertexSkins[var51] = var6.readUint8();
 			}
 		}
 
-		if (var18 == 1)
-		{
-			for (var51 = 0; var51 < var9; ++var51)
-			{
+		if (var18 == 1) {
+			for (var51 = 0; var51 < var9; ++var51) {
 				var52 = var6.readUint8();
 				def.animayaGroups[var51] = [];
 				def.animayaScales[var51] = [];
 
-				for (var53 = 0; var53 < var52; ++var53)
-				{
+				for (var53 = 0; var53 < var52; ++var53) {
 					def.animayaGroups[var51][var53] = var6.readUint8();
 					def.animayaScales[var51][var53] = var6.readUint8();
 				}
@@ -276,36 +430,29 @@ export default class ModelLoader {
 		var7.setPosition(var36);
 		var8.setPosition(var37);
 
-		for (var51 = 0; var51 < var10; ++var51)
-		{
+		for (var51 = 0; var51 < var10; ++var51) {
 			def.faceColors[var51] = var2.readUint16();
-			if (var12 == 1)
-			{
+			if (var12 == 1) {
 				def.faceRenderTypes[var51] = var3.readInt8();
 			}
 
-			if (var13 == 255)
-			{
+			if (var13 == 255) {
 				def.faceRenderPriorities[var51] = var4.readInt8();
 			}
 
-			if (var14 == 1)
-			{
+			if (var14 == 1) {
 				def.faceAlphas[var51] = var5.readInt8();
 			}
 
-			if (var15 == 1)
-			{
+			if (var15 == 1) {
 				def.faceSkins[var51] = var6.readUint8();
 			}
 
-			if (var16 == 1)
-			{
+			if (var16 == 1) {
 				def.faceTextures[var51] = (var7.readUint16() - 1);
 			}
 
-			if (def.textureCoords != null && def.faceTextures[var51] != -1)
-			{
+			if (def.textureCoords != null && def.faceTextures[var51] != -1) {
 				def.textureCoords[var51] = (var8.readUint8() - 1);
 			}
 		}
@@ -318,11 +465,9 @@ export default class ModelLoader {
 		var54 = 0;
 
 		let var56;
-		for (var55 = 0; var55 < var10; ++var55)
-		{
+		for (var55 = 0; var55 < var10; ++var55) {
 			var56 = var3.readUint8();
-			if (var56 == 1)
-			{
+			if (var56 == 1) {
 				var51 = var2.readShortSmart() + var54;
 				var52 = var2.readShortSmart() + var51;
 				var53 = var2.readShortSmart() + var52;
@@ -332,8 +477,7 @@ export default class ModelLoader {
 				def.faceVertexIndices3[var55] = var53;
 			}
 
-			if (var56 == 2)
-			{
+			if (var56 == 2) {
 				var52 = var53;
 				var53 = var2.readShortSmart() + var54;
 				var54 = var53;
@@ -342,8 +486,7 @@ export default class ModelLoader {
 				def.faceVertexIndices3[var55] = var53;
 			}
 
-			if (var56 == 3)
-			{
+			if (var56 == 3) {
 				var51 = var53;
 				var53 = var2.readShortSmart() + var54;
 				var54 = var53;
@@ -352,8 +495,7 @@ export default class ModelLoader {
 				def.faceVertexIndices3[var55] = var53;
 			}
 
-			if (var56 == 4)
-			{
+			if (var56 == 4) {
 				let var57 = var51;
 				var51 = var52;
 				var52 = var57;
@@ -372,11 +514,9 @@ export default class ModelLoader {
 		var6.setPosition(var46);
 		var7.setPosition(var47);
 
-		for (var55 = 0; var55 < var11; ++var55)
-		{
+		for (var55 = 0; var55 < var11; ++var55) {
 			var56 = def.textureRenderTypes[var55] & 255;
-			if (var56 == 0)
-			{
+			if (var56 == 0) {
 				def.texIndices1[var55] = var2.readUint16();
 				def.texIndices2[var55] = var2.readUint16();
 				def.texIndices3[var55] = var2.readUint16();
@@ -385,8 +525,7 @@ export default class ModelLoader {
 
 		var2.setPosition(var28);
 		var55 = var2.readUint8();
-		if (var55 != 0)
-		{
+		if (var55 != 0) {
 			var2.readUint16();
 			var2.readUint16();
 			var2.readUint16();
@@ -395,8 +534,7 @@ export default class ModelLoader {
 
 	}
 
-	load2(def, var1)
-	{
+	load2(def, var1) {
 		let var2 = false;
 		let var3 = false;
 		let var4 = new DataView(var1.buffer);
@@ -424,28 +562,24 @@ export default class ModelLoader {
 		let var25 = var24;
 		var24 += var10;
 		let var26 = var24;
-		if (var13 == 255)
-		{
+		if (var13 == 255) {
 			var24 += var10;
 		}
 
 		let var27 = var24;
-		if (var15 == 1)
-		{
+		if (var15 == 1) {
 			var24 += var10;
 		}
 
 		let var28 = var24;
-		if (var12 == 1)
-		{
+		if (var12 == 1) {
 			var24 += var10;
 		}
 
 		let var29 = var24;
 		var24 += var22;
 		let var30 = var24;
-		if (var14 == 1)
-		{
+		if (var14 == 1) {
 			var24 += var10;
 		}
 
@@ -469,50 +603,42 @@ export default class ModelLoader {
 		def.faceVertexIndices1 = [];
 		def.faceVertexIndices2 = [];
 		def.faceVertexIndices3 = [];
-		if (var11 > 0)
-		{
+		if (var11 > 0) {
 			def.textureRenderTypes = [];
 			def.texIndices1 = [];
 			def.texIndices2 = [];
 			def.texIndices3 = [];
 		}
 
-		if (var16 == 1)
-		{
+		if (var16 == 1) {
 			def.vertexSkins = [];
 		}
 
-		if (var12 == 1)
-		{
+		if (var12 == 1) {
 			def.faceRenderTypes = [];
 			def.textureCoords = [];
 			def.faceTextures = [];
 		}
 
-		if (var13 == 255)
-		{
+		if (var13 == 255) {
 			def.faceRenderPriorities = [];
 		}
-		else
-		{
+		else {
 			def.priority = var13;
 		}
 
-		if (var14 == 1)
-		{
+		if (var14 == 1) {
 			def.faceAlphas = [];
 		}
 
-		if (var15 == 1)
-		{
+		if (var15 == 1) {
 			def.faceSkins = [];
 		}
 
-		if (var17 == 1)
-		{
+		if (var17 == 1) {
 			//def.animayaGroups = new int[var9][];
 			//def.animayaScales = new int[var9][];
-			
+
 			def.animayaGroups = [];
 			def.animayaScales = [];
 		}
@@ -532,25 +658,21 @@ export default class ModelLoader {
 		let var42;
 		let var43;
 		let var44;
-		
-		for (var40 = 0; var40 < var9; ++var40)
-		{
+
+		for (var40 = 0; var40 < var9; ++var40) {
 			var41 = var4.readUint8();
 			var42 = 0;
-			if ((var41 & 1) != 0)
-			{
+			if ((var41 & 1) != 0) {
 				var42 = var5.readShortSmart();
 			}
 
 			var43 = 0;
-			if ((var41 & 2) != 0)
-			{
+			if ((var41 & 2) != 0) {
 				var43 = var6.readShortSmart();
 			}
 
 			var44 = 0;
-			if ((var41 & 4) != 0)
-			{
+			if ((var41 & 4) != 0) {
 				var44 = var7.readShortSmart();
 			}
 
@@ -560,22 +682,18 @@ export default class ModelLoader {
 			var37 = def.vertexPositionsX[var40];
 			var38 = def.vertexPositionsY[var40];
 			var39 = def.vertexPositionsZ[var40];
-			if (var16 == 1)
-			{
+			if (var16 == 1) {
 				def.vertexSkins[var40] = var8.readUint8();
 			}
 		}
 
-		if (var17 == 1)
-		{
-			for (var40 = 0; var40 < var9; ++var40)
-			{
+		if (var17 == 1) {
+			for (var40 = 0; var40 < var9; ++var40) {
 				var41 = var8.readUint8();
 				def.animayaGroups[var40] = [];
 				def.animayaScales[var40] = [];
 
-				for (var42 = 0; var42 < var41; ++var42)
-				{
+				for (var42 = 0; var42 < var41; ++var42) {
 					def.animayaGroups[var40][var42] = var8.readUint8();
 					def.animayaScales[var40][var42] = var8.readUint8();
 				}
@@ -588,51 +706,41 @@ export default class ModelLoader {
 		var7.setPosition(var30);
 		var8.setPosition(var27);
 
-		for (var40 = 0; var40 < var10; ++var40)
-		{
+		for (var40 = 0; var40 < var10; ++var40) {
 			def.faceColors[var40] = var4.readUint16();
-			if (var12 == 1)
-			{
+			if (var12 == 1) {
 				var41 = var5.readUint8();
-				if ((var41 & 1) == 1)
-				{
+				if ((var41 & 1) == 1) {
 					def.faceRenderTypes[var40] = 1;
 					var2 = true;
 				}
-				else
-				{
+				else {
 					def.faceRenderTypes[var40] = 0;
 				}
 
-				if ((var41 & 2) == 2)
-				{
+				if ((var41 & 2) == 2) {
 					def.textureCoords[var40] = (var41 >> 2);
 					def.faceTextures[var40] = def.faceColors[var40];
 					def.faceColors[var40] = 127;
-					if (def.faceTextures[var40] != -1)
-					{
+					if (def.faceTextures[var40] != -1) {
 						var3 = true;
 					}
 				}
-				else
-				{
+				else {
 					def.textureCoords[var40] = -1;
 					def.faceTextures[var40] = -1;
 				}
 			}
 
-			if (var13 == 255)
-			{
+			if (var13 == 255) {
 				def.faceRenderPriorities[var40] = var6.readInt8();
 			}
 
-			if (var14 == 1)
-			{
+			if (var14 == 1) {
 				def.faceAlphas[var40] = var7.readInt8();
 			}
 
-			if (var15 == 1)
-			{
+			if (var15 == 1) {
 				def.faceSkins[var40] = var8.readUint8();
 			}
 		}
@@ -646,11 +754,9 @@ export default class ModelLoader {
 
 		let var45;
 		let var46;
-		for (var44 = 0; var44 < var10; ++var44)
-		{
+		for (var44 = 0; var44 < var10; ++var44) {
 			var45 = var5.readUint8();
-			if (var45 == 1)
-			{
+			if (var45 == 1) {
 				var40 = var4.readShortSmart() + var43;
 				var41 = var4.readShortSmart() + var40;
 				var42 = var4.readShortSmart() + var41;
@@ -660,8 +766,7 @@ export default class ModelLoader {
 				def.faceVertexIndices3[var44] = var42;
 			}
 
-			if (var45 == 2)
-			{
+			if (var45 == 2) {
 				var41 = var42;
 				var42 = var4.readShortSmart() + var43;
 				var43 = var42;
@@ -670,8 +775,7 @@ export default class ModelLoader {
 				def.faceVertexIndices3[var44] = var42;
 			}
 
-			if (var45 == 3)
-			{
+			if (var45 == 3) {
 				var40 = var42;
 				var42 = var4.readShortSmart() + var43;
 				var43 = var42;
@@ -680,8 +784,7 @@ export default class ModelLoader {
 				def.faceVertexIndices3[var44] = var42;
 			}
 
-			if (var45 == 4)
-			{
+			if (var45 == 4) {
 				var46 = var40;
 				var40 = var41;
 				var41 = var46;
@@ -695,47 +798,38 @@ export default class ModelLoader {
 
 		var4.setPosition(var33);
 
-		for (var44 = 0; var44 < var11; ++var44)
-		{
+		for (var44 = 0; var44 < var11; ++var44) {
 			def.textureRenderTypes[var44] = 0;
 			def.texIndices1[var44] = var4.readUint16();
 			def.texIndices2[var44] = var4.readUint16();
 			def.texIndices3[var44] = var4.readUint16();
 		}
 
-		if (def.textureCoords != null)
-		{
+		if (def.textureCoords != null) {
 			let var47 = false;
 
-			for (var45 = 0; var45 < var10; ++var45)
-			{
+			for (var45 = 0; var45 < var10; ++var45) {
 				var46 = def.textureCoords[var45] & 255;
-				if (var46 != 255)
-				{
-					if (def.faceVertexIndices1[var45] == (def.texIndices1[var46] & '\uffff') && def.faceVertexIndices2[var45] == (def.texIndices2[var46] & '\uffff') && def.faceVertexIndices3[var45] == (def.texIndices3[var46] & '\uffff'))
-					{
+				if (var46 != 255) {
+					if (def.faceVertexIndices1[var45] == (def.texIndices1[var46] & '\uffff') && def.faceVertexIndices2[var45] == (def.texIndices2[var46] & '\uffff') && def.faceVertexIndices3[var45] == (def.texIndices3[var46] & '\uffff')) {
 						def.textureCoords[var45] = -1;
 					}
-					else
-					{
+					else {
 						var47 = true;
 					}
 				}
 			}
 
-			if (!var47)
-			{
+			if (!var47) {
 				def.textureCoords = null;
 			}
 		}
 
-		if (!var3)
-		{
+		if (!var3) {
 			def.faceTextures = null;
 		}
 
-		if (!var2)
-		{
+		if (!var2) {
 			def.faceRenderTypes = null;
 		}
 
@@ -1432,27 +1526,22 @@ export default class ModelLoader {
 		// triangleSkinValues is here
 	}
 
-	computeTextureUVCoordinates(def)
-	{
-		def.faceTextureUCoordinates = new Array(def.faceCount).fill([0,0,0]);
-		def.faceTextureVCoordinates = new Array(def.faceCount).fill([0,0,0]);
+	computeTextureUVCoordinates(def) {
+		def.faceTextureUCoordinates = new Array(def.faceCount).fill([0, 0, 0]);
+		def.faceTextureVCoordinates = new Array(def.faceCount).fill([0, 0, 0]);
 
-		if (def.faceTextures == null)
-		{
+		if (def.faceTextures == null) {
 			return;
 		}
 
-		for (let i = 0; i < def.faceCount; i++)
-		{
-			if (def.faceTextures[i] == -1)
-			{
+		for (let i = 0; i < def.faceCount; i++) {
+			if (def.faceTextures[i] == -1) {
 				continue;
 			}
 
 			let u0, u1, u2, v0, v1, v2;
 
-			if (def.textureCoords != null && def.textureCoords[i] != -1)
-			{
+			if (def.textureCoords != null && def.textureCoords[i] != -1) {
 				let tfaceIdx = def.textureCoords[i] & 0xff;
 				let triangleA = def.faceVertexIndices1[i];
 				let triangleB = def.faceVertexIndices2[i];
@@ -1522,8 +1611,7 @@ export default class ModelLoader {
 				// v2 = (v8 ⋅ v6) * f
 				v2 = (v8x * v6x + v8y * v6y + v8z * v6z) * f;
 			}
-			else
-			{
+			else {
 				// Without a texture face, the client assigns tex = triangle, but the resulting
 				// calculations can be reduced:
 				//
