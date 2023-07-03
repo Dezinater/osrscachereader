@@ -152,7 +152,6 @@ class GLTFFile {
             oneHot[x] = 1;
             return oneHot
         }); //one hot encoding
-        console.log(targets, lengths)
 
         let targetBytes = new Uint8Array(new Float32Array(targets.flat()).buffer);
         let lengthsBytes = new Uint8Array(new Float32Array(lengths).buffer);
@@ -253,7 +252,7 @@ class GLTFFile {
               roughnessFactor : 1.0
             }
         });
-        console.log(uvBytes)
+        
         let buffersAmount = this.buffers.length;
         this.buffers.push({
             uri: "data:application/gltf-buffer;base64," + base64.bytesToBase64(uvBytes),
@@ -317,7 +316,7 @@ export default class GLTFExporter {
 
     addAnimation(def) {
         let frames = def.frameIDs.map(x => x & 65535);
-        let lengths = def.frameLengths;
+        let lengths = Object.assign({}, def.frameLengths);
         for (let i = 1; i < lengths.length; i++) {
             lengths[i] += lengths[i - 1];
         }
@@ -326,7 +325,6 @@ export default class GLTFExporter {
     }
 
     addColors(def) {
-        console.log(def);
         let uvs = new Array(988).fill().map(x => [Math.random(), Math.random()]);
         uvs[0] = [1,1];
         uvs[1] = [0,0];
@@ -334,7 +332,6 @@ export default class GLTFExporter {
     }
 
     export() {
-        console.log(this.file)
         return JSON.stringify(this.file);
     }
 
