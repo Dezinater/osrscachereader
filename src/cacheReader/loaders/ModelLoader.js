@@ -6,7 +6,7 @@ export default class ModelLoader {
 
 	async loadSkeletonAnims(cache, model, id) {
 		let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, id)).map(x => x.def);
-		let loadedAnims = frameDefs.map(frameDef => loadFrame(model, frameDef));
+		let loadedAnims = frameDefs.map(frameDef => this.loadFrame(model, frameDef));
 
 		return loadedAnims;
 	}
@@ -30,7 +30,7 @@ export default class ModelLoader {
 			let dy = frame.translator_y[j];
 			let dz = frame.translator_z[j];
 
-			animate(model.vertexGroups, verticesX, verticesY, verticesZ, fmType, fm, dx, dy, dz, animOffsets);
+			this.animate(model.vertexGroups, verticesX, verticesY, verticesZ, fmType, fm, dx, dy, dz, animOffsets);
 		}
 
 		frame.vertices = [];
