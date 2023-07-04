@@ -13,7 +13,7 @@ export { RSCache, IndexType, ConfigType, Matrix };
 
 
 let cache = new RSCache("cache", (x) => { console.log(x) }, "./");
-cache.onload.then(() => {
+cache.onload.then(async () => {
     /*
     let bytes = base64.base64ToBytes("AAABAAIAAQADAAIAAAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAAAAAAAAAAAAAAAAAACAPwAAAAAAAAAA").slice(12, 12+96);
     let vecs = new Float32Array(bytes.slice(0,48).buffer);
@@ -22,6 +22,7 @@ cache.onload.then(() => {
     //console.log(bytes,vecs, uvs);
     //console.log(base64.bytesToBase64(new Uint8Array(float.buffer)));
     */
+   /*
     cache.getAllFiles(IndexType.MODELS.id, 14408).then(async ([{ def }]) => {
         let animation = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 5070);
         let animation2 = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, 5071);
@@ -42,6 +43,16 @@ cache.onload.then(() => {
         console.log(gltfFile)
         
     });
+    */
+    let entityInfo = await cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 279);
+    console.log(entityInfo.def.models)
+    let models = await Promise.all(entityInfo.def.models.map(x => cache.getFile(IndexType.MODELS.id, x)));
+    /*
+    let model = models[0].def;
+    for (let i = 1; i < models.length; i++) {
+        model = model.mergeWith(models[i].def);
+    }
+    */
 });
 
 //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));

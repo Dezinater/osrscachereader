@@ -1,8 +1,15 @@
 import IndexType from "../cacheTypes/IndexType.js";
 
 export class ModelDefinition {
+	vertexSkins = [];
+	faceRenderTypes = [];
+	faceRenderPriorities = [];
+	faceAlphas = [];
+	faceSkins = [];
+	faceTextures = [];
+
 	mergeWith(otherModel) {
-		this.vertexPositionsX = [...this.vertexPositionX, ...otherModel.vertexPositionsX];
+		this.vertexPositionsX = [...this.vertexPositionsX, ...otherModel.vertexPositionsX];
 		this.vertexPositionsY = [...this.vertexPositionsY, ...otherModel.vertexPositionsY];
 		this.vertexPositionsZ = [...this.vertexPositionsZ, ...otherModel.vertexPositionsZ];
 		this.faceVertexIndices1 = [...this.faceVertexIndices1, ...otherModel.faceVertexIndices1];
