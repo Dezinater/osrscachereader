@@ -10,7 +10,21 @@ export class ModelDefinition {
 		this.faceVertexIndices1 = [...this.faceVertexIndices1, ...otherModel.faceVertexIndices1.map(x => x + verticesCount)];
 		this.faceVertexIndices2 = [...this.faceVertexIndices2, ...otherModel.faceVertexIndices2.map(x => x + verticesCount)];
 		this.faceVertexIndices3 = [...this.faceVertexIndices3, ...otherModel.faceVertexIndices3.map(x => x + verticesCount)];
-		this.vertexGroups = [...this.vertexGroups, ...otherModel.vertexGroups.map(x => x.map(y => y + verticesCount))];
+		let otherVertexGroup = otherModel.vertexGroups.map(x => x.map(y => y + verticesCount));
+		let newVertexGroups = this.vertexGroups.length > otherVertexGroup.length ? Array(this.vertexGroups.length) : Array(otherModel.vertexGroups.length);
+
+		for (let i = 0; i < newVertexGroups.length; i++) {
+			if (this.vertexGroups[i] == undefined) {
+				newVertexGroups[i] = otherVertexGroup[i];
+				continue;
+			}
+			if (otherVertexGroup[i] == undefined) {
+				newVertexGroups[i] = this.vertexGroups[i];
+				continue;
+			}
+			newVertexGroups[i] = this.vertexGroups[i].concat(otherVertexGroup[i]);
+		}
+		this.vertexGroups = newVertexGroups;
 
 		this.vertexCount += otherModel.vertexCount;
 		this.faceCount += otherModel.faceCount;
