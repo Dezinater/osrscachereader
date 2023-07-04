@@ -3,11 +3,10 @@ import IndexType from "../cacheTypes/IndexType.js";
 export class ModelDefinition {
 
 	mergeWith(otherModel) {
-		let verticesCount = this.vertexPositionsX.length;
 		let indiciesCount = this.faceVertexIndices1.length;
-		this.vertexPositionsX = [...this.vertexPositionsX, ...otherModel.vertexPositionsX.map(x => x + verticesCount)];
-		this.vertexPositionsY = [...this.vertexPositionsY, ...otherModel.vertexPositionsY].map(x => x + verticesCount);
-		this.vertexPositionsZ = [...this.vertexPositionsZ, ...otherModel.vertexPositionsZ.map(x => x + verticesCount)];
+		this.vertexPositionsX = [...this.vertexPositionsX, ...otherModel.vertexPositionsX];
+		this.vertexPositionsY = [...this.vertexPositionsY, ...otherModel.vertexPositionsY];
+		this.vertexPositionsZ = [...this.vertexPositionsZ, ...otherModel.vertexPositionsZ];
 		this.faceVertexIndices1 = [...this.faceVertexIndices1, ...otherModel.faceVertexIndices1.map(x => x + indiciesCount)];
 		this.faceVertexIndices2 = [...this.faceVertexIndices2, ...otherModel.faceVertexIndices2.map(x => x + indiciesCount)];
 		this.faceVertexIndices3 = [...this.faceVertexIndices3, ...otherModel.faceVertexIndices3.map(x => x + indiciesCount)];
