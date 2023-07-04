@@ -26,8 +26,11 @@ export class ModelDefinition {
 		copy("faceRenderPriorities");
 		copy("faceAlphas");
 		copy("faceSkins");
+		copy("faceColors");
 		copy("faceTextures");
 		copy("textureCoords");
+		copy("vertexGroups");
+		copy("vertexNormals");
 
 		return this;
 	}
