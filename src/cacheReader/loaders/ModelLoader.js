@@ -1,12 +1,6 @@
 import IndexType from "../cacheTypes/IndexType.js";
 
 export class ModelDefinition {
-	vertexSkins = [];
-	faceRenderTypes = [];
-	faceRenderPriorities = [];
-	faceAlphas = [];
-	faceSkins = [];
-	faceTextures = [];
 
 	mergeWith(otherModel) {
 		this.vertexPositionsX = [...this.vertexPositionsX, ...otherModel.vertexPositionsX];
@@ -19,13 +13,21 @@ export class ModelDefinition {
 		this.vertexCount += otherModel.vertexCount;
 		this.faceCount += otherModel.faceCount;
 
-		this.vertexSkins = [...this.vertexSkins, ...otherModel.vertexSkins];
-		this.faceRenderTypes = [...this.faceRenderTypes, ...otherModel.faceRenderTypes];
-		this.faceRenderPriorities = [...this.faceRenderPriorities, ...otherModel.faceRenderPriorities];
-		this.faceAlphas = [...this.faceAlphas, ...otherModel.faceAlphas];
-		this.faceSkins = [...this.faceSkins, ...otherModel.faceSkins];
-		this.faceTextures = [...this.faceTextures, ...otherModel.faceTextures];
-		this.textureCoords = new Array(var10).fill(0);
+		let copy = (property) => {
+			if (this[property] == undefined && otherModel[property] != undefined) {
+				this[property] = otherModel[property];
+			} else if (this[property] != undefined && otherModel[property] != undefined) {
+				this[property] = [...this[property], ...otherModel[property]];
+			}
+		}
+
+		copy("vertexSkins");
+		copy("faceRenderTypes");
+		copy("faceRenderPriorities");
+		copy("faceAlphas");
+		copy("faceSkins");
+		copy("faceTextures");
+		copy("textureCoords");
 
 		return this;
 	}
