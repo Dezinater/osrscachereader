@@ -47,12 +47,12 @@ cache.onload.then(async () => {
     let entityInfo = await cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 279);
     console.log(entityInfo.def.models)
     let models = await Promise.all(entityInfo.def.models.map(x => cache.getFile(IndexType.MODELS.id, x)));
-    /*
+
     let model = models[0].def;
     for (let i = 1; i < models.length; i++) {
         model = model.mergeWith(models[i].def);
     }
-    */
+    console.log(model);
 });
 
 //console.log(cache.getFile(IndexType.MODELS.id, 15981, 0, false));
