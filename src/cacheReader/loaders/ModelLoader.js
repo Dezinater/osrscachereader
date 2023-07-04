@@ -1,6 +1,28 @@
 import IndexType from "../cacheTypes/IndexType.js";
 
 export class ModelDefinition {
+	mergeWith(otherModel) {
+		this.vertexPositionsX = [...this.vertexPositionX, ...otherModel.vertexPositionsX];
+		this.vertexPositionsY = [...this.vertexPositionsY, ...otherModel.vertexPositionsY];
+		this.vertexPositionsZ = [...this.vertexPositionsZ, ...otherModel.vertexPositionsZ];
+		this.faceVertexIndices1 = [...this.faceVertexIndices1, ...otherModel.faceVertexIndices1];
+		this.faceVertexIndices2 = [...this.faceVertexIndices2, ...otherModel.faceVertexIndices2];
+		this.faceVertexIndices3 = [...this.faceVertexIndices3, ...otherModel.faceVertexIndices3];
+
+		this.vertexCount += otherModel.vertexCount;
+		this.faceCount += otherModel.faceCount;
+
+		this.vertexSkins = [...this.vertexSkins, ...otherModel.vertexSkins];
+		this.faceRenderTypes = [...this.faceRenderTypes, ...otherModel.faceRenderTypes];
+		this.faceRenderPriorities = [...this.faceRenderPriorities, ...otherModel.faceRenderPriorities];
+		this.faceAlphas = [...this.faceAlphas, ...otherModel.faceAlphas];
+		this.faceSkins = [...this.faceSkins, ...otherModel.faceSkins];
+		this.faceTextures = [...this.faceTextures, ...otherModel.faceTextures];
+		this.textureCoords = new Array(var10).fill(0);
+
+		return this;
+	}
+
 	async loadSkeletonAnims(cache, model, id) {
 		let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, id)).map(x => x.def);
 		let loadedAnims = frameDefs.map(frameDef => this.loadFrame(model, frameDef));
