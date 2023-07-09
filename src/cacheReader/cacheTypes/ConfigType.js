@@ -5,6 +5,7 @@ import ItemLoader from '../loaders/ItemLoader.js'
 import SequenceLoader from '../loaders/SequenceLoader.js'
 import OverlayLoader from '../loaders/OverlayLoader.js'
 import UnderlayLoader from '../loaders/UnderlayLoader.js'
+import SpotAnimLoader from '../loaders/SpotAnimLoader.js'
 
 const ConfigType = { 
     UNDERLAY: {id: 1, loader: UnderlayLoader}, 		//Underlay
@@ -19,7 +20,7 @@ const ConfigType = {
 	ITEM: {id: 10, loader: ItemLoader},				//Items
 	PARAMS: {id: 11, loader: undefined},			//Params
 	SEQUENCE: {id: 12, loader: SequenceLoader},		//Sequence
-	SPOTANIM: {id: 13, loader: undefined},			//Spot anim
+	SPOTANIM: {id: 13, loader: SpotAnimLoader},		//Spot anim
 	VARBIT: {id: 14, loader: undefined}, 			//Varbit
 	VARCLIENTSTRING: {id: 15, loader: undefined},
 	VARPLAYER: {id: 16, loader: undefined},			//Varp
