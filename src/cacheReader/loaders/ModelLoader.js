@@ -1,4 +1,5 @@
 import IndexType from "../cacheTypes/IndexType.js";
+import ConfigType from "../cacheTypes/ConfigType.js";
 
 export class ModelDefinition {
 
@@ -55,6 +56,23 @@ export class ModelDefinition {
 		let loadedAnims = frameDefs.map(frameDef => this.loadFrame(model, frameDef));
 
 		return loadedAnims;
+	}
+
+	async loadAnimation(cache, animationId) {
+		let animation = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animationId);
+		let shiftedId = (animation.def.frameIDs[0] >> 16);
+
+		let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map(x => x.def);
+		let frames = animation.def.frameIDs.map(frameId => frameDefs.find(frameDef => frameDef.id == (frameId & 65535)));
+
+		let loadedFrames = frames.map(x => this.loadFrame(this, x));
+
+		let animationData = {
+			vertexData: loadedFrames.map(x => x.vertices),
+			lengths: animation.def.frameLengths,
+		};
+
+		return animationData;
 	}
 
 	loadFrame(model, frame) {
