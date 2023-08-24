@@ -1,4 +1,4 @@
-import Matrix from "./MatrixTest.js";
+import Matrix from "./Matrix.js";
 
 export default class Bone {
     field1181 = true;

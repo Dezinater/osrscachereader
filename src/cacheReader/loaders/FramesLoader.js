@@ -1,4 +1,4 @@
-import Matrix from '../cacheTypes/anim/MatrixTest.js';
+import Matrix from '../cacheTypes/anim/Matrix.js';
 import IndexType from '../cacheTypes/IndexType.js'
 import AnimayaLoader from './AnimayaLoader.js';
 
