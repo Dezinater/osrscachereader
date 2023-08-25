@@ -2,36 +2,36 @@ import Matrix from '../cacheTypes/anim/Matrix.js';
 import IndexType from '../cacheTypes/IndexType.js'
 import AnimayaLoader from './AnimayaLoader.js';
 
-export class class420 {
+export class Quaternion {
     constructor() {
-        this.method2179();
+        this.identity();
     }
 
-    method2179() {
-        this.field3740 = 0.0;
-        this.field3739 = 0.0;
-        this.field3737 = 0.0;
-        this.field3738 = 1.0;
+    identity() {
+        this.z = 0.0;
+        this.y = 0.0;
+        this.x = 0.0;
+        this.w = 1.0;
     }
 
-    method2181(var1, var2, var3, var4) {
-        let var5 = Math.sin(var4 * 0.5);
-        let var6 = Math.cos(var4 * 0.5);
-        this.field3737 = var1 * var5;
-        this.field3739 = var2 * var5;
-        this.field3740 = var5 * var3;
-        this.field3738 = var6;
+    setRotation(x, y, z, angle) {
+        let halfSin = Math.sin(angle * 0.5);
+        let halfCos = Math.cos(angle * 0.5);
+        this.x = x * halfSin;
+        this.y = y * halfSin;
+        this.z = halfSin * z;
+        this.w = halfCos;
     }
 
-    method2180(var1) {
-        this.method2182(this.field3740 * var1.field3739 + this.field3738 * var1.field3737 + this.field3737 * var1.field3738 - var1.field3740 * this.field3739, this.field3738 * var1.field3739 + (var1.field3738 * this.field3739 - this.field3740 * var1.field3737) + this.field3737 * var1.field3740, this.field3739 * var1.field3737 + this.field3740 * var1.field3738 - var1.field3739 * this.field3737 + var1.field3740 * this.field3738, this.field3738 * var1.field3738 - var1.field3737 * this.field3737 - this.field3739 * var1.field3739 - this.field3740 * var1.field3740);
-     }
+    multiply(var1) {
+        this.set(this.z * var1.y + this.w * var1.x + this.x * var1.w - var1.z * this.y, this.w * var1.y + (var1.w * this.y - this.z * var1.x) + this.x * var1.z, this.y * var1.x + this.z * var1.w - var1.y * this.x + var1.z * this.w, this.w * var1.w - var1.x * this.x - this.y * var1.y - this.z * var1.z);
+    }
 
-     method2182(var1, var2, var3, var4) {
-        this.field3737 = var1;
-        this.field3739 = var2;
-        this.field3740 = var3;
-        this.field3738 = var4;
+    set(x, y, z, w) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.w = w;
     }
 
 
@@ -47,7 +47,6 @@ export class FramesDefinition {
         //console.log(var2.id, var5);
 
         var2.method691(var5);
-        //var5.method2200(); //release back into pooling system?
     }
 
     method728(var1, var2, var3, var4) {
@@ -72,32 +71,31 @@ export class FramesDefinition {
                 var8 = var11.method699(var4);
             }
         }
-        
-        let var17 = new class420();
-        var17.method2181(1.0, 0.0, 0.0, var6);
-        
-        let var18 = new class420();
-        var18.method2181(0.0, 1.0, 0.0, var7);
-        
-        let var19 = new class420();
-        var19.method2181(0.0, 0.0, 1.0, var8);
-        
-        let var12 = new class420();
 
-        var12.method2180(var19);
-        var12.method2180(var17);
-        var12.method2180(var18);
+        let var17 = new Quaternion();
+        var17.setRotation(1.0, 0.0, 0.0, var6);
+
+        let var18 = new Quaternion();
+        var18.setRotation(0.0, 1.0, 0.0, var7);
+
+        let var19 = new Quaternion();
+        var19.setRotation(0.0, 0.0, 1.0, var8);
+
+        let var12 = new Quaternion();
+
+        var12.multiply(var19);
+        var12.multiply(var17);
+        var12.multiply(var18);
 
         let var13 = new Matrix();
 
-        var13.method2190(var12);
-        var1.method2189(var13);
+        var13.rotate(var12);
+        var1.multiply(var13);
         /*
         var25.method2170();
         var27.method2170();
         var13.method2170();
         var15.method2170();
-        var17.method2200();
         */
     }
 
@@ -152,9 +150,8 @@ export class FramesDefinition {
         }
 
         let var15 = new Matrix();
-        var15.method2186(var6, var7, var8);
-        var1.method2189(var15);
-        //var15.method2200();
+        var15.setScaleXYZ(var6, var7, var8);
+        var1.multiply(var15);
     }
 }
 
@@ -168,7 +165,7 @@ export default class FramesLoader {
 
         let framemapArchiveIndex = inview.readUint16();
         let length = inview.readUint8();
-        
+
         if (options.isAnimaya) {
             def = new AnimayaLoader().load(def, bytes, cache, options);
             return def;

@@ -7,7 +7,7 @@ export default class Bone {
     field1180 = new Matrix()
     field1174 = new Matrix();
 
-    constructor(size, buffer, var3) {
+    constructor(size, buffer) {
         this.id = buffer.readInt16();
         this.field1175 = new Array(size);
         this.field1176 = new Array(size);
@@ -15,7 +15,7 @@ export default class Bone {
         this.field1187 = new Array(size);
 
         for (let var4 = 0; var4 < size; ++var4) {
-            this.field1175[var4] = new Matrix(buffer, var3);
+            this.field1175[var4] = new Matrix(buffer, false);
 
             this.field1187[var4] = new Array(3);
             this.field1187[var4][0] = buffer.readFloat32();
@@ -45,15 +45,13 @@ export default class Bone {
         for (let var5 = 0; var5 < this.field1175.length; ++var5) {
             let var4 = this.method683(var5);
             var7.copy(var4);
-            var7.method2192();
-            this.field1183[var5] = var7.method2195();
+            var7.inverse();
+            this.field1183[var5] = var7.getRotation();
             this.field1184[var5][0] = var4.matrixVals[12];
             this.field1184[var5][1] = var4.matrixVals[13];
             this.field1184[var5][2] = var4.matrixVals[14];
-            this.field1185[var5] = var4.method2194();
+            this.field1185[var5] = var4.getVectorMagnitudes();
         }
-
-        var7.method2200();
     }
 
     method683(var1) {
@@ -64,9 +62,9 @@ export default class Bone {
         if (this.field1176[var1] == null) {
             this.field1176[var1] = new Matrix(this.method683(var1));
             if (this.field1182 != null) {
-                this.field1176[var1].method2189(this.field1182.method684(var1));
+                this.field1176[var1].multiply(this.field1182.method684(var1));
             } else {
-                this.field1176[var1].method2189(Matrix.field3747);
+                this.field1176[var1].multiply(Matrix.field3747);
             }
         }
 
@@ -77,7 +75,7 @@ export default class Bone {
     method685(var1) {
         if (this.field1177[var1] == null || this.field1177[var1] == undefined) {
             this.field1177[var1] = new Matrix(this.method684(var1));
-            this.field1177[var1].method2192();
+            this.field1177[var1].inverse();
         }
 
         return this.field1177[var1];
@@ -97,7 +95,7 @@ export default class Bone {
         if (this.field1172) {
             this.field1180.copy(this.method681());
             if (this.field1182 != null) {
-                this.field1180.method2189(this.field1182.method686());
+                this.field1180.multiply(this.field1182.method686());
             }
 
             this.field1172 = false;
@@ -109,7 +107,7 @@ export default class Bone {
     method687(var1) {
         if (this.field1181) {
             this.field1174.copy(this.method685(var1));
-            this.field1174.method2189(this.method686());
+            this.field1174.multiply(this.method686());
             this.field1181 = false;
         }
 

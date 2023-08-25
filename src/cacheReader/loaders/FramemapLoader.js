@@ -10,7 +10,7 @@ class AnimayaSkeleton {
         this.field1979 = var1.readUint8();
 
         for (let i = 0; i < this.bones.length; ++i) {
-            this.bones[i] = new Bone(this.field1979, var1, false);
+            this.bones[i] = new Bone(this.field1979, var1);
         }
 
         this.attachBones();

@@ -285,7 +285,7 @@ export class ModelDefinition {
 						let scales = this.animayaScales[vertexIndex];
 
 						let matrix = new Matrix();
-						matrix.method2196();
+						matrix.zero();
 
 						for (let i = 0; i < bones.length; ++i) {
 							let boneIndex = bones[i];
@@ -294,10 +294,10 @@ export class ModelDefinition {
 								let matrix2 = new Matrix();
 								let matrix3 = new Matrix();
 
-								matrix2.method2187(scales[i] / 255);
+								matrix2.setScale(scales[i] / 255);
 								matrix3.copy(bone.method687(frameDef.field1257));
-								matrix3.method2189(matrix2);
-								matrix.method2199(matrix3);
+								matrix3.multiply(matrix2);
+								matrix.add(matrix3);
 							}
 						}
 
