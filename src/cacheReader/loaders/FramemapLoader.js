@@ -5,40 +5,24 @@ export class FramemapDefinition {
 }
 
 class AnimayaSkeleton {
-    constructor(var1, bonesCount) {
+    constructor(dataview, bonesCount) {
         this.bones = new Array(bonesCount);
-        this.field1979 = var1.readUint8();
+        this.numMatrices = dataview.readUint8();
 
         for (let i = 0; i < this.bones.length; ++i) {
-            this.bones[i] = new Bone(this.field1979, var1);
+            this.bones[i] = new Bone(this.numMatrices, dataview);
         }
 
         this.attachBones();
     }
 
     attachBones() {
-        let bones = this.bones;
-
-        for (let i = 0; i < bones.length; ++i) {
-            let bone = bones[i];
+        for (let i = 0; i < this.bones.length; ++i) {
+            let bone = this.bones[i];
             if (bone.id >= 0) {
-                bone.childBone = this.bones[bone.id];
+                bone.parentBone = this.bones[bone.id];
             }
         }
-
-        this.method1178();
-    }
-
-    method1178() {
-        let var1 = this.bones;
-
-        for (let var2 = 0; var2 < var1.length; ++var2) {
-            let var3 = var1[var2];
-            if (var3.id >= 0) {
-                var3.field1182 = this.bones[var3.id];
-            }
-        }
-
     }
 
     getBone(index) {
@@ -47,24 +31,6 @@ class AnimayaSkeleton {
 
     getAllBones() {
         return this.bones;
-    }
-}
-
-
-class class418 {
-    constructor() {
-        this.field3780 = 0.0;
-        this.field3790 = 0.0;
-        this.field3789 = 0.0;
-        this.field3788 = 0.0;
-        this.field3787 = 0.0;
-        this.field3786 = 0.0;
-        this.field3783 = 0.0;
-        this.field3782 = 0.0;
-        this.field3781 = 0.0;
-        this.field3791 = 1.0;
-        this.field3784 = 1.0;
-        this.field3785 = 1.0;
     }
 }
 

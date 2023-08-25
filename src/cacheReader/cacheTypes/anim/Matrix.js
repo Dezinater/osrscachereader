@@ -3,7 +3,6 @@ import Vector from "./Vector.js"
 export default class Matrix {
     matrixVals = new Array(16);
 
-    static field3747;
     static field3746 = new Array(100);
     static field3747 = new Matrix();
 

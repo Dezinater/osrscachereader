@@ -1,41 +1,7 @@
 import Matrix from '../cacheTypes/anim/Matrix.js';
 import IndexType from '../cacheTypes/IndexType.js'
 import AnimayaLoader from './AnimayaLoader.js';
-
-export class Quaternion {
-    constructor() {
-        this.identity();
-    }
-
-    identity() {
-        this.z = 0.0;
-        this.y = 0.0;
-        this.x = 0.0;
-        this.w = 1.0;
-    }
-
-    setRotation(x, y, z, angle) {
-        let halfSin = Math.sin(angle * 0.5);
-        let halfCos = Math.cos(angle * 0.5);
-        this.x = x * halfSin;
-        this.y = y * halfSin;
-        this.z = halfSin * z;
-        this.w = halfCos;
-    }
-
-    multiply(var1) {
-        this.set(this.z * var1.y + this.w * var1.x + this.x * var1.w - var1.z * this.y, this.w * var1.y + (var1.w * this.y - this.z * var1.x) + this.x * var1.z, this.y * var1.x + this.z * var1.w - var1.y * this.x + var1.z * this.w, this.w * var1.w - var1.x * this.x - this.y * var1.y - this.z * var1.z);
-    }
-
-    set(x, y, z, w) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
-    }
-
-
-}
+import Quaternion from '../cacheTypes/anim/Quaternion.js';
 
 export class FramesDefinition {
     method727(var1, var2, var3) {
@@ -46,11 +12,11 @@ export class FramesDefinition {
         this.method730(var5, var3, var2, var1);
         //console.log(var2.id, var5);
 
-        var2.method691(var5);
+        var2.copy(var5);
     }
 
     method728(var1, var2, var3, var4) {
-        let var5 = var3.method688(this.field1257);
+        let var5 = var3.getRotation(this.field1257);
         let var6 = var5[0];
         let var7 = var5[1];
         let var8 = var5[2];
@@ -91,17 +57,11 @@ export class FramesDefinition {
 
         var13.rotate(var12);
         var1.multiply(var13);
-        /*
-        var25.method2170();
-        var27.method2170();
-        var13.method2170();
-        var15.method2170();
-        */
     }
 
 
     method730(var1, var2, var3, var4) {
-        let var5 = var3.method689(this.field1257);
+        let var5 = var3.getTranslation(this.field1257);
         let var6 = var5[0];
         let var7 = var5[1];
         let var8 = var5[2];
@@ -128,7 +88,7 @@ export class FramesDefinition {
     }
 
     method726(var1, var2, var3, var4) {
-        let var5 = var3.method690(this.field1257);
+        let var5 = var3.getVectorMagnitudes(this.field1257);
         let var6 = var5[0];
         let var7 = var5[1];
         let var8 = var5[2];
