@@ -1,11 +1,9 @@
-import * as Ajax from './helpers/ajax.js'
 import * as DataViewImport from './helpers/DataView.js'
 
 import CacheDefinitionLoader from './CacheDefinitionLoader.js'
 import CacheRequester from './CacheRequester.js'
 
 import Index from './cacheTypes/Index.js'
-import nameHashLookup from './HashConverter.js'
 import CacheLoader from './CacheLoader.js'
 
 export default class RSCache {
@@ -18,19 +16,16 @@ export default class RSCache {
 		this.onload = cacheLoader.getResults().then(result => {
 			this.cacheRequester = new CacheRequester(result.datFile);
 
-			return this.loadCacheFiles(result.indexFiles, "./", nameRootDir).then(() => {
+			return this.loadCacheFiles(result.indexFiles).then(() => {
 				this.cacheRequester.setXteas(result.xteas);
 			});
 
 		});
-
-
 	}
 
 	progress(amount) {
 		this.progressFunc(amount);
 	}
-
 
 	async getAllFiles(indexId, archiveId, options = {}) {
 		let index = this.indicies[indexId];
@@ -39,7 +34,6 @@ export default class RSCache {
 		}
 
 		let archive = index.archives[archiveId];
-
 		if (archive == undefined) {
 			throw "Archive " + archiveId + " does not exist in Index " + indexId;
 		}
@@ -48,60 +42,23 @@ export default class RSCache {
 			return archive.files;
 		}
 
-		if (this.loadRequests == undefined) this.loadRequests = [];
-		if (this.loadRequests[indexId] == undefined) this.loadRequests[indexId] = {};
-		if (this.loadRequests[indexId][archiveId] == undefined) this.loadRequests[indexId][archiveId] = [];
-		//this.loadRequests[indexId][archiveId]++;
+		let data = await this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
 
+		archive = index.archives[data.archiveId];
+		archive.loadFiles(data.decompressedData);
 
-		//console.log(this.loadRequests[indexId][archiveId]);
-		let newPromise = new Promise((resolve, reject) => {
-			this.loadRequests[indexId][archiveId].push({ resolve, reject });
-		});
+		let filePromise = new CacheDefinitionLoader(data.index.id, archive, options).load(this);
+		archive.filesLoaded = true;
 
-		//if theres already one processing then just add it to the stack
-		if (this.loadRequests[indexId][archiveId].length > 1) {
-			return newPromise;
-		}
-
-		let data;
-
-		if (options.threaded)
-			data = this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
-		else
-			data = this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
-
-
-		data.then(x => {
-			archive = index.archives[x.archiveId];
-			archive.loadFiles(x.decompressedData);
-			new CacheDefinitionLoader(x.index.id, archive, options).load(this).then(() => {
-				archive.filesLoaded = true;
-				//console.log(this.loadRequests[indexId][archiveId]);
-				for (let i = 0; i < this.loadRequests[indexId][archiveId].length; i++) {
-					this.loadRequests[indexId][archiveId][i].resolve(archive.files);
-				}
-			}).catch((error) => {
-				for (let i = 0; i < this.loadRequests[indexId][archiveId].length; i++) {
-					this.loadRequests[indexId][archiveId][i].reject(error);
-				}
-			});
-		}).catch(err => {
-			for (let i = 0; i < this.loadRequests[indexId][archiveId].length; i++) {
-				this.loadRequests[indexId][archiveId][i].reject(err);
-			}
-		});
-
-		return newPromise;
+		return filePromise;
 	}
 
 	//some archives only contain 1 file so a fileId is only needed in some cases
 	getFile(indexId, archiveId, fileId = 0, options) {
-		//console.log("Archive ID", archiveId);
 		return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
 	}
 
-	loadCacheFiles(indexFiles, xteas, namesRootDir) {
+	loadCacheFiles(indexFiles) {
 		let idx255Data = indexFiles[indexFiles.length - 1];
 		let idxFileData = indexFiles.slice(0, indexFiles.length - 1);
 
@@ -114,15 +71,13 @@ export default class RSCache {
 				dataview = new DataView(idx255Data.buffer);
 				i = 255;
 			} else {
-				if(idxFileData[i] == undefined) continue;
+				if (idxFileData[i] == undefined) continue;
 				dataview = new DataView(idxFileData[i].buffer);
 			}
 			this.indicies[i] = new Index(i);
 			for (let j = 0; j < dataview.byteLength; j += 6) {
 				let size = dataview.readUint24();
 				let segment = dataview.readUint24();
-				//console.log(size, segment);
-
 				this.indicies[i].indexSegments.push({ size, segment });
 			}
 
@@ -143,7 +98,7 @@ export default class RSCache {
 			let size = dataview.readUint24();
 			let segment = dataview.readUint24();
 			let index = this.indicies[j / 6];
-			if(index == undefined) continue;
+			if (index == undefined) continue;
 			let data = this.cacheRequester.readData(index, size, segment);
 			//since this is async now the onload is considered complete before its completed
 			//this call is completed before loadIndexData is completed
@@ -154,12 +109,9 @@ export default class RSCache {
 			});
 
 			indexPromises.push(data);
-
-
-			//index.loadIndexData(data);
 		}
+
 		this.indexPromises = indexPromises;
-		//console.log(indexPromises);
 		return Promise.all(indexPromises);
 	}
 

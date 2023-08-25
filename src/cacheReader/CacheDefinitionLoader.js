@@ -57,13 +57,13 @@ export default class CacheDefinitionLoader {
 							newFiles[loadedDef.id] = this.archive.files[loadPromise.iterator];
 
 						newFiles[loadedDef.id].def = loadedDef;
-						newFiles[loadedDef.id].content = undefined;
+						//newFiles[loadedDef.id].content = undefined;
 					} else {
 						if (newFiles[0] == undefined)
 							newFiles[0] = this.archive.files[0];
 
 						newFiles[0].def = loadedDef;
-						newFiles[0].content = undefined;
+						//newFiles[0].content = undefined;
 					}
 				})
 				promises.push(loadPromise);
@@ -71,7 +71,7 @@ export default class CacheDefinitionLoader {
 			}
 			Promise.all(promises).then(() => {
 				this.archive.files = newFiles;
-				resolve();
+				resolve(this.archive.files);
 			});
 			//resolve();
 		});
