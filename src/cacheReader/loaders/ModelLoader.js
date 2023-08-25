@@ -1,5 +1,6 @@
 import IndexType from "../cacheTypes/IndexType.js";
 import ConfigType from "../cacheTypes/ConfigType.js";
+import Matrix from "../cacheTypes/anim/Matrix.js";
 
 export class ModelDefinition {
 
@@ -59,20 +60,29 @@ export class ModelDefinition {
 	}
 
 	async loadAnimation(cache, animationId) {
-		let animation = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animationId);
-		let shiftedId = (animation.def.frameIDs[0] >> 16);
+		let animation = (await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animationId)).def;
+		let vertexData;
+		let lengths;
 
-		let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map(x => x.def);
-		let frames = animation.def.frameIDs.map(frameId => frameDefs.find(frameDef => frameDef.id == (frameId & 65535)));
+		if (animation.animMayaID != undefined) {
+			let framesInfo = await cache.getAllFiles(IndexType.FRAMES.id, (animation.animMayaID >> 16), { isAnimaya: true });
 
-		let loadedFrames = frames.map(x => this.loadFrame(this, x));
+			vertexData = this.loadMayaAnimation(framesInfo[0].def, animation);
+			lengths = new Array(vertexData.length).fill(1);
+		} else {
+			let shiftedId = (animation.frameIDs[0] >> 16);
+			let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map(x => x.def);
+			let frames = animation.frameIDs.map(frameId => frameDefs.find(frameDef => frameDef.id == (frameId & 65535)));
+			let loadedFrames = frames.map(x => this.loadFrame(this, x));
 
-		let animationData = {
-			vertexData: loadedFrames.map(x => x.vertices),
-			lengths: animation.def.frameLengths,
+			vertexData = loadedFrames.map(x => x.vertices);
+			lengths = animation.frameLengths;
+		}
+
+		return {
+			vertexData,
+			lengths,
 		};
-
-		return animationData;
 	}
 
 	loadFrame(model, frame) {
@@ -249,11 +259,69 @@ export class ModelDefinition {
 		}
 
 	}
+
+	loadMayaAnimation(frameDef, sequenceDefinition) {
+		let animations = [];
+		let animayaSkeleton = frameDef.framemap.animayaSkeleton;
+
+		let verticesX = [];
+		let verticesY = [];
+		let verticesZ = [];
+		for (let currentFrame = 0; currentFrame < sequenceDefinition.animMayaEnd; currentFrame++) {
+			let var6 = 0;
+			let bones = frameDef.framemap.animayaSkeleton.getAllBones();
+			for (let index = 0; index < bones.length; ++index) {
+				let bone = bones[index];
+				frameDef.method727(currentFrame, bone, var6, frameDef.field1257);
+				++var6;
+			}
+			if (this.animayaGroups != null) {
+				let animatedFrameVertices = [];
+
+				for (let vertexIndex = 0; vertexIndex < this.vertexCount; ++vertexIndex) {
+					let bones = this.animayaGroups[vertexIndex];
+
+					if (bones != null && bones.length != 0) {
+						let scales = this.animayaScales[vertexIndex];
+
+						let matrix = new Matrix();
+						matrix.method2196();
+
+						for (let i = 0; i < bones.length; ++i) {
+							let boneIndex = bones[i];
+							let bone = animayaSkeleton.getBone(boneIndex);
+							if (bone != null) {
+								let matrix2 = new Matrix();
+								let matrix3 = new Matrix();
+
+								matrix2.method2187(scales[i] / 255);
+								matrix3.copy(bone.method687(frameDef.field1257));
+								matrix3.method2189(matrix2);
+								matrix.method2199(matrix3);
+							}
+						}
+
+
+						let var3 = this.vertexPositionsX[vertexIndex];
+						let var4 = (-this.vertexPositionsY[vertexIndex]);
+						let var5 = (-this.vertexPositionsZ[vertexIndex]);
+						let var6 = 1.0;
+						verticesX[vertexIndex] = matrix.matrixVals[0] * var3 + matrix.matrixVals[4] * var4 + matrix.matrixVals[8] * var5 + matrix.matrixVals[12] * var6;
+						verticesY[vertexIndex] = -(matrix.matrixVals[1] * var3 + matrix.matrixVals[5] * var4 + matrix.matrixVals[9] * var5 + matrix.matrixVals[13] * var6);
+						verticesZ[vertexIndex] = -(matrix.matrixVals[2] * var3 + matrix.matrixVals[6] * var4 + matrix.matrixVals[10] * var5 + matrix.matrixVals[14] * var6);
+
+						animatedFrameVertices.push([verticesX[vertexIndex], verticesY[vertexIndex], verticesZ[vertexIndex]]);
+					}
+				}
+				animations.push(animatedFrameVertices);
+			}
+		}
+		
+		return animations;
+	}
 }
 
 export default class ModelLoader {
-
-
 
 	load(bytes, id) {
 		let def = new ModelDefinition();
@@ -1774,7 +1842,6 @@ export default class ModelLoader {
 
 			if (var15 == 0) {
 				var var16 = def.vertexNormals[vertexA];
-				//console.log(var16);
 				var16.magnitude = 0;
 				var16.x += var11;
 				var16.y += var12;
