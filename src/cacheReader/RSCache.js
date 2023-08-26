@@ -28,6 +28,7 @@ export default class RSCache {
 	}
 
 	async getAllFiles(indexId, archiveId, options = {}) {
+		
 		let index = this.indicies[indexId];
 		if (index == undefined) {
 			throw "Index " + indexId + " does not exist";
@@ -37,12 +38,12 @@ export default class RSCache {
 		if (archive == undefined) {
 			throw "Archive " + archiveId + " does not exist in Index " + indexId;
 		}
-
+		
 		if (archive.filesLoaded) {
 			return archive.files;
 		}
 
-		let data = await this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
+		let data = await this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
 
 		archive = index.archives[data.archiveId];
 		archive.loadFiles(data.decompressedData);

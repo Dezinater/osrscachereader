@@ -7,7 +7,6 @@ onmessage = async function (e) {
     //postMessage(workerResult);
 
     let index = e.data.index;
-    let segment = e.data.segment;
     let archiveId = e.data.archiveId;
     let compressedData = e.data.compressedData;
 
@@ -25,12 +24,10 @@ onmessage = async function (e) {
     } else if (compressionOpcode == 1) { //bz2
         let decompressedLength = dataview.getInt32(5);
         data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
-        data = decrypt(data, compressedLength, e?.key); 
+        data = decrypt(data, compressedLength, e?.key);
         let bzData = new Uint8Array(4 + data.length);
-        bzData[0] = 'B'.charCodeAt(0);
-        bzData[1] = 'Z'.charCodeAt(0);
-        bzData[2] = 'h'.charCodeAt(0);
-        bzData[3] = '1'.charCodeAt(0);
+        const bzHeader = [66, 90, 104, 49] //BZh1
+        bzData.set(bzHeader, 0);
         bzData.set(data, 4)
 
         const bzip2 = await Bzip2.default.init();
@@ -63,11 +60,8 @@ onmessage = async function (e) {
     }
 
     let length = decompressedData.byteLength;
-    postMessage({ index, archiveId, decompressedData: decompressedData.buffer.slice(0, length) }, [decompressedData.buffer.slice(0, length)]);
-    decompressedData = [];
-    compressedData = [];
-    data = [];
-    dataview = {};
+    const finalBuffer = decompressedData.buffer.slice(0, length);
+    postMessage({ index, archiveId, decompressedData: finalBuffer }, [finalBuffer]);
 }
 
 function decrypt(data, len, key) {
