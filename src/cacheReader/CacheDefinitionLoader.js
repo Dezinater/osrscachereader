@@ -18,7 +18,7 @@ export default class CacheDefinitionLoader {
 		return new Promise(async (resolve, reject) => {
 			let newFiles = [];
 			for (let i = 0; i < this.archive.files.length; i++) {
-				if (this.archive.files[i].content.length == 0) continue;
+				if (this.archive.files[i].content == undefined || this.archive.files[i].content.length == 0) continue;
 				let loadedDef = await this.#loadDef(this.archive.files[i], rscache);
 
 				if (this.archive.files.length > 1) {
