@@ -46,11 +46,12 @@ export default class CacheDefinitionLoader {
 		let loadedDef;
 		try {
 			loadedDef = await this.loader.load(file.content, defId, rscache, this.options);
-			if (!this.options.saveDef) { //if not saving then make a copy so the def doesnt go on the original
+			file.content = undefined; //unload content since it will be reloaded
+			
+			if (!this.options.cacheResults) { //if not saving then make a copy so the def doesnt go on the original
 				let fileCopy = Object.assign({}, file);
 				file = fileCopy;
 			}
-			file.content = undefined; //unload content since it will be reloaded
 			file.def = loadedDef;
 			return file;
 		} catch (error) {
