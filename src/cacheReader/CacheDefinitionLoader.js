@@ -6,118 +6,57 @@ export default class CacheDefinitionLoader {
 		this.indexType = IndexType.valueOf(indexId);
 		this.archive = archive;
 		this.options = options;
-		//this.files = files;
+
+		if (this.indexType == IndexType.CONFIGS) {
+			this.loader = new (ConfigType.valueOf(this.archive.id).loader)();
+		} else {
+			this.loader = new this.indexType.loader();
+		}
 	}
 
-	load(rscache) {
-		return new Promise((resolve, reject) => {
-			/*
-			if (this.indexType == IndexType.MAPS) {
-				this.loadMaps();
-				resolve();
-				return;
-			}
-			*/
-
-			var loader;
-			if (this.indexType == IndexType.CONFIGS) {
-				loader = new (ConfigType.valueOf(this.archive.id).loader)();
-			} else {
-				loader = new this.indexType.loader();
-			}
-
-			var promises = [];
+	loadAllFiles(rscache) {
+		return new Promise(async (resolve, reject) => {
 			let newFiles = [];
-			//console.log(this.files.length);
-			for (var i = 0; i < this.archive.files.length; i++) {
-				if(this.archive.files[i].content.length == 0) continue;
-				var defId = this.archive.files.length > 1 ? this.archive.files[i].id : this.archive.id;
-				//unload archive file memory to replace it with definition info
-				//if (this.archive.files[i].id > 25000)
-				//	console.log(this.archive.files[i], this.archive.files[i].content.length);
-				let loadedValue;
-				try {
-					loadedValue = loader.load(this.archive.files[i].content, defId, rscache, this.options);
-				} catch (error) {
-					console.log(i, this.archive.files.length, defId, this.options)
-					reject(error);
-					throw error;
+			for (let i = 0; i < this.archive.files.length; i++) {
+				if (this.archive.files[i].content.length == 0) continue;
+				let loadedDef = await this.#loadDef(this.archive.files[i], rscache);
+
+				if (this.archive.files.length > 1) {
+					newFiles[loadedDef.id] = loadedDef;
+				} else {
+					newFiles[0] = loadedDef;
 				}
-				let loadPromise = Promise.resolve(loadedValue);
-				loadPromise.iterator = i;
-				//map it to a whole new array
-				//otherwise values wil map over themselves
-				//ex 11232 maps to 11253 but 11253 maps to 11293
-				loadPromise.then((loadedDef) => {
-					//console.log(loadedDef.id);
-
-
-					if (this.archive.files.length > 1) {
-						if (newFiles[loadedDef.id] == undefined)
-							newFiles[loadedDef.id] = this.archive.files[loadPromise.iterator];
-
-						newFiles[loadedDef.id].def = loadedDef;
-						//newFiles[loadedDef.id].content = undefined;
-					} else {
-						if (newFiles[0] == undefined)
-							newFiles[0] = this.archive.files[0];
-
-						newFiles[0].def = loadedDef;
-						//newFiles[0].content = undefined;
-					}
-				})
-				promises.push(loadPromise);
-				//this.files[i].def = loader.load(this.files[i].content, rscache);
 			}
-			Promise.all(promises).then(() => {
-				this.archive.files = newFiles;
-				resolve(this.archive.files);
-			});
-			//resolve();
+
+			this.archive.files = newFiles;
+			resolve(this.archive.files);
 		});
 	}
 
-	loadMaps() {
-		/*
-		let MAX_REGIONS = 32768;
-		for (let i = 0; i < MAX_REGIONS; ++i)
-		{
-			let x = i >> 8;
-			let y = i & 0xFF;
+	async loadFile(fileId, rscache) {
+		const fileIndex = this.archive.files.index(x => x.id == fileId);
+		const file = this.archive.files[fileIndex];
+		if (file.content.length == 0) return;
 
-			Archive map = index.findArchiveByName("m" + x + "_" + y);
-			Archive land = index.findArchiveByName("l" + x + "_" + y);
+		return await this.#loadDef(this.archive.files[i], rscache);
+	}
 
-			assert (map == null) == (land == null);
-
-			if (map == null || land == null)
-			{
-				continue;
+	async #loadDef(file, rscache) {
+		let defId = this.archive.files.length > 1 ? file.id : this.archive.id;
+		let loadedDef;
+		try {
+			loadedDef = await this.loader.load(file.content, defId, rscache, this.options);
+			if (!this.options.saveDef) { //if not saving then make a copy so the def doesnt go on the original
+				let fileCopy = Object.assign({}, file);
+				file = fileCopy;
 			}
-
-			byte[] data = map.decompress(storage.loadArchive(map));
-			MapDefinition mapDef = new MapLoader().load(x, y, data);
-			LocationsDefinition locDef = null;
-
-			int[] keys = keyManager.getKeys(i);
-			if (keys != null)
-			{
-				try
-				{
-					data = land.decompress(storage.loadArchive(land), keys);
-				}
-				catch (IOException ex)
-				{
-					continue;
-				}
-
-				locDef = new LocationsLoader().load(x, y, data);
-			}
-
-			mapMap.put(mapDef, locDef);
+			file.content = undefined; //unload content since it will be reloaded
+			file.def = loadedDef;
+			return file;
+		} catch (error) {
+			console.log(file.id, this.archive.files.length, defId, this.options)
+			throw error;
 		}
 
-		return mapMap;
-		*/
 	}
 }
