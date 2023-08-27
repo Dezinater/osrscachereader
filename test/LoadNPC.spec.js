@@ -16,7 +16,7 @@ describe('Load NPC', function () {
 
     describe('Zulrah', function () {
         it('should be ID 2042', function () {
-            cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 12125).then(npc => {
+            cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then(npc => {
                 assert.equal(npc.def.id, 2042);
             });
         });
