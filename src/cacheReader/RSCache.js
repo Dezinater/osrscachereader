@@ -81,14 +81,18 @@ export default class RSCache {
 				return archive.files;
 			}
 
-			let data = await this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
-
+			let data;
+			if (options.threaded) {
+				data = await this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
+			} else {
+				data = await this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
+			}
 			archive = index.archives[data.archiveId];
 			archive.loadFiles(data.decompressedData);
 
 			let filePromise = new CacheDefinitionLoader(data.index.id, archive, options).loadAllFiles(this);
 
-			if(options.cacheResults) { //it will readData again since filesLoaded will be false
+			if (options.cacheResults) { //it will readData again since filesLoaded will be false
 				archive.filesLoaded = true;
 			}
 
