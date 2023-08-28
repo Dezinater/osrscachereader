@@ -141,7 +141,7 @@ export default class FramesLoader {
         let lastI = -1;
         let index = 0;
         //return this.def;
-        return cache.getFile(IndexType.FRAMEMAPS.id, framemapArchiveIndex, 0, { cacheResults: false }).then((framemap) => {
+        return cache.getFile(IndexType.FRAMEMAPS.id, framemapArchiveIndex, 0, { cacheResults: true }).then((framemap) => {
 
             def.framemap = framemap.def;
 

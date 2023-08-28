@@ -224,7 +224,7 @@ export default class AnimayaLoader {
             return def;
         }
         //console.log(version, skeletonId, "TEST");
-        return cache.getFile(IndexType.FRAMEMAPS.id, def.skeletonId, 0, { cacheResults: false }).then((framemap) => {
+        return cache.getFile(IndexType.FRAMEMAPS.id, def.skeletonId, 0, { cacheResults: true }).then((framemap) => {
             framemap = framemap.def;
 
             dataview.readUint16();
