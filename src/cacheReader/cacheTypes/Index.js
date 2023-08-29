@@ -1,8 +1,5 @@
 import ArchiveData from './Archive.js'
 import FileData from './File.js'
-
-import nameHashLookup from '../HashConverter.js'
-
 export default class Index {
 	constructor(id) {
 		this.id = id;
@@ -56,8 +53,6 @@ export default class Index {
 			for (let i = 0; i < this.archivesCount; i++) {
 				let nameHash = dataview.readInt32();
 				this.archives[archiveKeys[i]].nameHash = nameHash;
-				if (nameHashLookup[nameHash] != undefined)
-					this.archives[archiveKeys[i]].name = nameHashLookup[nameHash];
 			}
 		}
 
@@ -102,10 +97,6 @@ export default class Index {
 					let fileName = dataview.readUint32();
 
 					this.archives[archiveKeys[i]].files[j].nameHash = fileName;
-
-					if (nameHashLookup[fileName] != undefined)
-						this.archives[archiveKeys[i]].files[j].name = nameHashLookup[fileName];
-
 				}
 			}
 		}
