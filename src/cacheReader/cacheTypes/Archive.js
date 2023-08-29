@@ -1,4 +1,4 @@
-export default class ArchiveData {
+export default class Archive {
 	constructor() {
 		this.id = 0;
 		this.name = "";

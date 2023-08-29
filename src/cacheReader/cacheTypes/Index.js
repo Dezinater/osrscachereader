@@ -1,4 +1,4 @@
-import ArchiveData from './Archive.js'
+import Archive from './Archive.js'
 import FileData from './File.js'
 export default class Index {
 	constructor(id) {
@@ -43,7 +43,7 @@ export default class Index {
 				archiveId = lastArchiveId += dataview.readInt16();
 			}
 
-			this.archives[archiveId] = new ArchiveData();
+			this.archives[archiveId] = new Archive();
 			this.archives[archiveId].id = archiveId;
 		}
 
@@ -100,6 +100,27 @@ export default class Index {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get an Archive from this Index
+	 * @param {Number} archive A number or can be a ConfigType if the IndexType is CONFIGS
+	 * @returns Archive
+	 */
+	getArchive(archive) {
+		let archiveId;
+		if (archive.constructor.name === "Object") {
+			archiveId = archive.id;
+		} else if (Number.isSafeInteger(archive)) {
+			archiveId = archive;
+		}
+
+		archive = this.archives[archiveId];
+		if (archive == undefined) {
+			throw "Archive " + archiveId + " does not exist";
+		}
+
+		return archive;
 	}
 
 	toString() {
