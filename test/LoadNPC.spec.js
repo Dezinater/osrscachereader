@@ -22,4 +22,8 @@ describe('Load NPC', function () {
         });
     });
 
+
+    after(() => {
+        cache.close();
+    });
 });

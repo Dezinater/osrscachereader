@@ -17,7 +17,7 @@ cache.onload.then(() => {
 
         console.log("Loading skeletons");
         animayaIds.forEach(x => {
-            promises.push(cache.getAllFiles(IndexType.FRAMES.id, (x >> 16), { isAnimaya: true, earlyStop: true, threaded: true }));
+            promises.push(cache.getAllFiles(IndexType.FRAMES.id, (x >> 16), { isAnimaya: true, earlyStop: true }));
         });
 
         let mappedAnims = {};
@@ -31,8 +31,9 @@ cache.onload.then(() => {
                 mappedAnims[id].push(animIds[index]);
             });
 
-            fs.writeFileSync("/animayaCommonAnims.json", JSON.stringify(mappedAnims));
+            fs.writeFileSync("generated/animayaCommonAnims.json", JSON.stringify(mappedAnims));
         });
 
+    cache.close();
     }).catch(e => console.log(e));
 });

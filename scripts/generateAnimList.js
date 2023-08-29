@@ -14,19 +14,20 @@ cache.onload.then(() => {
         for (let i = 0; i < animationInfo.length; i++) {
             let shiftedId = (animationInfo[i].def.frameIDs[0] >> 16);
             let frames = Object.values(await cache.getAllFiles(IndexType.FRAMES.id, shiftedId));
-            if(frames[0] == undefined) debugger;
+            if (frames[0] == undefined) debugger;
             let animSkeletonId = frames[0].def.framemap.id;
             if (!(animSkeletonId in commonAnims)) {
                 commonAnims[animSkeletonId] = {};
             }
 
-            if(!(shiftedId in commonAnims[animSkeletonId])) {
+            if (!(shiftedId in commonAnims[animSkeletonId])) {
                 commonAnims[animSkeletonId][shiftedId] = [];
             }
             commonAnims[animSkeletonId][shiftedId].push(animationInfo[i].def.id);
         }
         fs.writeFileSync("generated/commonAnims.json", JSON.stringify(commonAnims));
-       
+
+        cache.close();
         /*
         for (let i = 0; i < cache.indicies[IndexType.FRAMES.id].archivesCount && i < 2; i++) {
             let frames = await cache.getAllFiles(IndexType.FRAMES.id, i);
