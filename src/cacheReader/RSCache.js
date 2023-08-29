@@ -107,6 +107,10 @@ export default class RSCache {
 		return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
 	}
 
+	close() {
+		this.cacheRequester.workerPool.finish();
+	}
+
 	#loadCacheFiles(indexFiles) {
 		let idx255Data = indexFiles[indexFiles.length - 1];
 		let idxFileData = indexFiles.slice(0, indexFiles.length - 1);

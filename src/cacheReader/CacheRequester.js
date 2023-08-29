@@ -1,9 +1,6 @@
 import * as gzip from 'gzip-js'
-import * as Ajax from './helpers/ajax.js'
-import Worker from "web-worker"
 import IndexType from './cacheTypes/IndexType.js'
 
-import bz2Decompress from "bz2";
 import Bzip2 from "@foxglove/wasm-bz2";
 import WorkerPool from './WorkerPool.js';
 
@@ -12,18 +9,6 @@ export default class CacheRequester {
 		this.workerPool = new WorkerPool(8);
 		this.promises = {};
 		this.datData = datFile;
-
-
-		this.worker = new Worker(new URL('./worker.js', import.meta.url));
-		this.worker.onmessage = (event) => {
-			event.data.decompressedData = new Uint8Array(event.data.decompressedData);
-
-			let length = this.promises[event.data.index.id][event.data.archiveId].length;
-			for (let i = 0; i < length; i++) {
-				this.promises[event.data.index.id][event.data.archiveId][i](event.data);
-			}
-			this.promises[event.data.index.id][event.data.archiveId] = undefined;
-		};
 	}
 
 	setXteas(xteas) {

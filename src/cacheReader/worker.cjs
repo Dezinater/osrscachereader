@@ -1,5 +1,8 @@
-import * as gzip from 'gzip-js'
-import Bzip2 from "@foxglove/wasm-bz2";
+//import * as gzip from 'gzip-js'
+const gzip = require("gzip-js");
+//import Bzip2 from "@foxglove/wasm-bz2";
+
+const Bzip2 = require("@foxglove/wasm-bz2").Bzip2;
 
 onmessage = async function (e) {
     //let workerResult = 'Result: ' + (e.data[0]);

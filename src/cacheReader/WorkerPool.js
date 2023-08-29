@@ -1,3 +1,5 @@
+import Worker from "web-worker"
+
 export default class WorkerPool {
 
     workers;
@@ -7,7 +9,7 @@ export default class WorkerPool {
     constructor(size = 8) {
         this.workers = new Array(size).fill().map((x, i) => ({
             id: i,
-            worker: new Worker(new URL('./worker.js', import.meta.url)),
+            worker: new Worker(new URL('./worker.cjs', import.meta.url)),
             active: false,
         }));
         
@@ -53,6 +55,10 @@ export default class WorkerPool {
         unactiveWorker.worker.postMessage({ index, segment, archiveId, compressedData, key }, [compressedData]);
 
         return this.promises[index][archiveId].promise;
+    }
+
+    finish() {
+        this.workers.forEach(workerObject => workerObject.worker.terminate());
     }
 
 }
