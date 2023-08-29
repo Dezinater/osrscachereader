@@ -1,5 +1,3 @@
-
-import RSCache from "./RSCache";
 import IndexType from "./cacheTypes/IndexType.js"
 import ConfigType from "./cacheTypes/ConfigType.js"
 import { isBrowser } from "browser-or-node";
@@ -7,7 +5,7 @@ import fs from "fs";
 
 export default class CacheDumper {
 
-    ignoreList = ["FRAMES", "FRAMEMAPS", "MAPS", "MODELS"];
+    ignoreList = [];
 
     cache;
     outFolder;
@@ -17,7 +15,7 @@ export default class CacheDumper {
     failedJobs = 0;
     totalJobs = 0;
 
-    constructor(rscache, outFolder, progressFunction = () => { }) {
+    constructor(rscache, outFolder, ignoreList, progressFunction = () => { }) {
         if (isBrowser) {
             console.error("Run with Node to dump Cache files, web browser dumping currently not implemented");
             return;
@@ -28,6 +26,7 @@ export default class CacheDumper {
         }
         this.cache = rscache;
         this.outFolder = outFolder;
+        this.ignoreList = ignoreList;
         this.progressFunction = progressFunction;
     }
 
