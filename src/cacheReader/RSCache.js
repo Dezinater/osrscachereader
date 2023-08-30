@@ -7,9 +7,25 @@ import Index from './cacheTypes/Index.js'
 import CacheLoader from './CacheLoader.js'
 
 import IndexType from './cacheTypes/IndexType.js'
+import { ConfigType } from '../index-dev.js'
 
-export default class RSCache {
-	constructor(cacheRootDir = "./", progressFunc = () => { }, nameRootDir = undefined) {
+/**
+ * @typedef options
+ * @property {boolean} threaded Use a Web Worker to read from the cache. Slower than non-threaded since threading overhead is big. Useful for initial/big loads to in web apps to have a responsive UI
+ * @property {boolean} isAnimaya Used while loading animations. Uses a different loading method for Animaya animations
+ * @property {boolean} earlyStop Used while loading Animaya animations. Stops the reader early to just get the skeleton info
+ * @property {boolean} loadSprites Used while loading Texture defs. Automatically grabs the corresponding sprite file
+ * @property {boolean} cacheResults Save def on archive file after decompressing contents. Useful for quicker loading if loading the same thing multiple times but also can increase memory usage
+ */
+
+/**
+ * @catergory Base Class
+ * Creates a RSCache reader
+ * @param {string} cacheRootDir 
+ * @param {function(number):void} progressFunc Progress function callback. Passes 1 parameter which is the amount of progress from the last step (not total progress)
+ */
+class RSCache {
+	constructor(cacheRootDir = "./", progressFunc) {
 		this.indicies = {};
 		this.progressFunc = progressFunc;
 
@@ -29,6 +45,12 @@ export default class RSCache {
 		this.progressFunc(amount);
 	}
 
+	/**
+	 * Get a cache Index file. 
+	 * @method
+	 * @param {(Number | IndexType)} index 
+	 * @returns Index
+	 */
 	getIndex(index) {
 		let indexId;
 		if (index.constructor.name === "Object") {
@@ -45,22 +67,6 @@ export default class RSCache {
 		return index;
 	}
 
-	getArchive(index, archive) {
-		let archiveId;
-		if (archive.constructor.name === "Object") {
-			archiveId = archive.id;
-		} else if (Number.isSafeInteger(archive)) {
-			archiveId = archive;
-		}
-
-		archive = index.archives[archiveId];
-		if (archive == undefined) {
-			throw "Archive " + archiveId + " does not exist";
-		}
-
-		return archive;
-	}
-
 	#checkIfCachingResults(options, indexType) {
 		if (options.cacheResults == undefined) {
 			if (indexType.id == IndexType.MODELS.id || indexType.id == IndexType.MAPS.id) { // dont save models and maps if cacheResults isnt set
@@ -71,10 +77,17 @@ export default class RSCache {
 		}
 	}
 
+	/**
+	 * Gets all of the files from an archive and loads their definitions if possible.
+	 * @param {(Number | IndexType)} indexId Can be a number or IndexType
+	 * @param {(Number)} archiveId Can be a number but also can be a ConfigType if IndexType is CONFIG
+	 * @param {options} options 
+	 * @returns File
+	 */
 	async getAllFiles(indexId, archiveId, options = {}) {
 		try {
 			let index = this.getIndex(indexId);
-			let archive = this.getArchive(index, archiveId);
+			let archive = index.getArchive(archiveId);
 			this.#checkIfCachingResults(options, index);
 
 			if (archive.filesLoaded) {
@@ -102,11 +115,77 @@ export default class RSCache {
 		}
 	}
 
-	//some archives only contain 1 file so a fileId is only needed in some cases
-	getFile(indexId, archiveId, fileId = 0, options = {}) {
+	/**
+	 * Gets a single file from an archive and load its definition if possible.
+	 * @param {(Number | IndexType)} indexId Can be a number or IndexType
+	 * @param {(Number)} archiveId Can be a number but also can be a ConfigType if IndexType is CONFIG
+	 * @param {Number} fileId Id of the file to get from the archive
+	 * @param {options} options 
+	 * @returns File
+	 */
+	async getFile(indexId, archiveId, fileId = 0, options = {}) {
 		return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
 	}
 
+	/**
+	 * Helper method to map getAllFiles results to definitions
+	 * @param {(Number | IndexType)} indexId Can be a number or IndexType
+	 * @param {(Number)} archiveId Can be a number but also can be a ConfigType if IndexType is CONFIG
+	 * @param {options} options 
+	 * @returns Definition
+	 */
+	async getAllDefs(indexId, archiveId, options = {}) {
+		try {
+			let files = await this.getAllFiles(indexId, archiveId, options);
+			return files.map(x => x.def);
+		} catch (e) {
+			console.log(e)
+		}
+	}
+
+	/**
+	 * Helper method to map getFile results to its definition
+	 * @param {(Number | IndexType)} indexId Can be a number or IndexType
+	 * @param {(Number)} archiveId Can be a number but also can be a ConfigType if IndexType is CONFIG
+	 * @param {Number} fileId Id of the definition to get from the archive
+	 * @param {options} options 
+	 * @returns Definition
+	 */
+	async getDef(indexId, archiveId, fileId = 0, options = {}) {
+		return this.getAllDefs(indexId, archiveId, options).then((x) => x[fileId]);
+	}
+
+	/**
+	 * Helper method to get a NPC definition
+	 * @param {Number} id NPC Id
+	 * @param {options} options 
+	 * @returns NpcDefinition
+	 */
+	async getNPC(id, options = {}) {
+		return this.getDef(IndexType.CONFIGS, ConfigType.NPC, id, options);
+	}
+
+	/**
+	 * Helper method to get an Item definition
+	 * @param {Number} id Item Id
+	 * @param {options} options 
+	 * @returns ItemDefinition
+	 */
+	async getItem(id, options = {}) {
+		return this.getDef(IndexType.CONFIGS, ConfigType.ITEM, id, options);
+	}
+
+	/**
+	 * Helper method to get an Object definition
+	 * @param {Number} id Object Id
+	 * @param {options} options 
+	 * @returns ObjectDefinition
+	 */
+	async getObject(id, options = {}) {
+		return this.getDef(IndexType.CONFIGS, ConfigType.OBJECT, id, options);
+	}
+
+	/** Close the cache and clean up the web worker pool */
 	close() {
 		this.cacheRequester.workerPool.finish();
 	}
@@ -169,3 +248,5 @@ export default class RSCache {
 	}
 
 }
+
+export default RSCache;
