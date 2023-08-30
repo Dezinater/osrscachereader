@@ -1,5 +1,5 @@
 import Archive from './Archive.js'
-import FileData from './File.js'
+import File from './File.js'
 export default class Index {
 	constructor(id) {
 		this.id = id;
@@ -87,7 +87,7 @@ export default class Index {
 				} else {
 					fileID += dataview.readUint16();
 				}
-				this.archives[archiveKeys[i]].files[j] = new FileData(fileID);
+				this.archives[archiveKeys[i]].files[j] = new File(fileID);
 			}
 		}
 

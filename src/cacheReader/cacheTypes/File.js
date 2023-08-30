@@ -1,4 +1,7 @@
-export default class FileData {
+/**
+ * 
+ */
+export default class File {
 	constructor(id) {
 		this.id = id;
 		this.name = "";
