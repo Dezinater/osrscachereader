@@ -129,7 +129,9 @@ class Index {
 			for (let i = 0; i < this.archivesCount; i++) {
 				for (let j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
 					let fileName = dataview.readUint32();
-
+					if (fileName == 0) {
+						fileName = this.archives[archiveKeys[i]].nameHash;
+					}
 					this.archives[archiveKeys[i]].files[j].nameHash = fileName;
 				}
 			}
