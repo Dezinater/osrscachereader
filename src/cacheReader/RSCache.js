@@ -96,9 +96,9 @@ class RSCache {
 
 			let data;
 			if (options.threaded) {
-				data = await this.cacheRequester.readDataThreaded(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
+				data = await this.cacheRequester.readDataThreaded(index, index.indexSegments[archive.id].size, index.indexSegments[archive.id].segment, archive.id);
 			} else {
-				data = await this.cacheRequester.readData(index, index.indexSegments[archiveId].size, index.indexSegments[archiveId].segment, archiveId);
+				data = await this.cacheRequester.readData(index, index.indexSegments[archive.id].size, index.indexSegments[archive.id].segment, archive.id);
 			}
 			archive = index.archives[data.archiveId];
 			archive.loadFiles(data.decompressedData);
