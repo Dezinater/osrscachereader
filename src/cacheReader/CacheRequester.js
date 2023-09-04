@@ -49,7 +49,7 @@ export default class CacheRequester {
 			let data;
 			let decompressedData;
 			if (compressionOpcode == 0) { //none
-				data = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
+				data = new Uint8Array(dataview.buffer.slice(5, 5 + compressedLength));
 				data = this.decrypt(data, compressedLength, key);
 				decompressedData = data;
 				index.revision = dataview.getUint16(data.buffer.byteLength)
