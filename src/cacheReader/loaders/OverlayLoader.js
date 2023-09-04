@@ -1,6 +1,41 @@
+/**
+* Used for Map tiles
+* @class ObjectDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class OverlayDefinition {
+    /** 
+    * The ID of this Overlay
+    * @type {number} 
+    */
+    id;    
 
+    /** 
+    * RGB Colour
+    * @type {number} 
+    */
+    color = 0;  
+
+    /** 
+    * Overlay texture
+    * @type {number} 
+    */
+    texture = -1;    
+
+    /** 
+    * Hide UnderlayDefinition
+    * @type {boolean} 
+    */
+    hideUnderlay = true;    
+
+    /** 
+    * RGB Colour
+    * @type {number} 
+    */
+    secondaryColor = -1;
 }
+
 export default class OverlayLoader {
 
     load(bytes, id) {

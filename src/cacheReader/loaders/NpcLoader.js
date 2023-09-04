@@ -1,6 +1,182 @@
-export class NpcDefinition {
+/**
+* @class NpcDefinition
+* @category Definitions
+* @hideconstructor
+*/
+class NpcDefinition {
+	/** 
+	 * The ID of this NPC
+	 * @type {number} 
+	 */
+	id;
 
+	/**
+	 * The models that compose the NPC
+	 * @type {Array} 
+	 */
+	models = [];
+
+	/**
+	 * Name of the NPC
+	 * @type {string} 
+	 */
+	name;
+
+	/**
+	 * Tile size
+	 * @type {number} 
+	 */
+	size;
+
+	/**
+	 * Idle animation
+	 * @type {number} 
+	 */
+	standingAnimation = -1;
+
+	/**
+	 * Walking animation
+	 * @type {number} 
+	 */
+	walkingAnimation = -1;
+
+	/** @type {number} */
+	rotateLeftAnimation = -1;
+	
+	/** @type {number} */
+	rotateRightAnimation = -1;
+	
+	/** @type {number} */
+	rotate180Animation = -1;
+	
+	/** @type {number} */
+	rotate90LeftAnimation = -1;
+	
+	/** @type {number} */
+	rotate90RightAnimation = -1;
+	
+	/** @type {number} */
+	category;
+	
+	/** @type {Array} */
+	actions = [];
+	
+	/**
+	 * Color values to find to be replaced for this NPC 
+	 * @type {Array} 
+	 */
+	recolorToFind = [];
+	
+	/**
+	 * What the color values will be replaced with 
+	 * @type {Array} 
+	 */
+	recolorToReplace = [];
+	
+	/**
+	 * Textures to find to be replaced for this NPC 
+	 * @type {Array} 
+	 */
+	retextureToFind = [];
+	
+	/**
+	 * What the texture will be replaced with 
+	 * @type {Array} 
+	 */
+	retextureToReplace = [];
+	
+	/**
+	 * The models that will compose this NPC's chathead 
+	 * @type {Array} 
+	 */
+	chatheadModels = [];
+	
+	/**
+	 * If this NPC will show on the minimap 
+	 * @type {boolean} 
+	 */
+	isMinimapVisible = true;
+	
+	/**
+	 * This NPC's combat level 
+	 * @type {number} 
+	 */
+	combatLevel = -1;
+	
+	/** @type {number} */
+	heightScale;
+	
+	/** @type {boolean} */
+	hasRenderPriority;
+	
+	/**
+	 * Number from 0 to 255. Overrides NPC model's ambient lighting 
+	 * @type {Byte} 
+	 */
+	ambient;
+	
+	/**
+	 * Number from 0 to 255. Overrides NPC model's contrast 
+	 * @type {Byte} 
+	 */
+	contrast;
+	
+	/** @type {Array} */
+	headIconArchiveIds = [];
+	
+	/** @type {Array} */
+	headIconSpriteIndex = [];
+	
+	/** @type {number} */
+	rotationSpeed = 32;
+	
+	/** @type {number} */
+	varbitId = -1;
+	
+	/** @type {number} */
+	varpIndex = -1;
+	
+	/** @type {Array} */
+	configs = [];
+	
+	/** @type {boolean} */
+	isInteractable = true;
+	
+	/** @type {boolean} */
+	rotationFlag = true;
+	
+	/** @type {boolean} */
+	isPet;
+	
+	/** @type {number} */
+	runAnimation = -1;
+	
+	/** @type {number} */
+	runRotate180Animation = -1;
+	
+	/** @type {number} */
+	runRotateLeftAnimation = -1;
+	
+	/** @type {number} */
+	runRotateRightAnimation = -1;
+	
+	/** @type {number} */
+	crawlAnimation = -1;
+	
+	/** @type {number} */
+	crawlRotate180Animation = -1;
+	
+	/** @type {number} */
+	crawlRotateLeftAnimation = -1;
+	
+	/** @type {number} */
+	crawlRotateRightAnimation = -1;
+	
+	/** @type {Array} */
+	params = [];
 }
+
+export { NpcDefinition };
 export default class NpcLoader {
 
 	load(bytes, id) {
@@ -177,23 +353,19 @@ export default class NpcLoader {
 		else if (opcode == 111) {
 			def.isPet = true;
 		}
-		else if (opcode == 114)
-		{
+		else if (opcode == 114) {
 			def.runAnimation = dataview.readUint16();
 		}
-		else if (opcode == 115)
-		{
+		else if (opcode == 115) {
 			def.runAnimation = dataview.readUint16();
 			def.runRotate180Animation = dataview.readUint16();
 			def.runRotateLeftAnimation = dataview.readUint16();
 			def.runRotateRightAnimation = dataview.readUint16();
 		}
-		else if (opcode == 116)
-		{
+		else if (opcode == 116) {
 			def.crawlAnimation = dataview.readUint16();
 		}
-		else if (opcode == 117)
-		{
+		else if (opcode == 117) {
 			def.crawlAnimation = dataview.readUint16();
 			def.crawlRotate180Animation = dataview.readUint16();
 			def.crawlRotateLeftAnimation = dataview.readUint16();

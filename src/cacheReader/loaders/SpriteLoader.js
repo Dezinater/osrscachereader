@@ -2,8 +2,54 @@ import { createCanvas } from "canvas";
 
 const FLAG_VERTICAL = 0b01;
 const FLAG_ALPHA = 0b10;
-
+/**
+* @class Sprite
+* @category Definitions
+* @hideconstructor
+*/
 export class Sprite {
+    /** 
+    * The ID of this Sprite
+    * @type {number} 
+    */
+    id;
+
+    /** 
+    * Frame index for this sprite
+    * @type {number} 
+    */
+    frame;
+
+    /** @type {number} */
+    offsetX;
+
+    /** @type {number} */
+    offsetY;
+
+    /** @type {number} */
+    width;
+
+    /** @type {number} */
+    height;
+
+    /** 
+     * RGB Pixel data
+     * @type {number} 
+     */
+    pixels = [];
+
+    /** @type {number} */
+    maxWidth;
+
+    /** @type {number} */
+    maxHeight;
+
+    /** @type {Array<number>} */
+    pixelIdx = [];
+
+    /** @type {Array<number>} */
+    palette = [];
+
     getWidth() {
         return this.width;
     }
@@ -50,7 +96,7 @@ export class Sprite {
     }
 
     createImageData(ctx) {
-        if(ctx == undefined) {
+        if (ctx == undefined) {
             const canvas = createCanvas(this.getWidth(), this.getHeight());
             ctx = canvas.getContext('2d');
         }
@@ -67,8 +113,24 @@ export class Sprite {
         return imageData;
     }
 }
-export class SpriteDefinition {
 
+/**
+* @class SpriteDefinition
+* @category Definitions
+* @hideconstructor
+*/
+export class SpriteDefinition {
+    /** 
+    * The ID of this Sprite
+    * @type {number} 
+    */
+    id;
+
+    /** 
+    * Sprites that make up this SpriteDefinition. There can be multiple sprites for animated SpriteDefinitions.
+    * @type {Array<Sprite>} 
+    */
+    sprites = [];
 }
 export default class SpriteLoader {
 

@@ -1,8 +1,26 @@
 import Bone from "../cacheTypes/anim/Bone.js";
 
+/**
+* @class FramemapDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class FramemapDefinition {
+    id
 
+    /** @type {Byte} */
+    length
+
+    /** @type {Array<number>} */
+    types
+
+    /** @type {Array<number>} */
+    frameMaps
+
+    /** @type {AnimayaSkeleton} */
+    animayaSkeleton
 }
+
 
 class AnimayaSkeleton {
     constructor(dataview, bonesCount) {

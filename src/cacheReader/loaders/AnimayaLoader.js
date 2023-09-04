@@ -140,8 +140,38 @@ class class127 {
 
 }
 
+/**
+* @class AnimayaDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class AnimayaDefinition {
+    /** @type {Byte} */
+    version;
 
+	/** 
+     * Which framemap to load the skeleton info from
+     * @type {boolean} 
+     */
+    skeletonId;
+    
+	/** 
+     * Used for something related to matricies, translation and rotation
+     * @type {Byte} 
+    */
+    field1257;
+    
+	/** 
+     * Something to do with bones
+     * @type {Array<number>} 
+    */
+    field1265;
+
+	/** @type {Array<number>} */
+    field1258;
+
+	/** @type {boolean} */
+    field1259;
 }
 
 export class class129 {

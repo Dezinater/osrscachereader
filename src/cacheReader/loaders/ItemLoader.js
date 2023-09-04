@@ -1,6 +1,176 @@
+/**
+* @class ItemDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class ItemDefinition {
+	/** 
+	* The ID of this Object
+	* @type {number} 
+	*/
+    id;
+    unknown1;
+    resizeX = 128;
+    resizeY = 128;
+    resizeZ = 128;
 
+	/**
+	 * Used for 2d item rendering in inventories
+	 * @type {number} 
+	 */
+    xan2d = 0;
+
+	/**
+	 * Used for 2d item rendering in inventories
+	 * @type {number} 
+	 */
+    yan2d = 0;
+
+	/**
+	 * Used for 2d item rendering in inventories
+	 * @type {number} 
+	 */
+    zan2d = 0;
+
+    cost = 1;
+    
+	/** @type {boolean} */
+    isTradeable;
+
+	/** @type {number} */
+    stackable = 0;
+    
+	/** @type {number} */
+    inventoryModel;
+    
+	/** @type {number} */
+    wearPos1;
+    
+	/** @type {number} */
+    wearPos2;
+    
+	/** @type {number} */
+    wearPos3;
+    
+	/** @type {boolean} */
+    members = false;
+    
+	/** @type {Array} */
+    colorFind;
+    
+	/** @type {Array} */
+    colorReplace;
+    
+	/** @type {Array} */
+    textureFind;
+    
+	/** @type {Array} */
+    textureReplace;
+    
+	/** @type {number} */
+    zoom2d = 2000;
+    
+	/** @type {number} */
+    xOffset2d = 0;
+    
+	/** @type {number} */
+    yOffset2d = 0;
+
+    /**
+	 * Number from 0 to 255. Overrides Item model's ambient lighting 
+	 * @type {Byte} 
+	 */
+    ambient;	
+    
+    /**
+    * Number from 0 to 255. Overrides Item model's contrast
+    * @type {Byte} 
+    */
+    contrast;
+    
+	/** @type {Array} */
+    countCo;
+
+	/** @type {Array} */
+    countObj;
+    
+	/** @type {Array<string>} */
+    options = [null, null, "Take", null, null];
+
+	/** @type {Array<string>} */
+    interfaceOptions = [null, null, null, null, "Drop"];
+    
+	/** @type {number} */
+    maleModel0 = -1;
+    
+	/** @type {number} */
+    maleModel1 = -1;
+    
+	/** @type {number} */
+    maleModel2 = -1;
+    
+	/** @type {number} */
+    maleOffset;
+    
+	/** @type {number} */
+    maleHeadModel = -1;
+    
+	/** @type {number} */
+    maleHeadModel2 = -1;
+    
+	/** @type {number} */
+    femaleModel0 = -1;
+    
+	/** @type {number} */
+    femaleModel1 = -1;
+    
+	/** @type {number} */
+    femaleModel2 = -1;
+    
+	/** @type {number} */
+    femaleOffset;
+    
+	/** @type {number} */
+    femaleHeadModel = -1;
+    
+	/** @type {number} */
+    femaleHeadModel2 = 1;
+    
+	/** @type {number} */
+    category;
+    
+	/** @type {number} */
+    notedID = -1;
+    
+	/** @type {number} */
+    notedTemplate = -1;
+    
+	/** @type {number} */
+    team;
+    
+	/** @type {number} */
+    weight;
+    
+	/** @type {number} */
+    shiftClickDropIndex = -2;
+    
+	/** @type {number} */
+    boughtId = -1;
+    
+	/** @type {number} */
+    boughtTemplateId = -1;
+    
+	/** @type {number} */
+    placeholderId = -1;
+    
+	/** @type {number} */
+    placeholderTemplateId = -1;
+    
+	/** @type {Object} */
+    params;
 }
+
+
 export default class ItemLoader {
 
     load(bytes, id) {

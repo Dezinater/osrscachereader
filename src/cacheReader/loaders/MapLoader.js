@@ -1,8 +1,65 @@
-export class MapDefinition {
+/**
+ * @typedef Tile
+ * @property {number} height Used to construct a heightmap
+ * @property {number} attrOpcode
+ * @property {number} overlayId Overlay Definition ID
+ * @property {number} overlayPath
+ * @property {number} overlayRotation
+ * @property {number} settings
+ * @property {number} underlayId Underlay Definition ID
+ */
 
+/**
+ * @typedef Location
+ * @property {number} id ObjectDefinition ID
+ * @property {number} type 
+ * @property {number} orientation Rotation
+ * @property {{x,y,z}} position 
+*/
+
+/**
+* @class MapDefinition
+* @category Definitions
+* @hideconstructor
+*/
+export class MapDefinition {
+    /** @type {number} */
+    id;
+
+    /** @type {number} */
+    regionX;
+
+    /** @type {number} */
+    regionY;
+
+    /** 
+     * Tile info including Overlay/Underlay and height
+     * @type {Tile}
+     */
+    tiles = [];
 }
+
+/**
+* @class LocationDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class LocationDefinition {
 
+    /** @type {number} */
+    id;
+
+    /** @type {number} */
+    regionX;
+
+    /** @type {number} */
+    regionY;
+
+    /** 
+     * Objects on the map
+     * @type {Location}
+     */
+    locations = [];
 }
 export class EmptyMapDefinition {
 
@@ -72,30 +129,28 @@ export default class MapLoader {
         let dataview = new DataView(bytes.buffer);
 
         let id = -1;
-		let idOffset;
+        let idOffset;
 
-		while ((idOffset = dataview.readUnsignedIntSmartShortCompat()) != 0)
-		{
-			id += idOffset;
+        while ((idOffset = dataview.readUnsignedIntSmartShortCompat()) != 0) {
+            id += idOffset;
 
-			let position = 0;
-			let positionOffset;
+            let position = 0;
+            let positionOffset;
 
-			while ((positionOffset = dataview.readUnsignedShortSmart()) != 0)
-			{
-				position += positionOffset - 1;
+            while ((positionOffset = dataview.readUnsignedShortSmart()) != 0) {
+                position += positionOffset - 1;
 
-				let localY = position & 0x3F;
-				let localX = position >> 6 & 0x3F;
-				let height = position >> 12 & 0x3;
+                let localY = position & 0x3F;
+                let localX = position >> 6 & 0x3F;
+                let height = position >> 12 & 0x3;
 
-				let attributes = dataview.readUint8();
-				let type = attributes >> 2;
-				let orientation = attributes & 0x3;
+                let attributes = dataview.readUint8();
+                let type = attributes >> 2;
+                let orientation = attributes & 0x3;
 
-				def.locations.push({id, type, orientation, position: {localX, localY, height}});
-			}
-		}
+                def.locations.push({ id, type, orientation, position: { localX, localY, height } });
+            }
+        }
 
         return def;
     }

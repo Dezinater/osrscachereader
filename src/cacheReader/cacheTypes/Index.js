@@ -1,16 +1,50 @@
 import Archive from './Archive.js'
 import File from './File.js'
-export default class Index {
+
+/**
+ * An index from the cache
+ * @category Cache Types
+ * @hideconstructor
+ */
+class Index {
 	constructor(id) {
+		/**
+		 * The ID of this Index
+		 * @type {number}
+		 */
 		this.id = id;
+
+		/** @type {number} */
 		this.protocol = 0;
+
+		/** @type {number} */
 		this.revision = -1;
+
+		/** @type {number} */
 		this.hash = 0;
+
+		/** @type {number} */
 		this.crc = 0;
-		this.compression = 0;
+
+		/** @type {boolean} */
 		this.named = false;
+
+		/** 
+		 * Total amount of archives
+		 * @type {number} 
+		 */
 		this.archivesCount = 0;
+
+		/** 
+		 * Dictionary containing archives. Key is the ID of the archive.
+		 * @type {Object} 
+		*/
 		this.archives = {};
+
+		/** 
+		 * Used for loading files for archives
+		 * @type {Array} 
+		 */
 		this.indexSegments = [];
 	}
 
@@ -105,7 +139,7 @@ export default class Index {
 	/**
 	 * Get an Archive from this Index
 	 * @param {Number} archive A number or can be a ConfigType if the IndexType is CONFIGS
-	 * @returns Archive
+	 * @returns [Archive]{@link Archive}
 	 */
 	getArchive(archive) {
 		let archiveId;
@@ -127,3 +161,5 @@ export default class Index {
 		return this.id;
 	}
 }
+
+export default Index;

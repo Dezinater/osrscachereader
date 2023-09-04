@@ -3,7 +3,43 @@ import IndexType from '../cacheTypes/IndexType.js'
 import AnimayaLoader from './AnimayaLoader.js';
 import Quaternion from '../cacheTypes/anim/Quaternion.js';
 
+/**
+* @class FramesDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class FramesDefinition {
+    /** 
+	 * The file ID of this Frame
+	 * @type {number} 
+	 */
+    id;
+
+    /** 
+	 * Skeleton used for this frame
+	 * @type {FramemapDefinition} 
+	 */
+	framemap;
+
+    
+	/** @type {Array<number>} */
+	translator_x = [];
+    
+	/** @type {Array<number>} */
+	translator_y = [];
+    
+	/** @type {Array<number>} */
+	translator_z = [];
+    
+	/** @type {number} */
+	translatorCount = -1;
+    
+	/** @type {Array<number>} */
+	indexFrameIds = [];
+
+	/** @type {boolean} */
+	showing;
+
     method727(var1, var2, var3) {
         let var5 = new Matrix();
 

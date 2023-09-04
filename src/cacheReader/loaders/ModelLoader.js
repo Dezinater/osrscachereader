@@ -2,8 +2,191 @@ import IndexType from "../cacheTypes/IndexType.js";
 import ConfigType from "../cacheTypes/ConfigType.js";
 import Matrix from "../cacheTypes/anim/Matrix.js";
 
-export class ModelDefinition {
+/**
+ * @typedef AnimationData
+ * @property {Array<Vector3>} vertexData Vector3 is an array with 3 numbers
+ * @property {Array<number>} lengths Animation frame length
+ */
 
+/**
+* @class ModelDefinition
+* @category Definitions
+* @hideconstructor
+*/
+export class ModelDefinition {
+	/**
+	 * The ID of this Model
+	 * @type {number} 
+	 */
+	id;	
+	
+	/**
+	* How many verticies this models has
+	* @type {number} 
+	*/
+	vertexCount
+
+	/**
+	* How many faces this models has
+	* @type {number} 
+	*/
+	faceCount
+
+	/**
+	* How many textured faces this models has
+	* @type {number} 
+	*/
+	numTextureFaces
+
+	/**
+	* Vertex X Position Array
+	* @type {Array<number>} 
+	*/
+	vertexPositionsX
+
+	/**
+	* Vertex Y Position Array
+	* @type {Array<number>} 
+	*/
+	vertexPositionsY
+
+	/**
+	* Vertex Z Position Array
+	* @type {Array<number>} 
+	*/
+	vertexPositionsZ
+
+	/**
+	* Which Vertex XYZ to use for the 1st index
+	* @type {Array<number>} 
+	*/
+	faceVertexIndices1
+	
+	/**
+	* Which Vertex XYZ to use for the 2nd index
+	* @type {Array<number>} 
+	*/
+	faceVertexIndices2
+
+	/**
+	* Which Vertex XYZ to use for the 3rd index
+	* @type {Array<number>} 
+	*/
+	faceVertexIndices3
+
+	/**
+	* Used for animations
+	* @type {Array<number>} 
+	*/
+	vertexSkins
+
+	/**
+	* Changes how this face will render (lighting style, invisible, etc.)
+	* @type {Array<number>} 
+	*/
+	faceRenderTypes
+
+	/**
+	* Local render priority when combined with other models
+	* @type {Array<number>} 
+	*/
+	faceRenderPriorities
+
+	/**
+	* Overall priority
+	* @type {number} 
+	*/
+	priority
+
+	/**
+	* Used to set transparency of faces
+	* @type {Array<Byte>} 
+	*/
+	faceAlphas
+
+	/**
+	* Used for animations
+	* @type {Array<number>} 
+	*/
+	faceSkins
+
+	/**
+	* Texture IDs for faces
+	* @type {Array<number>} 
+	*/
+	faceTextures
+
+	/**
+	* Texture UV coords for mapping
+	* @type {Array<number>} 
+	*/
+	textureCoords
+	
+	/**
+	* Used for new Animaya animations
+	* @type {Array<number>} 
+	*/
+
+	animayaGroups
+	/**
+	* Used for new Animaya animations
+	* @type {Array<number>} 
+	*/
+	animayaScales
+	
+	/**
+	* Used to compute Texture UV coords
+	* @type {Array<number>} 
+	*/
+	texIndices1
+
+	/**
+	* Used to compute Texture UV coords
+	* @type {Array<number>} 
+	*/
+	texIndices2
+
+	/**
+	* Used to compute Texture UV coords
+	* @type {Array<number>} 
+	*/
+	texIndices3
+
+	/**
+	* Face color
+	* @type {Array<number>} 
+	*/
+	faceColors = [];
+
+	/**
+	* Changes how this face's texture will render (lighting style, invisible, etc.)
+	* @type {Array<number>} 
+	*/
+	textureRenderTypes
+
+	/** @type {Array<number>} */
+	aShortArray2574
+
+	/** @type {Array<number>} */
+	aShortArray2575
+
+	/** @type {Array<number>} */
+	aShortArray2586
+
+	/** @type {Array<number>} */
+	aShortArray2577
+
+	/** @type {Array<Byte>} */
+	aByteArray2580
+
+	/** @type {Array<number>} */
+	aShortArray2578
+
+	/**
+	 * Merge this model with another model
+	 * @param {ModelDefinition} otherModel Other model to combine with this
+	 * @returns ModelDefinition
+	 */
 	mergeWith(otherModel) {
 		let verticesCount = this.vertexPositionsX.length;
 		this.vertexPositionsX = [...this.vertexPositionsX, ...otherModel.vertexPositionsX];
@@ -59,12 +242,18 @@ export class ModelDefinition {
 		return loadedAnims;
 	}
 
+	/**
+	 * 
+	 * @param {RSCache} cache OSRSCache object used to grab other files for the animation
+	 * @param {number} animationId Animation ID you want to play on this model
+	 * @returns AnimationData
+	 */
 	async loadAnimation(cache, animationId) {
 		let animation = (await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animationId)).def;
 		let vertexData;
 		let lengths;
 
-		if (animation.animMayaID != undefined) {
+		if (animation.animMayaID != undefined && animation.animMayaID != -1) {
 			let framesInfo = await cache.getAllFiles(IndexType.FRAMES.id, (animation.animMayaID >> 16), { isAnimaya: true });
 
 			vertexData = this.loadMayaAnimation(framesInfo[0].def, animation);
@@ -316,7 +505,7 @@ export class ModelDefinition {
 				animations.push(animatedFrameVertices);
 			}
 		}
-		
+
 		return animations;
 	}
 }

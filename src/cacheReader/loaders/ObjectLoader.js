@@ -1,6 +1,208 @@
+/**
+* @class ObjectDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class ObjectDefinition {
+	/** 
+	* The ID of this Object
+	* @type {number} 
+	*/
+	id;
+
+	/**
+	 * Object types
+	 * @type {Array} 
+	 */
+	objectTypes = [];
+
+	/**
+	 * The models that compose the NPC
+	 * @type {Array} 
+	 */
+	objectModels = [];
+	
+	/**
+	 * Name of the Object
+	 * @type {string} 
+	 */
+	name;
+
+	/**
+	 * Tile size X
+	 * @type {number} 
+	 */
+	sizeX = 1;
+
+	/**
+	 * Tile size Y
+	 * @type {number} 
+	 */
+	sizeY = 1;
+
+	/**
+	 * Interact Type. Loader only ever sets it to 0 or 1. Defaults value is 2
+	 * @type {number} 
+	 */
+	interactType = 2;
+
+	/**
+	 * Blocks projectiles such as arrows and spells
+	 * @type {boolean} 
+	 */
+	blocksProjectile = true;
+
+	/**
+	 * I think this allows other objects to be placed on the same tile
+	 * @type {number} 
+	 */
+	wallOrDoor = -1;
+
+	/** @type {number} */
+	contouredGround;
+
+	/**
+	 * Merge normals with objects nearby
+	 * @type {boolean} 
+	 */
+	mergeNormals = false;
+
+	/** @type {boolean} */
+	aBool2111 = false;
+
+	/**
+	 * Default animation
+	 * @type {number} 
+	 */
+	animationID = -1;
+
+	/** @type {number} */
+	decorDisplacement = 16;
+	
+	/**
+	 * Number from 0 to 255. Overrides Object model's ambient lighting 
+	 * @type {Byte} 
+	 */
+	ambient = 0;
+
+	/**
+	 * Number from 0 to 255. Overrides Object model's contrast 
+	 * @type {Byte} 
+	 */
+	contrast = 0;
+
+	/** @type {Array} */
+	actions = [];
+
+	/**
+	 * Color values to find to be replaced for this Object 
+	 * @type {Array} 
+	 */
+	recolorToFind = [];
+
+	/**
+	 * What the color values will be replaced with 
+	 * @type {Array} 
+	 */
+	recolorToReplace;
+
+	/**
+	 * Textures to find to be replaced for this Object 
+	 * @type {Array} 
+	 */
+	retextureToFind;
+
+	/**
+	 * What the texture will be replaced with 
+	 * @type {Array} 
+	 */
+	textureToReplace;
+
+	/** @type {number} */
+	category;
+
+	/** @type {boolean} */
+	rotated = false;
+	
+	/** @type {boolean} */
+	shadow = true;
+
+	/**
+	 * Model size X
+	 * @type {number} 
+	 */
+	modelSizeX = 128;
+
+	/**
+	 * Model size height
+	 * @type {number} 
+	 */
+	modelSizeHeight = 128;
+
+	/**
+	 * Model size Y
+	 * @type {number} 
+	 */
+	modelSizeY = 128;
+
+	/** @type {number} */
+	mapSceneID = -1;
+
+	/** @type {number} */
+	blockingMask = 0;
+
+	/** @type {number} */
+	offsetX = 0;
+
+	/** @type {number} */
+	offsetHeight = 0;
+
+	/** @type {number} */
+	offsetY = 0;
+
+	/** @type {boolean} */
+	obstructsGround = false;
+	
+	/** @type {number} */
+	hollow = false;
+	
+	/** @type {number} */
+	supportsItems = -1;
+
+	/** @type {number} */
+	varbitID = -1;
+
+	/** @type {number} */
+	varpID = -1;
+	
+	/** @type {Array} */
+	configChangeDest = [];
+	
+	/** @type {number} */
+	ambientSoundId = -1;
+	
+	/** @type {number} */
+	ambientSoundDistance = 0;
+	
+	/** @type {number} */
+	ambientSoundChangeTicksMin = 0;
+	
+	/** @type {number} */
+	ambientSoundChangeTicksMax = 0;
+	
+	/** @type {Array<number>} */
+	ambientSoundIds = [];
+	
+	/** @type {number} */
+	mapAreaId = -1;
+	
+	/** @type {boolean} */
+	randomizeAnimStart;
+	
+	/** @type {Object} */
+	params;
+
 	constructor() {
-		this.shadow = true;
 	}
 }
 export default class ObjectLoader {
@@ -70,7 +272,7 @@ export default class ObjectLoader {
 			def.contouredGround = 0;
 		}
 		else if (opcode == 22) {
-			def.setMergeNormals = true;
+			def.mergeNormals = true;
 		}
 		else if (opcode == 23) {
 			def.aBool2111 = true;
@@ -88,7 +290,7 @@ export default class ObjectLoader {
 			def.decorDisplacement = dataview.readUint8();
 		}
 		else if (opcode == 29) {
-			def.setAmbient = dataview.readInt8();
+			def.ambient = dataview.readInt8();
 		}
 		else if (opcode == 39) {
 			def.contrast = dataview.readInt8() * 25;
@@ -133,7 +335,7 @@ export default class ObjectLoader {
 		else if (opcode == 62) {
 			def.rotated = true;
 		}
-		else if (opcode == 64) { //needs to be declared as true in constructor if toggling to false
+		else if (opcode == 64) { 
 			def.shadow = false;
 		}
 		else if (opcode == 65) {
@@ -194,27 +396,27 @@ export default class ObjectLoader {
 			def.configChangeDest.push(-1);
 		}
 		else if (opcode == 78) {
-			def.setAmbientSoundId = dataview.readUint16();
-			def.setAnInt2083 = dataview.readUint8();
+			def.ambientSoundId = dataview.readUint16();
+			def.ambientSoundDistance = dataview.readUint8();
 		}
 		else if (opcode == 79) {
-			def.setAnInt2112 = dataview.readUint16();
-			def.setAnInt2113 = dataview.readUint16();
-			def.setAnInt2083 = dataview.readUint8();
+			def.ambientSoundChangeTicksMin = dataview.readUint16();
+			def.ambientSoundChangeTicksMax = dataview.readUint16();
+			def.ambientSoundDistance = dataview.readUint8();
 			var length = dataview.readUint8();
-			let anIntArray2084 = [];
+			let ambientSoundIds = [];
 
 			for (var index = 0; index < length; ++index) {
-				anIntArray2084.push(dataview.readUint16());
+				ambientSoundIds.push(dataview.readUint16());
 			}
 
-			def.ambientSoundIds = anIntArray2084;
+			def.ambientSoundIds = ambientSoundIds;
 		}
 		else if (opcode == 81) {
-			def.setContouredGround = dataview.readUint8() * 256;
+			def.contouredGround = dataview.readUint8() * 256;
 		}
 		else if (opcode == 82) {
-			def.setMapAreaId = dataview.readUint16();
+			def.mapAreaId = dataview.readUint16();
 		}
 		else if (opcode == 89) {
 			def.randomizeAnimStart = true;

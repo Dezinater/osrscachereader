@@ -1,5 +1,72 @@
+/**
+* Spot Anims are GFX effects such as teleporting spells
+* @class SpotAnimDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class SpotAnimDefinition {
+	/** 
+	* The ID of this Spot Anim
+	* @type {number} 
+	*/
+	id;
 
+	/** @type {number} */
+	rotation = 0;
+
+	/**
+	 * Textures to find to be replaced for this Spot Anim 
+	 * @type {Array} 
+	*/
+	textureToFind = [];
+
+	/**
+	 * What the texture will be replaced with 
+	 * @type {Array} 
+	 */
+	textureToReplace = [];
+	
+	/**
+	 * Default animation
+	 * @type {number} 
+	 */
+	animationId = -1;
+
+	/**
+	 * Color values to find to be replaced for this Spot Anim 
+	 * @type {Array} 
+	 */
+	recolorToFind = [];
+
+	/**
+	 * What the color values will be replaced with 
+	 * @type {Array} 
+	 */
+	recolorToReplace = [];
+	
+	/** @type {number} */
+	resizeX = 128;
+	
+	/** @type {number} */
+	resizeY = 128;
+
+	/**
+	 * Model to use for this Spot Anim
+	 * @type {number} 
+	 */
+	modelId;	
+
+	/**
+	 * Number from 0 to 255. Modifies the Spot Anim model's ambient lighting 
+	 * @type {Byte} 
+	 */
+	ambient = 0;
+
+	/**
+	 * Number from 0 to 255. Modifies the Spot Anim model's contrast
+	 * @type {Byte} 
+	 */
+	contrast = 0;
 }
 export default class SpotAnimLoader {
 
@@ -34,7 +101,7 @@ export default class SpotAnimLoader {
 		}
 		else if (opcode == 6)
 		{
-			def.rotaton = dataview.readUint16();
+			def.rotation = dataview.readUint16();
 		}
 		else if (opcode == 7)
 		{

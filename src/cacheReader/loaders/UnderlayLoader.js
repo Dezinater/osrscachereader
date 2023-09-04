@@ -1,5 +1,12 @@
+/**
+* Used the paint the heightmap of Map tiles
+* @class UnderlayDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class UnderlayDefinition {
-
+    id;
+    color;
 }
 export default class UnderlayLoader {
 

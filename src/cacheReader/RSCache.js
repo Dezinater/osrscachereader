@@ -11,16 +11,16 @@ import { ConfigType } from '../index-dev.js'
 
 /**
  * @typedef options
- * @property {boolean} threaded Use a Web Worker to read from the cache. Slower than non-threaded since threading overhead is big. Useful for initial/big loads to in web apps to have a responsive UI
- * @property {boolean} isAnimaya Used while loading animations. Uses a different loading method for Animaya animations
+ * @property {boolean} threaded Use a Web Worker to read from the cache. Slower than non-threaded since threading overhead is big. Useful for web apps to have a responsive UI
+ * @property {boolean} isAnimaya Used while loading animations. Uses a different loading method for Animaya animations. OSRSCacheReader sets this internally on it's own if using ModelDefinition's loadAnimation method
  * @property {boolean} earlyStop Used while loading Animaya animations. Stops the reader early to just get the skeleton info
  * @property {boolean} loadSprites Used while loading Texture defs. Automatically grabs the corresponding sprite file
  * @property {boolean} cacheResults Save def on archive file after decompressing contents. Useful for quicker loading if loading the same thing multiple times but also can increase memory usage
  */
 
 /**
- * @catergory Base Class
  * Creates a RSCache reader
+ * @category Base
  * @param {string} cacheRootDir 
  * @param {function(number):void} progressFunc Progress function callback. Passes 1 parameter which is the amount of progress from the last step (not total progress)
  */
@@ -49,7 +49,7 @@ class RSCache {
 	 * Get a cache Index file. 
 	 * @method
 	 * @param {(Number | IndexType)} index 
-	 * @returns Index
+	 * @returns [Index]{@link Index}
 	 */
 	getIndex(index) {
 		let indexId;
@@ -82,7 +82,7 @@ class RSCache {
 	 * @param {(Number | IndexType)} indexId Can be a number or IndexType
 	 * @param {(Number)} archiveId Can be a number but also can be a ConfigType if IndexType is CONFIG
 	 * @param {options} options 
-	 * @returns File
+	 * @returns Array<[File]{@link File}>
 	 */
 	async getAllFiles(indexId, archiveId, options = {}) {
 		try {
@@ -121,7 +121,7 @@ class RSCache {
 	 * @param {(Number)} archiveId Can be a number but also can be a ConfigType if IndexType is CONFIG
 	 * @param {Number} fileId Id of the file to get from the archive
 	 * @param {options} options 
-	 * @returns File
+	 * @returns [File]{@link File}
 	 */
 	async getFile(indexId, archiveId, fileId = 0, options = {}) {
 		return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
@@ -159,7 +159,7 @@ class RSCache {
 	 * Helper method to get a NPC definition
 	 * @param {Number} id NPC Id
 	 * @param {options} options 
-	 * @returns NpcDefinition
+	 * @returns [NpcDefinition]{@link NpcDefinition}
 	 */
 	async getNPC(id, options = {}) {
 		return this.getDef(IndexType.CONFIGS, ConfigType.NPC, id, options);
@@ -185,7 +185,7 @@ class RSCache {
 		return this.getDef(IndexType.CONFIGS, ConfigType.OBJECT, id, options);
 	}
 
-	/** Close the cache and clean up the web worker pool */
+	/** Closes the cache and cleans up the web worker pool */
 	close() {
 		this.cacheRequester.workerPool.finish();
 	}

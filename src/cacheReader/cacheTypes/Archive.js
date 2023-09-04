@@ -1,12 +1,39 @@
-export default class Archive {
+/**
+ * An archive from an index
+ * @category Cache Types
+ * @hideconstructor
+ */
+class Archive {
 	constructor() {
+		/**
+		 * The ID of the file
+		 * @type {number}
+		 */
 		this.id = 0;
+
 		this.name = "";
+
+		/** @type {number} */
 		this.hash = 0;
+
+		/**
+		 * Hashed name of the archive. Hashes can be brute forced or cracked hashes can be found online
+		 * @type {number}
+		 */
 		this.nameHash = 0;
+
+		/** @type {number} */
 		this.crc = 0;
+
+		/** @type {number} */
 		this.revision = 0;
+
 		this.filesLoaded = false;
+
+		/** 
+		 * The files containing definitions within the archive
+		 * @type {Array}
+		 */
 		this.files = [];
 	}
 
@@ -82,3 +109,5 @@ export default class Archive {
 
 	}
 }
+
+export default Archive;

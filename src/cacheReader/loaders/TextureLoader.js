@@ -1,6 +1,51 @@
 import IndexType from '../cacheTypes/IndexType.js'
+/**
+* @class TextureDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class TextureDefinition {
+    /** 
+    * The ID of this Texture
+    * @type {number} 
+    */
+    id;
 
+    /** @type {number} */
+    field1777;
+
+    /** @type {boolean} */
+    field1778;
+
+    /** 
+     * The sprites that make up this texture
+     * @type {Array<number>} 
+     */
+    fileIds = [];
+
+    /** @type {number} */
+    field1780 = [];
+
+    /** @type {number} */
+    field1781 = [];
+
+    /** @type {number} */
+    field1786 = [];
+
+    /** 
+     * Used for animated textures like firecape or water fountains
+     * @type {number} 
+     */
+    animationSpeed;
+
+    /** 
+     * Direction that the texture UVs will move
+     * @type {number}
+     * @example
+     let angle = duration * (Math.PI / 2);
+let vec = [Math.cos(angle) * animationSpeed, Math.sin(angle) * animationSpeed];               
+     */
+    animationDirection;
 }
 
 export default class TextureLoader {
@@ -44,7 +89,7 @@ export default class TextureLoader {
 
         def.animationDirection = dataview.readUint8();
         def.animationSpeed = dataview.readUint8();
-        
+
         if (options.loadSprites) {
             let sprites = def.fileIds.map(x => cache.getFile(IndexType.SPRITES.id, x))
             def.sprites = await Promise.all(sprites);

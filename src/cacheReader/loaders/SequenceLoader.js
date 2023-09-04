@@ -1,4 +1,80 @@
+/**
+* Sequences are animations
+* @class SequenceDefinition
+* @category Definitions
+* @hideconstructor
+*/
 export class SequenceDefinition {
+	/** 
+	* The ID of this Animation
+	* @type {number} 
+	*/
+	id;
+	/**  
+	 * How long each frame will take
+	 * @type {Array<number>} 
+	*/
+	frameLengths = [];
+
+	/**  
+	 * These IDs are used to find the corresponding Skeleton and Frame information
+	 * @type {Array<number>} 
+	*/
+	frameIDs = [];
+
+	/**  @type {number} */
+	frameStep = -1;
+
+	/**  @type {Array} */
+	interleaveLeave = [];
+
+	/**  @type {boolean} */
+	stretches = false;
+
+	/**  @type {number} */
+	forcedPriority = 5;
+
+	/**  @type {number} */
+	leftHandItem = -1;
+
+	/**  @type {number} */
+	rightHandItem = -1;
+
+	/**  @type {number} */
+	maxLoops = 99;
+
+	/**  @type {number} */
+	precedenceAnimating = -1;
+
+	/**  @type {number} */
+	priority = -1;
+
+	/**  @type {number} */
+	replyMode = 2;
+
+	/**  @type {Array} */
+	chatFrameIds = [];
+
+	/**  @type {Array} */
+	frameSounds = [];
+
+	/**  
+	 * If this ID is set then it uses Animaya animations. This ID works the same as a frameID
+	 * @type {number} 
+	*/
+	animMayaID = -1;
+
+	/**  @type {Object} */
+	animMayaFrameSounds = {};
+
+	/**  @type {number} */
+	animMayaStart;
+
+	/**  @type {number} */
+	animMayaEnd;
+
+	/**  @type {Array<boolean>} */
+	animMayaMasks = [];
 
 }
 export default class SequenceLoader {
@@ -100,26 +176,22 @@ export default class SequenceLoader {
 			var3 = dataview.readUint16();
 			def.animMayaFrameSounds = {};
 
-			for (var4 = 0; var4 < var3; ++var4)
-			{
+			for (var4 = 0; var4 < var3; ++var4) {
 				let var5 = dataview.readUint16();
 				let var6 = dataview.readUint24();
 				def.animMayaFrameSounds[var5] = var6;
 			}
 		}
-		else if (opcode == 16)
-		{
+		else if (opcode == 16) {
 			def.animMayaStart = dataview.readUint16();
 			def.animMayaEnd = dataview.readUint16();
 		}
-		else if (opcode == 17)
-		{
+		else if (opcode == 17) {
 			def.animMayaMasks = new Array(256).fill().map(x => false);
 
 			var3 = dataview.readUint8();
 
-			for (var4 = 0; var4 < var3; ++var4)
-			{
+			for (var4 = 0; var4 < var3; ++var4) {
 				def.animMayaMasks[dataview.readUint8()] = true;
 			}
 		}
