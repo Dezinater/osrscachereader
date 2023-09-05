@@ -7,7 +7,7 @@ import Index from './cacheTypes/Index.js'
 import CacheLoader from './CacheLoader.js'
 
 import IndexType from './cacheTypes/IndexType.js'
-import { ConfigType } from '../index-dev.js'
+import ConfigType from './cacheTypes/ConfigType.js'
 
 /**
  * @typedef options
@@ -25,7 +25,7 @@ import { ConfigType } from '../index-dev.js'
  * @param {function(number):void} progressFunc Progress function callback. Passes 1 parameter which is the amount of progress from the last step (not total progress)
  */
 class RSCache {
-	constructor(cacheRootDir = "./", progressFunc) {
+	constructor(cacheRootDir = "./", progressFunc = () => {}) {
 		this.indicies = {};
 		this.progressFunc = progressFunc;
 
