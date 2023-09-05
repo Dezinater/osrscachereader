@@ -31,7 +31,7 @@ cache.onload.then(() => {
                 mappedAnims[id].push(animIds[index]);
             });
 
-            fs.writeFileSync("generated/animayaCommonAnims.json", JSON.stringify(mappedAnims));
+            fs.writeFileSync("animayaCommonAnims.json", JSON.stringify(mappedAnims));
         });
 
     cache.close();

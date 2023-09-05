@@ -25,7 +25,7 @@ cache.onload.then(() => {
             }
             commonAnims[animSkeletonId][shiftedId].push(animationInfo[i].def.id);
         }
-        fs.writeFileSync("generated/commonAnims.json", JSON.stringify(commonAnims));
+        fs.writeFileSync("commonAnims.json", JSON.stringify(commonAnims));
 
         cache.close();
         /*
