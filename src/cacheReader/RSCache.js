@@ -55,8 +55,8 @@ class RSCache {
 		let indexId;
 		if (index.constructor.name === "Object") {
 			indexId = index.id;
-		} else if (Number.isSafeInteger(index)) {
-			indexId = index;
+		} else if (!isNaN(index)) {
+			indexId = Number(index);
 		}
 
 		index = this.indicies[indexId];

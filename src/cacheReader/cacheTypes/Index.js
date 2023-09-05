@@ -147,8 +147,8 @@ class Index {
 		let archiveId;
 		if (archive.constructor.name === "Object") {
 			archiveId = archive.id;
-		} else if (Number.isSafeInteger(archive)) {
-			archiveId = archive;
+		} else if (!isNaN(archive)) {
+			archiveId = Number(archive);
 		}
 
 		archive = this.archives[archiveId];
