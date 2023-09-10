@@ -1,0 +1,27 @@
+name: Generate Docs
+
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - run: npm ci
+    
+    - name: Generate Docs
+      run: npm run docs
+
+    - name: Commit and Push Docs
+      run: |
+        git config user.name "GitHub Actions"
+        git config user.email "actions@github.com"
+        git add /docs
+        git commit -m "Generate documentation"
+        git push
