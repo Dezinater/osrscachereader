@@ -4,3 +4,4 @@ dumpFn
 cache
 node_modules
 docs
+.npmrc
