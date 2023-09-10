@@ -2,6 +2,8 @@
 
 ![Altarkiz](https://runemonk.com/Altarkiz%202.png)
 
+[**Documentation**](https://dezinater.github.io/osrscachereader/index.html) - [**NPM**](https://www.npmjs.com/package/osrscachereader)
+
 This library load files from Old School Runescape's game files in your browser or in Node.
 There are also helper functions included such as a GLTF exporter and a simple method to load animations that returns verticies for rendering.
 
