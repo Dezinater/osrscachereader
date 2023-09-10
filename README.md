@@ -55,7 +55,7 @@ cache.onload.then(() => {
     //do stuff
 });
 ```
-The cache is structured by having Indicies which have Archives that can contain one or many files. Each of these files will contain some game definition such as a NPC, animation, sprite or map tile. The indicies are defined with [IndexType](/src/cacheReader/cacheTypes/IndexType.js "IndexType"). If using IndexType.CONFIGS you can then use [ConfigType](/src/cacheReader/cacheTypes/ConfigType.js "ConfigType") as the archive
+The cache is structured by having Indicies which have Archives that can contain one or many files. Each of these files will contain some game definition such as a NPC, animation, sprite or map tile. The indicies are defined with [IndexType](https://dezinater.github.io/osrscachereader/global.html#IndexType). If using IndexType.CONFIGS you can then use [ConfigType](https://dezinater.github.io/osrscachereader/global.html#ConfigType) as the archive
 
 There are a few ways to grab files from the cache along with some helper methods
 
@@ -97,7 +97,7 @@ let logo = allSprites.filter(spriteFile => spriteFile.nameHash == 3327403);
 ```
 If you wanted to get every Sprite you would have to do something like this.
 
-There are also option you can pass as parameter to any getFile/getAllFiles and getDef/getAllDefs functions. You can read more about these options [here](/docs/ "Options")
+There are also option you can pass as parameter to any getFile/getAllFiles and getDef/getAllDefs functions. You can read more about these options [here](https://dezinater.github.io/osrscachereader/global.html#options)
 
 ## Sources
 
