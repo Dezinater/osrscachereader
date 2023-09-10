@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Home</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#ConfigType">ConfigType</a></li><li><a href="global.html#IndexType">IndexType</a></li></ul></div><div class="category"><h2>Base</h2><h3>Classes</h3><ul><li><a href="RSCache.html">RSCache</a></li></ul></div><div class="category"><h2>Cache Types</h2><h3>Classes</h3><ul><li><a href="Archive.html">Archive</a></li><li><a href="File.html">File</a></li><li><a href="Index_.html">Index</a></li></ul></div><div class="category"><h2>Definitions</h2><h3>Classes</h3><ul><li><a href="AnimayaDefinition.html">AnimayaDefinition</a></li><li><a href="FramemapDefinition.html">FramemapDefinition</a></li><li><a href="FramesDefinition.html">FramesDefinition</a></li><li><a href="ItemDefinition.html">ItemDefinition</a></li><li><a href="KitDefinition.html">KitDefinition</a></li><li><a href="LocationDefinition.html">LocationDefinition</a></li><li><a href="MapDefinition.html">MapDefinition</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="NpcDefinition.html">NpcDefinition</a></li><li><a href="ObjectDefinition.html">ObjectDefinition</a></li><li><a href="SequenceDefinition.html">SequenceDefinition</a></li><li><a href="SpotAnimDefinition.html">SpotAnimDefinition</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteDefinition.html">SpriteDefinition</a></li><li><a href="TextureDefinition.html">TextureDefinition</a></li><li><a href="UnderlayDefinition.html">UnderlayDefinition</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p></p>
+                    <h1>Home</h1>
+                </header>
+                
+
+
+
+    
+
+
+    <h3> </h3>
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+    <section>
+        <article><h1>OSRS Cache Reader</h1>
+<p><img src="https://runemonk.com/Altarkiz%202.png" alt="Altarkiz"></p>
+<p>This library load files from Old School Runescape's game files in your browser or in Node.
+There are also helper functions included such as a GLTF exporter and a simple method to load animations that returns verticies for rendering.</p>
+<h2>Setup</h2>
+<p>Run this in your Node JS project to install this library</p>
+<pre class="prettyprint source"><code>npm install osrscachereader
+</code></pre>
+<p>If you're planning on using Webpack to make a web project then you must add these to your Webpack config file. This is required since the cache reader uses a WASM library to decompress certain archives.</p>
+<pre class="prettyprint source lang-js"><code>resolve: {
+    fallback: {
+        crypto: false,
+        fs: false,
+        path: false
+    }
+},
+</code></pre>
+<pre class="prettyprint source lang-js"><code>module: {
+    rules: [
+        {
+            test: /\.wasm$/,
+            type: &quot;asset/inline&quot;,
+        },
+    ],
+},
+</code></pre>
+<p>This repo also includes a complete webpack config (<a href="/webpack.config.cjs" title="Webpack Config">here</a>) if you would like to just use that</p>
+<h2>Running</h2>
+<p>Import OSRSCacheReader and create a new RSCache object to read from the game files</p>
+<pre class="prettyprint source lang-js"><code>import { RSCache } from &quot;osrscachereader&quot;
+const cache = new RSCache(&quot;./&quot;);
+</code></pre>
+<p>The Cache class takes a string as the root directory to load the cache from. This root directory must contain a folder named cache which has files such as <code>main_file_cache.idx255</code> and <code>main_file_cache.dat2</code>. It can also contains a file called <code>xteas.json</code> to read map files. If the cache is not complete it may not load correctly. Runescape streams in the cache so using the files from the client will not always work. An archive of complete caches and xteas can be found at https://archive.openrs2.org/caches</p>
+<p>Using <code>cache.onload</code> we can wait until the cache is loaded and then grab files from it</p>
+<pre class="prettyprint source lang-js"><code>cache.onload.then(() => {
+    //do stuff
+});
+</code></pre>
+<p>The cache is structured by having Indicies which have Archives that can contain one or many files. Each of these files will contain some game definition such as a NPC, animation, sprite or map tile. The indicies are defined with <a href="/src/cacheReader/cacheTypes/IndexType.js" title="IndexType">IndexType</a>. If using IndexType.CONFIGS you can then use <a href="/src/cacheReader/cacheTypes/ConfigType.js" title="ConfigType">ConfigType</a> as the archive</p>
+<p>There are a few ways to grab files from the cache along with some helper methods</p>
+<p><strong>Helper methods</strong></p>
+<pre class="prettyprint source lang-js"><code>let dragonScimitar = await cache.getItem(4587);
+let zulrah = await cache.getNPC(2042);
+let runiteRocks = await cache.getObject(11376);
+</code></pre>
+<p><strong>Main Methods</strong></p>
+<pre class="prettyprint source lang-js"><code>let zulrah = await cache.getDef(IndexType.CONFIGS, ConfigType.NPC, 2042);
+let model = await cache.getDef(IndexType.MODELS, zulrah.models[0]);
+</code></pre>
+<p>This will simply return the definition of which ever file it is able to load from that archive. If no file ID is passed as the last parameter it defaults to 0.</p>
+<pre class="prettyprint source lang-js"><code>let sprite = await cache.getFile(IndexType.SPRITES.id, 42);
+console.log(sprite.nameHash); //prints out 1585002405
+</code></pre>
+<p>This will get the entire file that contains the definition within it. This can be useful when you need extra information such as the hash of the file. The hash can be used to find certain files such as a map tile or finding a sprite by name. In this example we can see it printed 1585002405 which we can then search up in a name hash dump such as <a href="https://github.com/RuneStar/cache-names/blob/master/names.tsv" title="OSRS Hashes">this one</a> provided by RuneStar. In this case we can see 1585002405 is &quot;magicon,27&quot;.</p>
+<pre class="prettyprint source lang-js"><code>let allNPCS = await cache.getAllDefs(IndexType.CONFIGS, ConfigType.NPC);
+let npcsOver400Combat = allNPCS.filter(def => def.combatLevel > 400);
+</code></pre>
+<p>Multiple files can be grabbed by using this method. This can be helpful for filtering and finding certain files. In this example we grab all NPC and filter for ones that have above 400 combat level. It is possible to also do the same with getAllFiles. Keep in mind that getAllFiles and getAllDefs gets everything within an archive.</p>
+<pre class="prettyprint source lang-js"><code>let spritesIndex = cache.getIndex(IndexType.SPRITES);
+let archiveKeys = Object.keys(spritesIndex.archives);
+
+let allSprites = await Promise.all(archiveKeys.map(async archiveId => await cache.getFile(IndexType.SPRITES, archiveId)));
+
+let spritesWithMultipleFrames = allSprites.filter(spriteFile => spriteFile.def.sprites.length > 1);
+let logo = allSprites.filter(spriteFile => spriteFile.nameHash == 3327403);
+</code></pre>
+<p>If you wanted to get every Sprite you would have to do something like this.</p>
+<p>There are also option you can pass as parameter to any getFile/getAllFiles and getDef/getAllDefs functions. You can read more about these options <a href="/docs/" title="Options">here</a></p>
+<h2>Sources</h2>
+<p>Loaders/Definitions and other various information was gathered from the following:</p>
+<ul>
+<li><a href="https://github.com/runelite/runelite">RuneLite</a></li>
+<li><a href="https://github.com/open-osrs/runelite">OpenOSRS</a></li>
+<li><a href="https://github.com/MeteorLite/meteor-client">MeteorLite</a></li>
+<li>Official Old School Runescape Client</li>
+</ul></article>
+    </section>
+
+
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

@@ -1,0 +1,380 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> loaders/SpriteLoader.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#ConfigType">ConfigType</a></li><li><a href="global.html#IndexType">IndexType</a></li></ul></div><div class="category"><h2>Base</h2><h3>Classes</h3><ul><li><a href="RSCache.html">RSCache</a></li></ul></div><div class="category"><h2>Cache Types</h2><h3>Classes</h3><ul><li><a href="Archive.html">Archive</a></li><li><a href="File.html">File</a></li><li><a href="Index_.html">Index</a></li></ul></div><div class="category"><h2>Definitions</h2><h3>Classes</h3><ul><li><a href="AnimayaDefinition.html">AnimayaDefinition</a></li><li><a href="FramemapDefinition.html">FramemapDefinition</a></li><li><a href="FramesDefinition.html">FramesDefinition</a></li><li><a href="ItemDefinition.html">ItemDefinition</a></li><li><a href="KitDefinition.html">KitDefinition</a></li><li><a href="LocationDefinition.html">LocationDefinition</a></li><li><a href="MapDefinition.html">MapDefinition</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="NpcDefinition.html">NpcDefinition</a></li><li><a href="ObjectDefinition.html">ObjectDefinition</a></li><li><a href="SequenceDefinition.html">SequenceDefinition</a></li><li><a href="SpotAnimDefinition.html">SpotAnimDefinition</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteDefinition.html">SpriteDefinition</a></li><li><a href="TextureDefinition.html">TextureDefinition</a></li><li><a href="UnderlayDefinition.html">UnderlayDefinition</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>loaders/SpriteLoader.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { createCanvas } from "canvas";
+
+const FLAG_VERTICAL = 0b01;
+const FLAG_ALPHA = 0b10;
+/**
+* @class Sprite
+* @category Definitions
+* @hideconstructor
+*/
+export class Sprite {
+    /** 
+    * The ID of this Sprite
+    * @type {number} 
+    */
+    id;
+
+    /** 
+    * Frame index for this sprite
+    * @type {number} 
+    */
+    frame;
+
+    /** @type {number} */
+    offsetX;
+
+    /** @type {number} */
+    offsetY;
+
+    /** @type {number} */
+    width;
+
+    /** @type {number} */
+    height;
+
+    /** 
+     * RGB Pixel data
+     * @type {number} 
+     */
+    pixels = [];
+
+    /** @type {number} */
+    maxWidth;
+
+    /** @type {number} */
+    maxHeight;
+
+    /** @type {Array&lt;number>} */
+    pixelIdx = [];
+
+    /** @type {Array&lt;number>} */
+    palette = [];
+
+    getWidth() {
+        return this.width;
+    }
+
+    getHeight() {
+        return this.height;
+    }
+
+    setPixels(pixels) {
+        this.pixels = pixels;
+    }
+
+    async createImageUrl(width, height) {
+        if (width == undefined) width = this.getWidth();
+        if (height == undefined) height = this.getHeight();
+
+        return (await this.createImage(width, height)).toDataURL();
+    }
+
+    async createImage(width, height) {
+        if (width == undefined) width = this.getWidth();
+        if (height == undefined) height = this.getHeight();
+
+        const canvas = createCanvas(this.getWidth(), this.getHeight());
+        const ctx = canvas.getContext('2d');
+
+        let imageData = this.createImageData(ctx);
+        ctx.putImageData(imageData, 0, 0);
+
+
+        let image = new Image();
+        image.src = canvas.toDataURL();
+
+        let loadPromise = new Promise(resolve => {
+            image.onload = () => {
+                canvas.width = height;
+                canvas.height = width;
+                ctx.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), 0, 0, width, height);
+                resolve(canvas);
+            }
+        }, reject => { })
+
+        return loadPromise;
+    }
+
+    createImageData(ctx) {
+        if (ctx == undefined) {
+            const canvas = createCanvas(this.getWidth(), this.getHeight());
+            ctx = canvas.getContext('2d');
+        }
+
+        let imageData = ctx.createImageData(this.getWidth(), this.getHeight());
+        for (let i = 0; i &lt; imageData.data.byteLength; i += 4) {
+            let pixel = this.pixels[Math.floor(i / 4)];
+            imageData.data[i + 0] = (pixel &amp; 0x00ff0000) >> 16;
+            imageData.data[i + 1] = (pixel &amp; 0x0000ff00) >> 8;
+            imageData.data[i + 2] = pixel &amp; 0x000000ff;
+            imageData.data[i + 3] = 254 - ((pixel &amp; 0xff000000) >> 24);
+        }
+
+        return imageData;
+    }
+}
+
+/**
+* @class SpriteDefinition
+* @category Definitions
+* @hideconstructor
+*/
+export class SpriteDefinition {
+    /** 
+    * The ID of this Sprite
+    * @type {number} 
+    */
+    id;
+
+    /** 
+    * Sprites that make up this SpriteDefinition. There can be multiple sprites for animated SpriteDefinitions.
+    * @type {Array&lt;Sprite>} 
+    */
+    sprites = [];
+}
+export default class SpriteLoader {
+
+    load(bytes, id) {
+        let def = new SpriteDefinition();
+        def.id = id;
+
+        let dataview = new DataView(bytes.buffer, 0, bytes.length);
+        dataview.setPosition(dataview.byteLength - 2);
+
+        let spriteCount = dataview.readUint16();
+        let sprites = new Array(spriteCount);
+        def.sprites = sprites;
+
+        dataview.setPosition(dataview.byteLength - 7 - spriteCount * 8);
+
+        let width = dataview.readUint16();
+        let height = dataview.readUint16();
+        let paletteLength = dataview.readUint8() + 1;
+
+        for (let i = 0; i &lt; spriteCount; ++i) {
+            sprites[i] = new Sprite();
+            sprites[i].id = id;
+            sprites[i].frame = i;
+            sprites[i].maxWidth = width;
+            sprites[i].maxHeight = height;
+        }
+
+        for (let i = 0; i &lt; spriteCount; ++i) {
+            sprites[i].offsetX = dataview.readUint16();
+        }
+
+        for (let i = 0; i &lt; spriteCount; ++i) {
+            sprites[i].offsetY = dataview.readUint16();
+        }
+
+        for (let i = 0; i &lt; spriteCount; ++i) {
+            sprites[i].width = dataview.readUint16();
+        }
+
+        for (let i = 0; i &lt; spriteCount; ++i) {
+            sprites[i].height = dataview.readUint16();
+        }
+
+        // same as above + 3 bytes for each palette entry, except for the first one (which is transparent)
+        dataview.setPosition(dataview.byteLength - 7 - spriteCount * 8 - (paletteLength - 1) * 3);
+        let palette = new Array(paletteLength);
+
+        for (let i = 1; i &lt; paletteLength; ++i) {
+            palette[i] = dataview.readInt24();
+
+            if (palette[i] == 0) {
+                palette[i] = 1;
+            }
+        }
+
+        dataview.setPosition(0);
+
+        for (let i = 0; i &lt; spriteCount; ++i) {
+            let sprite = sprites[i];
+            let spriteWidth = sprite.getWidth();
+            let spriteHeight = sprite.getHeight();
+            let dimension = spriteWidth * spriteHeight;
+            let pixelPaletteIndicies = new Array(dimension);
+            let pixelAlphas = new Array(dimension);
+            sprite.pixelIdx = pixelPaletteIndicies;
+            sprite.palette = palette;
+
+            let flags = dataview.readUint8();
+
+            if ((flags &amp; FLAG_VERTICAL) == 0) {
+                // read horizontally
+                for (let j = 0; j &lt; dimension; ++j) {
+                    pixelPaletteIndicies[j] = dataview.readInt8();
+                }
+            }
+            else {
+                // read vertically
+                for (let j = 0; j &lt; spriteWidth; ++j) {
+                    for (let k = 0; k &lt; spriteHeight; ++k) {
+                        pixelPaletteIndicies[spriteWidth * k + j] = dataview.readInt8();
+                    }
+                }
+            }
+
+            // read alphas
+            if ((flags &amp; FLAG_ALPHA) != 0) {
+                if ((flags &amp; FLAG_VERTICAL) == 0) {
+                    // read horizontally
+                    for (let j = 0; j &lt; dimension; ++j) {
+                        pixelAlphas[j] = dataview.readInt8();
+                    }
+                }
+                else {
+                    // read vertically
+                    for (let j = 0; j &lt; spriteWidth; ++j) {
+                        for (let k = 0; k &lt; spriteHeight; ++k) {
+                            pixelAlphas[spriteWidth * k + j] = dataview.readInt8();
+                        }
+                    }
+                }
+            }
+            else {
+                // everything non-zero is opaque
+                for (let j = 0; j &lt; dimension; ++j) {
+                    let index = pixelPaletteIndicies[j];
+
+                    if (index != 0)
+                        pixelAlphas[j] = 0xFF;
+                }
+            }
+
+            let pixels = new Array(dimension);
+
+            // build argb pixels from palette/alphas
+            for (let j = 0; j &lt; dimension; ++j) {
+                let index = pixelPaletteIndicies[j] &amp; 0xFF;
+
+                pixels[j] = palette[index] | (pixelAlphas[j] &lt;&lt; 24);
+            }
+
+            sprite.setPixels(pixels);
+        }
+
+
+
+        //ctx.putImageData
+        return def;
+
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

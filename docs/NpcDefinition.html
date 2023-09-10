@@ -1,0 +1,3359 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> NpcDefinition</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#ConfigType">ConfigType</a></li><li><a href="global.html#IndexType">IndexType</a></li></ul></div><div class="category"><h2>Base</h2><h3>Classes</h3><ul><li><a href="RSCache.html">RSCache</a></li></ul></div><div class="category"><h2>Cache Types</h2><h3>Classes</h3><ul><li><a href="Archive.html">Archive</a></li><li><a href="File.html">File</a></li><li><a href="Index_.html">Index</a></li></ul></div><div class="category"><h2>Definitions</h2><h3>Classes</h3><ul><li><a href="AnimayaDefinition.html">AnimayaDefinition</a></li><li><a href="FramemapDefinition.html">FramemapDefinition</a></li><li><a href="FramesDefinition.html">FramesDefinition</a></li><li><a href="ItemDefinition.html">ItemDefinition</a></li><li><a href="KitDefinition.html">KitDefinition</a></li><li><a href="LocationDefinition.html">LocationDefinition</a></li><li><a href="MapDefinition.html">MapDefinition</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="NpcDefinition.html">NpcDefinition</a></li><li><a href="ObjectDefinition.html">ObjectDefinition</a></li><li><a href="SequenceDefinition.html">SequenceDefinition</a></li><li><a href="SpotAnimDefinition.html">SpotAnimDefinition</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteDefinition.html">SpriteDefinition</a></li><li><a href="TextureDefinition.html">TextureDefinition</a></li><li><a href="UnderlayDefinition.html">UnderlayDefinition</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Class</p>
+                    <h1>NpcDefinition</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>NpcDefinition</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line1">line 1</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Members</h1>
+            <div class="members">
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="actions">
+    <a class="href-link" href="#actions">#</a>
+    
+    <span class="code-name">
+        actions
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line62">line 62</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Byte</code>
+
+
+    </span>
+
+<h4 class="name" id="ambient">
+    <a class="href-link" href="#ambient">#</a>
+    
+    <span class="code-name">
+        ambient
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Number from 0 to 255. Overrides NPC model's ambient lighting
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line116">line 116</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="category">
+    <a class="href-link" href="#category">#</a>
+    
+    <span class="code-name">
+        category
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line59">line 59</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="chatheadModels">
+    <a class="href-link" href="#chatheadModels">#</a>
+    
+    <span class="code-name">
+        chatheadModels
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    The models that will compose this NPC's chathead
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line92">line 92</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="combatLevel">
+    <a class="href-link" href="#combatLevel">#</a>
+    
+    <span class="code-name">
+        combatLevel
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    This NPC's combat level
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line104">line 104</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="configs">
+    <a class="href-link" href="#configs">#</a>
+    
+    <span class="code-name">
+        configs
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line140">line 140</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Byte</code>
+
+
+    </span>
+
+<h4 class="name" id="contrast">
+    <a class="href-link" href="#contrast">#</a>
+    
+    <span class="code-name">
+        contrast
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Number from 0 to 255. Overrides NPC model's contrast
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line122">line 122</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="crawlAnimation">
+    <a class="href-link" href="#crawlAnimation">#</a>
+    
+    <span class="code-name">
+        crawlAnimation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line164">line 164</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="crawlRotate180Animation">
+    <a class="href-link" href="#crawlRotate180Animation">#</a>
+    
+    <span class="code-name">
+        crawlRotate180Animation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line167">line 167</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="crawlRotateLeftAnimation">
+    <a class="href-link" href="#crawlRotateLeftAnimation">#</a>
+    
+    <span class="code-name">
+        crawlRotateLeftAnimation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line170">line 170</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="crawlRotateRightAnimation">
+    <a class="href-link" href="#crawlRotateRightAnimation">#</a>
+    
+    <span class="code-name">
+        crawlRotateRightAnimation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line173">line 173</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">boolean</code>
+
+
+    </span>
+
+<h4 class="name" id="hasRenderPriority">
+    <a class="href-link" href="#hasRenderPriority">#</a>
+    
+    <span class="code-name">
+        hasRenderPriority
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line110">line 110</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="headIconArchiveIds">
+    <a class="href-link" href="#headIconArchiveIds">#</a>
+    
+    <span class="code-name">
+        headIconArchiveIds
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line125">line 125</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="headIconSpriteIndex">
+    <a class="href-link" href="#headIconSpriteIndex">#</a>
+    
+    <span class="code-name">
+        headIconSpriteIndex
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line128">line 128</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="heightScale">
+    <a class="href-link" href="#heightScale">#</a>
+    
+    <span class="code-name">
+        heightScale
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line107">line 107</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="id">
+    <a class="href-link" href="#id">#</a>
+    
+    <span class="code-name">
+        id
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    The ID of this NPC
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line11">line 11</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">boolean</code>
+
+
+    </span>
+
+<h4 class="name" id="isInteractable">
+    <a class="href-link" href="#isInteractable">#</a>
+    
+    <span class="code-name">
+        isInteractable
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line143">line 143</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">boolean</code>
+
+
+    </span>
+
+<h4 class="name" id="isMinimapVisible">
+    <a class="href-link" href="#isMinimapVisible">#</a>
+    
+    <span class="code-name">
+        isMinimapVisible
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    If this NPC will show on the minimap
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line98">line 98</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">boolean</code>
+
+
+    </span>
+
+<h4 class="name" id="isPet">
+    <a class="href-link" href="#isPet">#</a>
+    
+    <span class="code-name">
+        isPet
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line149">line 149</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="models">
+    <a class="href-link" href="#models">#</a>
+    
+    <span class="code-name">
+        models
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    The models that compose the NPC
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line17">line 17</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">string</code>
+
+
+    </span>
+
+<h4 class="name" id="name">
+    <a class="href-link" href="#name">#</a>
+    
+    <span class="code-name">
+        name
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Name of the NPC
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line23">line 23</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="params">
+    <a class="href-link" href="#params">#</a>
+    
+    <span class="code-name">
+        params
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line176">line 176</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="recolorToFind">
+    <a class="href-link" href="#recolorToFind">#</a>
+    
+    <span class="code-name">
+        recolorToFind
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Color values to find to be replaced for this NPC
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line68">line 68</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="recolorToReplace">
+    <a class="href-link" href="#recolorToReplace">#</a>
+    
+    <span class="code-name">
+        recolorToReplace
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    What the color values will be replaced with
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line74">line 74</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="retextureToFind">
+    <a class="href-link" href="#retextureToFind">#</a>
+    
+    <span class="code-name">
+        retextureToFind
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Textures to find to be replaced for this NPC
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line80">line 80</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array</code>
+
+
+    </span>
+
+<h4 class="name" id="retextureToReplace">
+    <a class="href-link" href="#retextureToReplace">#</a>
+    
+    <span class="code-name">
+        retextureToReplace
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    What the texture will be replaced with
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line86">line 86</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="rotate180Animation">
+    <a class="href-link" href="#rotate180Animation">#</a>
+    
+    <span class="code-name">
+        rotate180Animation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line50">line 50</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="rotate90LeftAnimation">
+    <a class="href-link" href="#rotate90LeftAnimation">#</a>
+    
+    <span class="code-name">
+        rotate90LeftAnimation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line53">line 53</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="rotate90RightAnimation">
+    <a class="href-link" href="#rotate90RightAnimation">#</a>
+    
+    <span class="code-name">
+        rotate90RightAnimation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line56">line 56</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="rotateLeftAnimation">
+    <a class="href-link" href="#rotateLeftAnimation">#</a>
+    
+    <span class="code-name">
+        rotateLeftAnimation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line44">line 44</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="rotateRightAnimation">
+    <a class="href-link" href="#rotateRightAnimation">#</a>
+    
+    <span class="code-name">
+        rotateRightAnimation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line47">line 47</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">boolean</code>
+
+
+    </span>
+
+<h4 class="name" id="rotationFlag">
+    <a class="href-link" href="#rotationFlag">#</a>
+    
+    <span class="code-name">
+        rotationFlag
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line146">line 146</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="rotationSpeed">
+    <a class="href-link" href="#rotationSpeed">#</a>
+    
+    <span class="code-name">
+        rotationSpeed
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line131">line 131</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="runAnimation">
+    <a class="href-link" href="#runAnimation">#</a>
+    
+    <span class="code-name">
+        runAnimation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line152">line 152</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="runRotate180Animation">
+    <a class="href-link" href="#runRotate180Animation">#</a>
+    
+    <span class="code-name">
+        runRotate180Animation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line155">line 155</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="runRotateLeftAnimation">
+    <a class="href-link" href="#runRotateLeftAnimation">#</a>
+    
+    <span class="code-name">
+        runRotateLeftAnimation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line158">line 158</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="runRotateRightAnimation">
+    <a class="href-link" href="#runRotateRightAnimation">#</a>
+    
+    <span class="code-name">
+        runRotateRightAnimation
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line161">line 161</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="size">
+    <a class="href-link" href="#size">#</a>
+    
+    <span class="code-name">
+        size
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Tile size
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line29">line 29</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="standingAnimation">
+    <a class="href-link" href="#standingAnimation">#</a>
+    
+    <span class="code-name">
+        standingAnimation
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Idle animation
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line35">line 35</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="varbitId">
+    <a class="href-link" href="#varbitId">#</a>
+    
+    <span class="code-name">
+        varbitId
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line134">line 134</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="varpIndex">
+    <a class="href-link" href="#varpIndex">#</a>
+    
+    <span class="code-name">
+        varpIndex
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line137">line 137</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="walkingAnimation">
+    <a class="href-link" href="#walkingAnimation">#</a>
+    
+    <span class="code-name">
+        walkingAnimation
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Walking animation
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_NpcLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_NpcLoader.js.html">loaders/NpcLoader.js</a>, <a href="loaders_NpcLoader.js.html#line41">line 41</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>
