@@ -114,7 +114,7 @@ export class ModelDefinition {
 	* Texture IDs for faces
 	* @type {Array<number>} 
 	*/
-	faceTextures
+	faceTextures = [];
 
 	/**
 	* Texture UV coords for mapping
@@ -507,6 +507,21 @@ export class ModelDefinition {
 		}
 
 		return animations;
+	}
+
+	/**
+	 * 
+	 * @param {ModelDefinition} otherModel Check if this model is the same
+	 * @returns boolean
+	 */
+	equals(otherModel) {
+		let sameVerticiesX = this.vertexPositionsX.every((x,i) => x == otherModel.vertexPositionsX[i]);
+		let sameVerticiesY = this.vertexPositionsY.every((x,i) => x == otherModel.vertexPositionsY[i]);
+		let sameVerticiesZ = this.vertexPositionsZ.every((x,i) => x == otherModel.vertexPositionsZ[i]);
+		let sameFaceColors = this.faceColors.every((x,i) => x == otherModel.faceColors[i]);
+		let sameFaceTextures = this.faceTextures.every((x,i) => x == otherModel.faceTextures[i]);
+
+		return sameVerticiesX && sameVerticiesY && sameVerticiesZ && sameFaceColors && sameFaceColors;
 	}
 }
 
