@@ -1,0 +1,2958 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> ModelDefinition</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#ConfigType">ConfigType</a></li><li><a href="global.html#IndexType">IndexType</a></li></ul></div><div class="category"><h2>Base</h2><h3>Classes</h3><ul><li><a href="RSCache.html">RSCache</a></li></ul></div><div class="category"><h2>Cache Types</h2><h3>Classes</h3><ul><li><a href="Archive.html">Archive</a></li><li><a href="File.html">File</a></li><li><a href="Index_.html">Index</a></li></ul></div><div class="category"><h2>Definitions</h2><h3>Classes</h3><ul><li><a href="AnimayaDefinition.html">AnimayaDefinition</a></li><li><a href="FramemapDefinition.html">FramemapDefinition</a></li><li><a href="FramesDefinition.html">FramesDefinition</a></li><li><a href="ItemDefinition.html">ItemDefinition</a></li><li><a href="KitDefinition.html">KitDefinition</a></li><li><a href="LocationDefinition.html">LocationDefinition</a></li><li><a href="MapDefinition.html">MapDefinition</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="NpcDefinition.html">NpcDefinition</a></li><li><a href="ObjectDefinition.html">ObjectDefinition</a></li><li><a href="SequenceDefinition.html">SequenceDefinition</a></li><li><a href="SpotAnimDefinition.html">SpotAnimDefinition</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteDefinition.html">SpriteDefinition</a></li><li><a href="TextureDefinition.html">TextureDefinition</a></li><li><a href="UnderlayDefinition.html">UnderlayDefinition</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Class</p>
+                    <h1>ModelDefinition</h1>
+                </header>
+                
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>ModelDefinition</h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line11">line 11</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+    
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Members</h1>
+            <div class="members">
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;Byte></code>
+
+
+    </span>
+
+<h4 class="name" id="aByteArray2580">
+    <a class="href-link" href="#aByteArray2580">#</a>
+    
+    <span class="code-name">
+        aByteArray2580
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line180">line 180</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="aShortArray2574">
+    <a class="href-link" href="#aShortArray2574">#</a>
+    
+    <span class="code-name">
+        aShortArray2574
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line168">line 168</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="aShortArray2575">
+    <a class="href-link" href="#aShortArray2575">#</a>
+    
+    <span class="code-name">
+        aShortArray2575
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line171">line 171</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="aShortArray2577">
+    <a class="href-link" href="#aShortArray2577">#</a>
+    
+    <span class="code-name">
+        aShortArray2577
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line177">line 177</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="aShortArray2578">
+    <a class="href-link" href="#aShortArray2578">#</a>
+    
+    <span class="code-name">
+        aShortArray2578
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line183">line 183</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="aShortArray2586">
+    <a class="href-link" href="#aShortArray2586">#</a>
+    
+    <span class="code-name">
+        aShortArray2586
+    </span>
+    
+</h4>
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line174">line 174</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="animayaGroups">
+    <a class="href-link" href="#animayaGroups">#</a>
+    
+    <span class="code-name">
+        animayaGroups
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Used for new Animaya animations
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line130">line 130</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="animayaScales">
+    <a class="href-link" href="#animayaScales">#</a>
+    
+    <span class="code-name">
+        animayaScales
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Used for new Animaya animations
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line135">line 135</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;Byte></code>
+
+
+    </span>
+
+<h4 class="name" id="faceAlphas">
+    <a class="href-link" href="#faceAlphas">#</a>
+    
+    <span class="code-name">
+        faceAlphas
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Used to set transparency of faces
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line105">line 105</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="faceColors">
+    <a class="href-link" href="#faceColors">#</a>
+    
+    <span class="code-name">
+        faceColors
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Face color
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line159">line 159</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="faceCount">
+    <a class="href-link" href="#faceCount">#</a>
+    
+    <span class="code-name">
+        faceCount
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    How many faces this models has
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line33">line 33</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="faceRenderPriorities">
+    <a class="href-link" href="#faceRenderPriorities">#</a>
+    
+    <span class="code-name">
+        faceRenderPriorities
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Local render priority when combined with other models
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line93">line 93</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="faceRenderTypes">
+    <a class="href-link" href="#faceRenderTypes">#</a>
+    
+    <span class="code-name">
+        faceRenderTypes
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Changes how this face will render (lighting style, invisible, etc.)
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line87">line 87</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="faceSkins">
+    <a class="href-link" href="#faceSkins">#</a>
+    
+    <span class="code-name">
+        faceSkins
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Used for animations
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line111">line 111</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="faceTextures">
+    <a class="href-link" href="#faceTextures">#</a>
+    
+    <span class="code-name">
+        faceTextures
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Texture IDs for faces
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line117">line 117</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="faceVertexIndices1">
+    <a class="href-link" href="#faceVertexIndices1">#</a>
+    
+    <span class="code-name">
+        faceVertexIndices1
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Which Vertex XYZ to use for the 1st index
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line63">line 63</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="faceVertexIndices2">
+    <a class="href-link" href="#faceVertexIndices2">#</a>
+    
+    <span class="code-name">
+        faceVertexIndices2
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Which Vertex XYZ to use for the 2nd index
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line69">line 69</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="faceVertexIndices3">
+    <a class="href-link" href="#faceVertexIndices3">#</a>
+    
+    <span class="code-name">
+        faceVertexIndices3
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Which Vertex XYZ to use for the 3rd index
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line75">line 75</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="id">
+    <a class="href-link" href="#id">#</a>
+    
+    <span class="code-name">
+        id
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    The ID of this Model
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line21">line 21</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="numTextureFaces">
+    <a class="href-link" href="#numTextureFaces">#</a>
+    
+    <span class="code-name">
+        numTextureFaces
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    How many textured faces this models has
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line39">line 39</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="priority">
+    <a class="href-link" href="#priority">#</a>
+    
+    <span class="code-name">
+        priority
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Overall priority
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line99">line 99</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="texIndices1">
+    <a class="href-link" href="#texIndices1">#</a>
+    
+    <span class="code-name">
+        texIndices1
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Used to compute Texture UV coords
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line141">line 141</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="texIndices2">
+    <a class="href-link" href="#texIndices2">#</a>
+    
+    <span class="code-name">
+        texIndices2
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Used to compute Texture UV coords
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line147">line 147</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="texIndices3">
+    <a class="href-link" href="#texIndices3">#</a>
+    
+    <span class="code-name">
+        texIndices3
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Used to compute Texture UV coords
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line153">line 153</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="textureCoords">
+    <a class="href-link" href="#textureCoords">#</a>
+    
+    <span class="code-name">
+        textureCoords
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Texture UV coords for mapping
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line123">line 123</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="textureRenderTypes">
+    <a class="href-link" href="#textureRenderTypes">#</a>
+    
+    <span class="code-name">
+        textureRenderTypes
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Changes how this face's texture will render (lighting style, invisible, etc.)
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line165">line 165</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">number</code>
+
+
+    </span>
+
+<h4 class="name" id="vertexCount">
+    <a class="href-link" href="#vertexCount">#</a>
+    
+    <span class="code-name">
+        vertexCount
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    How many verticies this models has
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line27">line 27</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="vertexPositionsX">
+    <a class="href-link" href="#vertexPositionsX">#</a>
+    
+    <span class="code-name">
+        vertexPositionsX
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Vertex X Position Array
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line45">line 45</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="vertexPositionsY">
+    <a class="href-link" href="#vertexPositionsY">#</a>
+    
+    <span class="code-name">
+        vertexPositionsY
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Vertex Y Position Array
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line51">line 51</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="vertexPositionsZ">
+    <a class="href-link" href="#vertexPositionsZ">#</a>
+    
+    <span class="code-name">
+        vertexPositionsZ
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Vertex Z Position Array
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line57">line 57</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+                <div class="member">
+
+    <span class="method-parameter is-pulled-right">
+        <label>Type:</label>
+        
+<code class="param-type">Array.&lt;number></code>
+
+
+    </span>
+
+<h4 class="name" id="vertexSkins">
+    <a class="href-link" href="#vertexSkins">#</a>
+    
+    <span class="code-name">
+        vertexSkins
+    </span>
+    
+</h4>
+
+
+
+
+<div class="description">
+    Used for animations
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line81">line 81</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+        <div class='vertical-section'>
+            <h1>Methods</h1>
+            <div class="members">
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="loadAnimation">
+        <a class="href-link" href="#loadAnimation">#</a>
+        
+            
+                <span class='tag'>async</span>
+            
+        
+        <span class="code-name">
+            
+                loadAnimation<span class="signature">(cache, animationId)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>cache</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="RSCache.html">RSCache</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">OSRSCache object used to grab other files for the animation</td>
+</tr>
+
+
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>animationId</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type">number</code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">Animation ID you want to play on this model</td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line251">line 251</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>AnimationData</div>
+    
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+                <div class="member">
+
+
+    
+    <h4 class="name" id="mergeWith">
+        <a class="href-link" href="#mergeWith">#</a>
+        
+        <span class="code-name">
+            
+                mergeWith<span class="signature">(otherModel)</span><span class="type-signature"></span>
+            
+        </span>
+    </h4>
+    
+
+    
+    
+    <div class="description">
+        Merge this model with another model
+    </div>
+    
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+<div class="table-container">
+    <table class="params table">
+        <thead>
+        <tr>
+            
+            <th>Name</th>
+            
+
+            <th>Type</th>
+
+            
+
+            
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        
+
+            
+<tr class="deep-level-0">
+  
+      <td class="name"><code>otherModel</code></td>
+  
+
+  <td class="type">
+  
+      
+<code class="param-type"><a href="ModelDefinition.html">ModelDefinition</a></code>
+
+
+  
+  </td>
+
+  
+
+  
+
+  <td class="description last">Other model to combine with this</td>
+</tr>
+
+
+        
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    
+
+    
+
+    
+
+    
+        <p class="tag-source">
+            <a href="loaders_ModelLoader.js.html" class="button">View Source</a>
+            <span>
+                <a href="loaders_ModelLoader.js.html">loaders/ModelLoader.js</a>, <a href="loaders_ModelLoader.js.html#line190">line 190</a>
+            </span>
+        </p>
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class='columns method-parameter'>
+        <div class="column is-2"><label>Returns:</label></div>
+        <div class="column is-10">
+            
+                    
+
+<div class="columns">
+    
+    <div class='param-desc column is-7'>ModelDefinition</div>
+    
+    
+</div>
+
+                
+        </div>
+    </div>
+
+
+
+
+</div>
+            
+            </div>
+        </div>
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

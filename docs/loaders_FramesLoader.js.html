@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> loaders/FramesLoader.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#ConfigType">ConfigType</a></li><li><a href="global.html#IndexType">IndexType</a></li></ul></div><div class="category"><h2>Base</h2><h3>Classes</h3><ul><li><a href="RSCache.html">RSCache</a></li></ul></div><div class="category"><h2>Cache Types</h2><h3>Classes</h3><ul><li><a href="Archive.html">Archive</a></li><li><a href="File.html">File</a></li><li><a href="Index_.html">Index</a></li></ul></div><div class="category"><h2>Definitions</h2><h3>Classes</h3><ul><li><a href="AnimayaDefinition.html">AnimayaDefinition</a></li><li><a href="FramemapDefinition.html">FramemapDefinition</a></li><li><a href="FramesDefinition.html">FramesDefinition</a></li><li><a href="ItemDefinition.html">ItemDefinition</a></li><li><a href="KitDefinition.html">KitDefinition</a></li><li><a href="LocationDefinition.html">LocationDefinition</a></li><li><a href="MapDefinition.html">MapDefinition</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="NpcDefinition.html">NpcDefinition</a></li><li><a href="ObjectDefinition.html">ObjectDefinition</a></li><li><a href="SequenceDefinition.html">SequenceDefinition</a></li><li><a href="SpotAnimDefinition.html">SpotAnimDefinition</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteDefinition.html">SpriteDefinition</a></li><li><a href="TextureDefinition.html">TextureDefinition</a></li><li><a href="UnderlayDefinition.html">UnderlayDefinition</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>loaders/FramesLoader.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Matrix from '../cacheTypes/anim/Matrix.js';
+import IndexType from '../cacheTypes/IndexType.js'
+import AnimayaLoader from './AnimayaLoader.js';
+import Quaternion from '../cacheTypes/anim/Quaternion.js';
+
+/**
+* @class FramesDefinition
+* @category Definitions
+* @hideconstructor
+*/
+export class FramesDefinition {
+    /** 
+	 * The file ID of this Frame
+	 * @type {number} 
+	 */
+    id;
+
+    /** 
+	 * Skeleton used for this frame
+	 * @type {FramemapDefinition} 
+	 */
+	framemap;
+
+    
+	/** @type {Array&lt;number>} */
+	translator_x = [];
+    
+	/** @type {Array&lt;number>} */
+	translator_y = [];
+    
+	/** @type {Array&lt;number>} */
+	translator_z = [];
+    
+	/** @type {number} */
+	translatorCount = -1;
+    
+	/** @type {Array&lt;number>} */
+	indexFrameIds = [];
+
+	/** @type {boolean} */
+	showing;
+
+    method727(var1, var2, var3) {
+        let var5 = new Matrix();
+
+        this.method728(var5, var3, var2, var1);
+        this.method726(var5, var3, var2, var1);
+        this.method730(var5, var3, var2, var1);
+        //console.log(var2.id, var5);
+
+        var2.copy(var5);
+    }
+
+    method728(var1, var2, var3, var4) {
+        let var5 = var3.getRotation(this.field1257);
+        let var6 = var5[0];
+        let var7 = var5[1];
+        let var8 = var5[2];
+
+        if (this.field1265[var2] != null) {
+            let var9 = this.field1265[var2][0];
+            let var10 = this.field1265[var2][1];
+            let var11 = this.field1265[var2][2];
+            if (var9 != null) {
+                var6 = var9.method699(var4);
+            }
+
+            if (var10 != null) {
+                var7 = var10.method699(var4);
+            }
+
+            if (var11 != null) {
+                var8 = var11.method699(var4);
+            }
+        }
+
+        let var17 = new Quaternion();
+        var17.setRotation(1.0, 0.0, 0.0, var6);
+
+        let var18 = new Quaternion();
+        var18.setRotation(0.0, 1.0, 0.0, var7);
+
+        let var19 = new Quaternion();
+        var19.setRotation(0.0, 0.0, 1.0, var8);
+
+        let var12 = new Quaternion();
+
+        var12.multiply(var19);
+        var12.multiply(var17);
+        var12.multiply(var18);
+
+        let var13 = new Matrix();
+
+        var13.rotate(var12);
+        var1.multiply(var13);
+    }
+
+
+    method730(var1, var2, var3, var4) {
+        let var5 = var3.getTranslation(this.field1257);
+        let var6 = var5[0];
+        let var7 = var5[1];
+        let var8 = var5[2];
+        if (this.field1265[var2] != null) {
+            let var9 = this.field1265[var2][3];
+            let var10 = this.field1265[var2][4];
+            let var11 = this.field1265[var2][5];
+            if (var9 != null) {
+                var6 = var9.method699(var4);
+            }
+
+            if (var10 != null) {
+                var7 = var10.method699(var4);
+            }
+
+            if (var11 != null) {
+                var8 = var11.method699(var4);
+            }
+        }
+
+        var1.matrixVals[12] = var6;
+        var1.matrixVals[13] = var7;
+        var1.matrixVals[14] = var8;
+    }
+
+    method726(var1, var2, var3, var4) {
+        let var5 = var3.getVectorMagnitudes(this.field1257);
+        let var6 = var5[0];
+        let var7 = var5[1];
+        let var8 = var5[2];
+        if (this.field1265[var2] != null) {
+            let var9 = this.field1265[var2][6];
+            let var10 = this.field1265[var2][7];
+            let var11 = this.field1265[var2][8];
+            if (var9 != null) {
+                var6 = var9.method699(var4);
+            }
+
+            if (var10 != null) {
+                var7 = var10.method699(var4);
+            }
+
+            if (var11 != null) {
+                var8 = var11.method699(var4);
+            }
+        }
+
+        let var15 = new Matrix();
+        var15.setScaleXYZ(var6, var7, var8);
+        var1.multiply(var15);
+    }
+}
+
+export default class FramesLoader {
+
+    load(bytes, id, cache, options) {
+        let def = new FramesDefinition();
+        def.id = id;
+        let inview = new DataView(bytes.buffer);
+        let dataview = new DataView(bytes.buffer);
+
+        let framemapArchiveIndex = inview.readUint16();
+        let length = inview.readUint8();
+
+        if (options.isAnimaya) {
+            def = new AnimayaLoader().load(def, bytes, cache, options);
+            return def;
+        }
+
+        dataview.setPosition(3 + length);
+
+        def.indexFrameIds = [];
+        def.translator_x = [];
+        def.translator_y = [];
+        def.translator_z = [];
+
+        let lastI = -1;
+        let index = 0;
+        //return this.def;
+        return cache.getFile(IndexType.FRAMEMAPS.id, framemapArchiveIndex, 0, { cacheResults: true }).then((framemap) => {
+
+            def.framemap = framemap.def;
+
+            for (let i = 0; i &lt; length; ++i) {
+                let var9 = inview.readUint8();
+
+                if (var9 &lt;= 0) {
+                    continue;
+                }
+
+                if (def.framemap.types[i] != 0) {
+                    for (let var10 = i - 1; var10 > lastI; --var10) {
+                        if (def.framemap.types[var10] == 0) {
+                            def.indexFrameIds[index] = var10;
+                            def.translator_x[index] = 0;
+                            def.translator_y[index] = 0;
+                            def.translator_z[index] = 0;
+                            ++index;
+                            break;
+                        }
+                    }
+                }
+
+                def.indexFrameIds[index] = i;
+                let var11 = 0;
+                if (def.framemap.types[i] == 3) {
+                    var11 = 128;
+                }
+
+                if ((var9 &amp; 1) != 0) {
+                    def.translator_x[index] = dataview.readShortSmart();
+                }
+                else {
+                    def.translator_x[index] = var11;
+                }
+
+                if ((var9 &amp; 2) != 0) {
+                    def.translator_y[index] = dataview.readShortSmart();
+                }
+                else {
+                    def.translator_y[index] = var11;
+                }
+
+                if ((var9 &amp; 4) != 0) {
+                    def.translator_z[index] = dataview.readShortSmart();
+                }
+                else {
+                    def.translator_z[index] = var11;
+                }
+
+                lastI = i;
+                ++index;
+                if (def.framemap.types[i] == 5) {
+                    def.showing = true;
+                }
+            }
+
+            return def;
+        });
+
+
+    }
+
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

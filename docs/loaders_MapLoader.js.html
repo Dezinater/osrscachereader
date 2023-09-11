@@ -1,0 +1,323 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> loaders/MapLoader.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#ConfigType">ConfigType</a></li><li><a href="global.html#IndexType">IndexType</a></li></ul></div><div class="category"><h2>Base</h2><h3>Classes</h3><ul><li><a href="RSCache.html">RSCache</a></li></ul></div><div class="category"><h2>Cache Types</h2><h3>Classes</h3><ul><li><a href="Archive.html">Archive</a></li><li><a href="File.html">File</a></li><li><a href="Index_.html">Index</a></li></ul></div><div class="category"><h2>Definitions</h2><h3>Classes</h3><ul><li><a href="AnimayaDefinition.html">AnimayaDefinition</a></li><li><a href="FramemapDefinition.html">FramemapDefinition</a></li><li><a href="FramesDefinition.html">FramesDefinition</a></li><li><a href="ItemDefinition.html">ItemDefinition</a></li><li><a href="KitDefinition.html">KitDefinition</a></li><li><a href="LocationDefinition.html">LocationDefinition</a></li><li><a href="MapDefinition.html">MapDefinition</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="NpcDefinition.html">NpcDefinition</a></li><li><a href="ObjectDefinition.html">ObjectDefinition</a></li><li><a href="SequenceDefinition.html">SequenceDefinition</a></li><li><a href="SpotAnimDefinition.html">SpotAnimDefinition</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteDefinition.html">SpriteDefinition</a></li><li><a href="TextureDefinition.html">TextureDefinition</a></li><li><a href="UnderlayDefinition.html">UnderlayDefinition</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>loaders/MapLoader.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @typedef Tile
+ * @property {number} height Used to construct a heightmap
+ * @property {number} attrOpcode
+ * @property {number} overlayId Overlay Definition ID
+ * @property {number} overlayPath
+ * @property {number} overlayRotation
+ * @property {number} settings
+ * @property {number} underlayId Underlay Definition ID
+ */
+
+/**
+ * @typedef Location
+ * @property {number} id ObjectDefinition ID
+ * @property {number} type 
+ * @property {number} orientation Rotation
+ * @property {{x,y,z}} position 
+*/
+
+/**
+* @class MapDefinition
+* @category Definitions
+* @hideconstructor
+*/
+export class MapDefinition {
+    /** @type {number} */
+    id;
+
+    /** @type {number} */
+    regionX;
+
+    /** @type {number} */
+    regionY;
+
+    /** 
+     * Tile info including Overlay/Underlay and height
+     * @type {Tile}
+     */
+    tiles = [];
+}
+
+/**
+* @class LocationDefinition
+* @category Definitions
+* @hideconstructor
+*/
+export class LocationDefinition {
+
+    /** @type {number} */
+    id;
+
+    /** @type {number} */
+    regionX;
+
+    /** @type {number} */
+    regionY;
+
+    /** 
+     * Objects on the map
+     * @type {Location}
+     */
+    locations = [];
+}
+export class EmptyMapDefinition {
+
+}
+export default class MapLoader {
+
+    /*
+    for(let i=0;i&lt;32768;i++){
+        let x = i >> 8;
+        let y = i &amp; 0xFF;
+        if(hash("l"+x+"_"+y) == hashVal){
+            console.log("l"+x+"_"+y);
+            break;
+        }
+        if(hash("m"+x+"_"+y) == hashVal){
+            console.log("m"+x+"_"+y);
+            break;
+        }
+    }
+    */
+    hash(str) {
+        let h = 0;
+        for (let i = 0; i &lt; str.length; i++) {
+            h = h * 31 + str.charCodeAt(i);
+        }
+        return (new Int32Array([h]))[0];
+    }
+
+
+
+    load(bytes, id, rscache) {
+        if (bytes == undefined) return new MapDefinition();
+        let x, y;
+        let mapInfo = rscache.cacheRequester.xteas[id];
+        //if there is xteas then its a location def
+        if (mapInfo != undefined) {
+            x = mapInfo.mapsquare >> 8;
+            y = mapInfo.mapsquare &amp; 0xFF;
+            return this.loadLocationDef(bytes, id, x, y);
+        } else {
+            let hashVal = rscache.indicies[5].archives[id].nameHash;
+            for (let i = 0; i &lt; 32768; i++) {
+                let x = i >> 8;
+                let y = i &amp; 0xFF;
+
+                //no xteas and its a terrain map
+                if (this.hash("m" + x + "_" + y) == hashVal) {
+                    return this.loadMapDef(bytes, id, x, y);
+                } //no xteas and its a location def
+                if (this.hash("l" + x + "_" + y) == hashVal) {
+                    //not much we can do here without xteas
+                    return new LocationDefinition();
+                }
+
+            }
+        }
+
+        //no other case matched
+        return new EmptyMapDefinition();
+    }
+    loadLocationDef(bytes, defId, x, y) {
+        let def = new LocationDefinition();
+        def.id = defId;
+        def.regionX = x;
+        def.regionY = y;
+        def.locations = [];
+        let dataview = new DataView(bytes.buffer);
+
+        let id = -1;
+        let idOffset;
+
+        while ((idOffset = dataview.readUnsignedIntSmartShortCompat()) != 0) {
+            id += idOffset;
+
+            let position = 0;
+            let positionOffset;
+
+            while ((positionOffset = dataview.readUnsignedShortSmart()) != 0) {
+                position += positionOffset - 1;
+
+                let localY = position &amp; 0x3F;
+                let localX = position >> 6 &amp; 0x3F;
+                let height = position >> 12 &amp; 0x3;
+
+                let attributes = dataview.readUint8();
+                let type = attributes >> 2;
+                let orientation = attributes &amp; 0x3;
+
+                def.locations.push({ id, type, orientation, position: { localX, localY, height } });
+            }
+        }
+
+        return def;
+    }
+
+    loadMapDef(bytes, defId, x, y) {
+        let X = 64;
+        let Y = 64;
+        let Z = 4;
+        let def = new MapDefinition();
+        def.id = defId;
+        def.regionX = x;
+        def.regionY = y;
+        let dataview = new DataView(bytes.buffer);
+
+        def.tiles = [];
+
+        for (let z = 0; z &lt; Z; z++) {
+            def.tiles[z] = [];
+            for (let x = 0; x &lt; X; x++) {
+                def.tiles[z][x] = [];
+                for (let y = 0; y &lt; Y; y++) {
+                    def.tiles[z][x][y] = {};
+                    let tile = def.tiles[z][x][y];
+                    while (true) {
+                        let attribute = dataview.readUint16();
+                        if (attribute == 0) {
+                            break;
+                        }
+                        else if (attribute == 1) {
+                            tile.height = dataview.readUint8();
+                            break;
+                        }
+                        else if (attribute &lt;= 49) {
+                            tile.attrOpcode = attribute;
+                            tile.overlayId = dataview.readInt16();
+                            tile.overlayPath = ((attribute - 2) / 4);
+                            tile.overlayRotation = (attribute - 2 &amp; 3);
+                        }
+                        else if (attribute &lt;= 81) {
+                            tile.settings = (attribute - 49);
+                        }
+                        else {
+                            tile.underlayId = (attribute - 81);
+                        }
+                    }
+
+                }
+            }
+        }
+
+        return def;
+    }
+
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

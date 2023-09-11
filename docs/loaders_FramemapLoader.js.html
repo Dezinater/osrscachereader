@@ -1,0 +1,205 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> loaders/FramemapLoader.js</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"><h3>Global</h3><ul><li><a href="global.html#ConfigType">ConfigType</a></li><li><a href="global.html#IndexType">IndexType</a></li></ul></div><div class="category"><h2>Base</h2><h3>Classes</h3><ul><li><a href="RSCache.html">RSCache</a></li></ul></div><div class="category"><h2>Cache Types</h2><h3>Classes</h3><ul><li><a href="Archive.html">Archive</a></li><li><a href="File.html">File</a></li><li><a href="Index_.html">Index</a></li></ul></div><div class="category"><h2>Definitions</h2><h3>Classes</h3><ul><li><a href="AnimayaDefinition.html">AnimayaDefinition</a></li><li><a href="FramemapDefinition.html">FramemapDefinition</a></li><li><a href="FramesDefinition.html">FramesDefinition</a></li><li><a href="ItemDefinition.html">ItemDefinition</a></li><li><a href="KitDefinition.html">KitDefinition</a></li><li><a href="LocationDefinition.html">LocationDefinition</a></li><li><a href="MapDefinition.html">MapDefinition</a></li><li><a href="ModelDefinition.html">ModelDefinition</a></li><li><a href="NpcDefinition.html">NpcDefinition</a></li><li><a href="ObjectDefinition.html">ObjectDefinition</a></li><li><a href="SequenceDefinition.html">SequenceDefinition</a></li><li><a href="SpotAnimDefinition.html">SpotAnimDefinition</a></li><li><a href="Sprite.html">Sprite</a></li><li><a href="SpriteDefinition.html">SpriteDefinition</a></li><li><a href="TextureDefinition.html">TextureDefinition</a></li><li><a href="UnderlayDefinition.html">UnderlayDefinition</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>loaders/FramemapLoader.js</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import Bone from "../cacheTypes/anim/Bone.js";
+
+/**
+* @class FramemapDefinition
+* @category Definitions
+* @hideconstructor
+*/
+export class FramemapDefinition {
+    id
+
+    /** @type {Byte} */
+    length
+
+    /** @type {Array&lt;number>} */
+    types
+
+    /** @type {Array&lt;number>} */
+    frameMaps
+
+    /** @type {AnimayaSkeleton} */
+    animayaSkeleton
+}
+
+
+class AnimayaSkeleton {
+    constructor(dataview, bonesCount) {
+        this.bones = new Array(bonesCount);
+        this.numMatrices = dataview.readUint8();
+
+        for (let i = 0; i &lt; this.bones.length; ++i) {
+            this.bones[i] = new Bone(this.numMatrices, dataview);
+        }
+
+        this.attachBones();
+    }
+
+    attachBones() {
+        for (let i = 0; i &lt; this.bones.length; ++i) {
+            let bone = this.bones[i];
+            if (bone.id >= 0) {
+                bone.parentBone = this.bones[bone.id];
+            }
+        }
+    }
+
+    getBone(index) {
+        return index >= this.bones.length ? null : this.bones[index];
+    }
+
+    getAllBones() {
+        return this.bones;
+    }
+}
+
+export default class FramemapLoader {
+
+    load(bytes, id) {
+        let def = new FramemapDefinition();
+        def.id = id;
+        let dataview = new DataView(bytes.buffer);
+        def.length = dataview.readUint8();
+        def.types = [];
+        def.frameMaps = [];
+
+        for (let i = 0; i &lt; def.length; ++i) {
+            def.types[i] = dataview.readUint8();
+        }
+
+        for (let i = 0; i &lt; def.length; ++i) {
+            def.frameMaps[i] = new Array(dataview.readUint8());
+        }
+
+        for (let i = 0; i &lt; def.length; ++i) {
+            for (let j = 0; j &lt; def.frameMaps[i].length; ++j) {
+                def.frameMaps[i][j] = dataview.readUint8();
+            }
+        }
+
+        if (dataview.getPosition() &lt; dataview.byteLength) {
+            let var4 = dataview.readUint16();
+            if (var4 > 0) {
+                //console.log(id);
+                def.animayaSkeleton = new AnimayaSkeleton(dataview, var4);
+                //console.log(dataview);
+            }
+        }
+        return def;
+    }
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>
