@@ -25,7 +25,7 @@ import ConfigType from './cacheTypes/ConfigType.js'
  * @param {function(number):void} progressFunc Progress function callback. Passes 1 parameter which is the amount of progress from the last step (not total progress)
  */
 class RSCache {
-	constructor(cacheRootDir = "./", progressFunc = () => {}) {
+	constructor(cacheRootDir = "./", progressFunc = () => { }) {
 		this.indicies = {};
 		this.progressFunc = progressFunc;
 
@@ -77,6 +77,9 @@ class RSCache {
 		}
 	}
 
+
+	readPromises = {};
+
 	/**
 	 * Gets all of the files from an archive and loads their definitions if possible.
 	 * @param {(Number | IndexType)} indexId Can be a number or IndexType
@@ -94,22 +97,34 @@ class RSCache {
 				return archive.files;
 			}
 
-			let data;
-			if (options.threaded) {
-				data = await this.cacheRequester.readDataThreaded(index, index.indexSegments[archive.id].size, index.indexSegments[archive.id].segment, archive.id);
-			} else {
-				data = await this.cacheRequester.readData(index, index.indexSegments[archive.id].size, index.indexSegments[archive.id].segment, archive.id);
+			if (this.readPromises[index.id] == undefined) this.readPromises[index.id] = {};
+
+			if (this.readPromises[index.id][archive.id] == undefined) {
+				let promise = new Promise(async (resolve, reject) => {
+					let data;
+					if (options.threaded) {
+						data = await this.cacheRequester.readDataThreaded(index, index.indexSegments[archive.id].size, index.indexSegments[archive.id].segment, archive.id);
+					} else {
+						data = await this.cacheRequester.readData(index, index.indexSegments[archive.id].size, index.indexSegments[archive.id].segment, archive.id);
+					}
+					archive = index.archives[data.archiveId];
+					archive.loadFiles(data.decompressedData);
+
+					let filePromise = new CacheDefinitionLoader(data.index.id, archive, options).loadAllFiles(this);
+
+					if (options.cacheResults) { //it will readData again since filesLoaded will be false
+						archive.filesLoaded = true;
+					}
+
+					resolve(await filePromise);
+				});
+				this.readPromises[index.id][archive.id] = promise;
+				return promise;
+			} else { //if its already being loaded
+				return this.readPromises[index.id][archive.id];
 			}
-			archive = index.archives[data.archiveId];
-			archive.loadFiles(data.decompressedData);
 
-			let filePromise = new CacheDefinitionLoader(data.index.id, archive, options).loadAllFiles(this);
 
-			if (options.cacheResults) { //it will readData again since filesLoaded will be false
-				archive.filesLoaded = true;
-			}
-
-			return filePromise;
 		} catch (e) {
 			console.log(e)
 		}
@@ -137,6 +152,7 @@ class RSCache {
 	async getAllDefs(indexId, archiveId, options = {}) {
 		try {
 			let files = await this.getAllFiles(indexId, archiveId, options);
+			console.log(files)
 			return files.map(x => x.def);
 		} catch (e) {
 			console.log(e)
