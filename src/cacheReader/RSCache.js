@@ -152,7 +152,6 @@ class RSCache {
 	async getAllDefs(indexId, archiveId, options = {}) {
 		try {
 			let files = await this.getAllFiles(indexId, archiveId, options);
-			console.log(files)
 			return files.map(x => x.def);
 		} catch (e) {
 			console.log(e)
