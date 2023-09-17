@@ -18,8 +18,8 @@ export class ModelDefinition {
 	 * The ID of this Model
 	 * @type {number} 
 	 */
-	id;	
-	
+	id;
+
 	/**
 	* How many verticies this models has
 	* @type {number} 
@@ -61,7 +61,7 @@ export class ModelDefinition {
 	* @type {Array<number>} 
 	*/
 	faceVertexIndices1
-	
+
 	/**
 	* Which Vertex XYZ to use for the 2nd index
 	* @type {Array<number>} 
@@ -121,7 +121,7 @@ export class ModelDefinition {
 	* @type {Array<number>} 
 	*/
 	textureCoords
-	
+
 	/**
 	* Used for new Animaya animations
 	* @type {Array<number>} 
@@ -133,7 +133,7 @@ export class ModelDefinition {
 	* @type {Array<number>} 
 	*/
 	animayaScales
-	
+
 	/**
 	* Used to compute Texture UV coords
 	* @type {Array<number>} 
@@ -182,6 +182,8 @@ export class ModelDefinition {
 	/** @type {Array<number>} */
 	aShortArray2578
 
+	vertexGroups = [];
+
 	/**
 	 * Merge this model with another model
 	 * @param {ModelDefinition} otherModel Other model to combine with this
@@ -195,9 +197,9 @@ export class ModelDefinition {
 		this.faceVertexIndices1 = [...this.faceVertexIndices1, ...otherModel.faceVertexIndices1.map(x => x + verticesCount)];
 		this.faceVertexIndices2 = [...this.faceVertexIndices2, ...otherModel.faceVertexIndices2.map(x => x + verticesCount)];
 		this.faceVertexIndices3 = [...this.faceVertexIndices3, ...otherModel.faceVertexIndices3.map(x => x + verticesCount)];
+
 		let otherVertexGroup = otherModel.vertexGroups.map(x => x.map(y => y + verticesCount));
 		let newVertexGroups = this.vertexGroups.length > otherVertexGroup.length ? Array(this.vertexGroups.length) : Array(otherModel.vertexGroups.length);
-
 		for (let i = 0; i < newVertexGroups.length; i++) {
 			if (this.vertexGroups[i] == undefined) {
 				newVertexGroups[i] = otherVertexGroup[i];
@@ -213,6 +215,12 @@ export class ModelDefinition {
 
 		this.vertexCount += otherModel.vertexCount;
 		this.faceCount += otherModel.faceCount;
+
+		if (this.animayaGroups == undefined) this.animayaGroups = new Array(this.vertexCount).fill([0]);
+		if (otherModel.animayaGroups == undefined) otherModel.animayaGroups = new Array(otherModel.vertexCount).fill([0]);
+
+		if (this.animayaScales == undefined) this.animayaScales = new Array(this.vertexCount).fill([255]);
+		if (otherModel.animayaScales == undefined) otherModel.animayaScales = new Array(otherModel.vertexCount).fill([255]);
 
 		let copy = (property) => {
 			if (this[property] == undefined && otherModel[property] != undefined) {
@@ -231,6 +239,8 @@ export class ModelDefinition {
 		copy("faceTextures");
 		copy("textureCoords");
 		copy("vertexNormals");
+		copy("animayaGroups");
+		copy("animayaScales");
 
 		return this;
 	}
@@ -277,7 +287,7 @@ export class ModelDefinition {
 	loadFrame(model, frame) {
 		let verticesX = [...model.vertexPositionsX];
 		let verticesY = [...model.vertexPositionsY];
-		let verticesZ = [...model.vertexPositionsZ];
+		let verticesZ = model.vertexPositionsZ.map(x => -x);
 		let framemap = frame.framemap;
 		let animOffsets = {
 			x: 0,
@@ -515,10 +525,10 @@ export class ModelDefinition {
 	 * @returns boolean
 	 */
 	equals(otherModel) {
-		let sameVerticiesX = this.vertexPositionsX.every((x,i) => x == otherModel.vertexPositionsX[i]);
-		let sameVerticiesY = this.vertexPositionsY.every((x,i) => x == otherModel.vertexPositionsY[i]);
-		let sameVerticiesZ = this.vertexPositionsZ.every((x,i) => x == otherModel.vertexPositionsZ[i]);
-		let sameFaceColors = this.faceColors.every((x,i) => x == otherModel.faceColors[i]);
+		let sameVerticiesX = this.vertexPositionsX.every((x, i) => x == otherModel.vertexPositionsX[i]);
+		let sameVerticiesY = this.vertexPositionsY.every((x, i) => x == otherModel.vertexPositionsY[i]);
+		let sameVerticiesZ = this.vertexPositionsZ.every((x, i) => x == otherModel.vertexPositionsZ[i]);
+		let sameFaceColors = this.faceColors.every((x, i) => x == otherModel.faceColors[i]);
 
 		return sameVerticiesX && sameVerticiesY && sameVerticiesZ && sameFaceColors && sameFaceColors;
 	}
