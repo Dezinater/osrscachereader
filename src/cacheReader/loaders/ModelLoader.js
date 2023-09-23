@@ -24,55 +24,55 @@ export class ModelDefinition {
 	* How many verticies this models has
 	* @type {number} 
 	*/
-	vertexCount
+	vertexCount = 0
 
 	/**
 	* How many faces this models has
 	* @type {number} 
 	*/
-	faceCount
+	faceCount = 0
 
 	/**
 	* How many textured faces this models has
 	* @type {number} 
 	*/
-	numTextureFaces
+	numTextureFaces = 0
 
 	/**
 	* Vertex X Position Array
 	* @type {Array<number>} 
 	*/
-	vertexPositionsX
+	vertexPositionsX = []
 
 	/**
 	* Vertex Y Position Array
 	* @type {Array<number>} 
 	*/
-	vertexPositionsY
+	vertexPositionsY = []
 
 	/**
 	* Vertex Z Position Array
 	* @type {Array<number>} 
 	*/
-	vertexPositionsZ
+	vertexPositionsZ = []
 
 	/**
 	* Which Vertex XYZ to use for the 1st index
 	* @type {Array<number>} 
 	*/
-	faceVertexIndices1
+	faceVertexIndices1 = []
 
 	/**
 	* Which Vertex XYZ to use for the 2nd index
 	* @type {Array<number>} 
 	*/
-	faceVertexIndices2
+	faceVertexIndices2 = []
 
 	/**
 	* Which Vertex XYZ to use for the 3rd index
 	* @type {Array<number>} 
 	*/
-	faceVertexIndices3
+	faceVertexIndices3 = []
 
 	/**
 	* Used for animations
@@ -84,13 +84,13 @@ export class ModelDefinition {
 	* Changes how this face will render (lighting style, invisible, etc.)
 	* @type {Array<number>} 
 	*/
-	faceRenderTypes
+	faceRenderTypes = []
 
 	/**
 	* Local render priority when combined with other models
 	* @type {Array<number>} 
 	*/
-	faceRenderPriorities
+	faceRenderPriorities = []
 
 	/**
 	* Overall priority
@@ -102,55 +102,55 @@ export class ModelDefinition {
 	* Used to set transparency of faces
 	* @type {Array<Byte>} 
 	*/
-	faceAlphas
+	faceAlphas = []
 
 	/**
 	* Used for animations
 	* @type {Array<number>} 
 	*/
-	faceSkins
+	faceSkins = []
 
 	/**
 	* Texture IDs for faces
 	* @type {Array<number>} 
 	*/
-	faceTextures;
+	faceTextures = [];
 
 	/**
 	* Texture UV coords for mapping
 	* @type {Array<number>} 
 	*/
-	textureCoords
+	textureCoords = []
 
 	/**
 	* Used for new Animaya animations
 	* @type {Array<number>} 
 	*/
 
-	animayaGroups
+	animayaGroups = []
 	/**
 	* Used for new Animaya animations
 	* @type {Array<number>} 
 	*/
-	animayaScales
+	animayaScales = []
 
 	/**
 	* Used to compute Texture UV coords
 	* @type {Array<number>} 
 	*/
-	texIndices1
+	texIndices1 = []
 
 	/**
 	* Used to compute Texture UV coords
 	* @type {Array<number>} 
 	*/
-	texIndices2
+	texIndices2 = []
 
 	/**
 	* Used to compute Texture UV coords
 	* @type {Array<number>} 
 	*/
-	texIndices3
+	texIndices3 = []
 
 	/**
 	* Face color
@@ -162,7 +162,7 @@ export class ModelDefinition {
 	* Changes how this face's texture will render (lighting style, invisible, etc.)
 	* @type {Array<number>} 
 	*/
-	textureRenderTypes
+	textureRenderTypes = []
 
 	/** @type {Array<number>} */
 	aShortArray2574
@@ -183,6 +183,47 @@ export class ModelDefinition {
 	aShortArray2578
 
 	vertexGroups = [];
+
+    position = {x:0, y:0};
+
+    constructor(x = 0, y = 0, color = 4603956, heightOffset = 0) {
+        this.position.x = x;
+        this.position.y = y;
+        this.color = color;
+        this.heightOffset = heightOffset;
+    }
+
+    addVertex(x,y,z) {
+        this.vertexPositionsX.push(this.position.x + x);
+        this.vertexPositionsY.push(y + this.heightOffset);
+        this.vertexPositionsZ.push(this.position.y + z);
+
+        this.vertexNormals.push({ x: 1.360511182008, y: 1.755164767325113, z: 1.34926113346603, magnitude: 7 });
+
+
+        this.vertexCount = this.vertexPositionsX.length;
+        if(this.vertexCount >= 3) {
+            this.faceCount = this.vertexCount - 2;
+        }
+
+        if(this.faceCount > 0) {
+            this.faceVertexIndices1.push(0);
+            this.faceVertexIndices2.push(this.vertexCount - 1);
+            this.faceVertexIndices3.push(this.vertexCount - 2);
+
+            this.faceAlphas.push(256);
+            this.faceColors.push(this.color);
+        }
+    }
+
+    rotate(degrees) {
+        for(let i=0;i<this.vertexCount;i++) {
+            let x = this.vertexPositionsX[i] - this.position.x - 32;
+            let z = this.vertexPositionsZ[i] - this.position.y - 32;
+            this.vertexPositionsX[i] = (x * Math.cos(degrees) - z * Math.sin(degrees)) + this.position.x + 32;
+            this.vertexPositionsZ[i] = (z * Math.cos(degrees) + x * Math.sin(degrees)) + this.position.y + 32;
+        }
+    }
 
 	/**
 	 * Merge this model with another model
