@@ -37,6 +37,87 @@ export class MapDefinition {
      * @type {Tile}
      */
     tiles = [];
+
+    getHeights() {
+        let noise = (x, y) => {
+            let n = x + y * 57;
+            n ^= n << 13;
+            return ((n * (n * n * 15731 + 789221) + 1376312589) & 2147483647) >> 19 & 255;
+        }
+
+        let smoothedNoise1 = (x, y) => {
+            let corners = noise(x - 1, y - 1) + noise(x + 1, y - 1) + noise(x - 1, 1 + y) + noise(x + 1, y + 1);
+            let sides = noise(x - 1, y) + noise(1 + x, y) + noise(x, y - 1) + noise(x, 1 + y);
+            let center = noise(x, y);
+            return center / 4 + sides / 8 + corners / 16;
+        }
+
+        let interpolate = (a, b, x, y) => {
+            let COS = Math.floor(65536 * Math.sin((1024 * x / y) * Math.PI / 1024));
+            let f = 65536 - COS >> 1;
+            return (f * b >> 16) + (a * (65536 - f) >> 16);
+        }
+
+        let interpolateNoise = (x, y, frequency) => {
+            let intX = x / frequency;
+            let fracX = x & frequency - 1;
+            let intY = y / frequency;
+            let fracY = y & frequency - 1;
+            let v1 = smoothedNoise1(intX, intY);
+            let v2 = smoothedNoise1(intX + 1, intY);
+            let v3 = smoothedNoise1(intX, intY + 1);
+            let v4 = smoothedNoise1(1 + intX, 1 + intY);
+            let i1 = interpolate(v1, v2, fracX, frequency);
+            let i2 = interpolate(v3, v4, fracX, frequency);
+            return interpolate(i1, i2, fracY, frequency);
+        }
+
+        let calculate = (x, y) => {
+            let n = interpolateNoise(x + 45365, y + 91923, 4) - 128
+                + (interpolateNoise(10294 + x, y + 37821, 2) - 128 >> 1)
+                + (interpolateNoise(x, y, 1) - 128 >> 2);
+            n = 35 + Math.floor(n * 0.3);
+            if (n < 10) {
+                n = 10;
+            }
+            else if (n > 60) {
+                n = 60;
+            }
+
+            return n;
+        }
+
+        let tileHeights = [];
+        for (let z = 0; z < 4; z++) {
+            tileHeights[z] = [];
+            for (let x = 0; x < 64; x++) {
+                tileHeights[z][x] = [];
+                for (let y = 0; y < 64; y++) {
+                    if (this.tiles[z][x][y].height == null) {
+                        if (z == 0) {
+                            tileHeights[0][x][y] = calculate(this.regionX + x + 0xe3b7b, this.regionY + y + 0x87cce) * 8;
+                        } else {
+                            tileHeights[z][x][y] = tileHeights[z - 1][x][y] + 240;
+                        }
+                    } else {
+                        let height = this.tiles[z][x][y].height;
+                        if (height == 1) {
+                            height = 0;
+                        }
+
+                        if (z == 0) {
+                            tileHeights[0][x][y] = height * 8;
+                        }
+                        else {
+                            tileHeights[z][x][y] = tileHeights[z - 1][x][y] + height * 8;
+                        }
+                    }
+                }
+            }
+        }
+
+        return tileHeights;
+    }
 }
 
 /**
