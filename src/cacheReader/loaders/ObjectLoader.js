@@ -354,13 +354,13 @@ export default class ObjectLoader {
 			def.blockingMask = dataview.readInt8();
 		}
 		else if (opcode == 70) {
-			def.offsetX = dataview.readUint16();
+			def.offsetX = dataview.readInt16();
 		}
 		else if (opcode == 71) {
-			def.offsetHeight = dataview.readUint16();
+			def.offsetHeight = dataview.readInt16();
 		}
 		else if (opcode == 72) {
-			def.offsetY = dataview.readUint16();
+			def.offsetY = dataview.readInt16();
 		}
 		else if (opcode == 73) {
 			def.obstructsGround = true;
