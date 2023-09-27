@@ -108,7 +108,7 @@ export class ModelDefinition {
 	* Used for animations
 	* @type {Array<number>} 
 	*/
-	faceSkins = []
+	faceSkins
 
 	/**
 	* Texture IDs for faces
@@ -120,19 +120,19 @@ export class ModelDefinition {
 	* Texture UV coords for mapping
 	* @type {Array<number>} 
 	*/
-	textureCoords = []
+	textureCoords
 
 	/**
 	* Used for new Animaya animations
 	* @type {Array<number>} 
 	*/
 
-	animayaGroups = []
+	animayaGroups
 	/**
 	* Used for new Animaya animations
 	* @type {Array<number>} 
 	*/
-	animayaScales = []
+	animayaScales
 
 	/**
 	* Used to compute Texture UV coords
@@ -184,46 +184,47 @@ export class ModelDefinition {
 
 	vertexGroups = [];
 
-    position = {x:0, y:0};
+	position = { x: 0, y: 0 };
 
-    constructor(x = 0, y = 0, color = 4603956, heightOffset = 0) {
-        this.position.x = x;
-        this.position.y = y;
-        this.color = color;
-        this.heightOffset = heightOffset;
-    }
+	constructor(x = 0, y = 0, heightOffset = 0, color = 4603956,) {
+		this.position.x = x;
+		this.position.y = y;
+		this.color = color;
+		this.heightOffset = heightOffset;
+	}
 
-    addVertex(x,y,z) {
-        this.vertexPositionsX.push(this.position.x + x);
-        this.vertexPositionsY.push(y + this.heightOffset);
-        this.vertexPositionsZ.push(this.position.y + z);
+	addVertex(x, y, z, color = this.color) {
+		this.vertexPositionsX.push(this.position.x + x);
+		this.vertexPositionsY.push(y + this.heightOffset);
+		this.vertexPositionsZ.push(this.position.y + z);
 
-        this.vertexNormals.push({ x: 1.360511182008, y: 1.755164767325113, z: 1.34926113346603, magnitude: 7 });
+		if (this.vertexNormals == undefined) this.vertexNormals = [];
+		this.vertexNormals.push({ x: 1.360511182008, y: 1.755164767325113, z: 1.34926113346603, magnitude: 7 });
 
 
-        this.vertexCount = this.vertexPositionsX.length;
-        if(this.vertexCount >= 3) {
-            this.faceCount = this.vertexCount - 2;
-        }
+		this.vertexCount = this.vertexPositionsX.length;
+		if (this.vertexCount >= 3) {
+			this.faceCount = this.vertexCount - 2;
+		}
 
-        if(this.faceCount > 0) {
-            this.faceVertexIndices1.push(0);
-            this.faceVertexIndices2.push(this.vertexCount - 1);
-            this.faceVertexIndices3.push(this.vertexCount - 2);
+		if (this.faceCount > 0) {
+			this.faceVertexIndices1.push(0);
+			this.faceVertexIndices2.push(this.vertexCount - 1);
+			this.faceVertexIndices3.push(this.vertexCount - 2);
 
-            this.faceAlphas.push(256);
-            this.faceColors.push(this.color);
-        }
-    }
+			this.faceAlphas.push(256);
+			this.faceColors.push(color);
+		}
+	}
 
-    rotate(degrees) {
-        for(let i=0;i<this.vertexCount;i++) {
-            let x = this.vertexPositionsX[i] - this.position.x - 32;
-            let z = this.vertexPositionsZ[i] - this.position.y - 32;
-            this.vertexPositionsX[i] = (x * Math.cos(degrees) - z * Math.sin(degrees)) + this.position.x + 32;
-            this.vertexPositionsZ[i] = (z * Math.cos(degrees) + x * Math.sin(degrees)) + this.position.y + 32;
-        }
-    }
+	rotate(degrees, size) {
+		for (let i = 0; i < this.vertexCount; i++) {
+			let x = this.vertexPositionsX[i] - this.position.x - (size / 2);
+			let z = this.vertexPositionsZ[i] - this.position.y - (size / 2);
+			this.vertexPositionsX[i] = (x * Math.cos(degrees) - z * Math.sin(degrees)) + this.position.x + (size / 2);
+			this.vertexPositionsZ[i] = (z * Math.cos(degrees) + x * Math.sin(degrees)) + this.position.y + (size / 2);
+		}
+	}
 
 	/**
 	 * Merge this model with another model
