@@ -84,7 +84,7 @@ export class ModelDefinition {
 	* Changes how this face will render (lighting style, invisible, etc.)
 	* @type {Array<number>} 
 	*/
-	faceRenderTypes = []
+	faceRenderTypes
 
 	/**
 	* Local render priority when combined with other models
@@ -186,20 +186,20 @@ export class ModelDefinition {
 
 	position = { x: 0, y: 0 };
 
-	constructor(x = 0, y = 0, heightOffset = 0, color = 4603956,) {
+	constructor(x = 0, y = 0, heightOffset = 0, color) {
 		this.position.x = x;
 		this.position.y = y;
 		this.color = color;
 		this.heightOffset = heightOffset;
 	}
 
-	addVertex(x, y, z, color = this.color) {
+	addVertex(x, y, z, color = this.color, uvs = [0, 0, 0, 0, 1, 1]) {
 		this.vertexPositionsX.push(this.position.x + x);
 		this.vertexPositionsY.push(y + this.heightOffset);
 		this.vertexPositionsZ.push(this.position.y + z);
 
 		if (this.vertexNormals == undefined) this.vertexNormals = [];
-		this.vertexNormals.push({ x: 1.360511182008, y: 1.755164767325113, z: 1.34926113346603, magnitude: 7 });
+		this.vertexNormals.push({ x: 0, y: 1, z: 0, magnitude: 1 });
 
 
 		this.vertexCount = this.vertexPositionsX.length;
@@ -215,6 +215,11 @@ export class ModelDefinition {
 			this.faceAlphas.push(256);
 			this.faceColors.push(color);
 		}
+
+		if(this.faceTextureUCoordinates == undefined) this.faceTextureUCoordinates = [];
+		if(this.faceTextureVCoordinates == undefined) this.faceTextureVCoordinates = [];
+		this.faceTextureUCoordinates.push([0, 0, 1]);
+		this.faceTextureVCoordinates.push([0, 1, 1]);
 	}
 
 	rotate(degrees, size) {
@@ -283,6 +288,9 @@ export class ModelDefinition {
 		copy("vertexNormals");
 		copy("animayaGroups");
 		copy("animayaScales");
+		copy("faceTextureUCoordinates");
+		copy("faceTextureVCoordinates");
+		copy("overlayColors");
 
 		return this;
 	}
@@ -2051,7 +2059,7 @@ export default class ModelLoader {
 
 		var var1;
 		for (var1 = 0; var1 < def.vertexCount; ++var1) {
-			def.vertexNormals[var1] = { x: 0, y: 0, z: 0, magnitude: 0 };
+			def.vertexNormals[var1] = { x: 0, y: 0, z: 1, magnitude: 1 };
 		}
 
 		for (var1 = 0; var1 < def.faceCount; ++var1) {
@@ -2134,7 +2142,7 @@ export default class ModelLoader {
 
 			let var1;
 			for (var1 = 0; var1 < def.vertexCount; ++var1) {
-				def.vertexNormals[var1] = { x: 0, y: 0, z: 0, magnitude: 0 };
+				def.vertexNormals[var1] = { x: 0, y: 0, z: 1, magnitude: 1 };
 			}
 			for (var1 = 0; var1 < def.faceCount; ++var1) {
 				let var2 = def.faceVertexIndices1[var1];
