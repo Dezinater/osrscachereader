@@ -177,10 +177,10 @@ export default class SpriteLoader {
 
         // same as above + 3 bytes for each palette entry, except for the first one (which is transparent)
         dataview.setPosition(dataview.byteLength - 7 - spriteCount * 8 - (paletteLength - 1) * 3);
-        let palette = new Array(paletteLength);
+        let palette = new Array(paletteLength).fill(0);
 
         for (let i = 1; i < paletteLength; ++i) {
-            palette[i] = dataview.readInt24();
+            palette[i] = dataview.readUint24();
 
             if (palette[i] == 0) {
                 palette[i] = 1;
