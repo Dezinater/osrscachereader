@@ -260,6 +260,13 @@ export class ModelDefinition {
 		}
 		this.vertexGroups = newVertexGroups;
 
+		if (this.faceTextures == undefined || this.faceTextures.length == 0) this.faceTextures = new Array(this.faceCount).fill(-1);
+		if (otherModel.faceTextures == undefined || otherModel.faceTextures.length == 0) otherModel.faceTextures = new Array(otherModel.faceCount).fill(-1);
+		
+		if (this.faceRenderTypes == undefined || this.faceRenderTypes.length == 0) this.faceRenderTypes = new Array(this.faceCount).fill(-1);
+		if (otherModel.faceRenderTypes == undefined || otherModel.faceRenderTypes.length == 0) otherModel.faceRenderTypes = new Array(otherModel.faceCount).fill(-1);
+		
+
 		this.vertexCount += otherModel.vertexCount;
 		this.faceCount += otherModel.faceCount;
 
@@ -268,6 +275,7 @@ export class ModelDefinition {
 
 		if (this.animayaScales == undefined) this.animayaScales = new Array(this.vertexCount).fill([255]);
 		if (otherModel.animayaScales == undefined) otherModel.animayaScales = new Array(otherModel.vertexCount).fill([255]);
+		
 
 		let copy = (property) => {
 			if (this[property] == undefined && otherModel[property] != undefined) {
@@ -291,7 +299,6 @@ export class ModelDefinition {
 		copy("faceTextureUCoordinates");
 		copy("faceTextureVCoordinates");
 		copy("overlayColors");
-
 		return this;
 	}
 
@@ -337,7 +344,7 @@ export class ModelDefinition {
 	loadFrame(model, frame) {
 		let verticesX = [...model.vertexPositionsX];
 		let verticesY = [...model.vertexPositionsY];
-		let verticesZ = model.vertexPositionsZ.map(x => -x);
+		let verticesZ = model.vertexPositionsZ.map(z => -z);
 		let framemap = frame.framemap;
 		let animOffsets = {
 			x: 0,
@@ -553,13 +560,13 @@ export class ModelDefinition {
 
 						let var3 = this.vertexPositionsX[vertexIndex];
 						let var4 = (-this.vertexPositionsY[vertexIndex]);
-						let var5 = (-this.vertexPositionsZ[vertexIndex]);
+						let var5 = (this.vertexPositionsZ[vertexIndex]);
 						let var6 = 1.0;
 						verticesX[vertexIndex] = matrix.matrixVals[0] * var3 + matrix.matrixVals[4] * var4 + matrix.matrixVals[8] * var5 + matrix.matrixVals[12] * var6;
 						verticesY[vertexIndex] = -(matrix.matrixVals[1] * var3 + matrix.matrixVals[5] * var4 + matrix.matrixVals[9] * var5 + matrix.matrixVals[13] * var6);
 						verticesZ[vertexIndex] = -(matrix.matrixVals[2] * var3 + matrix.matrixVals[6] * var4 + matrix.matrixVals[10] * var5 + matrix.matrixVals[14] * var6);
 
-						animatedFrameVertices.push([verticesX[vertexIndex], verticesY[vertexIndex], verticesZ[vertexIndex]]);
+						animatedFrameVertices.push([verticesX[vertexIndex], -verticesY[vertexIndex], -verticesZ[vertexIndex]]);
 					}
 				}
 				animations.push(animatedFrameVertices);
