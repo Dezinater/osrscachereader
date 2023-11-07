@@ -19,6 +19,54 @@ DataView.prototype.getPosition = function () {
 	return this.pos;
 }
 
+DataView.prototype.write = function (func, size) {
+	//console.log(this.getPosition())
+	try {
+		func();
+	} catch(error) {
+		throw error;
+	}
+	
+	this.addPosition(size);
+	return true;
+}
+
+DataView.prototype.writeUint8 = function(data) { this.write(() => this.setUint8(this.getPosition(), data), 1); }
+DataView.prototype.writeUint16 = function(data) { this.write(() => this.setUint16(this.getPosition(), data), 2); }
+DataView.prototype.writeUint32 = function(data) { this.write(() => this.setUint32(this.getPosition(), data), 4); }
+
+DataView.prototype.writeInt8 = function(data) { this.write(() => this.setInt8(this.getPosition(), data), 1); }
+DataView.prototype.writeInt16 = function(data) { this.write(() => this.setInt16(this.getPosition(), data), 2); }
+DataView.prototype.writeInt32 = function(data) { this.write(() => this.setInt32(this.getPosition(), data), 4); }
+DataView.prototype.writeVarInt = function(var1) {
+	if ((var1 & -128) != 0) {
+		if ((var1 & -16384) != 0) {
+			if ((var1 & -2097152) != 0) {
+				if ((var1 & -268435456) != 0) {
+					this.writeInt8(var1 >>> 28 | 128);
+				}
+
+				this.writeInt8(var1 >>> 21 | 128);
+			}
+
+			this.writeInt8(var1 >>> 14 | 128);
+		}
+
+		this.writeInt8(var1 >>> 7 | 128);
+	}
+
+	this.writeInt8(var1 & 127);
+}
+
+
+DataView.prototype.writeLengthFromMark = function(var1) {
+	this.setUint8(this.getPosition() - var1 - 4, var1 >> 24);
+	this.setUint8(this.getPosition() - var1 - 3, var1 >> 16);
+	this.setUint8(this.getPosition() - var1 - 2, var1 >> 8);
+	this.setUint8(this.getPosition() - var1 - 1, var1);
+	//this.addPosition(4);
+}
+
 DataView.prototype.readFloat32 = function () { //byte
 	let val = 0;
 	try {
@@ -103,6 +151,29 @@ DataView.prototype.readUnsignedIntSmartShortCompat = function () {
 
 	var1 += var2;
 	return var1;
+}
+
+DataView.prototype.readVarInt = function () {
+	let var1 = this.readInt8();
+
+	let var2;
+	for (var2 = 0; var1 < 0; var1 = this.readInt8()) {
+		var2 = (var2 | var1 & 127) << 7;
+	}
+
+	return var2 | var1;
+}
+
+DataView.prototype.readVarInt2 = function () {
+	let value = 0;
+	let bits = 0;
+	let read;
+	do	{
+		read = this.readUint8();
+		value |= (read & 0x7F) << bits;
+		bits += 7;
+	} while (read > 127);
+	return value;
 }
 
 DataView.prototype.readInt8 = function () { //byte

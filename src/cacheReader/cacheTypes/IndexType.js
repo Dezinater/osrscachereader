@@ -4,6 +4,7 @@ import MapLoader from '../loaders/MapLoader.js';
 import ModelLoader from '../loaders/ModelLoader.js'
 import SpriteLoader from '../loaders/SpriteLoader.js';
 import TextureLoader from '../loaders/TextureLoader.js';
+import MusicTrackLoader from '../loaders/MusicTrackLoader.js';
 
 /**
  * @readonly
@@ -23,7 +24,7 @@ const IndexType = {
     /** Maps */          
     MAPS: { id: 5, loader: MapLoader }, 
     /** Music Tracks */          
-    TRACK1: { id: 6, loader: undefined }, 
+    TRACK1: { id: 6, loader: MusicTrackLoader }, 
     /** Models */          
     MODELS: { id: 7, loader: ModelLoader }, 
     /** Sprites */          
@@ -33,7 +34,7 @@ const IndexType = {
     /** Title screen & Huffman? */          
     BINARY: { id: 10, loader: undefined }, 
     /** Music Jingles */          
-    TRACK2: { id: 11, loader: undefined }, 
+    TRACK2: { id: 11, loader: MusicTrackLoader }, 
     /** Interface Scripts */          
     CLIENTSCRIPT: { id: 12, loader: undefined }, 
     /** Interface Fonts */          
