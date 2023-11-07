@@ -97,7 +97,7 @@ class RSCache {
 				return archive.files;
 			}
 
-			if (this.readPromises[index.id] == undefined) this.readPromises[index.id] = {};
+			if (this.readPromises[index.id] == undefined || !options.cacheResults) this.readPromises[index.id] = {};
 
 			if (this.readPromises[index.id][archive.id] == undefined) {
 				let promise = new Promise(async (resolve, reject) => {

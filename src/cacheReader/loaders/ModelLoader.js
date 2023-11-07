@@ -84,7 +84,7 @@ export class ModelDefinition {
 	* Changes how this face will render (lighting style, invisible, etc.)
 	* @type {Array<number>} 
 	*/
-	faceRenderTypes = []
+	faceRenderTypes
 
 	/**
 	* Local render priority when combined with other models
@@ -186,20 +186,20 @@ export class ModelDefinition {
 
 	position = { x: 0, y: 0 };
 
-	constructor(x = 0, y = 0, heightOffset = 0, color = 4603956,) {
+	constructor(x = 0, y = 0, heightOffset = 0, color) {
 		this.position.x = x;
 		this.position.y = y;
 		this.color = color;
 		this.heightOffset = heightOffset;
 	}
 
-	addVertex(x, y, z, color = this.color) {
+	addVertex(x, y, z, color = this.color, uvs = [0, 0, 0, 0, 1, 1]) {
 		this.vertexPositionsX.push(this.position.x + x);
 		this.vertexPositionsY.push(y + this.heightOffset);
 		this.vertexPositionsZ.push(this.position.y + z);
 
 		if (this.vertexNormals == undefined) this.vertexNormals = [];
-		this.vertexNormals.push({ x: 1.360511182008, y: 1.755164767325113, z: 1.34926113346603, magnitude: 7 });
+		this.vertexNormals.push({ x: Math.random(), y: Math.random(), z: Math.random(), magnitude: Math.random() });
 
 
 		this.vertexCount = this.vertexPositionsX.length;
@@ -215,6 +215,11 @@ export class ModelDefinition {
 			this.faceAlphas.push(256);
 			this.faceColors.push(color);
 		}
+
+		if(this.faceTextureUCoordinates == undefined) this.faceTextureUCoordinates = [];
+		if(this.faceTextureVCoordinates == undefined) this.faceTextureVCoordinates = [];
+		this.faceTextureUCoordinates.push([0, 0, 1]);
+		this.faceTextureVCoordinates.push([0, 1, 1]);
 	}
 
 	rotate(degrees, size) {
@@ -255,6 +260,13 @@ export class ModelDefinition {
 		}
 		this.vertexGroups = newVertexGroups;
 
+		if (this.faceTextures == undefined || this.faceTextures.length == 0) this.faceTextures = new Array(this.faceCount).fill(-1);
+		if (otherModel.faceTextures == undefined || otherModel.faceTextures.length == 0) otherModel.faceTextures = new Array(otherModel.faceCount).fill(-1);
+		
+		if (this.faceRenderTypes == undefined || this.faceRenderTypes.length == 0) this.faceRenderTypes = new Array(this.faceCount).fill(-1);
+		if (otherModel.faceRenderTypes == undefined || otherModel.faceRenderTypes.length == 0) otherModel.faceRenderTypes = new Array(otherModel.faceCount).fill(-1);
+		
+
 		this.vertexCount += otherModel.vertexCount;
 		this.faceCount += otherModel.faceCount;
 
@@ -263,6 +275,7 @@ export class ModelDefinition {
 
 		if (this.animayaScales == undefined) this.animayaScales = new Array(this.vertexCount).fill([255]);
 		if (otherModel.animayaScales == undefined) otherModel.animayaScales = new Array(otherModel.vertexCount).fill([255]);
+		
 
 		let copy = (property) => {
 			if (this[property] == undefined && otherModel[property] != undefined) {
@@ -283,7 +296,9 @@ export class ModelDefinition {
 		copy("vertexNormals");
 		copy("animayaGroups");
 		copy("animayaScales");
-
+		copy("faceTextureUCoordinates");
+		copy("faceTextureVCoordinates");
+		copy("overlayColors");
 		return this;
 	}
 
@@ -313,7 +328,7 @@ export class ModelDefinition {
 		} else {
 			let shiftedId = (animation.frameIDs[0] >> 16);
 			let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map(x => x.def);
-			let frames = animation.frameIDs.map(frameId => frameDefs.find(frameDef => frameDef.id == (frameId & 65535)));
+			let frames = animation.frameIDs.map(frameId => frameDefs.find(frameDef => frameDef?.id == (frameId & 65535)));
 			let loadedFrames = frames.map(x => this.loadFrame(this, x));
 
 			vertexData = loadedFrames.map(x => x.vertices);
@@ -329,7 +344,7 @@ export class ModelDefinition {
 	loadFrame(model, frame) {
 		let verticesX = [...model.vertexPositionsX];
 		let verticesY = [...model.vertexPositionsY];
-		let verticesZ = model.vertexPositionsZ.map(x => -x);
+		let verticesZ = model.vertexPositionsZ.map(z => -z);
 		let framemap = frame.framemap;
 		let animOffsets = {
 			x: 0,
@@ -545,13 +560,13 @@ export class ModelDefinition {
 
 						let var3 = this.vertexPositionsX[vertexIndex];
 						let var4 = (-this.vertexPositionsY[vertexIndex]);
-						let var5 = (-this.vertexPositionsZ[vertexIndex]);
+						let var5 = (this.vertexPositionsZ[vertexIndex]);
 						let var6 = 1.0;
 						verticesX[vertexIndex] = matrix.matrixVals[0] * var3 + matrix.matrixVals[4] * var4 + matrix.matrixVals[8] * var5 + matrix.matrixVals[12] * var6;
 						verticesY[vertexIndex] = -(matrix.matrixVals[1] * var3 + matrix.matrixVals[5] * var4 + matrix.matrixVals[9] * var5 + matrix.matrixVals[13] * var6);
 						verticesZ[vertexIndex] = -(matrix.matrixVals[2] * var3 + matrix.matrixVals[6] * var4 + matrix.matrixVals[10] * var5 + matrix.matrixVals[14] * var6);
 
-						animatedFrameVertices.push([verticesX[vertexIndex], verticesY[vertexIndex], verticesZ[vertexIndex]]);
+						animatedFrameVertices.push([verticesX[vertexIndex], -verticesY[vertexIndex], -verticesZ[vertexIndex]]);
 					}
 				}
 				animations.push(animatedFrameVertices);
@@ -567,12 +582,355 @@ export class ModelDefinition {
 	 * @returns boolean
 	 */
 	equals(otherModel) {
+		if(this.vertexCount != otherModel.vertexCount) return false;
+		if(this.faceCount != otherModel.faceCount) return false;
+
+		let sameFaceColors = this.faceColors.every((x, i) => x == otherModel.faceColors[i]);
 		let sameVerticiesX = this.vertexPositionsX.every((x, i) => x == otherModel.vertexPositionsX[i]);
 		let sameVerticiesY = this.vertexPositionsY.every((x, i) => x == otherModel.vertexPositionsY[i]);
 		let sameVerticiesZ = this.vertexPositionsZ.every((x, i) => x == otherModel.vertexPositionsZ[i]);
-		let sameFaceColors = this.faceColors.every((x, i) => x == otherModel.faceColors[i]);
 
 		return sameVerticiesX && sameVerticiesY && sameVerticiesZ && sameFaceColors && sameFaceColors;
+	}
+
+	
+	computeAnimationTables() {
+		var groupCounts = [];
+		var numGroups = 0;
+		var var3, var4, var10002;
+		if (this.vertexSkins != null) {
+
+
+			for (var3 = 0; var3 < this.vertexCount; ++var3) {
+				var4 = this.vertexSkins[var3];
+				++groupCounts[var4];
+				if (var4 > numGroups) {
+					numGroups = var4;
+				}
+			}
+
+			this.vertexGroups = [];
+
+			for (var3 = 0; var3 <= numGroups; ++var3) {
+				this.vertexGroups[var3] = [];
+				groupCounts[var3] = 0;
+			}
+
+			for (var3 = 0; var3 < this.vertexCount; this.vertexGroups[var4][groupCounts[var4]++] = var3++) {
+				var4 = this.vertexSkins[var3];
+			}
+
+			this.vertexSkins = null;
+		}
+		if (this.faceSkins != null) { // L: 785
+			groupCounts = []; // L: 786
+			numGroups = 0; // L: 787
+
+			for (var3 = 0; var3 < this.faceCount; ++var3) { // L: 788
+				var4 = this.faceSkins[var3]; // L: 789
+				var10002 = groupCounts[var4]++; // L: 790
+				if (var4 > numGroups) { // L: 791
+					numGroups = var4;
+				}
+			}
+
+			this.faceLabelsAlpha = []; // L: 793
+
+			for (var3 = 0; var3 <= numGroups; ++var3) { // L: 794
+				this.faceLabelsAlpha[var3] = []; // L: 795
+				groupCounts[var3] = 0; // L: 796
+			}
+
+			for (var3 = 0; var3 < this.faceCount; this.faceLabelsAlpha[var4][groupCounts[var4]++] = var3++) { // L: 798 800
+				var4 = this.faceSkins[var3]; // L: 799
+			}
+
+			this.faceSkins = null; // L: 802
+		}
+		// triangleSkinValues is here
+	}
+
+	computeTextureUVCoordinates(def) {
+		this.faceTextureUCoordinates = new Array(this.faceCount).fill([0, 0, 0]);
+		this.faceTextureVCoordinates = new Array(this.faceCount).fill([0, 0, 0]);
+
+		if (this.faceTextures == null) {
+			return;
+		}
+
+		for (let i = 0; i < this.faceCount; i++) {
+			if (this.faceTextures[i] == -1) {
+				continue;
+			}
+
+			let u0, u1, u2, v0, v1, v2;
+
+			if (this.textureCoords != null && this.textureCoords[i] != -1) {
+				let tfaceIdx = this.textureCoords[i] & 0xff;
+				let triangleA = this.faceVertexIndices1[i];
+				let triangleB = this.faceVertexIndices2[i];
+				let triangleC = this.faceVertexIndices3[i];
+				let texA = this.texIndices1[tfaceIdx];
+				let texB = this.texIndices2[tfaceIdx];
+				let texC = this.texIndices3[tfaceIdx];
+
+				// v1 = vertex[texA]
+				let v1x = this.vertexPositionsX[texA];
+				let v1y = this.vertexPositionsY[texA];
+				let v1z = this.vertexPositionsZ[texA];
+				// v2 = vertex[texB] - v1
+				let v2x = this.vertexPositionsX[texB] - v1x;
+				let v2y = this.vertexPositionsY[texB] - v1y;
+				let v2z = this.vertexPositionsZ[texB] - v1z;
+				// v3 = vertex[texC] - v1
+				let v3x = this.vertexPositionsX[texC] - v1x;
+				let v3y = this.vertexPositionsY[texC] - v1y;
+				let v3z = this.vertexPositionsZ[texC] - v1z;
+
+				// v4 = vertex[triangleA] - v1
+				let v4x = this.vertexPositionsX[triangleA] - v1x;
+				let v4y = this.vertexPositionsY[triangleA] - v1y;
+				let v4z = this.vertexPositionsZ[triangleA] - v1z;
+				// v5 = vertex[triangleB] - v1
+				let v5x = this.vertexPositionsX[triangleB] - v1x;
+				let v5y = this.vertexPositionsY[triangleB] - v1y;
+				let v5z = this.vertexPositionsZ[triangleB] - v1z;
+				// v6 = vertex[triangleC] - v1
+				let v6x = this.vertexPositionsX[triangleC] - v1x;
+				let v6y = this.vertexPositionsY[triangleC] - v1y;
+				let v6z = this.vertexPositionsZ[triangleC] - v1z;
+
+				// v7 = v2 x v3
+				let v7x = v2y * v3z - v2z * v3y;
+				let v7y = v2z * v3x - v2x * v3z;
+				let v7z = v2x * v3y - v2y * v3x;
+
+				// v8 = v3 x v7
+				let v8x = v3y * v7z - v3z * v7y;
+				let v8y = v3z * v7x - v3x * v7z;
+				let v8z = v3x * v7y - v3y * v7x;
+
+				// f = 1 / (v8 ⋅ v2)
+				let f = 1.0 / (v8x * v2x + v8y * v2y + v8z * v2z);
+
+				// u0 = (v8 ⋅ v4) * f
+				u0 = (v8x * v4x + v8y * v4y + v8z * v4z) * f;
+				// u1 = (v8 ⋅ v5) * f
+				u1 = (v8x * v5x + v8y * v5y + v8z * v5z) * f;
+				// u2 = (v8 ⋅ v6) * f
+				u2 = (v8x * v6x + v8y * v6y + v8z * v6z) * f;
+
+				// v8 = v2 x v7
+				v8x = v2y * v7z - v2z * v7y;
+				v8y = v2z * v7x - v2x * v7z;
+				v8z = v2x * v7y - v2y * v7x;
+
+				// f = 1 / (v8 ⋅ v3)
+				f = 1.0 / (v8x * v3x + v8y * v3y + v8z * v3z);
+
+				// v0 = (v8 ⋅ v4) * f
+				v0 = (v8x * v4x + v8y * v4y + v8z * v4z) * f;
+				// v1 = (v8 ⋅ v5) * f
+				v1 = (v8x * v5x + v8y * v5y + v8z * v5z) * f;
+				// v2 = (v8 ⋅ v6) * f
+				v2 = (v8x * v6x + v8y * v6y + v8z * v6z) * f;
+			}
+			else {
+				// Without a texture face, the client assigns tex = triangle, but the resulting
+				// calculations can be reduced:
+				//
+				// v1 = vertex[texA]
+				// v2 = vertex[texB] - v1
+				// v3 = vertex[texC] - v1
+				//
+				// v4 = 0
+				// v5 = v2
+				// v6 = v3
+				//
+				// v7 = v2 x v3
+				//
+				// v8 = v3 x v7
+				// u0 = (v8 . v4) / (v8 . v2) // 0 because v4 is 0
+				// u1 = (v8 . v5) / (v8 . v2) // 1 because v5=v2
+				// u2 = (v8 . v6) / (v8 . v2) // 0 because v8 is perpendicular to v3/v6
+				//
+				// v8 = v2 x v7
+				// v0 = (v8 . v4) / (v8 ⋅ v3) // 0 because v4 is 0
+				// v1 = (v8 . v5) / (v8 ⋅ v3) // 0 because v8 is perpendicular to v5/v2
+				// v2 = (v8 . v6) / (v8 ⋅ v3) // 1 because v6=v3
+
+				u0 = 0;
+				v0 = 0;
+
+				u1 = 1;
+				v1 = 0;
+
+				u2 = 0;
+				v2 = 1;
+			}
+
+			this.faceTextureUCoordinates[i] = [u0, u1, u2];
+			this.faceTextureVCoordinates[i] = [v0, v1, v2];
+		}
+	}
+
+	computeNormals(def) {
+		if (this.vertexNormals != undefined) {
+			return;
+		}
+
+		this.vertexNormals = [];
+
+		var var1;
+		for (var1 = 0; var1 < this.vertexCount; ++var1) {
+			this.vertexNormals[var1] = { x: 0, y: 0, z: 1, magnitude: 1 };
+		}
+
+		for (var1 = 0; var1 < this.faceCount; ++var1) {
+			var vertexA = this.faceVertexIndices1[var1];
+			var vertexB = this.faceVertexIndices2[var1];
+			var vertexC = this.faceVertexIndices3[var1];
+
+			var xA = this.vertexPositionsX[vertexB] - this.vertexPositionsX[vertexA];
+			var yA = this.vertexPositionsY[vertexB] - this.vertexPositionsY[vertexA];
+			var zA = this.vertexPositionsZ[vertexB] - this.vertexPositionsZ[vertexA];
+
+			var xB = this.vertexPositionsX[vertexC] - this.vertexPositionsX[vertexA];
+			var yB = this.vertexPositionsY[vertexC] - this.vertexPositionsY[vertexA];
+			var zB = this.vertexPositionsZ[vertexC] - this.vertexPositionsZ[vertexA];
+
+			// Compute cross product
+			var var11 = yA * zB - yB * zA;
+			var var12 = zA * xB - zB * xA;
+			var var13 = xA * yB - xB * yA;
+
+			while (var11 > 8192 || var12 > 8192 || var13 > 8192 || var11 < -8192 || var12 < -8192 || var13 < -8192) {
+				var11 >>= 1;
+				var12 >>= 1;
+				var13 >>= 1;
+			}
+
+			var length = parseInt(Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13));
+			if (length <= 0) {
+				length = 1;
+			}
+
+			var11 = var11 * 256 / length;
+			var12 = var12 * 256 / length;
+			var13 = var13 * 256 / length;
+
+			var var15;
+			if (this.faceRenderTypes == undefined) {
+				var15 = 0;
+			}
+			else {
+				var15 = this.faceRenderTypes[var1];
+			}
+
+			if (var15 == 0) {
+				var var16 = this.vertexNormals[vertexA];
+				var16.magnitude = 0;
+				var16.x += var11;
+				var16.y += var12;
+				var16.z += var13;
+				++var16.magnitude;
+
+				var16 = this.vertexNormals[vertexB];
+				var16.x += var11;
+				var16.y += var12;
+				var16.z += var13;
+				++var16.magnitude;
+
+				var16 = this.vertexNormals[vertexC];
+				var16.x += var11;
+				var16.y += var12;
+				var16.z += var13;
+				++var16.magnitude;
+			}
+			else if (var15 == 1) {
+				if (this.faceNormals == undefined) {
+					this.faceNormals = [];
+				}
+
+				var var17 = this.faceNormals[var1] = {};
+				var17.x = var11;
+				var17.y = var12;
+				var17.z = var13;
+			}
+		}
+	}
+
+	computeNormals2(def) {
+		if (this.vertexNormals == null) {
+			this.vertexNormals = [];
+
+			let var1;
+			for (var1 = 0; var1 < this.vertexCount; ++var1) {
+				this.vertexNormals[var1] = { x: 0, y: 0, z: 1, magnitude: 1 };
+			}
+			for (var1 = 0; var1 < this.faceCount; ++var1) {
+				let var2 = this.faceVertexIndices1[var1];
+				let var3 = this.faceVertexIndices2[var1];
+				let var4 = this.faceVertexIndices3[var1];
+				let var5 = this.vertexPositionsX[var3] - this.vertexPositionsX[var2];
+				let var6 = this.vertexPositionsY[var3] - this.vertexPositionsY[var2];
+				let var7 = this.vertexPositionsZ[var3] - this.vertexPositionsZ[var2];
+				let var8 = this.vertexPositionsX[var4] - this.vertexPositionsX[var2];
+				let var9 = this.vertexPositionsY[var4] - this.vertexPositionsY[var2];
+				let var10 = this.vertexPositionsZ[var4] - this.vertexPositionsZ[var2];
+				let var11 = var6 * var10 - var9 * var7;
+				let var12 = var7 * var8 - var10 * var5;
+
+				let var13;
+				for (var13 = var5 * var9 - var8 * var6; var11 > 8192 || var12 > 8192 || var13 > 8192 || var11 < -8192 || var12 < -8192 || var13 < -8192; var13 >>= 1) {
+					var11 >>= 1;
+					var12 >>= 1;
+				}
+
+				let var14 = parseInt(Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13));
+				if (var14 <= 0) {
+					var14 = 1;
+				}
+
+				var11 = var11 * 256 / var14;
+				var12 = var12 * 256 / var14;
+				var13 = var13 * 256 / var14;
+				let var15;
+				if (this.faceRenderTypes == null) {
+					var15 = 0;
+				} else {
+					var15 = this.faceRenderTypes[var1];
+				}
+
+				if (var15 == 0) {
+					let var16 = this.vertexNormals[var2];
+					var16.x += var11;
+					var16.y += var12;
+					var16.z += var13;
+					++var16.magnitude;
+					var16 = this.vertexNormals[var3];
+					var16.x += var11;
+					var16.y += var12;
+					var16.z += var13;
+					++var16.magnitude;
+					var16 = this.vertexNormals[var4];
+					var16.x += var11;
+					var16.y += var12;
+					var16.z += var13;
+					++var16.magnitude;
+
+				} else if (var15 == 1) {
+					if (this.faceNormals == null) {
+						this.faceNormals = [];
+					}
+
+					let var17 = this.faceNormals[var1] = {};
+					var17.x = var11;
+					var17.y = var12;
+					var17.z = var13;
+				}
+			}
+		}
 	}
 }
 
@@ -595,9 +953,9 @@ export default class ModelLoader {
 			this.loadOriginal(def, dataview);
 		}
 
-		this.computeNormals2(def);
-		this.computeTextureUVCoordinates(def);
-		this.computeAnimationTables(def);
+		def.computeNormals2(def);
+		def.computeTextureUVCoordinates(def);
+		def.computeAnimationTables(def);
 
 		return def;
 	}
@@ -1862,342 +2220,4 @@ export default class ModelLoader {
 		}
 	}
 
-	computeAnimationTables(def) {
-		var groupCounts = [];
-		var numGroups = 0;
-		var var3, var4, var10002;
-		if (def.vertexSkins != null) {
-
-
-			for (var3 = 0; var3 < def.vertexCount; ++var3) {
-				var4 = def.vertexSkins[var3];
-				++groupCounts[var4];
-				if (var4 > numGroups) {
-					numGroups = var4;
-				}
-			}
-
-			def.vertexGroups = [];
-
-			for (var3 = 0; var3 <= numGroups; ++var3) {
-				def.vertexGroups[var3] = [];
-				groupCounts[var3] = 0;
-			}
-
-			for (var3 = 0; var3 < def.vertexCount; def.vertexGroups[var4][groupCounts[var4]++] = var3++) {
-				var4 = def.vertexSkins[var3];
-			}
-
-			def.vertexSkins = null;
-		}
-		if (def.faceSkins != null) { // L: 785
-			groupCounts = []; // L: 786
-			numGroups = 0; // L: 787
-
-			for (var3 = 0; var3 < def.faceCount; ++var3) { // L: 788
-				var4 = def.faceSkins[var3]; // L: 789
-				var10002 = groupCounts[var4]++; // L: 790
-				if (var4 > numGroups) { // L: 791
-					numGroups = var4;
-				}
-			}
-
-			def.faceLabelsAlpha = []; // L: 793
-
-			for (var3 = 0; var3 <= numGroups; ++var3) { // L: 794
-				def.faceLabelsAlpha[var3] = []; // L: 795
-				groupCounts[var3] = 0; // L: 796
-			}
-
-			for (var3 = 0; var3 < def.faceCount; def.faceLabelsAlpha[var4][groupCounts[var4]++] = var3++) { // L: 798 800
-				var4 = def.faceSkins[var3]; // L: 799
-			}
-
-			def.faceSkins = null; // L: 802
-		}
-		// triangleSkinValues is here
-	}
-
-	computeTextureUVCoordinates(def) {
-		def.faceTextureUCoordinates = new Array(def.faceCount).fill([0, 0, 0]);
-		def.faceTextureVCoordinates = new Array(def.faceCount).fill([0, 0, 0]);
-
-		if (def.faceTextures == null) {
-			return;
-		}
-
-		for (let i = 0; i < def.faceCount; i++) {
-			if (def.faceTextures[i] == -1) {
-				continue;
-			}
-
-			let u0, u1, u2, v0, v1, v2;
-
-			if (def.textureCoords != null && def.textureCoords[i] != -1) {
-				let tfaceIdx = def.textureCoords[i] & 0xff;
-				let triangleA = def.faceVertexIndices1[i];
-				let triangleB = def.faceVertexIndices2[i];
-				let triangleC = def.faceVertexIndices3[i];
-				let texA = def.texIndices1[tfaceIdx];
-				let texB = def.texIndices2[tfaceIdx];
-				let texC = def.texIndices3[tfaceIdx];
-
-				// v1 = vertex[texA]
-				let v1x = def.vertexPositionsX[texA];
-				let v1y = def.vertexPositionsY[texA];
-				let v1z = def.vertexPositionsZ[texA];
-				// v2 = vertex[texB] - v1
-				let v2x = def.vertexPositionsX[texB] - v1x;
-				let v2y = def.vertexPositionsY[texB] - v1y;
-				let v2z = def.vertexPositionsZ[texB] - v1z;
-				// v3 = vertex[texC] - v1
-				let v3x = def.vertexPositionsX[texC] - v1x;
-				let v3y = def.vertexPositionsY[texC] - v1y;
-				let v3z = def.vertexPositionsZ[texC] - v1z;
-
-				// v4 = vertex[triangleA] - v1
-				let v4x = def.vertexPositionsX[triangleA] - v1x;
-				let v4y = def.vertexPositionsY[triangleA] - v1y;
-				let v4z = def.vertexPositionsZ[triangleA] - v1z;
-				// v5 = vertex[triangleB] - v1
-				let v5x = def.vertexPositionsX[triangleB] - v1x;
-				let v5y = def.vertexPositionsY[triangleB] - v1y;
-				let v5z = def.vertexPositionsZ[triangleB] - v1z;
-				// v6 = vertex[triangleC] - v1
-				let v6x = def.vertexPositionsX[triangleC] - v1x;
-				let v6y = def.vertexPositionsY[triangleC] - v1y;
-				let v6z = def.vertexPositionsZ[triangleC] - v1z;
-
-				// v7 = v2 x v3
-				let v7x = v2y * v3z - v2z * v3y;
-				let v7y = v2z * v3x - v2x * v3z;
-				let v7z = v2x * v3y - v2y * v3x;
-
-				// v8 = v3 x v7
-				let v8x = v3y * v7z - v3z * v7y;
-				let v8y = v3z * v7x - v3x * v7z;
-				let v8z = v3x * v7y - v3y * v7x;
-
-				// f = 1 / (v8 ⋅ v2)
-				let f = 1.0 / (v8x * v2x + v8y * v2y + v8z * v2z);
-
-				// u0 = (v8 ⋅ v4) * f
-				u0 = (v8x * v4x + v8y * v4y + v8z * v4z) * f;
-				// u1 = (v8 ⋅ v5) * f
-				u1 = (v8x * v5x + v8y * v5y + v8z * v5z) * f;
-				// u2 = (v8 ⋅ v6) * f
-				u2 = (v8x * v6x + v8y * v6y + v8z * v6z) * f;
-
-				// v8 = v2 x v7
-				v8x = v2y * v7z - v2z * v7y;
-				v8y = v2z * v7x - v2x * v7z;
-				v8z = v2x * v7y - v2y * v7x;
-
-				// f = 1 / (v8 ⋅ v3)
-				f = 1.0 / (v8x * v3x + v8y * v3y + v8z * v3z);
-
-				// v0 = (v8 ⋅ v4) * f
-				v0 = (v8x * v4x + v8y * v4y + v8z * v4z) * f;
-				// v1 = (v8 ⋅ v5) * f
-				v1 = (v8x * v5x + v8y * v5y + v8z * v5z) * f;
-				// v2 = (v8 ⋅ v6) * f
-				v2 = (v8x * v6x + v8y * v6y + v8z * v6z) * f;
-			}
-			else {
-				// Without a texture face, the client assigns tex = triangle, but the resulting
-				// calculations can be reduced:
-				//
-				// v1 = vertex[texA]
-				// v2 = vertex[texB] - v1
-				// v3 = vertex[texC] - v1
-				//
-				// v4 = 0
-				// v5 = v2
-				// v6 = v3
-				//
-				// v7 = v2 x v3
-				//
-				// v8 = v3 x v7
-				// u0 = (v8 . v4) / (v8 . v2) // 0 because v4 is 0
-				// u1 = (v8 . v5) / (v8 . v2) // 1 because v5=v2
-				// u2 = (v8 . v6) / (v8 . v2) // 0 because v8 is perpendicular to v3/v6
-				//
-				// v8 = v2 x v7
-				// v0 = (v8 . v4) / (v8 ⋅ v3) // 0 because v4 is 0
-				// v1 = (v8 . v5) / (v8 ⋅ v3) // 0 because v8 is perpendicular to v5/v2
-				// v2 = (v8 . v6) / (v8 ⋅ v3) // 1 because v6=v3
-
-				u0 = 0;
-				v0 = 0;
-
-				u1 = 1;
-				v1 = 0;
-
-				u2 = 0;
-				v2 = 1;
-			}
-
-			def.faceTextureUCoordinates[i] = [u0, u1, u2];
-			def.faceTextureVCoordinates[i] = [v0, v1, v2];
-		}
-	}
-
-	computeNormals(def) {
-		if (def.vertexNormals != undefined) {
-			return;
-		}
-
-		def.vertexNormals = [];
-
-		var var1;
-		for (var1 = 0; var1 < def.vertexCount; ++var1) {
-			def.vertexNormals[var1] = { x: 0, y: 0, z: 0, magnitude: 0 };
-		}
-
-		for (var1 = 0; var1 < def.faceCount; ++var1) {
-			var vertexA = def.faceVertexIndices1[var1];
-			var vertexB = def.faceVertexIndices2[var1];
-			var vertexC = def.faceVertexIndices3[var1];
-
-			var xA = def.vertexPositionsX[vertexB] - def.vertexPositionsX[vertexA];
-			var yA = def.vertexPositionsY[vertexB] - def.vertexPositionsY[vertexA];
-			var zA = def.vertexPositionsZ[vertexB] - def.vertexPositionsZ[vertexA];
-
-			var xB = def.vertexPositionsX[vertexC] - def.vertexPositionsX[vertexA];
-			var yB = def.vertexPositionsY[vertexC] - def.vertexPositionsY[vertexA];
-			var zB = def.vertexPositionsZ[vertexC] - def.vertexPositionsZ[vertexA];
-
-			// Compute cross product
-			var var11 = yA * zB - yB * zA;
-			var var12 = zA * xB - zB * xA;
-			var var13 = xA * yB - xB * yA;
-
-			while (var11 > 8192 || var12 > 8192 || var13 > 8192 || var11 < -8192 || var12 < -8192 || var13 < -8192) {
-				var11 >>= 1;
-				var12 >>= 1;
-				var13 >>= 1;
-			}
-
-			var length = parseInt(Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13));
-			if (length <= 0) {
-				length = 1;
-			}
-
-			var11 = var11 * 256 / length;
-			var12 = var12 * 256 / length;
-			var13 = var13 * 256 / length;
-
-			var var15;
-			if (def.faceRenderTypes == undefined) {
-				var15 = 0;
-			}
-			else {
-				var15 = def.faceRenderTypes[var1];
-			}
-
-			if (var15 == 0) {
-				var var16 = def.vertexNormals[vertexA];
-				var16.magnitude = 0;
-				var16.x += var11;
-				var16.y += var12;
-				var16.z += var13;
-				++var16.magnitude;
-
-				var16 = def.vertexNormals[vertexB];
-				var16.x += var11;
-				var16.y += var12;
-				var16.z += var13;
-				++var16.magnitude;
-
-				var16 = def.vertexNormals[vertexC];
-				var16.x += var11;
-				var16.y += var12;
-				var16.z += var13;
-				++var16.magnitude;
-			}
-			else if (var15 == 1) {
-				if (def.faceNormals == undefined) {
-					def.faceNormals = [];
-				}
-
-				var var17 = def.faceNormals[var1] = {};
-				var17.x = var11;
-				var17.y = var12;
-				var17.z = var13;
-			}
-		}
-	}
-
-	computeNormals2(def) {
-		if (def.vertexNormals == null) {
-			def.vertexNormals = [];
-
-			let var1;
-			for (var1 = 0; var1 < def.vertexCount; ++var1) {
-				def.vertexNormals[var1] = { x: 0, y: 0, z: 0, magnitude: 0 };
-			}
-			for (var1 = 0; var1 < def.faceCount; ++var1) {
-				let var2 = def.faceVertexIndices1[var1];
-				let var3 = def.faceVertexIndices2[var1];
-				let var4 = def.faceVertexIndices3[var1];
-				let var5 = def.vertexPositionsX[var3] - def.vertexPositionsX[var2];
-				let var6 = def.vertexPositionsY[var3] - def.vertexPositionsY[var2];
-				let var7 = def.vertexPositionsZ[var3] - def.vertexPositionsZ[var2];
-				let var8 = def.vertexPositionsX[var4] - def.vertexPositionsX[var2];
-				let var9 = def.vertexPositionsY[var4] - def.vertexPositionsY[var2];
-				let var10 = def.vertexPositionsZ[var4] - def.vertexPositionsZ[var2];
-				let var11 = var6 * var10 - var9 * var7;
-				let var12 = var7 * var8 - var10 * var5;
-
-				let var13;
-				for (var13 = var5 * var9 - var8 * var6; var11 > 8192 || var12 > 8192 || var13 > 8192 || var11 < -8192 || var12 < -8192 || var13 < -8192; var13 >>= 1) {
-					var11 >>= 1;
-					var12 >>= 1;
-				}
-
-				let var14 = parseInt(Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13));
-				if (var14 <= 0) {
-					var14 = 1;
-				}
-
-				var11 = var11 * 256 / var14;
-				var12 = var12 * 256 / var14;
-				var13 = var13 * 256 / var14;
-				let var15;
-				if (def.faceRenderTypes == null) {
-					var15 = 0;
-				} else {
-					var15 = def.faceRenderTypes[var1];
-				}
-
-				if (var15 == 0) {
-					let var16 = def.vertexNormals[var2];
-					var16.x += var11;
-					var16.y += var12;
-					var16.z += var13;
-					++var16.magnitude;
-					var16 = def.vertexNormals[var3];
-					var16.x += var11;
-					var16.y += var12;
-					var16.z += var13;
-					++var16.magnitude;
-					var16 = def.vertexNormals[var4];
-					var16.x += var11;
-					var16.y += var12;
-					var16.z += var13;
-					++var16.magnitude;
-
-				} else if (var15 == 1) {
-					if (def.faceNormals == null) {
-						def.faceNormals = [];
-					}
-
-					let var17 = def.faceNormals[var1] = {};
-					var17.x = var11;
-					var17.y = var12;
-					var17.z = var13;
-				}
-			}
-		}
-	}
 }

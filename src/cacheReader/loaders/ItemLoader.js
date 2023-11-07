@@ -56,16 +56,16 @@ export class ItemDefinition {
     members = false;
     
 	/** @type {Array} */
-    colorFind;
+    recolorToFind = [];
     
 	/** @type {Array} */
-    colorReplace;
+    recolorToReplace = [];
     
 	/** @type {Array} */
-    textureFind;
+    retextureToFind = [];
     
 	/** @type {Array} */
-    textureReplace;
+    retextureToReplace = [];
     
 	/** @type {number} */
     zoom2d = 2000;
@@ -275,23 +275,23 @@ export default class ItemLoader {
         }
         else if (opcode == 40) {
             var var5 = dataview.readUint8();
-            def.colorFind = [];
-            def.colorReplace = [];
+            def.recolorToFind = [];
+            def.recolorToReplace = [];
 
             for (var var4 = 0; var4 < var5; ++var4) {
-                def.colorFind[var4] = dataview.readUint16();
-                def.colorReplace[var4] = dataview.readUint16();
+                def.recolorToFind[var4] = dataview.readUint16();
+                def.recolorToReplace[var4] = dataview.readUint16();
             }
 
         }
         else if (opcode == 41) {
             var var5 = dataview.readUint8();
-            def.textureFind = [];
-            def.textureReplace = [];
+            def.retextureToFind = [];
+            def.retextureToReplace = [];
 
             for (var var4 = 0; var4 < var5; ++var4) {
-                def.textureFind[var4] = dataview.readUint16();
-                def.textureReplace[var4] = dataview.readUint16();
+                def.retextureToFind[var4] = dataview.readUint16();
+                def.retextureToReplace[var4] = dataview.readUint16();
             }
 
         }
