@@ -1,3 +1,4 @@
+import MidiFileReader from "../cacheTypes/sound/MidiFileReader.js";
 // Headers
 const MTHD_MAGIC = 1297377380;
 const MTRK_MAGIC = 1297379947;
@@ -57,6 +58,88 @@ export class MusicTrackDefinition {
 	*/
 	id;
     midi;
+	table;
+
+	method1673() {
+		if (this.table == undefined) {
+		   this.table = {};
+		   let var1 = new Array(16);
+		   let var2 = new Array(16);
+		   var2[9] = 128;
+		   var1[9] = 128;
+		   console.log(this.midi)
+		   let var4 = new MidiFileReader(this.midi.buffer);
+		   let var5 = var4.trackCount();
+  
+		   let var6;
+		   for(var6 = 0; var6 < var5; ++var6) {
+			  var4.gotoTrack(var6);
+			  var4.readTrackLength(var6);
+			  var4.markTrackPosition(var6);
+		   }
+  
+		   label52:
+		   do {
+			  while(true) {
+				 var6 = var4.getPrioritizedTrack();
+				 let var7 = var4.trackLengths[var6];
+  
+				 while(var7 == var4.trackLengths[var6]) {
+					var4.gotoTrack(var6);
+					let var8 = var4.readMessage(var6);
+					if (var8 == 1) {
+					   var4.setTrackDone();
+					   var4.markTrackPosition(var6);
+					   continue label52;
+					}
+  
+					let var9 = var8 & 240;
+					let var10;
+					let var11;
+					let var12;
+					if (var9 == 176) {
+					   var10 = var8 & 15;
+					   var11 = var8 >> 8 & 127;
+					   var12 = var8 >> 16 & 127;
+					   if (var11 == 0) {
+						  var1[var10] = (var12 << 14) + (var1[var10] & -2080769);
+					   }
+  
+					   if (var11 == 32) {
+						  var1[var10] = (var1[var10] & -16257) + (var12 << 7);
+					   }
+					}
+  
+					if (var9 == 192) {
+					   var10 = var8 & 15;
+					   var11 = var8 >> 8 & 127;
+					   var2[var10] = var11 + var1[var10];
+					}
+  
+					if (var9 == 144) {
+					   var10 = var8 & 15;
+					   var11 = var8 >> 8 & 127;
+					   var12 = var8 >> 16 & 127;
+					   if (var12 > 0) {
+						  let var13 = var2[var10];
+						  let var14 = this.table[var13];
+						  if (var14 == null) {
+							 var14 = new Array(128);
+							 this.table[var14] = var13;
+						  }
+  
+						  var14.byteArray[var11] = 1;
+					   }
+					}
+  
+					var4.readTrackLength(var6);
+					var4.markTrackPosition(var6);
+				 }
+			  }
+		   } while(!var4.isDone());
+  
+		}
+	 }
 }
 export default class MusicTrackLoader {
 

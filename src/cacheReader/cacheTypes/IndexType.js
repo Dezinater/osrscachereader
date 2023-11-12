@@ -5,6 +5,7 @@ import ModelLoader from '../loaders/ModelLoader.js'
 import SpriteLoader from '../loaders/SpriteLoader.js';
 import TextureLoader from '../loaders/TextureLoader.js';
 import MusicTrackLoader from '../loaders/MusicTrackLoader.js';
+import SoundEffectLoader from '../loaders/SoundEffectLoader.js';
 
 /**
  * @readonly
@@ -20,7 +21,7 @@ const IndexType = {
     /** Interfaces */          
     INTERFACES: { id: 3, loader: undefined },
     /** Sound FX */          
-    SOUNDEFFECTS: { id: 4, loader: undefined }, 
+    SOUNDEFFECTS: { id: 4, loader: SoundEffectLoader }, 
     /** Maps */          
     MAPS: { id: 5, loader: MapLoader }, 
     /** Music Tracks */          
