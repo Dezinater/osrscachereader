@@ -9,7 +9,7 @@ export default class CacheDefinitionLoader {
 
 		if (this.indexType == IndexType.CONFIGS) {
 			this.loader = new (ConfigType.valueOf(this.archive.id).loader)();
-		} else {
+		} else if(this.indexType.loader != undefined){
 			this.loader = new this.indexType.loader();
 		}
 	}
@@ -45,6 +45,8 @@ export default class CacheDefinitionLoader {
 	}
 
 	async #loadDef(file, rscache) {
+		if(this.loader == undefined) return file;
+		
 		let defId = this.archive.files.length > 1 ? file.id : this.archive.id;
 		let loadedDef;
 		try {
