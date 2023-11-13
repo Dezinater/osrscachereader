@@ -40,8 +40,8 @@ export default class MidiFileReader {
            this.trackPositions[var3] = this.trackStarts[var3];
         }
   
-        this.trackLengths = new Array(var2);
-        this.field2765 = new Array(var2);
+        this.trackLengths = new Array(var2).fill().map(x => 0);
+        this.field2765 = new Array(var2).fill().map(x => 0);
      }
 
       clear() {
@@ -83,7 +83,7 @@ export default class MidiFileReader {
      }
 
      readMessage0(var1) {
-       let var2 = this.buffer.getUint8(this.buffer.getPosition());
+       let var2 = this.buffer.getInt8(this.buffer.getPosition());
        let var5;
        if (var2 < 0) {
           var5 = var2 & 255;
@@ -114,7 +114,7 @@ export default class MidiFileReader {
     method1660(var1, var2) {
        let var4;
        if (var2 == 255) {
-          let var7 = this.buffer.readUnsignedByte();
+          let var7 = this.buffer.readUint8();
           var4 = this.buffer.readVarInt();
           if (var7 == 47) {
              this.buffer.pos += var4;
@@ -135,11 +135,11 @@ export default class MidiFileReader {
           let var3 = MidiFileReader.field2762[var2 - 128];
           var4 = var2;
           if (var3 >= 1) {
-             var4 = var2 | this.buffer.readUnsignedByte() << 8;
+             var4 = var2 | this.buffer.readUint8() << 8;
           }
  
           if (var3 >= 2) {
-             var4 |= this.buffer.readUnsignedByte() << 16;
+             var4 |= this.buffer.readUint8() << 16;
           }
  
           return var4;

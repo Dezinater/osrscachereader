@@ -25,7 +25,7 @@ export default class MidiPcmStream {
               if (var11 == null) {
                  var10 = null;
               } else {
-                 var10 = new MusicPatch(var11);
+                 var10 = new MusicPatch(var11.content.buffer);
               }
   
               var9 = var10;
@@ -34,10 +34,10 @@ export default class MidiPcmStream {
                  continue;
               }
   
-              this.musicPatches[var10] = var8;
+              this.musicPatches[var8] = var10;
            }
   
-           if (!(await var9.method1663(soundCache, Array.from(var7.buffer), var6))) {
+           if (!(await var9.method1663(soundCache, var7, var6))) {
               var5 = false;
            }
         }
