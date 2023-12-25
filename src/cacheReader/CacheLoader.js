@@ -1,6 +1,7 @@
 import { isBrowser } from "browser-or-node";
 import axios from 'axios';
 import * as fs from "fs";
+import IndexType from "./cacheTypes/IndexType.js";
 
 
 export default class CacheLoader {
@@ -60,11 +61,11 @@ export default class CacheLoader {
         }
 
         this.promises.datFile = axios.get(url + this.datFile, { onDownloadProgress: this.onDownloadProgress, responseType: 'arraybuffer', }).then(x => new Uint8Array(x.data));
-        this.indexFiles.forEach(indexFile => {
-            let indexPromise = axios.get(url + indexFile, { responseType: 'arraybuffer' }).then(x => new Uint8Array(x.data)).catch(_ => {});
+        this.indexFiles.forEach((indexFile, i) => {
+            let indexPromise = axios.get(url + indexFile, { responseType: 'arraybuffer' }).then(x => new Uint8Array(x.data)).catch(_ => { console.warn(`${IndexType.keyOf(i)} (Index ${i}) will not load without ${indexFile}`)});
             this.promises.indexFiles.push(indexPromise);
         });
-        this.promises.xteas = axios.get(url + "xteas.json", { responseType: 'json', }).then(x => this.readXteas(x.data)).catch(e => { });
+        this.promises.xteas = axios.get(url + "xteas.json", { responseType: 'json', }).then(x => this.readXteas(x.data)).catch(e => { console.warn("Maps (Index 5) will not load without xteas.json") });
     }
 
     loadFile(path) {

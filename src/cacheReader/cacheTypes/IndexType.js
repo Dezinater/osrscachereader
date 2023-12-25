@@ -67,6 +67,16 @@ IndexType.valueOf = (id) => {
     return undefined;
 }
 
+IndexType.keyOf = (id) => {
+    var values = Object.values(IndexType);
+    var keys = Object.keys(IndexType);
+    for (var i = 0; i < values.length; i++) {
+        if (id == values[i].id)
+            return keys[i];
+    }
+    return undefined;
+}
+
 Object.freeze(IndexType);
 
 export default IndexType;
