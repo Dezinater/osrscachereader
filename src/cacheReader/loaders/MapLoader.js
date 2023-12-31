@@ -38,7 +38,11 @@ export class MapDefinition {
      */
     tiles = [];
 
+    heights;
+
     getHeights() {
+        if(this.heights != undefined) return this.heights;
+
         let noise = (x, y) => {
             let n = x + y * 57;
             n ^= n << 13;
@@ -104,18 +108,17 @@ export class MapDefinition {
                         if (height == 1) {
                             height = 0;
                         }
-
+                        
                         if (z == 0) {
                             tileHeights[0][x][y] = height * 8;
-                        }
-                        else {
+                        } else {
                             tileHeights[z][x][y] = tileHeights[z - 1][x][y] + height * 8;
                         }
                     }
                 }
             }
         }
-
+        this.heights = tileHeights;
         return tileHeights;
     }
 }
