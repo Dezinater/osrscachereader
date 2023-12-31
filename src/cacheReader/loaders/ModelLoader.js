@@ -21,6 +21,18 @@ export class ModelDefinition {
 	id;
 
 	/**
+	 * Used to offset vertices during merge
+	 * @type {number} 
+	 */
+	translation = { x: 0, y: 0, z: 0 }
+
+	/**
+	 * Used to rotate vertices during merge
+	 * @type {number} 
+	 */
+	rotation = { x: 0, y: 0, z: 0 }
+
+	/**
 	* How many verticies this models has
 	* @type {number} 
 	*/
@@ -216,8 +228,8 @@ export class ModelDefinition {
 			this.faceColors.push(color);
 		}
 
-		if(this.faceTextureUCoordinates == undefined) this.faceTextureUCoordinates = [];
-		if(this.faceTextureVCoordinates == undefined) this.faceTextureVCoordinates = [];
+		if (this.faceTextureUCoordinates == undefined) this.faceTextureUCoordinates = [];
+		if (this.faceTextureVCoordinates == undefined) this.faceTextureVCoordinates = [];
 		this.faceTextureUCoordinates.push([0, 0, 1]);
 		this.faceTextureVCoordinates.push([0, 1, 1]);
 	}
@@ -262,10 +274,10 @@ export class ModelDefinition {
 
 		if (this.faceTextures == undefined || this.faceTextures.length == 0) this.faceTextures = new Array(this.faceCount).fill(-1);
 		if (otherModel.faceTextures == undefined || otherModel.faceTextures.length == 0) otherModel.faceTextures = new Array(otherModel.faceCount).fill(-1);
-		
+
 		if (this.faceRenderTypes == undefined || this.faceRenderTypes.length == 0) this.faceRenderTypes = new Array(this.faceCount).fill(-1);
 		if (otherModel.faceRenderTypes == undefined || otherModel.faceRenderTypes.length == 0) otherModel.faceRenderTypes = new Array(otherModel.faceCount).fill(-1);
-		
+
 
 		this.vertexCount += otherModel.vertexCount;
 		this.faceCount += otherModel.faceCount;
@@ -275,7 +287,7 @@ export class ModelDefinition {
 
 		if (this.animayaScales == undefined) this.animayaScales = new Array(this.vertexCount).fill([255]);
 		if (otherModel.animayaScales == undefined) otherModel.animayaScales = new Array(otherModel.vertexCount).fill([255]);
-		
+
 
 		let copy = (property) => {
 			if (this[property] == undefined && otherModel[property] != undefined) {
@@ -582,8 +594,8 @@ export class ModelDefinition {
 	 * @returns boolean
 	 */
 	equals(otherModel) {
-		if(this.vertexCount != otherModel.vertexCount) return false;
-		if(this.faceCount != otherModel.faceCount) return false;
+		if (this.vertexCount != otherModel.vertexCount) return false;
+		if (this.faceCount != otherModel.faceCount) return false;
 
 		let sameFaceColors = this.faceColors.every((x, i) => x == otherModel.faceColors[i]);
 		let sameVerticiesX = this.vertexPositionsX.every((x, i) => x == otherModel.vertexPositionsX[i]);
@@ -593,7 +605,7 @@ export class ModelDefinition {
 		return sameVerticiesX && sameVerticiesY && sameVerticiesZ && sameFaceColors && sameFaceColors;
 	}
 
-	
+
 	computeAnimationTables() {
 		var groupCounts = [];
 		var numGroups = 0;
