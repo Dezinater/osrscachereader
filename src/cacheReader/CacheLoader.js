@@ -83,7 +83,8 @@ export default class CacheLoader {
         });
 
         this.promises.xteas = new Promise((resolve, reject) => fs.readFile(path + "xteas.json", "utf8", (err, data) => {
-            if (err) throw err;
+            // if (err) throw err;
+            if (err) resolve()
             resolve(this.readXteas(data));
         }));
     }
