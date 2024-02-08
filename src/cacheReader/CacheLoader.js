@@ -51,17 +51,18 @@ export default class CacheLoader {
         return url.protocol === "http:" || url.protocol === "https:";
     }
 
+    handleZip(zipBufferPromise) {
+        const zip = zipBufferPromise.then(zip => unzipSync(new Uint8Array(zip)));
+        this.promises.datFile = zip.then(dir => dir['cache/' + this.datFile]);
+        this.promises.indexFiles = this.indexFiles.map((indexFile, i) => {
+            return zip.then(dir => dir['cache/' + indexFile]).catch(_ => { console.warn(`${IndexType.keyOf(i)} (Index ${i}) will not load without ${indexFile}`)});
+        });
+        this.promises.xteas = zip.then(dir => dir['cache/xteas.json']).catch(e => { console.warn("Maps (Index 5) will not load without xteas.json") });
+    }
+
     fetchURL(url) {
         if (url.endsWith(".zip")) {
-            console.log("decompress zip file " + url);
-            const zip = axios.get(url, { responseType: 'arraybuffer' }).then(zip => {
-                return unzipSync(new Uint8Array(zip.data));
-            });
-            this.promises.datFile = zip.then(dir => dir['cache/' + this.datFile]);
-            this.promises.indexFiles = this.indexFiles.map((indexFile, i) => {
-                return zip.then(dir => dir['cache/' + indexFile]).catch(_ => { console.warn(`${IndexType.keyOf(i)} (Index ${i}) will not load without ${indexFile}`)});
-            });
-            this.promises.xteas = zip.then(dir => dir['cache/xteas.json']).catch(e => { console.warn("Maps (Index 5) will not load without xteas.json") });
+            this.handleZip(axios.get(url, { responseType: 'arraybuffer' }).then(zip => zip.data));
         } else {
             if (!url.endsWith("/")) {
                 url += "/";
@@ -77,24 +78,32 @@ export default class CacheLoader {
     }
 
     loadFile(path) {
-        if (!path.endsWith("/")) {
-            path += "/";
+        if (path.endsWith(".zip")) {
+            const zip = new Promise((resolve, reject) => fs.readFile(path, (err, data) => {
+                if (err) throw err;
+                resolve(data)
+            }))
+            this.handleZip(zip)
+        } else {
+            if (!path.endsWith("/")) {
+                path += "/";
+            }
+
+            this.promises.datFile = new Promise((resolve, reject) => fs.readFile(path + this.datFile, (err, data) => {
+                if (err) throw err;
+                resolve(data)
+            }));
+            this.indexFiles.forEach(async indexFile => {
+                let newPromise = new Promise(resolve => fs.readFile(path + indexFile, (err, data) => resolve(data)));
+                this.promises.indexFiles.push(newPromise);
+            });
+
+            this.promises.xteas = new Promise((resolve, reject) => fs.readFile(path + "xteas.json", "utf8", (err, data) => {
+                // if (err) throw err;
+                if (err) resolve()
+                resolve(this.readXteas(data));
+            }));
         }
-
-        this.promises.datFile = new Promise((resolve, reject) => fs.readFile(path + this.datFile, (err, data) => {
-            if (err) throw err;
-            resolve(data)
-        }));
-        this.indexFiles.forEach(async indexFile => {
-            let newPromise = new Promise(resolve => fs.readFile(path + indexFile, (err, data) => resolve(data)));
-            this.promises.indexFiles.push(newPromise);
-        });
-
-        this.promises.xteas = new Promise((resolve, reject) => fs.readFile(path + "xteas.json", "utf8", (err, data) => {
-            // if (err) throw err;
-            if (err) resolve()
-            resolve(this.readXteas(data));
-        }));
     }
 
     readXteas(xteasData) {
