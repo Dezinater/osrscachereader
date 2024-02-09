@@ -2,7 +2,6 @@ import { isBrowser } from "browser-or-node";
 import axios from 'axios';
 import * as fs from "fs";
 import IndexType from "./cacheTypes/IndexType.js";
-import { unzipSync } from 'fflate';
 
 
 export default class CacheLoader {
@@ -51,59 +50,42 @@ export default class CacheLoader {
         return url.protocol === "http:" || url.protocol === "https:";
     }
 
-    handleZip(zipBufferPromise) {
-        const zip = zipBufferPromise.then(zip => unzipSync(new Uint8Array(zip)));
-        this.promises.datFile = zip.then(dir => dir['cache/' + this.datFile]);
-        this.promises.indexFiles = this.indexFiles.map((indexFile, i) => {
-            return zip.then(dir => dir['cache/' + indexFile]).catch(_ => { console.warn(`${IndexType.keyOf(i)} (Index ${i}) will not load without ${indexFile}`)});
-        });
-        this.promises.xteas = zip.then(dir => dir['cache/xteas.json']).catch(e => { console.warn("Maps (Index 5) will not load without xteas.json") });
-    }
-
     fetchURL(url) {
         if (url.endsWith(".zip")) {
-            this.handleZip(axios.get(url, { responseType: 'arraybuffer' }).then(zip => zip.data));
-        } else {
-            if (!url.endsWith("/")) {
-                url += "/";
-            }
-
-            this.promises.datFile = axios.get(url + this.datFile, { onDownloadProgress: this.onDownloadProgress, responseType: 'arraybuffer', }).then(x => new Uint8Array(x.data));
-            this.indexFiles.forEach((indexFile, i) => {
-                let indexPromise = axios.get(url + indexFile, { responseType: 'arraybuffer' }).then(x => new Uint8Array(x.data)).catch(_ => { console.warn(`${IndexType.keyOf(i)} (Index ${i}) will not load without ${indexFile}`)});
-                this.promises.indexFiles.push(indexPromise);
-            });
-            this.promises.xteas = axios.get(url + "xteas.json", { responseType: 'json', }).then(x => this.readXteas(x.data)).catch(e => { console.warn("Maps (Index 5) will not load without xteas.json") });
+            console.log("decompress zip file " + url);
+            return;
         }
+
+        if (!url.endsWith("/")) {
+            url += "/";
+        }
+
+        this.promises.datFile = axios.get(url + this.datFile, { onDownloadProgress: this.onDownloadProgress, responseType: 'arraybuffer', }).then(x => new Uint8Array(x.data));
+        this.indexFiles.forEach((indexFile, i) => {
+            let indexPromise = axios.get(url + indexFile, { responseType: 'arraybuffer' }).then(x => new Uint8Array(x.data)).catch(_ => { console.warn(`${IndexType.keyOf(i)} (Index ${i}) will not load without ${indexFile}`)});
+            this.promises.indexFiles.push(indexPromise);
+        });
+        this.promises.xteas = axios.get(url + "xteas.json", { responseType: 'json', }).then(x => this.readXteas(x.data)).catch(e => { console.warn("Maps (Index 5) will not load without xteas.json") });
     }
 
     loadFile(path) {
-        if (path.endsWith(".zip")) {
-            const zip = new Promise((resolve, reject) => fs.readFile(path, (err, data) => {
-                if (err) throw err;
-                resolve(data)
-            }))
-            this.handleZip(zip)
-        } else {
-            if (!path.endsWith("/")) {
-                path += "/";
-            }
-
-            this.promises.datFile = new Promise((resolve, reject) => fs.readFile(path + this.datFile, (err, data) => {
-                if (err) throw err;
-                resolve(data)
-            }));
-            this.indexFiles.forEach(async indexFile => {
-                let newPromise = new Promise(resolve => fs.readFile(path + indexFile, (err, data) => resolve(data)));
-                this.promises.indexFiles.push(newPromise);
-            });
-
-            this.promises.xteas = new Promise((resolve, reject) => fs.readFile(path + "xteas.json", "utf8", (err, data) => {
-                // if (err) throw err;
-                if (err) resolve()
-                resolve(this.readXteas(data));
-            }));
+        if (!path.endsWith("/")) {
+            path += "/";
         }
+
+        this.promises.datFile = new Promise((resolve, reject) => fs.readFile(path + this.datFile, (err, data) => {
+            if (err) throw err;
+            resolve(data)
+        }));
+        this.indexFiles.forEach(async indexFile => {
+            let newPromise = new Promise(resolve => fs.readFile(path + indexFile, (err, data) => resolve(data)));
+            this.promises.indexFiles.push(newPromise);
+        });
+
+        this.promises.xteas = new Promise((resolve, reject) => fs.readFile(path + "xteas.json", "utf8", (err, data) => {
+            if (err) throw err;
+            resolve(this.readXteas(data));
+        }));
     }
 
     readXteas(xteasData) {

@@ -9,8 +9,6 @@ describe('Load NPC', function () {
 
     before(function (done) {
         cache = new RSCache("./cache");
-        // cache = new RSCache("./cache.zip");
-        // cache = new RSCache("https://archive.openrs2.org/caches/runescape/241/disk.zip");
         cache.onload.then(() => {
             done();
         });
