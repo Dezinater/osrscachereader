@@ -3,10 +3,12 @@
   "exports": "./src/index.js",
   "version": "1.0.0",
   "description": "Read Old-School Runescape Cache files",
-  "contributors": [{
-    "name" : "Dezinted",
-    "url" : "https://github.com/Dezinater"
-  }],
+  "contributors": [
+    {
+      "name": "Dezinted",
+      "url": "https://github.com/Dezinater"
+    }
+  ],
   "main": "./src/index",
   "type": "module",
   "files": [
@@ -32,7 +34,11 @@
     "path": false,
     "os": false
   },
-  "keywords": ["old school runescape", "osrs", "cache reader"],
+  "keywords": [
+    "old school runescape",
+    "osrs",
+    "cache reader"
+  ],
   "author": "",
   "license": "BSD-2-Clause",
   "bugs": {
@@ -55,8 +61,9 @@
     "browser-or-node": "^2.1.1",
     "bz2": "^1.0.1",
     "canvas": "^2.11.0",
+    "fflate": "^0.8.2",
     "gzip-js": "^0.3.2",
     "mocha": "^10.2.0",
-    "web-worker": "^1.2.0"
+    "web-worker": "~1.2.0"
   }
 }
