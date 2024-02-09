@@ -8,7 +8,7 @@ describe('Load NPC', function () {
     this.timeout(25000);
 
     before(function (done) {
-        cache = new RSCache("./cache");
+        cache  = new RSCache("./cache");
         cache.onload.then(() => {
             done();
         });
