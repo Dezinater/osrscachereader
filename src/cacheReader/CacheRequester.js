@@ -1,7 +1,7 @@
 import * as gzip from 'gzip-js'
 import IndexType from './cacheTypes/IndexType.js'
 
-import Bzip2 from "@foxglove/wasm-bz2";
+import compressjs from 'compressjs';
 import WorkerPool from './WorkerPool.js';
 
 export default class CacheRequester {
@@ -65,8 +65,7 @@ export default class CacheRequester {
 				bzData[3] = '1'.charCodeAt(0);
 				bzData.set(data, 4)
 
-				const bzip2 = await Bzip2.default.init();
-				decompressedData = bzip2.decompress(bzData, decompressedLength, { small: false });
+				decompressedData = compressjs.Bzip2.decompressFile(bzData);
 
 			} else if (compressionOpcode == 2) { //gzip
 				let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
