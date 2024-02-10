@@ -1,8 +1,7 @@
 //import * as gzip from 'gzip-js'
 const gzip = require("gzip-js");
-//import Bzip2 from "@foxglove/wasm-bz2";
 
-const Bzip2 = require("@foxglove/wasm-bz2");
+const compressjs = require("compressjs");
 
 onmessage = async function (e) {
     //let workerResult = 'Result: ' + (e.data[0]);
@@ -33,8 +32,7 @@ onmessage = async function (e) {
         bzData.set(bzHeader, 0);
         bzData.set(data, 4)
 
-        const bzip2 = await Bzip2.default.init();
-        decompressedData = bzip2.decompress(bzData, decompressedLength, { small: false });
+        decompressedData = compressjs.Bzip2.decompressFile(bzData);
 
     } else if (compressionOpcode == 2) { //gzip
         let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
