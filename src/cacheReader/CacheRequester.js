@@ -1,7 +1,7 @@
 import * as gzip from 'gzip-js'
 import IndexType from './cacheTypes/IndexType.js'
 
-import compressjs from 'compressjs';
+import compressjs from '@ledgerhq/compressjs';
 import WorkerPool from './WorkerPool.js';
 
 export default class CacheRequester {
