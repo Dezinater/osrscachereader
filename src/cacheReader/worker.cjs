@@ -1,7 +1,7 @@
 //import * as gzip from 'gzip-js'
 const gzip = require("gzip-js");
 
-const compressjs = require("compressjs");
+const compressjs = require("@ledgerhq/compressjs");
 
 onmessage = async function (e) {
     //let workerResult = 'Result: ' + (e.data[0]);

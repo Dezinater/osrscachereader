@@ -54,7 +54,7 @@
     "browser-or-node": "^2.1.1",
     "canvas": "^2.11.0",
     "fflate": "^0.8.2",
-    "compressjs": "^1.0.3",
+    "@ledgerhq/compressjs": "^1.3.2",
     "gzip-js": "^0.3.2",
     "mocha": "^10.2.0",
     "web-worker": "~1.2.0"
