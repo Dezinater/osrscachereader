@@ -25,7 +25,7 @@ import ConfigType from './cacheTypes/ConfigType.js'
  * @param {function(number):void} progressFunc Progress function callback. Passes 1 parameter which is the amount of progress from the last step (not total progress)
  */
 class RSCache {
-	constructor(cacheRootDir = "./", progressFunc = () => { }) {
+	constructor(cacheRootDir, progressFunc = () => { }) {
 		this.indicies = {};
 		this.progressFunc = progressFunc;
 
