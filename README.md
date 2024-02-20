@@ -14,28 +14,6 @@ npm install osrscachereader
 ```
 
 
-If you're planning on using Webpack to make a web project then you must add these to your Webpack config file. This is required since the cache reader uses a WASM library to decompress certain archives.
-
-```js
-resolve: {
-    fallback: {
-        crypto: false,
-        fs: false,
-        path: false
-    }
-},
-```
-
-```js
-module: {
-    rules: [
-        {
-            test: /\.wasm$/,
-            type: "asset/inline",
-        },
-    ],
-},
-```
 
 This repo also includes a complete webpack config ([here](/webpack.config.cjs "Webpack Config")) if you would like to just use that
 
