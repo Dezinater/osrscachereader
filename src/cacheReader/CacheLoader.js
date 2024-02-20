@@ -26,16 +26,17 @@ export default class CacheLoader {
             this.cachePromiseResolve = resolve;
         });
 
-        if (path == "latest" || path == undefined) {    //load by current date
+        //this if statement needs to stay in this order or else there will be false positives
+        if (path == "latest" || path == undefined) {                                    //load by current date
             this.loadByTimestamp(new Date());
-        } else if (this.isValidHttpUrl(path)) {         //load by url
-            this.fetchURL(path);
-        } else if (!isNaN(path)) {                      //load by version number
+        } else if (path.constructor != undefined && path.constructor.name == "Date") {  //load by date
+            this.loadByTimestamp(path);
+        } else if (!isNaN(path)) {                                                      //load by version number
             let version = Number(path);
             this.loadByVersion(version);
-        } else if (path.prototype.name == "Date") {     //load by date
-            this.loadByTimestamp(path);
-        } else {                                        //load by local file path
+        } else if (this.isValidHttpUrl(path) || isBrowser) {                            //load by url
+            this.fetchURL(path);
+        } else {                                                                        //load by local file path
             this.loadFile(path);
         }
 
