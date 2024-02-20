@@ -21,8 +21,29 @@ import ConfigType from './cacheTypes/ConfigType.js'
 /**
  * Creates a RSCache reader
  * @category Base
- * @param {string} cacheRootDir 
+ * @param {string} cacheRootDir This can either be a URL, local file path, version number, Date object, or the string 'latest'. If it is a URL or file path it should point to the root of the cache folder or a zip file containing a cache folder such as from https://archive.openrs2.org/
  * @param {function(number):void} progressFunc Progress function callback. Passes 1 parameter which is the amount of progress from the last step (not total progress)
+ * 
+ * @example <caption>Load by URL</caption>
+ * let cache = new RSCache("https://runemonk.com/cache/");
+ * 
+ * @example <caption>Load by URL Zip</caption>
+ * let cache = new RSCache("https://archive.openrs2.org/caches/runescape/1718/disk.zip");
+ * 
+ * @example <caption>Load by File Path</caption>
+ * let cache = new RSCache("./cache/");
+ * 
+ * @example <caption>Load by File Path Zip</caption>
+ * let cache = new RSCache("./cache.zip");
+ * 
+ * @example <caption>Load by Version Number</caption>
+ * let cache = new RSCache(220);
+ * 
+ * @example <caption>Load latest</caption>
+ * let cache = new RSCache('latest');
+ * 
+ * @example <caption>Load by Date</caption>
+ * let cache = new RSCache(new Date("Jan 1 2024"));
  */
 class RSCache {
 	constructor(cacheRootDir, progressFunc = () => { }) {
