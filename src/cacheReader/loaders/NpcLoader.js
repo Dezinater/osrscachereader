@@ -146,7 +146,10 @@ class NpcDefinition {
 	rotationFlag = true;
 	
 	/** @type {boolean} */
-	isPet;
+	isFollower;
+
+	/** @type {boolean} */
+	lowPriorityFollowerOps;
 	
 	/** @type {number} */
 	runAnimation = -1;
@@ -351,7 +354,8 @@ export default class NpcLoader {
 			def.rotationFlag = false;
 		}
 		else if (opcode == 111) {
-			def.isPet = true;
+			def.isFollower = true;
+			def.lowPriorityFollowerOps = true;
 		}
 		else if (opcode == 114) {
 			def.runAnimation = dataview.readUint16();
@@ -404,6 +408,12 @@ export default class NpcLoader {
 			}
 
 			def.configs.push(varVal);
+		}
+		else if (opcode == 122) {
+			def.isFollower = true;
+		}
+		else if (opcode == 123) {
+			def.lowPriorityFollowerOps = true;
 		}
 		else if (opcode == 249) {
 			length = dataview.readUint8();

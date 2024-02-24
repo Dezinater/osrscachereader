@@ -47,6 +47,9 @@ export default class CacheDefinitionLoader {
 	async #loadDef(file, rscache) {
 		let defId = this.archive.files.length > 1 ? file.id : this.archive.id;
 		let loadedDef;
+		if(this.loader.configureForRevision != undefined) {
+			this.loader.configureForRevision(this.archive.revision);
+		}
 		try {
 			loadedDef = await this.loader.load(file.content, defId, rscache, this.options);
 			file.content = undefined; //unload content since it will be reloaded

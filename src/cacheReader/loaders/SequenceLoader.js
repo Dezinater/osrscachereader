@@ -1,3 +1,17 @@
+class Sound {
+	id;
+	loops;
+	location;
+	retain;
+
+	constructor(id, loops, location, retain) {
+		this.id = id;
+		this.loops = loops;
+		this.location = location;
+		this.retain = retain;
+	}
+}
+
 /**
 * Sequences are animations
 * @class SequenceDefinition
@@ -55,7 +69,7 @@ export class SequenceDefinition {
 	/**  @type {Array} */
 	chatFrameIds = [];
 
-	/**  @type {Array} */
+	/**  @type {Array<Sound>} */
 	frameSounds = [];
 
 	/**  
@@ -78,6 +92,10 @@ export class SequenceDefinition {
 
 }
 export default class SequenceLoader {
+	rev220FrameSounds = true;
+	configureForRevision(revision) {
+		this.rev220FrameSounds = revision >= 1141;
+	}
 
 	load(bytes, id) {
 		let def = new SequenceDefinition();
@@ -166,7 +184,7 @@ export default class SequenceLoader {
 			def.frameSounds = [];
 
 			for (var4 = 0; var4 < var3; ++var4) {
-				def.frameSounds[var4] = dataview.readUint24();
+				def.frameSounds[var4] = this.readFrameSound(dataview);
 			}
 		}
 		else if (opcode == 14) {
@@ -177,9 +195,8 @@ export default class SequenceLoader {
 			def.animMayaFrameSounds = {};
 
 			for (var4 = 0; var4 < var3; ++var4) {
-				let var5 = dataview.readUint16();
-				let var6 = dataview.readUint24();
-				def.animMayaFrameSounds[var5] = var6;
+				let frame = dataview.readUint16();
+				def.animMayaFrameSounds[frame] = this.readFrameSound(dataview);
 			}
 		}
 		else if (opcode == 16) {
@@ -194,6 +211,35 @@ export default class SequenceLoader {
 			for (var4 = 0; var4 < var3; ++var4) {
 				def.animMayaMasks[dataview.readUint8()] = true;
 			}
+		}
+	}
+
+	readFrameSound(stream) {
+		let id;
+		let loops;
+		let location;
+		let retain;
+
+		
+		if (!this.rev220FrameSounds) {
+			let bits = stream.readUint24();
+			location = bits & 15;
+			id = bits >> 8;
+			loops = bits >> 4 & 7;
+			retain = 0;
+		}
+		else {
+			id = stream.readUint16();
+			loops = stream.readUint8();
+			location = stream.readUint8();
+			retain = stream.readUint8();
+		}
+
+		if (id >= 1 && loops >= 1 && location >= 0 && retain >= 0) {
+			return new Sound(id, loops, location, retain);
+		}
+		else {
+			return null;
 		}
 	}
 }
