@@ -5,13 +5,13 @@ import { RSCache, IndexType, ConfigType, GLTFExporter } from "osrscachereader";
 let cache = new RSCache("./cache");
 cache.onload.then(async () => {
 	console.log("Loaded");
-	//const npcId = 7706; // zuk
-	const npcId = 7698;
+	const npcId = 7706; // zuk
+	//const npcId = 7698;
 	let npc = await cache.getDef(IndexType.CONFIGS, ConfigType.NPC, npcId);
 
 	// zuk idle
-	//const animId = 7564;
-	const animId = 7605;
+	const animId = 7564;
+	//const animId = 7605;
 	for (let i = 0; i < npc.models.length; ++i) {
 		let model = await cache.getDef(IndexType.MODELS, npc.models[i]);
 
@@ -33,7 +33,17 @@ cache.onload.then(async () => {
 		let initialVertexPositionsX = model.vertexPositionsX;
 		let initialVertexPositionsY = model.vertexPositionsY;
 		let initialVertexPositionsZ = model.vertexPositionsZ;
-		
+
+		const exporter = new GLTFExporter(model);
+		frames.forEach((frame) => exporter.addMorphTarget(frame.vertices));
+		exporter.addAnimation(animation);
+
+		const gltf = exporter.export();
+
+		const path = `./out/${npc.id}_${model.id}_${animation.id}.gltf`;
+		fs.writeFileSync(path, gltf);
+		console.log(`Wrote single file to ${path}`);
+
 		let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map(x => x.def);
 		for (const frame of frameDefs) {
 			model.vertexPositionsX = initialVertexPositionsX;

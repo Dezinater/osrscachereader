@@ -356,7 +356,7 @@ export class ModelDefinition {
 	loadFrame(model, frame) {
 		let verticesX = [...model.vertexPositionsX];
 		let verticesY = [...model.vertexPositionsY];
-		let verticesZ = model.vertexPositionsZ.map(z => -z);
+		let verticesZ = [...model.vertexPositionsZ];
 		let framemap = frame.framemap;
 		let animOffsets = {
 			x: 0,
