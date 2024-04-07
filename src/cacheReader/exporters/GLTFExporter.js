@@ -459,25 +459,11 @@ export default class GLTFExporter {
 		const colorToPaletteIndex = {};
 		const order = [];
 
-		let brightness = 1.7;
-		let newColours = [];
-		for (let i = 0; i < def.faceColors.length; i++) {
-			let color = HSLtoRGB(def.faceColors[i], BRIGHTNESS_MAX);
-			let r = ((color >> 16) & 0xff) / 255.0;
-			let g = ((color >> 8) & 0xff) / 255.0;
-			let b = (color & 0xff) / 255.0;
-			newColours.push([r, g, b]);
-		}
-
 		for (let i = 0; i < def.faceColors.length; ++i) {
 			if (faceColors[def.faceColors[i]]) {
 				continue;
 			}
 			let rscolor = def.faceColors[i];
-			//let hue = (rscolor >> 10) & 0x3f;
-			//let saturation = (rscolor >> 7) & 0x07;
-			//let brightness = (rscolor & 0x7f);
-			//let color = HSVtoRGB(hue / 63, saturation / 7, brightness / 127);
 			let color = HSLtoRGB(rscolor, BRIGHTNESS_MAX);
 			let r = ((color >> 16) & 0xff) / 255.0;
 			let g = ((color >> 8) & 0xff) / 255.0;
