@@ -51,6 +51,85 @@ function HSVtoRGB(h, s, v) {
 
 }
 
+const BRIGHTNESS_MAX = 0.6;
+const HUE_OFFSET = (0.5 / 64);
+const SATURATION_OFFSET = (0.5 / 8);
+
+function unpackHue(hsl) {
+	return hsl >> 10 & 63;
+}
+
+function unpackSaturation(hsl) {
+	return hsl >> 7 & 7;
+}
+
+function unpackLuminance(hsl) {
+	return hsl & 127;
+}
+
+function HSLtoRGB(hsl, brightness) {
+	let hue = unpackHue(hsl) / 64 + HUE_OFFSET;
+	let saturation = unpackSaturation(hsl) / 8 + SATURATION_OFFSET;
+	let luminance = unpackLuminance(hsl) / 128;
+
+	let chroma = (1 - Math.abs((2 * luminance) - 1)) * saturation;
+	let x = chroma * (1 - Math.abs(((hue * 6) % 2) - 1));
+	let lightness = luminance - (chroma / 2);
+
+	let r = lightness
+	  , g = lightness
+	  , b = lightness;
+
+	switch (parseInt(hue * 6)) {
+	case 0:
+		r += chroma;
+		g += x;
+		break;
+	case 1:
+		g += chroma;
+		r += x;
+		break;
+	case 2:
+		g += chroma;
+		b += x;
+		break;
+	case 3:
+		b += chroma;
+		g += x;
+		break;
+	case 4:
+		b += chroma;
+		r += x;
+		break;
+	default:
+		r += chroma;
+		b += x;
+		break;
+	}
+
+	let rgb = (parseInt(r * 256.0) << 16) | (parseInt(g * 256.0) << 8) | parseInt(b * 256.0);
+
+	rgb = adjustForBrightness(rgb, brightness);
+
+	if (rgb == 0) {
+		rgb = 1;
+	}
+	return rgb;
+}
+
+function adjustForBrightness(rgb, brightness) {
+	let r = (rgb >> 16) / 256.0;
+	let g = (rgb >> 8 & 255) / 256.0;
+	let b = (rgb & 255) / 256.0;
+
+	r = Math.pow(r, brightness);
+	g = Math.pow(g, brightness);
+	b = Math.pow(b, brightness);
+
+	return (parseInt(r * 256.0) << 16) | (parseInt((g * 256.0)) << 8) | parseInt((b * 256.0));
+}
+
+
 class GLTFFile {
     //Basically just setting it up for 1 model
     scene = 0;
@@ -287,7 +366,7 @@ class GLTFFile {
 		});
 
         this.samplers.push({
-            magFilter: 9729,
+            magFilter: 9728,
             minFilter: 9987,
             wrapS: 33648,
             wrapT: 33648
@@ -295,6 +374,7 @@ class GLTFFile {
 
         this.materials.push({
             pbrMetallicRoughness : {
+			  baseColorFactor: [ 1.0, 1.0, 1.0, 1.0],
               baseColorTexture : {
                 index : 0
               },
@@ -377,26 +457,48 @@ export default class GLTFExporter {
     addColors(def) {
 		const faceColors = {};
 		const colorToPaletteIndex = {};
+		const order = [];
+
+		let brightness = 1.7;
+		let newColours = [];
+		for (let i = 0; i < def.faceColors.length; i++) {
+			let color = HSLtoRGB(def.faceColors[i], BRIGHTNESS_MAX);
+			let r = ((color >> 16) & 0xff) / 255.0;
+			let g = ((color >> 8) & 0xff) / 255.0;
+			let b = (color & 0xff) / 255.0;
+			newColours.push([r, g, b]);
+		}
+
 		for (let i = 0; i < def.faceColors.length; ++i) {
 			if (faceColors[def.faceColors[i]]) {
 				continue;
 			}
 			let rscolor = def.faceColors[i];
-			let hue = (rscolor >> 10) & 0x3f;
-			let saturation = (rscolor >> 7) & 0x07;
-			let brightness = (rscolor & 0x7f);
-			let color = HSVtoRGB(hue / 63, saturation / 7, brightness / 127);
-			faceColors[def.faceColors[i]] = color;
-			colorToPaletteIndex[def.faceColors[i]] = Object.keys(faceColors).length - 1;
+			//let hue = (rscolor >> 10) & 0x3f;
+			//let saturation = (rscolor >> 7) & 0x07;
+			//let brightness = (rscolor & 0x7f);
+			//let color = HSVtoRGB(hue / 63, saturation / 7, brightness / 127);
+			let color = HSLtoRGB(rscolor, BRIGHTNESS_MAX);
+			let r = ((color >> 16) & 0xff) / 255.0;
+			let g = ((color >> 8) & 0xff) / 255.0;
+			let b = (color & 0xff) / 255.0;
+			console.log(`rscolor ${rscolor} rgb ${r} ${g} ${b}`)
+			faceColors[rscolor] = color;
+			colorToPaletteIndex[rscolor] = Object.keys(faceColors).length - 1;
+			order.push(rscolor);
 		}
 		const numUniqueColors = Object.keys(faceColors).length;
 		// create a texture for the face colors
-		const pSize = 10;
+		const pSize = 16;
 		const canvas = createCanvas(numUniqueColors * pSize, pSize, "png");
 		const ctx = canvas.getContext('2d');
 		let xx = 0;
-		for (const rgb of Object.values(faceColors)) {
-			ctx.fillStyle = `rgb(${rgb[0] * 255}, ${rgb[1] * 255}, ${rgb[2] * 255})`;
+		for (const rscolor of order) {
+			const rgb = faceColors[rscolor];
+			let r = ((rgb >> 16) & 0xff);
+			let g = ((rgb >> 8) & 0xff);
+			let b = (rgb & 0xff);
+			ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
 			ctx.fillRect(xx, 0, pSize, pSize);
 			xx += pSize;
 		}
@@ -404,21 +506,17 @@ export default class GLTFExporter {
 
 		// TODO: this is not right - we need to duplicate vertex positions
         let uvs = new Array(def.vertexPositionsX.length);
+		const half = (1 / numUniqueColors) / 2;
+		const full = 1 / numUniqueColors;
 		for (let i = 0; i < def.faceColors.length; ++i) {
 			const faceColor = def.faceColors[i];
 			const v1 = def.faceVertexIndices1[i];
 			const v2 = def.faceVertexIndices2[i];
 			const v3 = def.faceVertexIndices3[i];
 			const paletteIndex = colorToPaletteIndex[faceColor];
-			if (!uvs[v1]) {
-				uvs[v1] = [paletteIndex / numUniqueColors, 0];
-			}
-			if (!uvs[v2]) {
-				uvs[v2] = [paletteIndex / numUniqueColors, 0];
-			}
-			if (!uvs[v3]) {
-				uvs[v3] = [paletteIndex / numUniqueColors, 0];
-			}
+			uvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
+			uvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
+			uvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
 		}
         this.file.addColors(uvs, colorPalettePng, colorToPaletteIndex);
     }
