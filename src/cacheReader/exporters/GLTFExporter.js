@@ -396,14 +396,20 @@ class GLTFFile {
             byteLength: uvBytes.length,
         });
 
+        let min = [1.0, 1.0];
+        let max = [0.0, 0.0];
+        for (let i = 0; i < uvs.length; i++) {
+            max = [Math.max(max[0], uvs[i][0]), Math.max(max[1], uvs[i][1])];
+            min = [Math.min(min[0], uvs[i][0]), Math.min(min[1], uvs[i][1])];
+        }
         this.accessors.push({
             bufferView: buffersAmount,
             byteOffset: 0,
             componentType: 5126,
             count: uvs.length,
             type: "VEC2",
-            max: [1.0, 1.0],
-            min: [0.0, 0.0]
+            max,
+            min,
         });
 
         this.meshes[0].primitives[0].attributes.TEXCOORD_0 = this.accessors.length - 1;
