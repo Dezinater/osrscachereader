@@ -30,15 +30,30 @@ cache.onload.then(async () => {
 		let shiftedId = selectedAnimation.def.frameIDs[0] >> 16;
 		let frames = await model.loadSkeletonAnims(cache, model, shiftedId);
 
-		const exporter = new GLTFExporter(model);
-		frames.forEach((frame) => exporter.addMorphTarget(frame.vertices));
-		exporter.addAnimation(animation);
+		let initialVertexPositionsX = model.vertexPositionsX;
+		let initialVertexPositionsY = model.vertexPositionsY;
+		let initialVertexPositionsZ = model.vertexPositionsZ;
+		
+		let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map(x => x.def);
+		for (const frame of frameDefs) {
+			model.vertexPositionsX = initialVertexPositionsX;
+			model.vertexPositionsY = initialVertexPositionsY;
+			model.vertexPositionsZ = initialVertexPositionsZ;
+			const loaded = model.loadFrame(model, frame);
+			model.vertexPositionsX = loaded.vertices.map((v) => v[0]);
+			model.vertexPositionsY = loaded.vertices.map((v) => -v[1]);
+			model.vertexPositionsZ = loaded.vertices.map((v) => -v[2]);
 
-		const gltf = exporter.export();
+			const exporter = new GLTFExporter(model);
+			//frames.forEach((frame) => exporter.addMorphTarget(frame.vertices));
+			//exporter.addAnimation(animation);
 
-		const path = `./out/${npc.id}_${model.id}.gltf`;
-		fs.writeFileSync(path, gltf);
-		console.log(`Wrote file to ${path}`);
+			const gltf = exporter.export();
+
+			const path = `./out/${npc.id}_${model.id}_${animation.id}_${frame.id}.gltf`;
+			fs.writeFileSync(path, gltf);
+			console.log(`Wrote file to ${path}`);
+		}
 	}
 	cache.close();
 	return true;
