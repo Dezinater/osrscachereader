@@ -982,7 +982,7 @@ export default class ModelLoader {
 		let var8 = new DataView(var1.buffer);
 		var2.setPosition(var1.byteLength - 26);
 		let var9 = var2.readUint16();
-		let var10 = var2.readUint16();
+		let numFaces = var2.readUint16();
 		let var11 = var2.readUint8();
 		let var12 = var2.readUint8();
 		let var13 = var2.readUint8();
@@ -1024,39 +1024,39 @@ export default class ModelLoader {
 		var28 = var11 + var9;
 		let var58 = var28;
 		if (var12 == 1) {
-			var28 += var10;
+			var28 += numFaces;
 		}
 
 		let var30 = var28;
-		var28 += var10;
+		var28 += numFaces;
 		let var31 = var28;
 		if (var13 == 255) {
-			var28 += var10;
+			var28 += numFaces;
 		}
 
 		let var32 = var28;
 		if (var15 == 1) {
-			var28 += var10;
+			var28 += numFaces;
 		}
 
 		let var33 = var28;
 		var28 += var24;
 		let var34 = var28;
 		if (var14 == 1) {
-			var28 += var10;
+			var28 += numFaces;
 		}
 
 		let var35 = var28;
 		var28 += var22;
 		let var36 = var28;
 		if (var16 == 1) {
-			var28 += var10 * 2;
+			var28 += numFaces * 2;
 		}
 
 		let var37 = var28;
 		var28 += var23;
 		let var38 = var28;
-		var28 += var10 * 2;
+		var28 += numFaces * 2;
 		let var39 = var28;
 		var28 += var19;
 		let var40 = var28;
@@ -1076,7 +1076,7 @@ export default class ModelLoader {
 		let var47 = var28;
 		var28 = var28 + var26 * 2 + var27 * 2;
 		def.vertexCount = var9;
-		def.faceCount = var10;
+		def.faceCount = numFaces;
 		def.numTextureFaces = var11;
 		def.vertexPositionsX = [];
 		def.vertexPositionsY = [];
@@ -1112,7 +1112,7 @@ export default class ModelLoader {
 		}
 
 		if (var16 == 1 && var11 > 0) {
-			def.textureCoords = new Array(var10).fill(0);
+			def.textureCoords = new Array(numFaces).fill(0);
 		}
 
 		if (var18 == 1) {
@@ -1192,7 +1192,7 @@ export default class ModelLoader {
 		var7.setPosition(var36);
 		var8.setPosition(var37);
 
-		for (var51 = 0; var51 < var10; ++var51) {
+		for (var51 = 0; var51 < numFaces; ++var51) {
 			def.faceColors[var51] = var2.readUint16();
 			if (var12 == 1) {
 				def.faceRenderTypes[var51] = var3.readInt8();
@@ -1227,7 +1227,7 @@ export default class ModelLoader {
 		var54 = 0;
 
 		let var56;
-		for (var55 = 0; var55 < var10; ++var55) {
+		for (var55 = 0; var55 < numFaces; ++var55) {
 			var56 = var3.readUint8();
 			if (var56 == 1) {
 				var51 = var2.readShortSmart() + var54;
