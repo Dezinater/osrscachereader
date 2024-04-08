@@ -1,134 +1,129 @@
-import * as base64 from "../helpers/base64.js"
+import * as base64 from "../helpers/base64.js";
 
 import { createCanvas } from "canvas";
 
 function HSVtoRGB(h, s, v) {
-	let r, g, b, i, f, p, q, t;
-	if (arguments.length === 1) {
-		s = h.s,
-		v = h.v,
-		h = h.h;
-	}
-	i = Math.floor(h * 6);
-	f = h * 6 - i;
-	p = v * (1 - s);
-	q = v * (1 - f * s);
-	t = v * (1 - (1 - f) * s);
-	switch (i % 6) {
-	case 0:
-		r = v,
-		g = t,
-		b = p;
-		break;
-	case 1:
-		r = q,
-		g = v,
-		b = p;
-		break;
-	case 2:
-		r = p,
-		g = v,
-		b = t;
-		break;
-	case 3:
-		r = p,
-		g = q,
-		b = v;
-		break;
-	case 4:
-		r = t,
-		g = p,
-		b = v;
-		break;
-	case 5:
-		r = v,
-		g = p,
-		b = q;
-		break;
-	}
-	//IT MUST BE * 255 AND ROUNDED INORDER TO GET THE CORRECT NUMBERS
-	return [Math.round(r * 255) / 255, Math.round(g * 255) / 255, Math.round(b * 255) / 255];
-
+    let r, g, b, i, f, p, q, t;
+    if (arguments.length === 1) {
+        (s = h.s), (v = h.v), (h = h.h);
+    }
+    i = Math.floor(h * 6);
+    f = h * 6 - i;
+    p = v * (1 - s);
+    q = v * (1 - f * s);
+    t = v * (1 - (1 - f) * s);
+    switch (i % 6) {
+        case 0:
+            (r = v), (g = t), (b = p);
+            break;
+        case 1:
+            (r = q), (g = v), (b = p);
+            break;
+        case 2:
+            (r = p), (g = v), (b = t);
+            break;
+        case 3:
+            (r = p), (g = q), (b = v);
+            break;
+        case 4:
+            (r = t), (g = p), (b = v);
+            break;
+        case 5:
+            (r = v), (g = p), (b = q);
+            break;
+    }
+    //IT MUST BE * 255 AND ROUNDED INORDER TO GET THE CORRECT NUMBERS
+    return [
+        Math.round(r * 255) / 255,
+        Math.round(g * 255) / 255,
+        Math.round(b * 255) / 255,
+    ];
 }
 
 const BRIGHTNESS_MAX = 0.6;
-const HUE_OFFSET = (0.5 / 64);
-const SATURATION_OFFSET = (0.5 / 8);
+const HUE_OFFSET = 0.5 / 64;
+const SATURATION_OFFSET = 0.5 / 8;
 
 function unpackHue(hsl) {
-	return hsl >> 10 & 63;
+    return (hsl >> 10) & 63;
 }
 
 function unpackSaturation(hsl) {
-	return hsl >> 7 & 7;
+    return (hsl >> 7) & 7;
 }
 
 function unpackLuminance(hsl) {
-	return hsl & 127;
+    return hsl & 127;
 }
 
 function HSLtoRGB(hsl, brightness) {
-	let hue = unpackHue(hsl) / 64 + HUE_OFFSET;
-	let saturation = unpackSaturation(hsl) / 8 + SATURATION_OFFSET;
-	let luminance = unpackLuminance(hsl) / 128;
+    let hue = unpackHue(hsl) / 64 + HUE_OFFSET;
+    let saturation = unpackSaturation(hsl) / 8 + SATURATION_OFFSET;
+    let luminance = unpackLuminance(hsl) / 128;
 
-	let chroma = (1 - Math.abs((2 * luminance) - 1)) * saturation;
-	let x = chroma * (1 - Math.abs(((hue * 6) % 2) - 1));
-	let lightness = luminance - (chroma / 2);
+    let chroma = (1 - Math.abs(2 * luminance - 1)) * saturation;
+    let x = chroma * (1 - Math.abs(((hue * 6) % 2) - 1));
+    let lightness = luminance - chroma / 2;
 
-	let r = lightness
-	  , g = lightness
-	  , b = lightness;
+    let r = lightness,
+        g = lightness,
+        b = lightness;
 
-	switch (parseInt(hue * 6)) {
-	case 0:
-		r += chroma;
-		g += x;
-		break;
-	case 1:
-		g += chroma;
-		r += x;
-		break;
-	case 2:
-		g += chroma;
-		b += x;
-		break;
-	case 3:
-		b += chroma;
-		g += x;
-		break;
-	case 4:
-		b += chroma;
-		r += x;
-		break;
-	default:
-		r += chroma;
-		b += x;
-		break;
-	}
+    switch (parseInt(hue * 6)) {
+        case 0:
+            r += chroma;
+            g += x;
+            break;
+        case 1:
+            g += chroma;
+            r += x;
+            break;
+        case 2:
+            g += chroma;
+            b += x;
+            break;
+        case 3:
+            b += chroma;
+            g += x;
+            break;
+        case 4:
+            b += chroma;
+            r += x;
+            break;
+        default:
+            r += chroma;
+            b += x;
+            break;
+    }
 
-	let rgb = (parseInt(r * 256.0) << 16) | (parseInt(g * 256.0) << 8) | parseInt(b * 256.0);
+    let rgb =
+        (parseInt(r * 256.0) << 16) |
+        (parseInt(g * 256.0) << 8) |
+        parseInt(b * 256.0);
 
-	rgb = adjustForBrightness(rgb, brightness);
+    rgb = adjustForBrightness(rgb, brightness);
 
-	if (rgb == 0) {
-		rgb = 1;
-	}
-	return rgb;
+    if (rgb == 0) {
+        rgb = 1;
+    }
+    return rgb;
 }
 
 function adjustForBrightness(rgb, brightness) {
-	let r = (rgb >> 16) / 256.0;
-	let g = (rgb >> 8 & 255) / 256.0;
-	let b = (rgb & 255) / 256.0;
+    let r = (rgb >> 16) / 256.0;
+    let g = ((rgb >> 8) & 255) / 256.0;
+    let b = (rgb & 255) / 256.0;
 
-	r = Math.pow(r, brightness);
-	g = Math.pow(g, brightness);
-	b = Math.pow(b, brightness);
+    r = Math.pow(r, brightness);
+    g = Math.pow(g, brightness);
+    b = Math.pow(b, brightness);
 
-	return (parseInt(r * 256.0) << 16) | (parseInt((g * 256.0)) << 8) | parseInt((b * 256.0));
+    return (
+        (parseInt(r * 256.0) << 16) |
+        (parseInt(g * 256.0) << 8) |
+        parseInt(b * 256.0)
+    );
 }
-
 
 class GLTFFile {
     //Basically just setting it up for 1 model
@@ -137,18 +132,7 @@ class GLTFFile {
 
     nodes = [{ mesh: 0 }];
 
-    meshes = [
-        {
-            primitives: [
-                {
-                    attributes: {
-                        POSITION: 0,
-                    },
-                    //indices: 0,
-                },
-            ],
-        },
-    ];
+    meshes = [{ primitives: [] }];
 
     textures = [];
     images = [];
@@ -199,6 +183,11 @@ class GLTFFile {
     }
 
     addVerticies(verticies) {
+        this.meshes[0].primitives.push({
+            attributes: {
+                POSITION: this.buffers.length,
+            },
+        });
         let max = [0, 0, 0];
         let min = [0, 0, 0];
         for (let i = 0; i < verticies.length; i++) {
@@ -243,7 +232,7 @@ class GLTFFile {
         });
     }
 
-    addMorphTarget(verticies) {
+    addMorphTarget(verticies, primitive) {
         let max = [verticies[0][0], verticies[0][1], verticies[0][2]];
         let min = [verticies[0][0], verticies[0][1], verticies[0][2]];
         for (let i = 0; i < verticies.length; i++) {
@@ -263,8 +252,8 @@ class GLTFFile {
             new Float32Array(verticies.flat()).buffer
         );
 
-        if (!("targets" in this.meshes[0].primitives[0])) {
-            this.meshes[0].primitives[0].targets = [];
+        if (!("targets" in this.meshes[0].primitives[primitive])) {
+            this.meshes[0].primitives[primitive].targets = [];
             this.meshes[0].weights = [];
         }
 
@@ -275,7 +264,9 @@ class GLTFFile {
         } else {
             this.meshes[0].weights.push(0);
         }
-        this.meshes[0].primitives[0].targets.push({ POSITION: buffersAmount });
+        this.meshes[0].primitives[primitive].targets.push({
+            POSITION: buffersAmount,
+        });
 
         this.buffers.push({
             uri:
@@ -390,7 +381,7 @@ class GLTFFile {
         });
     }
 
-    addColors(uvs, colorPalettePng) {
+    addColors(uvs, colorPalettePng, primitive, transparent = false) {
         let uvBytes = new Uint8Array(new Float32Array(uvs.flat()).buffer);
 
         const texturesAmount = this.textures.length;
@@ -411,8 +402,8 @@ class GLTFFile {
         });
 
         this.materials.push({
+            ...(transparent && { alphaMode: "BLEND" }),
             pbrMetallicRoughness: {
-                baseColorFactor: [1.0, 1.0, 1.0, 1.0],
                 baseColorTexture: {
                     index: 0,
                 },
@@ -452,32 +443,51 @@ class GLTFFile {
             min,
         });
 
-        this.meshes[0].primitives[0].attributes.TEXCOORD_0 =
+        this.meshes[0].primitives[primitive].attributes.TEXCOORD_0 =
             this.accessors.length - 1;
-        this.meshes[0].primitives[0].material = 0;
+        this.meshes[0].primitives[primitive].material =
+            this.materials.length - 1;
     }
 }
 
 export default class GLTFExporter {
+    // regular (non-alpha) vertices
     verticies = [];
+    // regular (non-alpha) faces
+    faces = [];
+    alphaVertices = [];
+    alphaFaces = [];
     morphTargetsAmount = 0;
 
+    /**
+     * mapping of original vertex ID to new vertex IDs
+     * if alpha is true, it refers to the position in this.alphaVertices, otherwise this.verticies
+     * @type {[id: number]: {idx: number, alpha: boolean}[]}
+     */
     remappedVertices = {};
 
     constructor(def) {
         this.file = new GLTFFile();
 
         this.verticies = [];
+        this.alphaVertices = [];
 
         // n.b. we reorder the vertices by faces. this duplicates all of the vertices but allows us to
         // apply per-face textures/colours and removes the need for indices.
         for (let i = 0; i < def.faceVertexIndices1.length; i++) {
+            const isAlpha = def.faceAlphas[i] > 0;
+            const dest = isAlpha ? this.alphaVertices : this.verticies;
+            if (isAlpha) {
+                this.alphaFaces.push(i);
+            } else {
+                this.faces.push(i);
+            }
             const v1 = def.faceVertexIndices1[i];
             const v2 = def.faceVertexIndices2[i];
             const v3 = def.faceVertexIndices3[i];
             const faceVertices = [v1, v2, v3];
             faceVertices.forEach((idx, pos) => {
-                this.verticies.push([
+                dest.push([
                     def.vertexPositionsX[idx],
                     -def.vertexPositionsY[idx],
                     -def.vertexPositionsZ[idx],
@@ -485,30 +495,39 @@ export default class GLTFExporter {
                 if (!(idx in this.remappedVertices)) {
                     this.remappedVertices[idx] = [];
                 }
-                // maintain a multimap of original vertex ID to where they are now in `this.verticies`.
-                this.remappedVertices[idx].push(i * 3 + pos);
+                // maintain a multimap of original vertex ID to where they are now in the destination vertex array.
+                this.remappedVertices[idx].push({
+                    idx: dest.length - 1,
+                    alpha: isAlpha,
+                });
             });
         }
         this.file.addVerticies(this.verticies);
+        if (this.alphaVertices.length > 0) {
+			this.file.addVerticies(this.alphaVertices);
+		}
     }
 
     addMorphTarget(morphVertices) {
         let newMorphVertices = [];
+        let newAlphaMorphVertices = [];
         for (let i = 0; i < morphVertices.length; i++) {
             const realVertices = this.remappedVertices[i];
-            for (const realVertex of realVertices) {
-                newMorphVertices[realVertex] = [];
-                newMorphVertices[realVertex][0] =
-                    morphVertices[i][0] - this.verticies[realVertex][0];
-                newMorphVertices[realVertex][1] =
-                    morphVertices[i][1] - this.verticies[realVertex][1];
-                newMorphVertices[realVertex][2] =
-                    morphVertices[i][2] - this.verticies[realVertex][2];
+            for (const { idx: newIdx, alpha } of realVertices) {
+                const src = alpha ? this.alphaVertices : this.verticies;
+                const dest = alpha ? newAlphaMorphVertices : newMorphVertices;
+                dest[newIdx] = [];
+                dest[newIdx][0] = morphVertices[i][0] - src[newIdx][0];
+                dest[newIdx][1] = morphVertices[i][1] - src[newIdx][1];
+                dest[newIdx][2] = morphVertices[i][2] - src[newIdx][2];
             }
         }
 
         this.morphTargetsAmount++;
-        this.file.addMorphTarget(newMorphVertices);
+        this.file.addMorphTarget(newMorphVertices, 0);
+        if (this.alphaVertices.length > 0) {
+        	this.file.addMorphTarget(newAlphaMorphVertices, 1);
+		}
     }
 
     addAnimation(def) {
@@ -522,12 +541,18 @@ export default class GLTFExporter {
     }
 
     addColors(def) {
-        const faceColors = {};
+        const seenColors = {};
         const colorToPaletteIndex = {};
         const order = [];
-
+        const combineColorAndAlpha = (color, alpha) =>
+            color | ((Math.max(0, alpha) & 0xff) << 24);
         for (let i = 0; i < def.faceColors.length; ++i) {
-            if (faceColors[def.faceColors[i]]) {
+            const lookupIndex = combineColorAndAlpha(
+                def.faceColors[i],
+                def.faceAlphas[i]
+            );
+            // ensure unique color + alpha combinations
+            if (seenColors[lookupIndex]) {
                 continue;
             }
             let rscolor = def.faceColors[i];
@@ -535,38 +560,65 @@ export default class GLTFExporter {
             let r = ((color >> 16) & 0xff) / 255.0;
             let g = ((color >> 8) & 0xff) / 255.0;
             let b = (color & 0xff) / 255.0;
-            console.log(`rscolor ${rscolor} rgb ${r} ${g} ${b}`);
-            faceColors[rscolor] = color;
-            colorToPaletteIndex[rscolor] = Object.keys(faceColors).length - 1;
-            order.push(rscolor);
+            let a = def.faceAlphas[i];
+            let rscolorWithAlpha = combineColorAndAlpha(
+                color,
+                def.faceAlphas[i]
+            );
+            console.log(`rscolor ${rscolor} rgb ${r} ${g} ${b} ${a}`);
+            seenColors[lookupIndex] = color;
+            colorToPaletteIndex[lookupIndex] = order.length;
+            order.push(rscolorWithAlpha);
         }
-        const numUniqueColors = Object.keys(faceColors).length;
+        const numUniqueColors = Object.keys(seenColors).length;
         // create a texture for the face colors
         const pSize = 16;
         const canvas = createCanvas(numUniqueColors * pSize, pSize, "png");
         const ctx = canvas.getContext("2d");
         let xx = 0;
-        for (const rscolor of order) {
-            const rgb = faceColors[rscolor];
-            let r = (rgb >> 16) & 0xff;
-            let g = (rgb >> 8) & 0xff;
-            let b = rgb & 0xff;
-            ctx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+        for (const value of order) {
+            const a = (value >> 24) & 0xff;
+            let r = (value >> 16) & 0xff;
+            let g = (value >> 8) & 0xff;
+            let b = value & 0xff;
+            let alpha = 1 - a / 255;
+            ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+            console.log(`rgba ${r} ${g} ${b} ${alpha}`);
             ctx.fillRect(xx, 0, pSize, pSize);
             xx += pSize;
         }
         const colorPalettePng = canvas.toDataURL();
 
-        let uvs = new Array(def.faceColors.length * 3);
+        let normalUvs = new Array(this.verticies.length);
+        let alphaUvs = new Array(this.alphaVertices.length);
         const half = 1 / numUniqueColors / 2;
-        for (let i = 0; i < def.faceColors.length; ++i) {
-            const faceColor = def.faceColors[i];
-            const paletteIndex = colorToPaletteIndex[faceColor];
-            uvs[i * 3] = [paletteIndex / numUniqueColors + half, 0.33];
-            uvs[i * 3 + 1] = [paletteIndex / numUniqueColors + half, 0.5];
-            uvs[i * 3 + 2] = [paletteIndex / numUniqueColors + half, 0.66];
+        for (let i = 0; i < this.faces.length; i++) {
+            let faceId = this.faces[i];
+            const faceColor = def.faceColors[faceId];
+            const faceAlpha = def.faceAlphas[faceId];
+            const lookupKey = combineColorAndAlpha(faceColor, faceAlpha);
+            const paletteIndex = colorToPaletteIndex[lookupKey];
+            normalUvs[i * 3] = [paletteIndex / numUniqueColors + half, 0.33];
+            normalUvs[i * 3 + 1] = [paletteIndex / numUniqueColors + half, 0.5];
+            normalUvs[i * 3 + 2] = [
+                paletteIndex / numUniqueColors + half,
+                0.66,
+            ];
         }
-        this.file.addColors(uvs, colorPalettePng, colorToPaletteIndex);
+        for (let i = 0; i < this.alphaFaces.length; i++) {
+            let faceId = this.alphaFaces[i];
+            const faceColor = def.faceColors[faceId];
+            const faceAlpha = def.faceAlphas[faceId];
+            const lookupKey = combineColorAndAlpha(faceColor, faceAlpha);
+            const paletteIndex = colorToPaletteIndex[lookupKey];
+            alphaUvs[i * 3] = [paletteIndex / numUniqueColors + half, 0.33];
+            alphaUvs[i * 3 + 1] = [paletteIndex / numUniqueColors + half, 0.5];
+            alphaUvs[i * 3 + 2] = [paletteIndex / numUniqueColors + half, 0.66];
+        }
+        this.file.addColors(normalUvs, colorPalettePng, 0);
+        if (this.alphaVertices.length > 0) {
+        	this.file.addColors(alphaUvs, colorPalettePng, 1, true);
+		}
     }
 
     export() {

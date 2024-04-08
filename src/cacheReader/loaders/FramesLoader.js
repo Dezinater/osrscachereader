@@ -40,6 +40,8 @@ export class FramesDefinition {
 	/** @type {boolean} */
 	showing;
 
+    colorTransform;
+
     method727(var1, var2, var3) {
         let var5 = new Matrix();
 
@@ -230,8 +232,13 @@ export default class FramesLoader {
 
                 lastI = i;
                 ++index;
+                // alpha
                 if (def.framemap.types[i] == 5) {
                     def.showing = true;
+                }
+                if (def.framemap.types[i] == 7) {
+                    // color
+                    def.colorTransform = true;
                 }
             }
 

@@ -12,22 +12,23 @@ const npcsAndAnimations = [
             7566, // fire
         ],
     },
-    {
+    /*{
         npcId: 7698, // ranger
         animations: [
             7602, // idle
             7603, // walk
             7605, // fire
         ],
-    },
-    {
+    },*/
+    /*{
         npcId: 7699, // mager
         animations: [
-            7609, // idle,
+            7609, // idle
             7608, // walk
             7610, // mage fire
+			7611, // revive
         ],
-    },
+    },*/
 ];
 
 const processNpc = async ({ npcId, animations }) => {
