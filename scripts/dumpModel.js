@@ -11,22 +11,65 @@ const npcsAndAnimations = [
             7564, // idle
             7566, // fire
         ],
-    },*/
-    /*{
+    },
+    {
         npcId: 7698, // ranger
         animations: [
             7602, // idle
             7603, // walk
             7605, // fire
         ],
-    },*/
+    },
     {
         npcId: 7699, // mager
         animations: [
             7609, // idle
-            /*7608, // walk
+            7608, // walk
             7610, // mage fire
-			7611, // revive*/
+			7611, // revive
+        ],
+    },
+    {
+        npcId: 7691, // nibbler
+        animations: [
+            7573, // idle
+            7572, // walk
+            7574, // attack
+        ],
+    },
+    {
+        npcId: 7692, // bat
+        animations: [
+            7577, // idle and walk
+            7578, // attack
+        ],
+    },
+    {
+        npcId: 7693, // blob
+        animations: [
+            7586, // idle
+			7587, // walk
+            7581, // attack (is it mage?)
+        ],
+    },
+    {
+        npcId: 7697, // meleer
+        animations: [
+            7595, // idle
+			7596, // walk
+            7597, // attack
+			7600, // dig
+			7601, // dig up
+        ],
+    },*/
+    {
+        npcId: 7700, // jad
+        animations: [
+            7595, // idle
+			7596, // walk
+            7592, // attack mage
+			7593, // attack range
+			7601, // dig up
         ],
     },
 ];

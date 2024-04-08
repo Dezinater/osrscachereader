@@ -621,8 +621,8 @@ export default class GLTFExporter {
             alphaUvs[i * 3 + 2] = [paletteIndex / numUniqueColors + half, 0.66];
         }
         this.file.addColors(normalUvs, colorPalettePng, 0);
-		this.file.addColors(alphaUvs, null, 1, true);
         if (this.alphaVertices.length > 0) {
+			this.file.addColors(alphaUvs, null, 1, true);
 		}
     }
 
