@@ -65,11 +65,10 @@ const npcsAndAnimations = [
     {
         npcId: 7700, // jad
         animations: [
-            7595, // idle
-			7596, // walk
+            7589, // idle
+            7588, // walk
             7592, // attack mage
-			7593, // attack range
-			7601, // dig up
+            7593, // attack range
         ],
     },
 ];
