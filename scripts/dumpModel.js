@@ -19,17 +19,17 @@ const npcsAndAnimations = [
             7603, // walk
             7605, // fire
         ],
-    },
+    },*/
     {
         npcId: 7699, // mager
         animations: [
             7609, // idle
             7608, // walk
             7610, // mage fire
-			7611, // revive
+            7611, // revive
         ],
     },
-    {
+    /*{
         npcId: 7691, // nibbler
         animations: [
             7573, // idle
@@ -62,7 +62,7 @@ const npcsAndAnimations = [
 			7601, // dig up
         ],
     },*/
-    {
+    /*{
         npcId: 7700, // jad
         animations: [
             7589, // idle
@@ -70,7 +70,7 @@ const npcsAndAnimations = [
             7592, // attack mage
             7593, // attack range
         ],
-    },
+    },*/
 ];
 
 const processNpc = async ({ npcId, animations }) => {
