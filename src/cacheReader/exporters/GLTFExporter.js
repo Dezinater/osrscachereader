@@ -254,16 +254,18 @@ class GLTFFile {
 
         if (!("targets" in this.meshes[0].primitives[primitive])) {
             this.meshes[0].primitives[primitive].targets = [];
-            this.meshes[0].weights = [];
+            this.meshes[0].weights = [0];
         }
 
         let buffersAmount = this.buffers.length;
 
-        if (this.meshes[0].weights.length == 0) {
-            this.meshes[0].weights.push(1);
-        } else {
-            this.meshes[0].weights.push(0);
-        }
+		if (primitive === 0) {
+			if (this.meshes[0].weights.length == 0) {
+				this.meshes[0].weights.push(1);
+			} else {
+				this.meshes[0].weights.push(0);
+			}
+		}
         this.meshes[0].primitives[primitive].targets.push({
             POSITION: buffersAmount,
         });
@@ -384,15 +386,17 @@ class GLTFFile {
     addColors(uvs, colorPalettePng, primitive, transparent = false) {
         let uvBytes = new Uint8Array(new Float32Array(uvs.flat()).buffer);
 
-        const texturesAmount = this.textures.length;
-        this.textures.push({
-            source: texturesAmount,
-            sampler: texturesAmount,
-        });
+		if (colorPalettePng) {
+			const texturesAmount = this.textures.length;
+			this.textures.push({
+				source: texturesAmount,
+				sampler: texturesAmount,
+			});
 
-        this.images.push({
-            uri: colorPalettePng,
-        });
+			this.images.push({
+				uri: colorPalettePng,
+			});
+		}
 
         this.samplers.push({
             magFilter: 9728,
@@ -475,7 +479,7 @@ export default class GLTFExporter {
         // n.b. we reorder the vertices by faces. this duplicates all of the vertices but allows us to
         // apply per-face textures/colours and removes the need for indices.
         for (let i = 0; i < def.faceVertexIndices1.length; i++) {
-            const isAlpha = def.faceAlphas[i] > 0;
+            const isAlpha = Math.abs(def.faceAlphas[i]) > 0;
             const dest = isAlpha ? this.alphaVertices : this.verticies;
             if (isAlpha) {
                 this.alphaFaces.push(i);
@@ -545,11 +549,11 @@ export default class GLTFExporter {
         const colorToPaletteIndex = {};
         const order = [];
         const combineColorAndAlpha = (color, alpha) =>
-            color | ((Math.max(0, alpha) & 0xff) << 24);
+            color | (alpha & 0xff) << 24;
         for (let i = 0; i < def.faceColors.length; ++i) {
             const lookupIndex = combineColorAndAlpha(
                 def.faceColors[i],
-                def.faceAlphas[i]
+				def.faceAlphas[i]
             );
             // ensure unique color + alpha combinations
             if (seenColors[lookupIndex]) {
@@ -563,7 +567,8 @@ export default class GLTFExporter {
             let a = def.faceAlphas[i];
             let rscolorWithAlpha = combineColorAndAlpha(
                 color,
-                def.faceAlphas[i]
+				// idk this just looks better for negative alphas. I wonder if faceAlpha is an unsigned char?
+                a >= 0 ? a : Math.max(0, 255 - a * 3)
             );
             console.log(`rscolor ${rscolor} rgb ${r} ${g} ${b} ${a}`);
             seenColors[lookupIndex] = color;
@@ -616,8 +621,8 @@ export default class GLTFExporter {
             alphaUvs[i * 3 + 2] = [paletteIndex / numUniqueColors + half, 0.66];
         }
         this.file.addColors(normalUvs, colorPalettePng, 0);
+		this.file.addColors(alphaUvs, null, 1, true);
         if (this.alphaVertices.length > 0) {
-        	this.file.addColors(alphaUvs, colorPalettePng, 1, true);
 		}
     }
 

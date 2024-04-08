@@ -5,13 +5,13 @@ import { RSCache, IndexType, ConfigType, GLTFExporter } from "osrscachereader";
 const DUMP_FRAMES = false;
 
 const npcsAndAnimations = [
-    {
+    /*{
         npcId: 7706, // zuk
         animations: [
             7564, // idle
             7566, // fire
         ],
-    },
+    },*/
     /*{
         npcId: 7698, // ranger
         animations: [
@@ -20,15 +20,15 @@ const npcsAndAnimations = [
             7605, // fire
         ],
     },*/
-    /*{
+    {
         npcId: 7699, // mager
         animations: [
             7609, // idle
-            7608, // walk
+            /*7608, // walk
             7610, // mage fire
-			7611, // revive
+			7611, // revive*/
         ],
-    },*/
+    },
 ];
 
 const processNpc = async ({ npcId, animations }) => {
