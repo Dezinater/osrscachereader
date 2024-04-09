@@ -577,7 +577,7 @@ export default class GLTFExporter {
         }
         const numUniqueColors = Object.keys(seenColors).length;
         // create a texture for the face colors
-        const pSize = 16;
+        const pSize = 4;
         const canvas = createCanvas(numUniqueColors * pSize, pSize, "png");
         const ctx = canvas.getContext("2d");
         let xx = 0;

@@ -19,7 +19,7 @@ const npcsAndAnimations = [
             7603, // walk
             7605, // fire
         ],
-    },
+    },*/
     {
         npcId: 7699, // mager
         animations: [
@@ -29,7 +29,7 @@ const npcsAndAnimations = [
 			7611, // revive
         ],
     },
-    {
+    /*{
         npcId: 7691, // nibbler
         animations: [
             7573, // idle
@@ -62,7 +62,7 @@ const npcsAndAnimations = [
 			7601, // dig up
         ],
     },*/
-    {
+    /*{
         npcId: 7700, // jad
         animations: [
             7589, // idle
@@ -71,6 +71,13 @@ const npcsAndAnimations = [
             7593, // attack range
         ],
     },
+	{
+		npcId: 7707, // ancestral glyph
+		animations: [
+			7567, // idle
+			7569, // dying
+		]
+	}*/
 ];
 
 const processNpc = async ({ npcId, animations }) => {
@@ -80,6 +87,16 @@ const processNpc = async ({ npcId, animations }) => {
         let model = await cache.getDef(IndexType.MODELS, npc.models[i]);
 
         const loadedFrames = [];
+		// note: only need to ask for frames for the first animation
+		let selectedAnimation = await cache.getFile(
+			IndexType.CONFIGS.id,
+			ConfigType.SEQUENCE.id,
+			animations[0]
+		);
+		let shiftedId = selectedAnimation.def.frameIDs[0] >> 16;
+		let frames = await model.loadSkeletonAnims(cache, model, shiftedId);
+		loadedFrames.push(...frames);
+
         const loadedAnimations = [];
         for (const animId of animations) {
             const animationDef = await cache.getFile(
@@ -89,15 +106,6 @@ const processNpc = async ({ npcId, animations }) => {
             );
             let animation = animationDef.def;
             loadedAnimations.push(animation);
-
-            let selectedAnimation = await cache.getFile(
-                IndexType.CONFIGS.id,
-                ConfigType.SEQUENCE.id,
-                animId
-            );
-            let shiftedId = selectedAnimation.def.frameIDs[0] >> 16;
-            let frames = await model.loadSkeletonAnims(cache, model, shiftedId);
-            loadedFrames.push(...frames);
         }
 
         const exporter = new GLTFExporter(model);
