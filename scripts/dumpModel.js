@@ -5,11 +5,13 @@ import { RSCache, IndexType, ConfigType, GLTFExporter } from "osrscachereader";
 const DUMP_FRAMES = false;
 
 const npcsAndAnimations = [
-    /*{
+    {
         npcId: 7706, // zuk
         animations: [
             7564, // idle
             7566, // fire
+            7565, // flinch
+            7562, // die
         ],
     },
     {
@@ -18,8 +20,11 @@ const npcsAndAnimations = [
             7602, // idle
             7603, // walk
             7605, // fire
+            7604, // melee attack
+            7606, // die
+            7607, // flinch
         ],
-    },*/
+    },
     {
         npcId: 7699, // mager
         animations: [
@@ -27,6 +32,8 @@ const npcsAndAnimations = [
             7608, // walk
             7610, // mage fire
             7611, // revive
+			7612, // melee attack
+			7613, // death
         ],
     },
     {
@@ -35,13 +42,17 @@ const npcsAndAnimations = [
             7573, // idle
             7572, // walk
             7574, // attack
+            7575, // flinch
+			7676, // die
         ],
-    },/*
+    },
     {
         npcId: 7692, // bat
         animations: [
             7577, // idle and walk
             7578, // attack
+            7579, // flinch
+            7580, // die
         ],
     },
     {
@@ -50,6 +61,10 @@ const npcsAndAnimations = [
             7586, // idle
 			7587, // walk
             7581, // attack (is it mage?)
+            7582, // attack melee
+            7583, // attack range
+            7585, // flinch
+            7584, // die
         ],
     },
     {
@@ -58,17 +73,22 @@ const npcsAndAnimations = [
             7595, // idle
 			7596, // walk
             7597, // attack
-			7600, // dig
+			7600, // dig down
 			7601, // dig up
+            7598, // flinch
+            7599, // die
         ],
-    },*/
-    /*{
+    },
+	{
         npcId: 7700, // jad
         animations: [
             7589, // idle
             7588, // walk
             7592, // attack mage
             7593, // attack range
+            7590, // attack melee
+            7591, // flinch
+            7594, // die
         ],
     },
 	{
@@ -76,6 +96,13 @@ const npcsAndAnimations = [
 		animations: [
 			7567, // idle
 			7569, // dying
+		]
+	},
+	/*{
+		npcId: 8636, // third age ranger. doesnt work, better luck next time
+		animations: [
+			808, // idle
+			819, // walking
 		]
 	}*/
 ];
@@ -158,6 +185,7 @@ let cache = new RSCache("./cache");
 cache.onload.then(async () => {
     console.log("Loaded");
     for (const npc of npcsAndAnimations) {
+		console.log('loading npc:', npc.npcId);
         await processNpc(npc);
     }
     cache.close();

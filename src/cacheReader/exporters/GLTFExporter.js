@@ -170,7 +170,7 @@ class GLTFFile {
 
         let max = indicies
             .flat()
-            .reduce((max, current) => Math.max(max, current));
+            .reduce((max, current) => Math.max(max, current), 0);
         this.accessors.push({
             bufferView: buffersAmount,
             byteOffset: 0,
@@ -487,7 +487,7 @@ export default class GLTFExporter {
 		const vertexColorPairs = {};
 		const alphaVertexColorPairs = {};
         for (let i = 0; i < def.faceVertexIndices1.length; i++) {
-			const alpha = def.faceAlphas[i];
+			const alpha = def.faceAlphas[i] ?? 0;
             const isAlpha = alpha !== 0;
             const dest = isAlpha ? this.alphaVertices : this.verticies;
 			const destIndices = isAlpha ? alphaIndices : indices;
@@ -579,7 +579,7 @@ export default class GLTFExporter {
         for (let i = 0; i < def.faceColors.length; ++i) {
             const lookupIndex = this.combineColorAndAlpha(
                 def.faceColors[i],
-				def.faceAlphas[i]
+				def.faceAlphas[i] ?? 0
             );
             // ensure unique color + alpha combinations
             if (seenColors[lookupIndex]) {
@@ -590,7 +590,7 @@ export default class GLTFExporter {
             let r = ((color >> 16) & 0xff) / 255.0;
             let g = ((color >> 8) & 0xff) / 255.0;
             let b = (color & 0xff) / 255.0;
-            let a = def.faceAlphas[i];
+            let a = def.faceAlphas[i] ?? 0;
             let rscolorWithAlpha = this.combineColorAndAlpha(
                 color,
 				a
@@ -625,7 +625,7 @@ export default class GLTFExporter {
         for (let i = 0; i < this.faces.length; i++) {
             let faceId = this.faces[i];
             const faceColor = def.faceColors[faceId];
-            const faceAlpha = def.faceAlphas[faceId];
+            const faceAlpha = def.faceAlphas[faceId] ?? 0;
             const lookupKey = this.combineColorAndAlpha(faceColor, faceAlpha);
             const paletteIndex = colorToPaletteIndex[lookupKey];
 			// remap to new position within the vertices based on its color and alpha
@@ -642,7 +642,7 @@ export default class GLTFExporter {
         for (let i = 0; i < this.alphaFaces.length; i++) {
             let faceId = this.alphaFaces[i];
             const faceColor = def.faceColors[faceId];
-            const faceAlpha = def.faceAlphas[faceId];
+            const faceAlpha = def.faceAlphas[faceId] ?? 0;
             const lookupKey = this.combineColorAndAlpha(faceColor, faceAlpha);
             const paletteIndex = colorToPaletteIndex[lookupKey];
 			// remap to new position within the vertices based on its color and alpha
