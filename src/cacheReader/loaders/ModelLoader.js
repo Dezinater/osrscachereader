@@ -1203,7 +1203,7 @@ export default class ModelLoader {
 			}
 
 			if (var14 == 1) {
-				def.faceAlphas[var51] = var5.readInt8();
+				def.faceAlphas[var51] = var5.readUint8();
 			}
 
 			if (var15 == 1) {
