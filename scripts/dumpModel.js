@@ -26,7 +26,7 @@ const npcsAndAnimations = [
             7609, // idle
             7608, // walk
             7610, // mage fire
-			7611, // revive
+            7611, // revive
         ],
     },
     /*{
