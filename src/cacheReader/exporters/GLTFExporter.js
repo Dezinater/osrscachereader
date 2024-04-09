@@ -172,7 +172,7 @@ class GLTFFile {
             .flat()
             .reduce((max, current) => Math.max(max, current));
         this.accessors.push({
-            bufferView: 0,
+            bufferView: buffersAmount,
             byteOffset: 0,
             componentType: 5123,
             count: indicesBytes.length / 2,
@@ -468,9 +468,11 @@ export default class GLTFExporter {
     /**
      * mapping of original vertex ID to new vertex IDs
      * if alpha is true, it refers to the position in this.alphaVertices, otherwise this.verticies
-     * @type {[id: number]: {idx: number, alpha: boolean}[]}
+     * @type {[originalIdx: number]: {[colorKey: number]: {idx: number, alpha: boolean}}
      */
     remappedVertices = {};
+	
+	combineColorAndAlpha = (color, alpha) => (color & 0xffffff) | (alpha & 0xff) << 24;
 
     constructor(def) {
         this.file = new GLTFFile();
@@ -478,18 +480,18 @@ export default class GLTFExporter {
         this.verticies = [];
         this.alphaVertices = [];
 
-        // n.b. we reorder the vertices by faces. this duplicates all of the vertices but allows us to
-        // apply per-face textures/colours and removes the need for indices.
-
 		// every {vertex + color} pair is deduplicated so that combination only appears once in the vertex buffer
 		let indices = [];
 		let alphaIndices = [];
+
 		const vertexColorPairs = {};
+		const alphaVertexColorPairs = {};
         for (let i = 0; i < def.faceVertexIndices1.length; i++) {
 			const alpha = def.faceAlphas[i];
-            const isAlpha = alpha > 0;
+            const isAlpha = alpha !== 0;
             const dest = isAlpha ? this.alphaVertices : this.verticies;
 			const destIndices = isAlpha ? alphaIndices : indices;
+			const destPairs = isAlpha ? alphaVertexColorPairs : vertexColorPairs;
             if (isAlpha) {
                 this.alphaFaces.push(i);
             } else {
@@ -499,32 +501,34 @@ export default class GLTFExporter {
             const v2 = def.faceVertexIndices2[i];
             const v3 = def.faceVertexIndices3[i];
 			const color = def.faceColors[i];
-			const c = color | alpha << 24;
+			// for deduplication
+			const pairKey = this.combineColorAndAlpha(color, alpha);
             const faceVertices = [v1, v2, v3];
             faceVertices.forEach((idx, pos) => {
-				const key = `${idx}_${c}`;
-				if (!(idx in vertexColorPairs)) {
-					vertexColorPairs[idx] = {};
+				if (!(idx in destPairs)) {
+					destPairs[idx] = {};
 				}
-				if (!(c in vertexColorPairs[idx])) {
+				if (!(pairKey in destPairs[idx])) {
 					// encountering this vertex-color pair for the first time
-					vertexColorPairs[idx][c] = dest.length;
+					destPairs[idx][pairKey] = dest.length;
 					dest.push([
 						def.vertexPositionsX[idx],
 						-def.vertexPositionsY[idx],
 						-def.vertexPositionsZ[idx],
 					]);
 				}
-				const vertexIndex = vertexColorPairs[idx][c];
-				destIndices.push(vertexIndex); // where to find this vertex next time?
+				const vertexIndex = destPairs[idx][pairKey];
+				destIndices.push(vertexIndex);
                 if (!(idx in this.remappedVertices)) {
-                    this.remappedVertices[idx] = [];
+                    this.remappedVertices[idx] = {};
                 }
-                // maintain a multimap of original vertex ID to where they are now in the destination vertex array.
-                this.remappedVertices[idx].push({
+                // maintain a multimap of original vertex ID to where they are now in the destination vertex array. It is further keyed
+				// by the colour+alpha.
+                this.remappedVertices[idx][pairKey] = {
                     idx: vertexIndex,
+					pairKey,
                     alpha: isAlpha,
-                });
+                };
             });
         }
 		this.file.addIndicies(indices);
@@ -540,7 +544,8 @@ export default class GLTFExporter {
         let newAlphaMorphVertices = [];
         for (let i = 0; i < morphVertices.length; i++) {
             const realVertices = this.remappedVertices[i];
-            for (const { idx: newIdx, alpha } of realVertices) {
+			// may end up reprocessing each vertex multiple times if it appears in multiple colours, but thats OK
+            for (const { idx: newIdx, alpha } of Object.values(realVertices)) {
                 const src = alpha ? this.alphaVertices : this.verticies;
                 const dest = alpha ? newAlphaMorphVertices : newMorphVertices;
                 dest[newIdx] = [];
@@ -571,10 +576,8 @@ export default class GLTFExporter {
         const seenColors = {};
         const colorToPaletteIndex = {};
         const order = [];
-        const combineColorAndAlpha = (color, alpha) =>
-            color | (alpha & 0xff) << 24;
         for (let i = 0; i < def.faceColors.length; ++i) {
-            const lookupIndex = combineColorAndAlpha(
+            const lookupIndex = this.combineColorAndAlpha(
                 def.faceColors[i],
 				def.faceAlphas[i]
             );
@@ -588,10 +591,9 @@ export default class GLTFExporter {
             let g = ((color >> 8) & 0xff) / 255.0;
             let b = (color & 0xff) / 255.0;
             let a = def.faceAlphas[i];
-            let rscolorWithAlpha = combineColorAndAlpha(
+            let rscolorWithAlpha = this.combineColorAndAlpha(
                 color,
-				// idk this just looks better for negative alphas. I wonder if faceAlpha is an unsigned char?
-                a >= 0 ? a : Math.max(0, 255 - a * 3)
+				a
             );
             console.log(`rscolor ${rscolor} rgb ${r} ${g} ${b} ${a}`);
             seenColors[lookupIndex] = color;
@@ -624,11 +626,15 @@ export default class GLTFExporter {
             let faceId = this.faces[i];
             const faceColor = def.faceColors[faceId];
             const faceAlpha = def.faceAlphas[faceId];
-            const lookupKey = combineColorAndAlpha(faceColor, faceAlpha);
+            const lookupKey = this.combineColorAndAlpha(faceColor, faceAlpha);
             const paletteIndex = colorToPaletteIndex[lookupKey];
-            normalUvs[i * 3] = [paletteIndex / numUniqueColors + half, 0.33];
-            normalUvs[i * 3 + 1] = [paletteIndex / numUniqueColors + half, 0.5];
-            normalUvs[i * 3 + 2] = [
+			// remap to new position within the vertices based on its color and alpha
+			let v1 = this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey].idx;
+			let v2 = this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey].idx;
+			let v3 = this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey].idx;
+            normalUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
+            normalUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
+            normalUvs[v3] = [
                 paletteIndex / numUniqueColors + half,
                 0.66,
             ];
@@ -637,11 +643,15 @@ export default class GLTFExporter {
             let faceId = this.alphaFaces[i];
             const faceColor = def.faceColors[faceId];
             const faceAlpha = def.faceAlphas[faceId];
-            const lookupKey = combineColorAndAlpha(faceColor, faceAlpha);
+            const lookupKey = this.combineColorAndAlpha(faceColor, faceAlpha);
             const paletteIndex = colorToPaletteIndex[lookupKey];
-            alphaUvs[i * 3] = [paletteIndex / numUniqueColors + half, 0.33];
-            alphaUvs[i * 3 + 1] = [paletteIndex / numUniqueColors + half, 0.5];
-            alphaUvs[i * 3 + 2] = [paletteIndex / numUniqueColors + half, 0.66];
+			// remap to new position within the vertices based on its color and alpha
+			let v1 = this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey].idx;
+			let v2 = this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey].idx;
+			let v3 = this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey].idx;
+            alphaUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
+            alphaUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
+            alphaUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
         }
         this.file.addColors(normalUvs, colorPalettePng, 0);
         if (this.alphaVertices.length > 0) {

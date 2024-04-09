@@ -24,19 +24,19 @@ const npcsAndAnimations = [
         npcId: 7699, // mager
         animations: [
             7609, // idle
-            /*7608, // walk
+            7608, // walk
             7610, // mage fire
-            7611, // revive*/
+            7611, // revive
         ],
     },
-    /*{
+    {
         npcId: 7691, // nibbler
         animations: [
             7573, // idle
             7572, // walk
             7574, // attack
         ],
-    },
+    },/*
     {
         npcId: 7692, // bat
         animations: [
@@ -110,7 +110,7 @@ const processNpc = async ({ npcId, animations }) => {
 
         const exporter = new GLTFExporter(model);
         loadedFrames.forEach((frame) =>
-            exporter.addMorphTarget(frame.vertices)
+			exporter.addMorphTarget(frame.vertices)
         );
         exporter.addColors(model);
         loadedAnimations.forEach((animation) => {
