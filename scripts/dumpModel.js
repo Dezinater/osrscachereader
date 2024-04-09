@@ -24,9 +24,9 @@ const npcsAndAnimations = [
         npcId: 7699, // mager
         animations: [
             7609, // idle
-            7608, // walk
+            /*7608, // walk
             7610, // mage fire
-            7611, // revive
+            7611, // revive*/
         ],
     },
     /*{

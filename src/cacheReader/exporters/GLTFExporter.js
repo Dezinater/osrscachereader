@@ -182,11 +182,13 @@ class GLTFFile {
         });
     }
 
+	// assume the indices are added right before the vertices
     addVerticies(verticies) {
         this.meshes[0].primitives.push({
             attributes: {
                 POSITION: this.buffers.length,
             },
+			indices: this.buffers.length - 1,
         });
         let max = [0, 0, 0];
         let min = [0, 0, 0];
@@ -478,9 +480,16 @@ export default class GLTFExporter {
 
         // n.b. we reorder the vertices by faces. this duplicates all of the vertices but allows us to
         // apply per-face textures/colours and removes the need for indices.
+
+		// every {vertex + color} pair is deduplicated so that combination only appears once in the vertex buffer
+		let indices = [];
+		let alphaIndices = [];
+		const vertexColorPairs = {};
         for (let i = 0; i < def.faceVertexIndices1.length; i++) {
-            const isAlpha = Math.abs(def.faceAlphas[i]) > 0;
+			const alpha = def.faceAlphas[i];
+            const isAlpha = alpha > 0;
             const dest = isAlpha ? this.alphaVertices : this.verticies;
+			const destIndices = isAlpha ? alphaIndices : indices;
             if (isAlpha) {
                 this.alphaFaces.push(i);
             } else {
@@ -489,25 +498,39 @@ export default class GLTFExporter {
             const v1 = def.faceVertexIndices1[i];
             const v2 = def.faceVertexIndices2[i];
             const v3 = def.faceVertexIndices3[i];
+			const color = def.faceColors[i];
+			const c = color | alpha << 24;
             const faceVertices = [v1, v2, v3];
             faceVertices.forEach((idx, pos) => {
-                dest.push([
-                    def.vertexPositionsX[idx],
-                    -def.vertexPositionsY[idx],
-                    -def.vertexPositionsZ[idx],
-                ]);
+				const key = `${idx}_${c}`;
+				if (!(idx in vertexColorPairs)) {
+					vertexColorPairs[idx] = {};
+				}
+				if (!(c in vertexColorPairs[idx])) {
+					// encountering this vertex-color pair for the first time
+					vertexColorPairs[idx][c] = dest.length;
+					dest.push([
+						def.vertexPositionsX[idx],
+						-def.vertexPositionsY[idx],
+						-def.vertexPositionsZ[idx],
+					]);
+				}
+				const vertexIndex = vertexColorPairs[idx][c];
+				destIndices.push(vertexIndex); // where to find this vertex next time?
                 if (!(idx in this.remappedVertices)) {
                     this.remappedVertices[idx] = [];
                 }
                 // maintain a multimap of original vertex ID to where they are now in the destination vertex array.
                 this.remappedVertices[idx].push({
-                    idx: dest.length - 1,
+                    idx: vertexIndex,
                     alpha: isAlpha,
                 });
             });
         }
+		this.file.addIndicies(indices);
         this.file.addVerticies(this.verticies);
         if (this.alphaVertices.length > 0) {
+			this.file.addIndicies(alphaIndices);
 			this.file.addVerticies(this.alphaVertices);
 		}
     }
