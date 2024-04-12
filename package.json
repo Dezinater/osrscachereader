@@ -1,73 +1,75 @@
 {
-  "name": "osrscachereader",
-  "exports": "./src/index.js",
-  "version": "1.1.0",
-  "description": "Read Old-School Runescape Cache files",
-  "contributors": [
-    {
-      "name": "Dezinater",
-      "url": "https://github.com/Dezinater"
+    "name": "osrscachereader",
+    "exports": "./src/index.js",
+    "version": "1.1.0",
+    "description": "Read Old-School Runescape Cache files",
+    "contributors": [
+        {
+            "name": "Dezinater",
+            "url": "https://github.com/Dezinater"
+        },
+        {
+            "name": "Erik Schouten",
+            "url": "https://github.com/ESchouten"
+        }
+    ],
+    "main": "./src/index",
+    "type": "module",
+    "files": [
+        "src/index.js",
+        "src/cacheReader"
+    ],
+    "directories": {
+        "lib": "./src",
+        "test": "./test"
     },
-    {
-      "name": "Erik Schouten",
-      "url": "https://github.com/ESchouten"
+    "scripts": {
+        "test": "mocha",
+        "generate": "node scripts/generateAnimList.js & node scripts/generateAnimayaAnimList.js",
+        "docs": "jsdoc -r ./src/ -t ./node_modules/better-docs -c ./jsdoc.json -d docs --readme ./README.md",
+        "dev": "webpack serve --mode development",
+        "devnode": "node src/index-dev-node.js",
+        "format": "npx prettier --write ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Dezinater/osrscachereader.git"
+    },
+    "browser": {
+        "fs": false,
+        "path": false,
+        "os": false
+    },
+    "keywords": [
+        "old school runescape",
+        "osrs",
+        "cache reader"
+    ],
+    "author": "",
+    "license": "BSD-2-Clause",
+    "bugs": {
+        "url": "https://github.com/Dezinater/osrscachereader/issues"
+    },
+    "homepage": "https://github.com/Dezinater/osrscachereader#readme",
+    "devDependencies": {
+        "better-docs": "^2.7.2",
+        "jsdoc": "^4.0.2",
+        "prettier": "^3.2.5",
+        "taffydb": "^2.7.3",
+        "webpack": "^5.38.1",
+        "webpack-cli": "^4.7.0",
+        "webpack-dev-server": "^3.11.2",
+        "worker-loader": "^3.0.8"
+    },
+    "dependencies": {
+        "@ledgerhq/compressjs": "^1.3.2",
+        "@types/mocha": "^10.0.1",
+        "axios": "^1.3.4",
+        "browser-or-node": "^2.1.1",
+        "canvas": "^2.11.0",
+        "fflate": "^0.8.2",
+        "gzip-js": "^0.3.2",
+        "mocha": "^10.2.0",
+        "web-worker": "~1.2.0"
     }
-  ],
-  "main": "./src/index",
-  "type": "module",
-  "files": [
-    "src/index.js",
-    "src/cacheReader"
-  ],
-  "directories": {
-    "lib": "./src",
-    "test": "./test"
-  },
-  "scripts": {
-    "test": "mocha",
-    "generate": "node scripts/generateAnimList.js & node scripts/generateAnimayaAnimList.js",
-    "docs": "jsdoc -r ./src/ -t ./node_modules/better-docs -c ./jsdoc.json -d docs --readme ./README.md",
-    "dev": "webpack serve --mode development",
-    "devnode": "node src/index-dev-node.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Dezinater/osrscachereader.git"
-  },
-  "browser": {
-    "fs": false,
-    "path": false,
-    "os": false
-  },
-  "keywords": [
-    "old school runescape",
-    "osrs",
-    "cache reader"
-  ],
-  "author": "",
-  "license": "BSD-2-Clause",
-  "bugs": {
-    "url": "https://github.com/Dezinater/osrscachereader/issues"
-  },
-  "homepage": "https://github.com/Dezinater/osrscachereader#readme",
-  "devDependencies": {
-    "better-docs": "^2.7.2",
-    "jsdoc": "^4.0.2",
-    "taffydb": "^2.7.3",
-    "webpack": "^5.38.1",
-    "webpack-cli": "^4.7.0",
-    "webpack-dev-server": "^3.11.2",
-    "worker-loader": "^3.0.8"
-  },
-  "dependencies": {
-    "@types/mocha": "^10.0.1",
-    "axios": "^1.3.4",
-    "browser-or-node": "^2.1.1",
-    "canvas": "^2.11.0",
-    "fflate": "^0.8.2",
-    "@ledgerhq/compressjs": "^1.3.2",
-    "gzip-js": "^0.3.2",
-    "mocha": "^10.2.0",
-    "web-worker": "~1.2.0"
-  }
 }

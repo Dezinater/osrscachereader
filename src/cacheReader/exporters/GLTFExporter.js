@@ -1,24 +1,24 @@
-import * as base64 from "../helpers/base64.js"
+import * as base64 from "../helpers/base64.js";
 import { isBrowser } from "browser-or-node";
 
 class GLTFFile {
     //Basically just setting it up for 1 model
     scene = 0;
-    scenes = [
-        { nodes: [0] }
-    ];
+    scenes = [{ nodes: [0] }];
 
     nodes = [{ mesh: 0 }];
 
     meshes = [
         {
-            primitives: [{
-                attributes: {
-                    POSITION: 1
+            primitives: [
+                {
+                    attributes: {
+                        POSITION: 1,
+                    },
+                    indices: 0,
                 },
-                indices: 0,
-            }]
-        }
+            ],
+        },
     ];
 
     textures = [];
@@ -33,11 +33,11 @@ class GLTFFile {
     accessors = [];
 
     asset = {
-        version: "2.0"
+        version: "2.0",
     };
 
     addIndicies(indicies) {
-        let indicesBytes = new Uint8Array(new Uint16Array(indicies.flat()).buffer)
+        let indicesBytes = new Uint8Array(new Uint16Array(indicies.flat()).buffer);
         let buffersAmount = this.buffers.length;
         this.buffers.push({
             uri: "data:application/octet-stream;base64," + base64.bytesToBase64(indicesBytes),
@@ -48,7 +48,7 @@ class GLTFFile {
             buffer: buffersAmount,
             byteOffset: 0,
             byteLength: indicesBytes.length,
-            target: 34963
+            target: 34963,
         });
 
         let max = indicies.flat().reduce((max, current) => Math.max(max, current));
@@ -59,7 +59,7 @@ class GLTFFile {
             count: indicesBytes.length / 2,
             type: "SCALAR",
             max: [max],
-            min: [0]
+            min: [0],
         });
     }
 
@@ -67,12 +67,19 @@ class GLTFFile {
         let max = [0, 0, 0];
         let min = [0, 0, 0];
         for (let i = 0; i < verticies.length; i++) {
-            max = [Math.max(max[0], verticies[i][0]), Math.max(max[1], verticies[i][1]), Math.max(max[2], verticies[i][2])];
-            min = [Math.min(min[0], verticies[i][0]), Math.min(min[1], verticies[i][1]), Math.min(min[2], verticies[i][2])];
+            max = [
+                Math.max(max[0], verticies[i][0]),
+                Math.max(max[1], verticies[i][1]),
+                Math.max(max[2], verticies[i][2]),
+            ];
+            min = [
+                Math.min(min[0], verticies[i][0]),
+                Math.min(min[1], verticies[i][1]),
+                Math.min(min[2], verticies[i][2]),
+            ];
         }
 
-        let verticiesBytes = new Uint8Array(new Float32Array(verticies.flat()).buffer)
-
+        let verticiesBytes = new Uint8Array(new Float32Array(verticies.flat()).buffer);
 
         let buffersAmount = this.buffers.length;
         this.buffers.push({
@@ -93,7 +100,7 @@ class GLTFFile {
             count: verticies.length,
             type: "VEC3",
             max,
-            min
+            min,
         });
     }
 
@@ -102,11 +109,19 @@ class GLTFFile {
         let max = [verticies[0][0], verticies[0][1], verticies[0][2]];
         let min = [verticies[0][0], verticies[0][1], verticies[0][2]];
         for (let i = 0; i < verticies.length; i++) {
-            max = [Math.max(max[0], verticies[i][0]), Math.max(max[1], verticies[i][1]), Math.max(max[2], verticies[i][2])];
-            min = [Math.min(min[0], verticies[i][0]), Math.min(min[1], verticies[i][1]), Math.min(min[2], verticies[i][2])];
+            max = [
+                Math.max(max[0], verticies[i][0]),
+                Math.max(max[1], verticies[i][1]),
+                Math.max(max[2], verticies[i][2]),
+            ];
+            min = [
+                Math.min(min[0], verticies[i][0]),
+                Math.min(min[1], verticies[i][1]),
+                Math.min(min[2], verticies[i][2]),
+            ];
         }
 
-        let verticiesBytes = new Uint8Array(new Float32Array(verticies.flat()).buffer)
+        let verticiesBytes = new Uint8Array(new Float32Array(verticies.flat()).buffer);
 
         if (!("targets" in this.meshes[0].primitives[0])) {
             this.meshes[0].primitives[0].targets = [];
@@ -120,7 +135,7 @@ class GLTFFile {
         } else {
             this.meshes[0].weights.push(0);
         }
-        this.meshes[0].primitives[0].targets.push({ "POSITION": buffersAmount });
+        this.meshes[0].primitives[0].targets.push({ POSITION: buffersAmount });
 
         this.buffers.push({
             uri: "data:application/octet-stream;base64," + base64.bytesToBase64(verticiesBytes),
@@ -130,7 +145,7 @@ class GLTFFile {
             buffer: buffersAmount,
             byteOffset: 0,
             byteLength: verticiesBytes.length,
-            target: 34962
+            target: 34962,
         });
 
         this.accessors.push({
@@ -140,17 +155,17 @@ class GLTFFile {
             count: verticies.length,
             type: "VEC3",
             max,
-            min
+            min,
         });
 
         //animations needs to be adjusted if more morph targets are added after anims
     }
 
     addAnimation(targets, lengths, morphTargetsAmount) {
-        targets = targets.map(x => {
-            let oneHot = new Array(morphTargetsAmount).fill(0)
+        targets = targets.map((x) => {
+            let oneHot = new Array(morphTargetsAmount).fill(0);
             oneHot[x] = 1;
-            return oneHot
+            return oneHot;
         }); //one hot encoding
 
         let targetBytes = new Uint8Array(new Float32Array(targets.flat()).buffer);
@@ -193,7 +208,7 @@ class GLTFFile {
             count: targets.length,
             type: "SCALAR",
             max: [max],
-            min: [min]
+            min: [min],
         });
 
         this.accessors.push({
@@ -203,23 +218,27 @@ class GLTFFile {
             count: morphTargetsAmount * targets.length,
             type: "SCALAR",
             max: [1.0],
-            min: [0.0]
+            min: [0.0],
         });
 
         let animationsLength = this.animations.length;
         this.animations.push({
-            samplers: [{
-                input: accessorsLength,
-                interpolation: "STEP",
-                output: accessorsLength + 1
-            }],
-            channels: [{
-                sampler: 0,
-                target: {
-                    node: 0,
-                    path: "weights"
-                }
-            }]
+            samplers: [
+                {
+                    input: accessorsLength,
+                    interpolation: "STEP",
+                    output: accessorsLength + 1,
+                },
+            ],
+            channels: [
+                {
+                    sampler: 0,
+                    target: {
+                        node: 0,
+                        path: "weights",
+                    },
+                },
+            ],
         });
     }
 
@@ -229,7 +248,7 @@ class GLTFFile {
         const texturesAmount = this.textures.length;
         this.textures.push({
             source: texturesAmount,
-            sampler: texturesAmount
+            sampler: texturesAmount,
         });
 
         this.images.push({
@@ -240,19 +259,19 @@ class GLTFFile {
             magFilter: 9729,
             minFilter: 9987,
             wrapS: 33648,
-            wrapT: 33648
+            wrapT: 33648,
         });
 
         this.materials.push({
-            pbrMetallicRoughness : {
-              baseColorTexture : {
-                index : 0
-              },
-              metallicFactor : 0.0,
-              roughnessFactor : 1.0
-            }
+            pbrMetallicRoughness: {
+                baseColorTexture: {
+                    index: 0,
+                },
+                metallicFactor: 0.0,
+                roughnessFactor: 1.0,
+            },
         });
-        
+
         let buffersAmount = this.buffers.length;
         this.buffers.push({
             uri: "data:application/gltf-buffer;base64," + base64.bytesToBase64(uvBytes),
@@ -262,7 +281,7 @@ class GLTFFile {
         this.bufferViews.push({
             buffer: buffersAmount,
             byteOffset: 0,
-            target : 34962,
+            target: 34962,
             byteLength: uvBytes.length,
         });
 
@@ -273,7 +292,7 @@ class GLTFFile {
             count: uvs.length,
             type: "VEC2",
             max: [1.0, 1.0],
-            min: [0.0, 0.0]
+            min: [0.0, 0.0],
         });
 
         this.meshes[0].primitives[0].attributes.TEXCOORD_0 = this.accessors.length - 1;
@@ -282,7 +301,6 @@ class GLTFFile {
 }
 
 export default class GLTFExporter {
-
     verticies = [];
     morphTargetsAmount = 0;
 
@@ -315,24 +333,23 @@ export default class GLTFExporter {
     }
 
     addAnimation(def) {
-        let frames = def.frameIDs.map(x => x & 65535);
+        let frames = def.frameIDs.map((x) => x & 65535);
         let lengths = Object.assign([], def.frameLengths);
         for (let i = 1; i < lengths.length; i++) {
             lengths[i] += lengths[i - 1];
         }
-        lengths = lengths.map(x => x / 50);
+        lengths = lengths.map((x) => x / 50);
         this.file.addAnimation(frames, lengths, this.morphTargetsAmount);
     }
 
     addColors(def) {
-        let uvs = new Array(988).fill().map(x => [Math.random(), Math.random()]);
-        uvs[0] = [1,1];
-        uvs[1] = [0,0];
+        let uvs = new Array(988).fill().map((x) => [Math.random(), Math.random()]);
+        uvs[0] = [1, 1];
+        uvs[1] = [0, 0];
         this.file.addColors(uvs);
     }
 
     export() {
         return JSON.stringify(this.file);
     }
-
 }

@@ -1,7 +1,6 @@
-import Worker from "web-worker"
+import Worker from "web-worker";
 
 export default class WorkerPool {
-
     workers;
     workQueue = new Array();
     promises = new Array();
@@ -9,48 +8,51 @@ export default class WorkerPool {
     constructor(size = 8) {
         this.workers = new Array(size).fill().map((x, i) => ({
             id: i,
-            worker: new Worker(new URL('./worker.cjs', import.meta.url)),
+            worker: new Worker(new URL("./worker.cjs", import.meta.url)),
             active: false,
         }));
-        
-        this.workers.forEach(workerObject => workerObject.worker.onmessage = (event) => {
-            const data = event.data;
-            data.decompressedData = new Uint8Array(data.decompressedData);
 
-            const promise = this.promises[data.index.id][data.archiveId];
-            promise.resolve(data);
+        this.workers.forEach(
+            (workerObject) =>
+                (workerObject.worker.onmessage = (event) => {
+                    const data = event.data;
+                    data.decompressedData = new Uint8Array(data.decompressedData);
 
-            this.promises[data.index.id][data.archiveId] = undefined;
+                    const promise = this.promises[data.index.id][data.archiveId];
+                    promise.resolve(data);
 
-            if (this.workQueue.length != 0) {
-                const newWork = this.workQueue.shift();
-                workerObject.worker.postMessage(newWork, [newWork.compressedData]);
-            } else {
-                workerObject.active = false;
-            }
-        });
+                    this.promises[data.index.id][data.archiveId] = undefined;
 
+                    if (this.workQueue.length != 0) {
+                        const newWork = this.workQueue.shift();
+                        workerObject.worker.postMessage(newWork, [newWork.compressedData]);
+                    } else {
+                        workerObject.active = false;
+                    }
+                }),
+        );
     }
 
     doWork(index, segment, archiveId, compressedData, key) {
         if (this.promises[index] == undefined) this.promises[index] = {};
 
-        if (this.promises[index][archiveId] == undefined) { 
+        if (this.promises[index][archiveId] == undefined) {
             let resolveMethod;
             let promise = new Promise((resolve, reject) => {
                 resolveMethod = resolve;
             });
             this.promises[index][archiveId] = { resolve: resolveMethod, promise };
-        } else { //if its already being loaded
+        } else {
+            //if its already being loaded
             return this.promises[index][archiveId].promise;
         }
 
-        const unactiveWorker = this.workers.find(x => !x.active);
+        const unactiveWorker = this.workers.find((x) => !x.active);
         if (unactiveWorker == undefined) {
             this.workQueue.push({ index, segment, archiveId, compressedData, key });
             return;
         }
-        
+
         unactiveWorker.active = true;
         unactiveWorker.worker.postMessage({ index, segment, archiveId, compressedData, key }, [compressedData]);
 
@@ -58,7 +60,6 @@ export default class WorkerPool {
     }
 
     finish() {
-        this.workers.forEach(workerObject => workerObject.worker.terminate());
+        this.workers.forEach((workerObject) => workerObject.worker.terminate());
     }
-
 }

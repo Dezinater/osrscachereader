@@ -1,4 +1,5 @@
 node_modules/*
+out/
 cache-old
 dumpFn
 cache

@@ -1,14 +1,14 @@
-import IndexType from '../cacheTypes/IndexType.js'
+import IndexType from "../cacheTypes/IndexType.js";
 /**
-* @class TextureDefinition
-* @category Definitions
-* @hideconstructor
-*/
+ * @class TextureDefinition
+ * @category Definitions
+ * @hideconstructor
+ */
 export class TextureDefinition {
-    /** 
-    * The ID of this Texture
-    * @type {number} 
-    */
+    /**
+     * The ID of this Texture
+     * @type {number}
+     */
     id;
 
     /** @type {number} */
@@ -17,9 +17,9 @@ export class TextureDefinition {
     /** @type {boolean} */
     field1778;
 
-    /** 
+    /**
      * The sprites that make up this texture
-     * @type {Array<number>} 
+     * @type {Array<number>}
      */
     fileIds = [];
 
@@ -32,9 +32,9 @@ export class TextureDefinition {
     /** @type {number} */
     field1786 = [];
 
-    /** 
+    /**
      * Used for animated textures like firecape or water fountains
-     * @type {number} 
+     * @type {number}
      */
     animationSpeed;
 
@@ -49,7 +49,6 @@ let vec = [Math.cos(angle) * animationSpeed, Math.sin(angle) * animationSpeed];
 }
 
 export default class TextureLoader {
-
     async load(bytes, id, cache, options) {
         let def = new TextureDefinition();
         def.id = id;
@@ -91,7 +90,7 @@ export default class TextureLoader {
         def.animationSpeed = dataview.readUint8();
 
         if (options.loadSprites) {
-            let sprites = def.fileIds.map(x => cache.getFile(IndexType.SPRITES.id, x))
+            let sprites = def.fileIds.map((x) => cache.getFile(IndexType.SPRITES.id, x));
             def.sprites = await Promise.all(sprites);
 
             return def;
