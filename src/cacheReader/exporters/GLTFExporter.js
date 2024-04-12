@@ -550,7 +550,6 @@ export default class GLTFExporter {
             let b = (color & 0xff) / 255.0;
             let a = def.faceAlphas[i] ?? 0;
             let rscolorWithAlpha = this.combineColorAndAlpha(color, a);
-            console.log(`rscolor ${rscolor} rgb ${r} ${g} ${b} ${a}`);
             seenColors[lookupIndex] = color;
             colorToPaletteIndex[lookupIndex] = order.length;
             order.push(rscolorWithAlpha);
@@ -568,7 +567,6 @@ export default class GLTFExporter {
             let b = value & 0xff;
             let alpha = 1 - a / 255;
             ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-            console.log(`rgba ${r} ${g} ${b} ${alpha}`);
             ctx.fillRect(xx, 0, pSize, pSize);
             xx += pSize;
         }
