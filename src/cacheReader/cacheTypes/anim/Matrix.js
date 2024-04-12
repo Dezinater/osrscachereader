@@ -236,30 +236,102 @@ export default class Matrix {
 
     determinant() {
         return (
-            this.matrixVals[12] * this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[9] +
-            (this.matrixVals[10] * this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[13] +
-                (this.matrixVals[1] * this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[15] +
-                    this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[10] * this.matrixVals[15] -
-                    this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[11] * this.matrixVals[14] -
-                    this.matrixVals[0] * this.matrixVals[6] * this.matrixVals[9] * this.matrixVals[15] +
-                    this.matrixVals[6] * this.matrixVals[0] * this.matrixVals[11] * this.matrixVals[13] +
-                    this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[0] -
-                    this.matrixVals[10] * this.matrixVals[7] * this.matrixVals[0] * this.matrixVals[13] -
-                    this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[4] * this.matrixVals[15] +
-                    this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[11] -
-                    this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[6] * this.matrixVals[1] -
-                    this.matrixVals[7] * this.matrixVals[1] * this.matrixVals[8] * this.matrixVals[14] +
-                    this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[1] * this.matrixVals[10] +
-                    this.matrixVals[9] * this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[15] -
-                    this.matrixVals[13] * this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[11] -
-                    this.matrixVals[15] * this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[8] +
-                    this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[11] * this.matrixVals[12] +
-                    this.matrixVals[13] * this.matrixVals[8] * this.matrixVals[7] * this.matrixVals[2] -
-                    this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[2] * this.matrixVals[12] -
-                    this.matrixVals[14] * this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[9]) +
-                this.matrixVals[14] * this.matrixVals[8] * this.matrixVals[5] * this.matrixVals[3] -
-                this.matrixVals[5] * this.matrixVals[3] * this.matrixVals[10] * this.matrixVals[12] -
-                this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[13])
+            this.matrixVals[12] *
+                this.matrixVals[3] *
+                this.matrixVals[6] *
+                this.matrixVals[9] +
+            (this.matrixVals[10] *
+                this.matrixVals[3] *
+                this.matrixVals[4] *
+                this.matrixVals[13] +
+                (this.matrixVals[1] *
+                    this.matrixVals[6] *
+                    this.matrixVals[8] *
+                    this.matrixVals[15] +
+                    this.matrixVals[5] *
+                        this.matrixVals[0] *
+                        this.matrixVals[10] *
+                        this.matrixVals[15] -
+                    this.matrixVals[5] *
+                        this.matrixVals[0] *
+                        this.matrixVals[11] *
+                        this.matrixVals[14] -
+                    this.matrixVals[0] *
+                        this.matrixVals[6] *
+                        this.matrixVals[9] *
+                        this.matrixVals[15] +
+                    this.matrixVals[6] *
+                        this.matrixVals[0] *
+                        this.matrixVals[11] *
+                        this.matrixVals[13] +
+                    this.matrixVals[14] *
+                        this.matrixVals[9] *
+                        this.matrixVals[7] *
+                        this.matrixVals[0] -
+                    this.matrixVals[10] *
+                        this.matrixVals[7] *
+                        this.matrixVals[0] *
+                        this.matrixVals[13] -
+                    this.matrixVals[10] *
+                        this.matrixVals[1] *
+                        this.matrixVals[4] *
+                        this.matrixVals[15] +
+                    this.matrixVals[14] *
+                        this.matrixVals[4] *
+                        this.matrixVals[1] *
+                        this.matrixVals[11] -
+                    this.matrixVals[12] *
+                        this.matrixVals[11] *
+                        this.matrixVals[6] *
+                        this.matrixVals[1] -
+                    this.matrixVals[7] *
+                        this.matrixVals[1] *
+                        this.matrixVals[8] *
+                        this.matrixVals[14] +
+                    this.matrixVals[12] *
+                        this.matrixVals[7] *
+                        this.matrixVals[1] *
+                        this.matrixVals[10] +
+                    this.matrixVals[9] *
+                        this.matrixVals[4] *
+                        this.matrixVals[2] *
+                        this.matrixVals[15] -
+                    this.matrixVals[13] *
+                        this.matrixVals[4] *
+                        this.matrixVals[2] *
+                        this.matrixVals[11] -
+                    this.matrixVals[15] *
+                        this.matrixVals[5] *
+                        this.matrixVals[2] *
+                        this.matrixVals[8] +
+                    this.matrixVals[2] *
+                        this.matrixVals[5] *
+                        this.matrixVals[11] *
+                        this.matrixVals[12] +
+                    this.matrixVals[13] *
+                        this.matrixVals[8] *
+                        this.matrixVals[7] *
+                        this.matrixVals[2] -
+                    this.matrixVals[9] *
+                        this.matrixVals[7] *
+                        this.matrixVals[2] *
+                        this.matrixVals[12] -
+                    this.matrixVals[14] *
+                        this.matrixVals[3] *
+                        this.matrixVals[4] *
+                        this.matrixVals[9]) +
+                this.matrixVals[14] *
+                    this.matrixVals[8] *
+                    this.matrixVals[5] *
+                    this.matrixVals[3] -
+                this.matrixVals[5] *
+                    this.matrixVals[3] *
+                    this.matrixVals[10] *
+                    this.matrixVals[12] -
+                this.matrixVals[3] *
+                    this.matrixVals[6] *
+                    this.matrixVals[8] *
+                    this.matrixVals[13])
         );
     }
 
@@ -269,24 +341,44 @@ export default class Matrix {
             var1 *
             (this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[7] +
                 this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[11] +
-                (this.matrixVals[10] * this.matrixVals[5] * this.matrixVals[15] -
-                    this.matrixVals[11] * this.matrixVals[5] * this.matrixVals[14] -
-                    this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[6]) -
+                (this.matrixVals[10] *
+                    this.matrixVals[5] *
+                    this.matrixVals[15] -
+                    this.matrixVals[11] *
+                        this.matrixVals[5] *
+                        this.matrixVals[14] -
+                    this.matrixVals[15] *
+                        this.matrixVals[9] *
+                        this.matrixVals[6]) -
                 this.matrixVals[13] * this.matrixVals[7] * this.matrixVals[10]);
         let var3 =
             var1 *
             (this.matrixVals[3] * this.matrixVals[10] * this.matrixVals[13] +
-                (this.matrixVals[15] * -this.matrixVals[1] * this.matrixVals[10] +
-                    this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[1] +
-                    this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[2] -
-                    this.matrixVals[13] * this.matrixVals[2] * this.matrixVals[11] -
-                    this.matrixVals[3] * this.matrixVals[9] * this.matrixVals[14]));
+                (this.matrixVals[15] *
+                    -this.matrixVals[1] *
+                    this.matrixVals[10] +
+                    this.matrixVals[14] *
+                        this.matrixVals[11] *
+                        this.matrixVals[1] +
+                    this.matrixVals[15] *
+                        this.matrixVals[9] *
+                        this.matrixVals[2] -
+                    this.matrixVals[13] *
+                        this.matrixVals[2] *
+                        this.matrixVals[11] -
+                    this.matrixVals[3] *
+                        this.matrixVals[9] *
+                        this.matrixVals[14]));
         let var4 =
             var1 *
             (this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[13] +
                 (this.matrixVals[15] * this.matrixVals[6] * this.matrixVals[1] -
-                    this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[14] -
-                    this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[15]) +
+                    this.matrixVals[1] *
+                        this.matrixVals[7] *
+                        this.matrixVals[14] -
+                    this.matrixVals[5] *
+                        this.matrixVals[2] *
+                        this.matrixVals[15]) +
                 this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[14] -
                 this.matrixVals[13] * this.matrixVals[3] * this.matrixVals[6]);
         let var5 =
@@ -300,18 +392,36 @@ export default class Matrix {
         let var6 =
             var1 *
             (this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[10] +
-                (this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[11] +
-                    -this.matrixVals[4] * this.matrixVals[10] * this.matrixVals[15] +
-                    this.matrixVals[8] * this.matrixVals[6] * this.matrixVals[15] -
-                    this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[6] -
-                    this.matrixVals[7] * this.matrixVals[8] * this.matrixVals[14]));
+                (this.matrixVals[14] *
+                    this.matrixVals[4] *
+                    this.matrixVals[11] +
+                    -this.matrixVals[4] *
+                        this.matrixVals[10] *
+                        this.matrixVals[15] +
+                    this.matrixVals[8] *
+                        this.matrixVals[6] *
+                        this.matrixVals[15] -
+                    this.matrixVals[12] *
+                        this.matrixVals[11] *
+                        this.matrixVals[6] -
+                    this.matrixVals[7] *
+                        this.matrixVals[8] *
+                        this.matrixVals[14]));
         let var7 =
             (this.matrixVals[12] * this.matrixVals[2] * this.matrixVals[11] +
-                (this.matrixVals[15] * this.matrixVals[0] * this.matrixVals[10] -
-                    this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[0] -
-                    this.matrixVals[8] * this.matrixVals[2] * this.matrixVals[15]) +
+                (this.matrixVals[15] *
+                    this.matrixVals[0] *
+                    this.matrixVals[10] -
+                    this.matrixVals[14] *
+                        this.matrixVals[11] *
+                        this.matrixVals[0] -
+                    this.matrixVals[8] *
+                        this.matrixVals[2] *
+                        this.matrixVals[15]) +
                 this.matrixVals[14] * this.matrixVals[3] * this.matrixVals[8] -
-                this.matrixVals[12] * this.matrixVals[10] * this.matrixVals[3]) *
+                this.matrixVals[12] *
+                    this.matrixVals[10] *
+                    this.matrixVals[3]) *
             var1;
         let var8 =
             (this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[15] +
@@ -349,8 +459,12 @@ export default class Matrix {
             (this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[13] +
                 this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[12] +
                 (this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[15] -
-                    this.matrixVals[13] * this.matrixVals[0] * this.matrixVals[7] -
-                    this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[15]) -
+                    this.matrixVals[13] *
+                        this.matrixVals[0] *
+                        this.matrixVals[7] -
+                    this.matrixVals[4] *
+                        this.matrixVals[1] *
+                        this.matrixVals[15]) -
                 this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[12]) *
             var1;
         let var13 =
@@ -364,34 +478,60 @@ export default class Matrix {
         let var14 =
             var1 *
             (this.matrixVals[12] * this.matrixVals[9] * this.matrixVals[6] +
-                (this.matrixVals[14] * this.matrixVals[9] * -this.matrixVals[4] +
-                    this.matrixVals[4] * this.matrixVals[10] * this.matrixVals[13] +
-                    this.matrixVals[14] * this.matrixVals[8] * this.matrixVals[5] -
-                    this.matrixVals[5] * this.matrixVals[10] * this.matrixVals[12] -
-                    this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[13]));
+                (this.matrixVals[14] *
+                    this.matrixVals[9] *
+                    -this.matrixVals[4] +
+                    this.matrixVals[4] *
+                        this.matrixVals[10] *
+                        this.matrixVals[13] +
+                    this.matrixVals[14] *
+                        this.matrixVals[8] *
+                        this.matrixVals[5] -
+                    this.matrixVals[5] *
+                        this.matrixVals[10] *
+                        this.matrixVals[12] -
+                    this.matrixVals[6] *
+                        this.matrixVals[8] *
+                        this.matrixVals[13]));
         let var15 =
             var1 *
             (this.matrixVals[2] * this.matrixVals[8] * this.matrixVals[13] +
                 this.matrixVals[12] * this.matrixVals[1] * this.matrixVals[10] +
                 (this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[0] -
-                    this.matrixVals[10] * this.matrixVals[0] * this.matrixVals[13] -
-                    this.matrixVals[1] * this.matrixVals[8] * this.matrixVals[14]) -
+                    this.matrixVals[10] *
+                        this.matrixVals[0] *
+                        this.matrixVals[13] -
+                    this.matrixVals[1] *
+                        this.matrixVals[8] *
+                        this.matrixVals[14]) -
                 this.matrixVals[2] * this.matrixVals[9] * this.matrixVals[12]);
         let var16 =
             (this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[12] +
                 (this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[14] +
-                    -this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[14] +
-                    this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[0] -
-                    this.matrixVals[12] * this.matrixVals[1] * this.matrixVals[6] -
-                    this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[13])) *
+                    -this.matrixVals[0] *
+                        this.matrixVals[5] *
+                        this.matrixVals[14] +
+                    this.matrixVals[13] *
+                        this.matrixVals[6] *
+                        this.matrixVals[0] -
+                    this.matrixVals[12] *
+                        this.matrixVals[1] *
+                        this.matrixVals[6] -
+                    this.matrixVals[4] *
+                        this.matrixVals[2] *
+                        this.matrixVals[13])) *
             var1;
         let var17 =
             var1 *
             (this.matrixVals[9] * this.matrixVals[4] * this.matrixVals[2] +
                 this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[6] +
                 (this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[10] -
-                    this.matrixVals[9] * this.matrixVals[0] * this.matrixVals[6] -
-                    this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[4]) -
+                    this.matrixVals[9] *
+                        this.matrixVals[0] *
+                        this.matrixVals[6] -
+                    this.matrixVals[10] *
+                        this.matrixVals[1] *
+                        this.matrixVals[4]) -
                 this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[8]);
         this.matrixVals[0] = var2;
         this.matrixVals[1] = var3;
@@ -413,9 +553,21 @@ export default class Matrix {
 
     getVectorMagnitudes() {
         let var1 = new Array(3);
-        let var2 = new Vector(this.matrixVals[0], this.matrixVals[1], this.matrixVals[2]);
-        let var3 = new Vector(this.matrixVals[4], this.matrixVals[5], this.matrixVals[6]);
-        let var4 = new Vector(this.matrixVals[8], this.matrixVals[9], this.matrixVals[10]);
+        let var2 = new Vector(
+            this.matrixVals[0],
+            this.matrixVals[1],
+            this.matrixVals[2],
+        );
+        let var3 = new Vector(
+            this.matrixVals[4],
+            this.matrixVals[5],
+            this.matrixVals[6],
+        );
+        let var4 = new Vector(
+            this.matrixVals[8],
+            this.matrixVals[9],
+            this.matrixVals[10],
+        );
         var1[0] = var2.magnitude();
         var1[1] = var3.magnitude();
         var1[2] = var4.magnitude();

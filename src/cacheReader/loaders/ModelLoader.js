@@ -211,7 +211,12 @@ export class ModelDefinition {
         this.vertexPositionsZ.push(this.position.y + z);
 
         if (this.vertexNormals == undefined) this.vertexNormals = [];
-        this.vertexNormals.push({ x: Math.random(), y: Math.random(), z: Math.random(), magnitude: Math.random() });
+        this.vertexNormals.push({
+            x: Math.random(),
+            y: Math.random(),
+            z: Math.random(),
+            magnitude: Math.random(),
+        });
 
         this.vertexCount = this.vertexPositionsX.length;
         if (this.vertexCount >= 3) {
@@ -227,8 +232,10 @@ export class ModelDefinition {
             this.faceColors.push(color);
         }
 
-        if (this.faceTextureUCoordinates == undefined) this.faceTextureUCoordinates = [];
-        if (this.faceTextureVCoordinates == undefined) this.faceTextureVCoordinates = [];
+        if (this.faceTextureUCoordinates == undefined)
+            this.faceTextureUCoordinates = [];
+        if (this.faceTextureVCoordinates == undefined)
+            this.faceTextureVCoordinates = [];
         this.faceTextureUCoordinates.push([0, 0, 1]);
         this.faceTextureVCoordinates.push([0, 1, 1]);
     }
@@ -237,8 +244,16 @@ export class ModelDefinition {
         for (let i = 0; i < this.vertexCount; i++) {
             let x = this.vertexPositionsX[i] - this.position.x - size / 2;
             let z = this.vertexPositionsZ[i] - this.position.y - size / 2;
-            this.vertexPositionsX[i] = x * Math.cos(degrees) - z * Math.sin(degrees) + this.position.x + size / 2;
-            this.vertexPositionsZ[i] = z * Math.cos(degrees) + x * Math.sin(degrees) + this.position.y + size / 2;
+            this.vertexPositionsX[i] =
+                x * Math.cos(degrees) -
+                z * Math.sin(degrees) +
+                this.position.x +
+                size / 2;
+            this.vertexPositionsZ[i] =
+                z * Math.cos(degrees) +
+                x * Math.sin(degrees) +
+                this.position.y +
+                size / 2;
         }
     }
 
@@ -249,9 +264,18 @@ export class ModelDefinition {
      */
     mergeWith(otherModel) {
         let verticesCount = this.vertexPositionsX.length;
-        this.vertexPositionsX = [...this.vertexPositionsX, ...otherModel.vertexPositionsX];
-        this.vertexPositionsY = [...this.vertexPositionsY, ...otherModel.vertexPositionsY];
-        this.vertexPositionsZ = [...this.vertexPositionsZ, ...otherModel.vertexPositionsZ];
+        this.vertexPositionsX = [
+            ...this.vertexPositionsX,
+            ...otherModel.vertexPositionsX,
+        ];
+        this.vertexPositionsY = [
+            ...this.vertexPositionsY,
+            ...otherModel.vertexPositionsY,
+        ];
+        this.vertexPositionsZ = [
+            ...this.vertexPositionsZ,
+            ...otherModel.vertexPositionsZ,
+        ];
         this.faceVertexIndices1 = [
             ...this.faceVertexIndices1,
             ...otherModel.faceVertexIndices1.map((x) => x + verticesCount),
@@ -265,7 +289,9 @@ export class ModelDefinition {
             ...otherModel.faceVertexIndices3.map((x) => x + verticesCount),
         ];
 
-        let otherVertexGroup = otherModel.vertexGroups.map((x) => x.map((y) => y + verticesCount));
+        let otherVertexGroup = otherModel.vertexGroups.map((x) =>
+            x.map((y) => y + verticesCount),
+        );
         let newVertexGroups =
             this.vertexGroups.length > otherVertexGroup.length
                 ? Array(this.vertexGroups.length)
@@ -279,35 +305,60 @@ export class ModelDefinition {
                 newVertexGroups[i] = this.vertexGroups[i];
                 continue;
             }
-            newVertexGroups[i] = this.vertexGroups[i].concat(otherVertexGroup[i]);
+            newVertexGroups[i] = this.vertexGroups[i].concat(
+                otherVertexGroup[i],
+            );
         }
         this.vertexGroups = newVertexGroups;
 
         if (this.faceTextures == undefined || this.faceTextures.length == 0)
             this.faceTextures = new Array(this.faceCount).fill(-1);
-        if (otherModel.faceTextures == undefined || otherModel.faceTextures.length == 0)
+        if (
+            otherModel.faceTextures == undefined ||
+            otherModel.faceTextures.length == 0
+        )
             otherModel.faceTextures = new Array(otherModel.faceCount).fill(-1);
 
-        if (this.faceRenderTypes == undefined || this.faceRenderTypes.length == 0)
+        if (
+            this.faceRenderTypes == undefined ||
+            this.faceRenderTypes.length == 0
+        )
             this.faceRenderTypes = new Array(this.faceCount).fill(-1);
-        if (otherModel.faceRenderTypes == undefined || otherModel.faceRenderTypes.length == 0)
-            otherModel.faceRenderTypes = new Array(otherModel.faceCount).fill(-1);
+        if (
+            otherModel.faceRenderTypes == undefined ||
+            otherModel.faceRenderTypes.length == 0
+        )
+            otherModel.faceRenderTypes = new Array(otherModel.faceCount).fill(
+                -1,
+            );
 
         this.vertexCount += otherModel.vertexCount;
         this.faceCount += otherModel.faceCount;
 
-        if (this.animayaGroups == undefined) this.animayaGroups = new Array(this.vertexCount).fill([0]);
+        if (this.animayaGroups == undefined)
+            this.animayaGroups = new Array(this.vertexCount).fill([0]);
         if (otherModel.animayaGroups == undefined)
-            otherModel.animayaGroups = new Array(otherModel.vertexCount).fill([0]);
+            otherModel.animayaGroups = new Array(otherModel.vertexCount).fill([
+                0,
+            ]);
 
-        if (this.animayaScales == undefined) this.animayaScales = new Array(this.vertexCount).fill([255]);
+        if (this.animayaScales == undefined)
+            this.animayaScales = new Array(this.vertexCount).fill([255]);
         if (otherModel.animayaScales == undefined)
-            otherModel.animayaScales = new Array(otherModel.vertexCount).fill([255]);
+            otherModel.animayaScales = new Array(otherModel.vertexCount).fill([
+                255,
+            ]);
 
         let copy = (property) => {
-            if (this[property] == undefined && otherModel[property] != undefined) {
+            if (
+                this[property] == undefined &&
+                otherModel[property] != undefined
+            ) {
                 this[property] = otherModel[property];
-            } else if (this[property] != undefined && otherModel[property] != undefined) {
+            } else if (
+                this[property] != undefined &&
+                otherModel[property] != undefined
+            ) {
                 this[property] = [...this[property], ...otherModel[property]];
             }
         };
@@ -330,8 +381,12 @@ export class ModelDefinition {
     }
 
     async loadSkeletonAnims(cache, model, id) {
-        let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, id)).map((x) => x.def);
-        let loadedAnims = frameDefs.map((frameDef) => this.loadFrame(model, frameDef));
+        let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, id)).map(
+            (x) => x.def,
+        );
+        let loadedAnims = frameDefs.map((frameDef) =>
+            this.loadFrame(model, frameDef),
+        );
 
         return loadedAnims;
     }
@@ -343,20 +398,30 @@ export class ModelDefinition {
      * @returns AnimationData
      */
     async loadAnimation(cache, animationId) {
-        let animation = (await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animationId)).def;
+        let animation = (
+            await cache.getFile(
+                IndexType.CONFIGS.id,
+                ConfigType.SEQUENCE.id,
+                animationId,
+            )
+        ).def;
         let vertexData;
         let lengths;
 
         if (animation.animMayaID != undefined && animation.animMayaID != -1) {
-            let framesInfo = await cache.getAllFiles(IndexType.FRAMES.id, animation.animMayaID >> 16, {
-                isAnimaya: true,
-            });
+            let framesInfo = await cache.getAllFiles(
+                IndexType.FRAMES.id,
+                animation.animMayaID >> 16,
+                { isAnimaya: true },
+            );
 
             vertexData = this.loadMayaAnimation(framesInfo[0].def, animation);
             lengths = new Array(vertexData.length).fill(1);
         } else {
             let shiftedId = animation.frameIDs[0] >> 16;
-            let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map((x) => x.def);
+            let frameDefs = (
+                await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)
+            ).map((x) => x.def);
             let frames = animation.frameIDs.map((frameId) =>
                 frameDefs.find((frameDef) => frameDef?.id == (frameId & 65535)),
             );
@@ -375,7 +440,7 @@ export class ModelDefinition {
     loadFrame(model, frame) {
         let verticesX = [...model.vertexPositionsX];
         let verticesY = [...model.vertexPositionsY];
-        let verticesZ = model.vertexPositionsZ.map((z) => -z);
+        let verticesZ = [...model.vertexPositionsZ];
         let framemap = frame.framemap;
         let animOffsets = {
             x: 0,
@@ -391,7 +456,18 @@ export class ModelDefinition {
             let dy = frame.translator_y[j];
             let dz = frame.translator_z[j];
 
-            this.animate(model.vertexGroups, verticesX, verticesY, verticesZ, fmType, fm, dx, dy, dz, animOffsets);
+            this.animate(
+                model.vertexGroups,
+                verticesX,
+                verticesY,
+                verticesZ,
+                fmType,
+                fm,
+                dx,
+                dy,
+                dz,
+                animOffsets,
+            );
         }
 
         frame.vertices = [];
@@ -402,7 +478,18 @@ export class ModelDefinition {
         return frame;
     }
 
-    animate(vertexGroups, verticesX, verticesY, verticesZ, type, frameMap, dx, dy, dz, animOffsets) {
+    animate(
+        vertexGroups,
+        verticesX,
+        verticesY,
+        verticesZ,
+        type,
+        frameMap,
+        dx,
+        dy,
+        dz,
+        animOffsets,
+    ) {
         let var6 = frameMap.length;
         let var7;
         let var8;
@@ -477,26 +564,56 @@ export class ModelDefinition {
                             let var16;
                             let var17;
                             if (var14 != 0) {
-                                var15 = Math.floor(65536 * Math.sin((var14 * Math.PI) / 1024));
-                                var16 = Math.floor(65536 * Math.cos((var14 * Math.PI) / 1024));
-                                var17 = (var15 * verticesY[var11] + var16 * verticesX[var11]) >> 16;
-                                verticesY[var11] = (var16 * verticesY[var11] - var15 * verticesX[var11]) >> 16;
+                                var15 = Math.floor(
+                                    65536 * Math.sin((var14 * Math.PI) / 1024),
+                                );
+                                var16 = Math.floor(
+                                    65536 * Math.cos((var14 * Math.PI) / 1024),
+                                );
+                                var17 =
+                                    (var15 * verticesY[var11] +
+                                        var16 * verticesX[var11]) >>
+                                    16;
+                                verticesY[var11] =
+                                    (var16 * verticesY[var11] -
+                                        var15 * verticesX[var11]) >>
+                                    16;
                                 verticesX[var11] = var17;
                             }
 
                             if (var12 != 0) {
-                                var15 = Math.floor(65536 * Math.sin((var12 * Math.PI) / 1024));
-                                var16 = Math.floor(65536 * Math.cos((var12 * Math.PI) / 1024));
-                                var17 = (var16 * verticesY[var11] - var15 * verticesZ[var11]) >> 16;
-                                verticesZ[var11] = (var15 * verticesY[var11] + var16 * verticesZ[var11]) >> 16;
+                                var15 = Math.floor(
+                                    65536 * Math.sin((var12 * Math.PI) / 1024),
+                                );
+                                var16 = Math.floor(
+                                    65536 * Math.cos((var12 * Math.PI) / 1024),
+                                );
+                                var17 =
+                                    (var16 * verticesY[var11] -
+                                        var15 * verticesZ[var11]) >>
+                                    16;
+                                verticesZ[var11] =
+                                    (var15 * verticesY[var11] +
+                                        var16 * verticesZ[var11]) >>
+                                    16;
                                 verticesY[var11] = var17;
                             }
 
                             if (var13 != 0) {
-                                var15 = Math.floor(65536 * Math.sin((var13 * Math.PI) / 1024));
-                                var16 = Math.floor(65536 * Math.cos((var13 * Math.PI) / 1024));
-                                var17 = (var15 * verticesZ[var11] + var16 * verticesX[var11]) >> 16;
-                                verticesZ[var11] = (var16 * verticesZ[var11] - var15 * verticesX[var11]) >> 16;
+                                var15 = Math.floor(
+                                    65536 * Math.sin((var13 * Math.PI) / 1024),
+                                );
+                                var16 = Math.floor(
+                                    65536 * Math.cos((var13 * Math.PI) / 1024),
+                                );
+                                var17 =
+                                    (var15 * verticesZ[var11] +
+                                        var16 * verticesX[var11]) >>
+                                    16;
+                                verticesZ[var11] =
+                                    (var16 * verticesZ[var11] -
+                                        var15 * verticesX[var11]) >>
+                                    16;
                                 verticesX[var11] = var17;
                             }
 
@@ -539,18 +656,31 @@ export class ModelDefinition {
         let verticesX = [];
         let verticesY = [];
         let verticesZ = [];
-        for (let currentFrame = 0; currentFrame < sequenceDefinition.animMayaEnd; currentFrame++) {
+        for (
+            let currentFrame = 0;
+            currentFrame < sequenceDefinition.animMayaEnd;
+            currentFrame++
+        ) {
             let var6 = 0;
             let bones = frameDef.framemap.animayaSkeleton.getAllBones();
             for (let index = 0; index < bones.length; ++index) {
                 let bone = bones[index];
-                frameDef.method727(currentFrame, bone, var6, frameDef.field1257);
+                frameDef.method727(
+                    currentFrame,
+                    bone,
+                    var6,
+                    frameDef.field1257,
+                );
                 ++var6;
             }
             if (this.animayaGroups != null) {
                 let animatedFrameVertices = [];
 
-                for (let vertexIndex = 0; vertexIndex < this.vertexCount; ++vertexIndex) {
+                for (
+                    let vertexIndex = 0;
+                    vertexIndex < this.vertexCount;
+                    ++vertexIndex
+                ) {
                     let bones = this.animayaGroups[vertexIndex];
 
                     if (bones != null && bones.length != 0) {
@@ -567,7 +697,9 @@ export class ModelDefinition {
                                 let matrix3 = new Matrix();
 
                                 matrix2.setScale(scales[i] / 255);
-                                matrix3.copy(bone.method687(frameDef.field1257));
+                                matrix3.copy(
+                                    bone.method687(frameDef.field1257),
+                                );
                                 matrix3.multiply(matrix2);
                                 matrix.add(matrix3);
                             }
@@ -618,12 +750,26 @@ export class ModelDefinition {
         if (this.vertexCount != otherModel.vertexCount) return false;
         if (this.faceCount != otherModel.faceCount) return false;
 
-        let sameFaceColors = this.faceColors.every((x, i) => x == otherModel.faceColors[i]);
-        let sameVerticiesX = this.vertexPositionsX.every((x, i) => x == otherModel.vertexPositionsX[i]);
-        let sameVerticiesY = this.vertexPositionsY.every((x, i) => x == otherModel.vertexPositionsY[i]);
-        let sameVerticiesZ = this.vertexPositionsZ.every((x, i) => x == otherModel.vertexPositionsZ[i]);
+        let sameFaceColors = this.faceColors.every(
+            (x, i) => x == otherModel.faceColors[i],
+        );
+        let sameVerticiesX = this.vertexPositionsX.every(
+            (x, i) => x == otherModel.vertexPositionsX[i],
+        );
+        let sameVerticiesY = this.vertexPositionsY.every(
+            (x, i) => x == otherModel.vertexPositionsY[i],
+        );
+        let sameVerticiesZ = this.vertexPositionsZ.every(
+            (x, i) => x == otherModel.vertexPositionsZ[i],
+        );
 
-        return sameVerticiesX && sameVerticiesY && sameVerticiesZ && sameFaceColors && sameFaceColors;
+        return (
+            sameVerticiesX &&
+            sameVerticiesY &&
+            sameVerticiesZ &&
+            sameFaceColors &&
+            sameFaceColors
+        );
     }
 
     computeAnimationTables() {
@@ -646,7 +792,11 @@ export class ModelDefinition {
                 groupCounts[var3] = 0;
             }
 
-            for (var3 = 0; var3 < this.vertexCount; this.vertexGroups[var4][groupCounts[var4]++] = var3++) {
+            for (
+                var3 = 0;
+                var3 < this.vertexCount;
+                this.vertexGroups[var4][groupCounts[var4]++] = var3++
+            ) {
                 var4 = this.vertexSkins[var3];
             }
 
@@ -675,7 +825,11 @@ export class ModelDefinition {
                 groupCounts[var3] = 0; // L: 796
             }
 
-            for (var3 = 0; var3 < this.faceCount; this.faceLabelsAlpha[var4][groupCounts[var4]++] = var3++) {
+            for (
+                var3 = 0;
+                var3 < this.faceCount;
+                this.faceLabelsAlpha[var4][groupCounts[var4]++] = var3++
+            ) {
                 // L: 798 800
                 var4 = this.faceSkins[var3]; // L: 799
             }
@@ -686,8 +840,12 @@ export class ModelDefinition {
     }
 
     computeTextureUVCoordinates(def) {
-        this.faceTextureUCoordinates = new Array(this.faceCount).fill([0, 0, 0]);
-        this.faceTextureVCoordinates = new Array(this.faceCount).fill([0, 0, 0]);
+        this.faceTextureUCoordinates = new Array(this.faceCount).fill([
+            0, 0, 0,
+        ]);
+        this.faceTextureVCoordinates = new Array(this.faceCount).fill([
+            0, 0, 0,
+        ]);
 
         if (this.faceTextures == null) {
             return;
@@ -825,26 +983,41 @@ export class ModelDefinition {
             var vertexB = this.faceVertexIndices2[var1];
             var vertexC = this.faceVertexIndices3[var1];
 
-            var xA = this.vertexPositionsX[vertexB] - this.vertexPositionsX[vertexA];
-            var yA = this.vertexPositionsY[vertexB] - this.vertexPositionsY[vertexA];
-            var zA = this.vertexPositionsZ[vertexB] - this.vertexPositionsZ[vertexA];
+            var xA =
+                this.vertexPositionsX[vertexB] - this.vertexPositionsX[vertexA];
+            var yA =
+                this.vertexPositionsY[vertexB] - this.vertexPositionsY[vertexA];
+            var zA =
+                this.vertexPositionsZ[vertexB] - this.vertexPositionsZ[vertexA];
 
-            var xB = this.vertexPositionsX[vertexC] - this.vertexPositionsX[vertexA];
-            var yB = this.vertexPositionsY[vertexC] - this.vertexPositionsY[vertexA];
-            var zB = this.vertexPositionsZ[vertexC] - this.vertexPositionsZ[vertexA];
+            var xB =
+                this.vertexPositionsX[vertexC] - this.vertexPositionsX[vertexA];
+            var yB =
+                this.vertexPositionsY[vertexC] - this.vertexPositionsY[vertexA];
+            var zB =
+                this.vertexPositionsZ[vertexC] - this.vertexPositionsZ[vertexA];
 
             // Compute cross product
             var var11 = yA * zB - yB * zA;
             var var12 = zA * xB - zB * xA;
             var var13 = xA * yB - xB * yA;
 
-            while (var11 > 8192 || var12 > 8192 || var13 > 8192 || var11 < -8192 || var12 < -8192 || var13 < -8192) {
+            while (
+                var11 > 8192 ||
+                var12 > 8192 ||
+                var13 > 8192 ||
+                var11 < -8192 ||
+                var12 < -8192 ||
+                var13 < -8192
+            ) {
                 var11 >>= 1;
                 var12 >>= 1;
                 var13 >>= 1;
             }
 
-            var length = parseInt(Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13));
+            var length = parseInt(
+                Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13),
+            );
             if (length <= 0) {
                 length = 1;
             }
@@ -904,26 +1077,39 @@ export class ModelDefinition {
                 let var2 = this.faceVertexIndices1[var1];
                 let var3 = this.faceVertexIndices2[var1];
                 let var4 = this.faceVertexIndices3[var1];
-                let var5 = this.vertexPositionsX[var3] - this.vertexPositionsX[var2];
-                let var6 = this.vertexPositionsY[var3] - this.vertexPositionsY[var2];
-                let var7 = this.vertexPositionsZ[var3] - this.vertexPositionsZ[var2];
-                let var8 = this.vertexPositionsX[var4] - this.vertexPositionsX[var2];
-                let var9 = this.vertexPositionsY[var4] - this.vertexPositionsY[var2];
-                let var10 = this.vertexPositionsZ[var4] - this.vertexPositionsZ[var2];
+                let var5 =
+                    this.vertexPositionsX[var3] - this.vertexPositionsX[var2];
+                let var6 =
+                    this.vertexPositionsY[var3] - this.vertexPositionsY[var2];
+                let var7 =
+                    this.vertexPositionsZ[var3] - this.vertexPositionsZ[var2];
+                let var8 =
+                    this.vertexPositionsX[var4] - this.vertexPositionsX[var2];
+                let var9 =
+                    this.vertexPositionsY[var4] - this.vertexPositionsY[var2];
+                let var10 =
+                    this.vertexPositionsZ[var4] - this.vertexPositionsZ[var2];
                 let var11 = var6 * var10 - var9 * var7;
                 let var12 = var7 * var8 - var10 * var5;
 
                 let var13;
                 for (
                     var13 = var5 * var9 - var8 * var6;
-                    var11 > 8192 || var12 > 8192 || var13 > 8192 || var11 < -8192 || var12 < -8192 || var13 < -8192;
+                    var11 > 8192 ||
+                    var12 > 8192 ||
+                    var13 > 8192 ||
+                    var11 < -8192 ||
+                    var12 < -8192 ||
+                    var13 < -8192;
                     var13 >>= 1
                 ) {
                     var11 >>= 1;
                     var12 >>= 1;
                 }
 
-                let var14 = parseInt(Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13));
+                let var14 = parseInt(
+                    Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13),
+                );
                 if (var14 <= 0) {
                     var14 = 1;
                 }
@@ -974,11 +1160,20 @@ export default class ModelLoader {
         let def = new ModelDefinition();
         def.id = id;
         let dataview = new DataView(bytes.buffer);
-        if (dataview.getInt8(dataview.byteLength - 1) == -3 && dataview.getInt8(dataview.byteLength - 2) == -1) {
+        if (
+            dataview.getInt8(dataview.byteLength - 1) == -3 &&
+            dataview.getInt8(dataview.byteLength - 2) == -1
+        ) {
             this.load3(def, dataview);
-        } else if (dataview.getInt8(dataview.byteLength - 1) == -2 && dataview.getInt8(dataview.byteLength - 2) == -1) {
+        } else if (
+            dataview.getInt8(dataview.byteLength - 1) == -2 &&
+            dataview.getInt8(dataview.byteLength - 2) == -1
+        ) {
             this.load2(def, dataview);
-        } else if (dataview.getInt8(dataview.byteLength - 1) == -1 && dataview.getInt8(dataview.byteLength - 2) == -1) {
+        } else if (
+            dataview.getInt8(dataview.byteLength - 1) == -1 &&
+            dataview.getInt8(dataview.byteLength - 2) == -1
+        ) {
             this.load1(def, dataview);
         } else {
             this.loadOriginal(def, dataview);
@@ -1001,7 +1196,7 @@ export default class ModelLoader {
         let var8 = new DataView(var1.buffer);
         var2.setPosition(var1.byteLength - 26);
         let var9 = var2.readUint16();
-        let var10 = var2.readUint16();
+        let numFaces = var2.readUint16();
         let var11 = var2.readUint8();
         let var12 = var2.readUint8();
         let var13 = var2.readUint8();
@@ -1043,39 +1238,39 @@ export default class ModelLoader {
         var28 = var11 + var9;
         let var58 = var28;
         if (var12 == 1) {
-            var28 += var10;
+            var28 += numFaces;
         }
 
         let var30 = var28;
-        var28 += var10;
+        var28 += numFaces;
         let var31 = var28;
         if (var13 == 255) {
-            var28 += var10;
+            var28 += numFaces;
         }
 
         let var32 = var28;
         if (var15 == 1) {
-            var28 += var10;
+            var28 += numFaces;
         }
 
         let var33 = var28;
         var28 += var24;
         let var34 = var28;
         if (var14 == 1) {
-            var28 += var10;
+            var28 += numFaces;
         }
 
         let var35 = var28;
         var28 += var22;
         let var36 = var28;
         if (var16 == 1) {
-            var28 += var10 * 2;
+            var28 += numFaces * 2;
         }
 
         let var37 = var28;
         var28 += var23;
         let var38 = var28;
-        var28 += var10 * 2;
+        var28 += numFaces * 2;
         let var39 = var28;
         var28 += var19;
         let var40 = var28;
@@ -1095,7 +1290,7 @@ export default class ModelLoader {
         let var47 = var28;
         var28 = var28 + var26 * 2 + var27 * 2;
         def.vertexCount = var9;
-        def.faceCount = var10;
+        def.faceCount = numFaces;
         def.numTextureFaces = var11;
         def.vertexPositionsX = [];
         def.vertexPositionsY = [];
@@ -1130,7 +1325,7 @@ export default class ModelLoader {
         }
 
         if (var16 == 1 && var11 > 0) {
-            def.textureCoords = new Array(var10).fill(0);
+            def.textureCoords = new Array(numFaces).fill(0);
         }
 
         if (var18 == 1) {
@@ -1210,7 +1405,7 @@ export default class ModelLoader {
         var7.setPosition(var36);
         var8.setPosition(var37);
 
-        for (var51 = 0; var51 < var10; ++var51) {
+        for (var51 = 0; var51 < numFaces; ++var51) {
             def.faceColors[var51] = var2.readUint16();
             if (var12 == 1) {
                 def.faceRenderTypes[var51] = var3.readInt8();
@@ -1221,7 +1416,7 @@ export default class ModelLoader {
             }
 
             if (var14 == 1) {
-                def.faceAlphas[var51] = var5.readInt8();
+                def.faceAlphas[var51] = var5.readUint8();
             }
 
             if (var15 == 1) {
@@ -1245,7 +1440,7 @@ export default class ModelLoader {
         var54 = 0;
 
         let var56;
-        for (var55 = 0; var55 < var10; ++var55) {
+        for (var55 = 0; var55 < numFaces; ++var55) {
             var56 = var3.readUint8();
             if (var56 == 1) {
                 var51 = var2.readShortSmart() + var54;
@@ -1588,9 +1783,12 @@ export default class ModelLoader {
                 var46 = def.textureCoords[var45] & 255;
                 if (var46 != 255) {
                     if (
-                        def.faceVertexIndices1[var45] == (def.texIndices1[var46] & "\uffff") &&
-                        def.faceVertexIndices2[var45] == (def.texIndices2[var46] & "\uffff") &&
-                        def.faceVertexIndices3[var45] == (def.texIndices3[var46] & "\uffff")
+                        def.faceVertexIndices1[var45] ==
+                            (def.texIndices1[var46] & "\uffff") &&
+                        def.faceVertexIndices2[var45] ==
+                            (def.texIndices2[var46] & "\uffff") &&
+                        def.faceVertexIndices3[var45] ==
+                            (def.texIndices3[var46] & "\uffff")
                     ) {
                         def.textureCoords[var45] = -1;
                     } else {
@@ -1645,7 +1843,8 @@ export default class ModelLoader {
             var2.setPosition(0);
 
             for (position = 0; position < textureTriangleCount; ++position) {
-                var renderType = (def.textureRenderTypes[position] = var2.readInt8());
+                var renderType = (def.textureRenderTypes[position] =
+                    var2.readInt8());
                 if (renderType == 0) {
                     ++textureAmount;
                 }
@@ -1848,7 +2047,10 @@ export default class ModelLoader {
                 def.faceTextures[point] = var55.readUint16() - 1;
             }
 
-            if (def.textureCoordinates != null && def.faceTextures[point] != -1) {
+            if (
+                def.textureCoordinates != null &&
+                def.faceTextures[point] != -1
+            ) {
                 def.textureCoordinates[point] = var51.readUint8() - 1;
             }
         }
@@ -1861,7 +2063,11 @@ export default class ModelLoader {
         vertexYOffset = 0;
 
         var var16;
-        for (vertexZOffset = 0; vertexZOffset < triangleCount; ++vertexZOffset) {
+        for (
+            vertexZOffset = 0;
+            vertexZOffset < triangleCount;
+            ++vertexZOffset
+        ) {
             var numFaces = var24.readUint8();
             if (numFaces == 1) {
                 trianglePointX = var2.readShortSmart() + vertexYOffset;
@@ -1919,9 +2125,12 @@ export default class ModelLoader {
             }
 
             if (type == 1) {
-                def.textureTriangleVertexIndices1[texIndex] = var24.readUint16();
-                def.textureTriangleVertexIndices2[texIndex] = var24.readUint16();
-                def.textureTriangleVertexIndices3[texIndex] = var24.readUint16();
+                def.textureTriangleVertexIndices1[texIndex] =
+                    var24.readUint16();
+                def.textureTriangleVertexIndices2[texIndex] =
+                    var24.readUint16();
+                def.textureTriangleVertexIndices3[texIndex] =
+                    var24.readUint16();
                 def.aShortArray2574[texIndex] = var3.readUint16();
                 def.aShortArray2575[texIndex] = var3.readUint16();
                 def.aShortArray2586[texIndex] = var3.readUint16();
@@ -1931,9 +2140,12 @@ export default class ModelLoader {
             }
 
             if (type == 2) {
-                def.textureTriangleVertexIndices1[texIndex] = var24.readUint16();
-                def.textureTriangleVertexIndices2[texIndex] = var24.readUint16();
-                def.textureTriangleVertexIndices3[texIndex] = var24.readUint16();
+                def.textureTriangleVertexIndices1[texIndex] =
+                    var24.readUint16();
+                def.textureTriangleVertexIndices2[texIndex] =
+                    var24.readUint16();
+                def.textureTriangleVertexIndices3[texIndex] =
+                    var24.readUint16();
                 def.aShortArray2574[texIndex] = var3.readUint16();
                 def.aShortArray2575[texIndex] = var3.readUint16();
                 def.aShortArray2586[texIndex] = var3.readUint16();
@@ -1944,9 +2156,12 @@ export default class ModelLoader {
             }
 
             if (type == 3) {
-                def.textureTriangleVertexIndices1[texIndex] = var24.readUint16();
-                def.textureTriangleVertexIndices2[texIndex] = var24.readUint16();
-                def.textureTriangleVertexIndices3[texIndex] = var24.readUint16();
+                def.textureTriangleVertexIndices1[texIndex] =
+                    var24.readUint16();
+                def.textureTriangleVertexIndices2[texIndex] =
+                    var24.readUint16();
+                def.textureTriangleVertexIndices3[texIndex] =
+                    var24.readUint16();
                 def.aShortArray2574[texIndex] = var3.readUint16();
                 def.aShortArray2575[texIndex] = var3.readUint16();
                 def.aShortArray2586[texIndex] = var3.readUint16();
@@ -2222,9 +2437,12 @@ export default class ModelLoader {
                 var21 = def.textureCoordinates[var22] & 255;
                 if (var21 != 255) {
                     if (
-                        (def.textureTriangleVertexIndices1[var21] & "\uffff") == def.faceVertexIndices1[var22] &&
-                        (def.textureTriangleVertexIndices2[var21] & "\uffff") == def.faceVertexIndices2[var22] &&
-                        (def.textureTriangleVertexIndices3[var21] & "\uffff") == def.faceVertexIndices3[var22]
+                        (def.textureTriangleVertexIndices1[var21] & "\uffff") ==
+                            def.faceVertexIndices1[var22] &&
+                        (def.textureTriangleVertexIndices2[var21] & "\uffff") ==
+                            def.faceVertexIndices2[var22] &&
+                        (def.textureTriangleVertexIndices3[var21] & "\uffff") ==
+                            def.faceVertexIndices3[var22]
                     ) {
                         def.textureCoordinates[var22] = -1;
                     } else {

@@ -84,10 +84,18 @@ class Archive {
                 //console.log(chunkSize);
                 //System.out.println(fileOffsets[id] + " " + chunkSize + " " + stream.getOffset() + " " + stream.remaining());
                 //console.log(id + " " + fileOffsets[id] + " " + chunkSize);
-                if (this.files[id].content == undefined) this.files[id].content = [];
+                if (this.files[id].content == undefined)
+                    this.files[id].content = [];
                 //dez - can be done in a better way
-                var newData = new Uint8Array(dataview.buffer.slice(streamPosition, streamPosition + chunkSize));
-                var contentUpdate = new Uint8Array(this.files[id].content.length + newData.length);
+                var newData = new Uint8Array(
+                    dataview.buffer.slice(
+                        streamPosition,
+                        streamPosition + chunkSize,
+                    ),
+                );
+                var contentUpdate = new Uint8Array(
+                    this.files[id].content.length + newData.length,
+                );
                 contentUpdate.set(this.files[id].content);
                 contentUpdate.set(newData, this.files[id].content.length);
 

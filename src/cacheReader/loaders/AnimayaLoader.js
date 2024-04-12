@@ -49,7 +49,9 @@ class class127 {
 
     method702(var1) {
         let var2 = this.method706(var1);
-        return var2 >= 0 && var2 < this.field1203.length ? this.field1203[var2] : null;
+        return var2 >= 0 && var2 < this.field1203.length
+            ? this.field1203[var2]
+            : null;
     }
 
     method705() {
@@ -58,7 +60,10 @@ class class127 {
         this.field1217 = new Array(this.method701() + 1).fill(0);
 
         for (let var1 = this.method704(); var1 <= this.method700(); ++var1) {
-            this.field1217[var1 - this.method704()] = AttackOption.method590(this, var1);
+            this.field1217[var1 - this.method704()] = AttackOption.method590(
+                this,
+                var1,
+            );
         }
 
         this.field1203 = null;
@@ -70,7 +75,9 @@ class class127 {
         if (var1 < this.method704()) {
             return this.field1220;
         } else {
-            return var1 > this.method700() ? this.field1216 : this.field1217[var1 - this.method704()];
+            return var1 > this.method700()
+                ? this.field1216
+                : this.field1217[var1 - this.method704()];
         }
     }
 
@@ -204,7 +211,13 @@ export class class129 {
             foundValue = this.values[0];
         }
 
-        return new this(foundValue[0], foundValue[1], foundValue[2], foundValue[3], foundValue[5]);
+        return new this(
+            foundValue[0],
+            foundValue[1],
+            foundValue[2],
+            foundValue[3],
+            foundValue[5],
+        );
     }
 
     constructor(var1, var2, var3, var4, var5) {
@@ -233,7 +246,13 @@ export class class128 {
             foundValue = this.values[0];
         }
 
-        return new this(foundValue[0], foundValue[1], foundValue[2], foundValue[3], foundValue[5]);
+        return new this(
+            foundValue[0],
+            foundValue[1],
+            foundValue[2],
+            foundValue[3],
+            foundValue[5],
+        );
     }
 
     constructor(var1, var2, var3, var4) {
@@ -257,67 +276,73 @@ export default class AnimayaLoader {
             return def;
         }
         //console.log(version, skeletonId, "TEST");
-        return cache.getFile(IndexType.FRAMEMAPS.id, def.skeletonId, 0, { cacheResults: true }).then((framemap) => {
-            framemap = framemap.def;
+        return cache
+            .getFile(IndexType.FRAMEMAPS.id, def.skeletonId, 0, {
+                cacheResults: true,
+            })
+            .then((framemap) => {
+                framemap = framemap.def;
 
-            dataview.readUint16();
-            dataview.readUint16();
-            def.field1257 = dataview.readUint8();
-            let var3 = dataview.readUint16();
-            def.field1265 = new Array(framemap.animayaSkeleton.bones.length);
-            def.field1258 = new Array(framemap.length);
-            let var4 = new Array(var3);
+                dataview.readUint16();
+                dataview.readUint16();
+                def.field1257 = dataview.readUint8();
+                let var3 = dataview.readUint16();
+                def.field1265 = new Array(
+                    framemap.animayaSkeleton.bones.length,
+                );
+                def.field1258 = new Array(framemap.length);
+                let var4 = new Array(var3);
 
-            let var5;
-            let var7;
-            let tasks = []; //osrs uses some pool or something
-            for (var5 = 0; var5 < var3; ++var5) {
-                let var6 = class128.findEnumerated(dataview.readUint8());
-                var7 = dataview.readShortSmart();
-                let var8 = class129.findEnumerated(dataview.readUint8());
+                let var5;
+                let var7;
+                let tasks = []; //osrs uses some pool or something
+                for (var5 = 0; var5 < var3; ++var5) {
+                    let var6 = class128.findEnumerated(dataview.readUint8());
+                    var7 = dataview.readShortSmart();
+                    let var8 = class129.findEnumerated(dataview.readUint8());
 
-                let var9 = new class127();
-                var9.method698(dataview, def.version);
-                let var10 = var6.method707();
+                    let var9 = new class127();
+                    var9.method698(dataview, def.version);
+                    let var10 = var6.method707();
 
-                let var11;
+                    let var11;
 
-                if (var6.field1230 == 1) {
-                    // var6 == class128.field1234
-                    var11 = def.field1265;
-                } else {
-                    var11 = def.field1258;
+                    if (var6.field1230 == 1) {
+                        // var6 == class128.field1234
+                        var11 = def.field1265;
+                    } else {
+                        var11 = def.field1258;
+                    }
+
+                    if (var11[var7] == null) {
+                        var11[var7] = new Array(var10);
+                    }
+
+                    if (var6.field1230 == 4) {
+                        // var6 == class128.field1228
+                        def.field1259 = true;
+                    }
+
+                    tasks.push({ var9, var6, var8, var7 });
                 }
 
-                if (var11[var7] == null) {
-                    var11[var7] = new Array(var10);
-                }
+                tasks.forEach((task) => {
+                    task.var9.method705();
 
-                if (var6.field1230 == 4) {
-                    // var6 == class128.field1228
-                    def.field1259 = true;
-                }
+                    let var1;
+                    if (task.var6.field1230 == 1) {
+                        //var8 == class128.field1234
+                        var1 = def.field1265;
+                    } else {
+                        var1 = def.field1258;
+                    }
 
-                tasks.push({ var9, var6, var8, var7 });
-            }
+                    var1[task.var7][task.var8.method711()] = task.var9;
+                });
+                for (var5 = 0; var5 < var3; ++var5) {}
 
-            tasks.forEach((task) => {
-                task.var9.method705();
-
-                let var1;
-                if (task.var6.field1230 == 1) {
-                    //var8 == class128.field1234
-                    var1 = def.field1265;
-                } else {
-                    var1 = def.field1258;
-                }
-
-                var1[task.var7][task.var8.method711()] = task.var9;
+                def.framemap = framemap;
+                return def;
             });
-            for (var5 = 0; var5 < var3; ++var5) {}
-
-            def.framemap = framemap;
-            return def;
-        });
     }
 }

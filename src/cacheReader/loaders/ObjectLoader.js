@@ -231,7 +231,10 @@ export class ObjectDefinition {
 
             let models = [];
             for (let i = 0; i < this.objectModels.length; ++i) {
-                modelData = await cache.getDef(IndexType.MODELS.id, this.objectModels[i]);
+                modelData = await cache.getDef(
+                    IndexType.MODELS.id,
+                    this.objectModels[i],
+                );
 
                 if (this.objectModels.length > 1) {
                     models[i] = modelData;
@@ -264,7 +267,11 @@ export class ObjectDefinition {
             }
         }
 
-        if (this.modelSizeX == 128 && this.modelSizeHeight == 128 && this.modelSizeY == 128) {
+        if (
+            this.modelSizeX == 128 &&
+            this.modelSizeHeight == 128 &&
+            this.modelSizeY == 128
+        ) {
             isRotated = false;
         } else {
             isRotated = true;
@@ -299,16 +306,27 @@ export class ObjectDefinition {
 
         if (this.retextureFrom != null) {
             for (let var7 = 0; var7 < this.retextureFrom.length; ++var7) {
-                modelData.retexture(this.retextureFrom[var7], this.retextureTo[var7]);
+                modelData.retexture(
+                    this.retextureFrom[var7],
+                    this.retextureTo[var7],
+                );
             }
         }
 
         if (isRotated) {
-            modelData.resize(this.modelSizeX, this.modelSizeHeight, this.modelSizeY);
+            modelData.resize(
+                this.modelSizeX,
+                this.modelSizeHeight,
+                this.modelSizeY,
+            );
         }
 
         if (var11) {
-            modelData.changeOffset(this.offsetX, this.offsetHeight, this.offsetY);
+            modelData.changeOffset(
+                this.offsetX,
+                this.offsetHeight,
+                this.offsetY,
+            );
         }
 
         return modelData;

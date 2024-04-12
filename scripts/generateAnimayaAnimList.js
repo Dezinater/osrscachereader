@@ -10,14 +10,21 @@ cache.onload.then(() => {
     cache
         .getAllFiles(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id)
         .then((animationInfo) => {
-            let anims = animationInfo.filter((x) => x.def.animMayaID != undefined && x.def.animMayaID >= 0);
+            let anims = animationInfo.filter(
+                (x) => x.def.animMayaID != undefined && x.def.animMayaID >= 0,
+            );
             let animIds = anims.map((x) => x.def.id);
             let animayaIds = anims.map((x) => x.def.animMayaID);
             let promises = [];
 
             console.log("Loading skeletons");
             animayaIds.forEach((x) => {
-                promises.push(cache.getAllFiles(IndexType.FRAMES.id, x >> 16, { isAnimaya: true, earlyStop: true }));
+                promises.push(
+                    cache.getAllFiles(IndexType.FRAMES.id, x >> 16, {
+                        isAnimaya: true,
+                        earlyStop: true,
+                    }),
+                );
             });
 
             let mappedAnims = {};
@@ -31,7 +38,10 @@ cache.onload.then(() => {
                     mappedAnims[id].push(animIds[index]);
                 });
 
-                fs.writeFileSync("animayaCommonAnims.json", JSON.stringify(mappedAnims));
+                fs.writeFileSync(
+                    "animayaCommonAnims.json",
+                    JSON.stringify(mappedAnims),
+                );
             });
 
             cache.close();

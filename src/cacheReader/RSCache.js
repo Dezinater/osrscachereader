@@ -89,7 +89,10 @@ class RSCache {
 
     #checkIfCachingResults(options, indexType) {
         if (options.cacheResults == undefined) {
-            if (indexType.id == IndexType.MODELS.id || indexType.id == IndexType.MAPS.id) {
+            if (
+                indexType.id == IndexType.MODELS.id ||
+                indexType.id == IndexType.MAPS.id
+            ) {
                 // dont save models and maps if cacheResults isnt set
                 options.cacheResults = false;
             } else {
@@ -117,7 +120,11 @@ class RSCache {
                 return archive.files;
             }
 
-            if (this.readPromises[index.id] == undefined || !options.cacheResults) this.readPromises[index.id] = {};
+            if (
+                this.readPromises[index.id] == undefined ||
+                !options.cacheResults
+            )
+                this.readPromises[index.id] = {};
 
             if (this.readPromises[index.id][archive.id] == undefined) {
                 let promise = new Promise(async (resolve, reject) => {
@@ -140,7 +147,11 @@ class RSCache {
                     archive = index.archives[data.archiveId];
                     archive.loadFiles(data.decompressedData);
 
-                    let filePromise = new CacheDefinitionLoader(data.index.id, archive, options).loadAllFiles(this);
+                    let filePromise = new CacheDefinitionLoader(
+                        data.index.id,
+                        archive,
+                        options,
+                    ).loadAllFiles(this);
 
                     if (options.cacheResults) {
                         //it will readData again since filesLoaded will be false
@@ -169,7 +180,9 @@ class RSCache {
      * @returns [File]{@link File}
      */
     async getFile(indexId, archiveId, fileId = 0, options = {}) {
-        return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
+        return this.getAllFiles(indexId, archiveId, options).then(
+            (x) => x[fileId],
+        );
     }
 
     /**
@@ -197,7 +210,9 @@ class RSCache {
      * @returns Definition
      */
     async getDef(indexId, archiveId, fileId = 0, options = {}) {
-        return this.getAllDefs(indexId, archiveId, options).then((x) => x[fileId]);
+        return this.getAllDefs(indexId, archiveId, options).then(
+            (x) => x[fileId],
+        );
     }
 
     /**
@@ -254,9 +269,13 @@ class RSCache {
             }
             this.indicies[i] = new Index(i);
             for (let j = 0; j < dataview.byteLength; j += 6) {
-                let size = dataview.readUint24();
-                let segment = dataview.readUint24();
-                this.indicies[i].indexSegments.push({ size, segment });
+                try {
+                    let size = dataview.readUint24();
+                    let segment = dataview.readUint24();
+                    this.indicies[i].indexSegments.push({ size, segment });
+                } catch (err) {
+                    console.error(`error reading index ${i} pos ${j}`, err);
+                }
             }
         }
 

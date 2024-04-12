@@ -21,10 +21,21 @@ export default class Quaternion {
 
     multiply(var1) {
         this.set(
-            this.z * var1.y + this.w * var1.x + this.x * var1.w - var1.z * this.y,
-            this.w * var1.y + (var1.w * this.y - this.z * var1.x) + this.x * var1.z,
-            this.y * var1.x + this.z * var1.w - var1.y * this.x + var1.z * this.w,
-            this.w * var1.w - var1.x * this.x - this.y * var1.y - this.z * var1.z,
+            this.z * var1.y +
+                this.w * var1.x +
+                this.x * var1.w -
+                var1.z * this.y,
+            this.w * var1.y +
+                (var1.w * this.y - this.z * var1.x) +
+                this.x * var1.z,
+            this.y * var1.x +
+                this.z * var1.w -
+                var1.y * this.x +
+                var1.z * this.w,
+            this.w * var1.w -
+                var1.x * this.x -
+                this.y * var1.y -
+                this.z * var1.z,
         );
     }
 

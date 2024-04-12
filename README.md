@@ -76,10 +76,14 @@ let spritesIndex = cache.getIndex(IndexType.SPRITES);
 let archiveKeys = Object.keys(spritesIndex.archives);
 
 let allSprites = await Promise.all(
-    archiveKeys.map(async (archiveId) => await cache.getFile(IndexType.SPRITES, archiveId)),
+    archiveKeys.map(
+        async (archiveId) => await cache.getFile(IndexType.SPRITES, archiveId),
+    ),
 );
 
-let spritesWithMultipleFrames = allSprites.filter((spriteFile) => spriteFile.def.sprites.length > 1);
+let spritesWithMultipleFrames = allSprites.filter(
+    (spriteFile) => spriteFile.def.sprites.length > 1,
+);
 let logo = allSprites.filter((spriteFile) => spriteFile.nameHash == 3327403);
 ```
 

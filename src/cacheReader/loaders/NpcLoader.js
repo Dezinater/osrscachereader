@@ -288,7 +288,9 @@ export default class NpcLoader {
                     def.headIconSpriteIndex.push(1);
                 } else {
                     def.headIconArchiveIds.push(dataview.readBigSmart2());
-                    def.headIconSpriteIndex.push(dataview.readUnsignedShortSmartMinusOne());
+                    def.headIconSpriteIndex.push(
+                        dataview.readUnsignedShortSmartMinusOne(),
+                    );
                 }
             }
         } else if (opcode == 103) {

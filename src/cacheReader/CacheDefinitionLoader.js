@@ -18,8 +18,15 @@ export default class CacheDefinitionLoader {
         return new Promise(async (resolve, reject) => {
             let newFiles = [];
             for (let i = 0; i < this.archive.files.length; i++) {
-                if (this.archive.files[i].content == undefined || this.archive.files[i].content.length == 0) continue;
-                let loadedDef = await this.#loadDef(this.archive.files[i], rscache);
+                if (
+                    this.archive.files[i].content == undefined ||
+                    this.archive.files[i].content.length == 0
+                )
+                    continue;
+                let loadedDef = await this.#loadDef(
+                    this.archive.files[i],
+                    rscache,
+                );
 
                 if (this.archive.files.length > 1) {
                     newFiles[loadedDef.id] = loadedDef;
@@ -51,7 +58,12 @@ export default class CacheDefinitionLoader {
             this.loader.configureForRevision(this.archive.revision);
         }
         try {
-            loadedDef = await this.loader.load(file.content, defId, rscache, this.options);
+            loadedDef = await this.loader.load(
+                file.content,
+                defId,
+                rscache,
+                this.options,
+            );
             file.content = undefined; //unload content since it will be reloaded
 
             if (!this.options.cacheResults) {
@@ -62,7 +74,12 @@ export default class CacheDefinitionLoader {
             file.def = loadedDef;
             return file;
         } catch (error) {
-            console.log(file.id, this.archive.files.length, defId, this.options);
+            console.log(
+                file.id,
+                this.archive.files.length,
+                defId,
+                this.options,
+            );
             throw error;
         }
     }

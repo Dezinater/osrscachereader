@@ -7,4 +7,13 @@ import CacheDumper from "./cacheReader/CacheDumper.js";
 import ModelGroup from "./cacheReader/helpers/ModelGroup.js";
 import { ModelDefinition } from "./cacheReader/loaders/ModelLoader.js";
 
-export { RSCache, IndexType, ConfigType, Matrix, GLTFExporter, CacheDumper, ModelGroup, ModelDefinition };
+export {
+    RSCache,
+    IndexType,
+    ConfigType,
+    Matrix,
+    GLTFExporter,
+    CacheDumper,
+    ModelGroup,
+    ModelDefinition,
+};

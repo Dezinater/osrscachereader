@@ -16,7 +16,9 @@ export default class CacheDumper {
 
     constructor(rscache, outFolder, ignoreList, progressFunction = () => {}) {
         if (isBrowser) {
-            console.error("Run with Node to dump Cache files, web browser dumping currently not implemented");
+            console.error(
+                "Run with Node to dump Cache files, web browser dumping currently not implemented",
+            );
             return;
         }
 
@@ -74,17 +76,28 @@ export default class CacheDumper {
         }
 
         const total = (this.failedJobs + this.completedJobs) / this.totalJobs;
-        const errorRate = this.failedJobs / (this.failedJobs + this.completedJobs);
+        const errorRate =
+            this.failedJobs / (this.failedJobs + this.completedJobs);
         this.progressFunction(total, errorRate);
     }
 
     async dumpConfig(configInfo, name) {
-        if (!fs.existsSync(this.outFolder + "CONFIGS")) fs.mkdirSync(this.outFolder + "CONFIGS");
-        if (!fs.existsSync(this.outFolder + "CONFIGS/" + name)) fs.mkdirSync(this.outFolder + "CONFIGS/" + name);
-        let files = await this.cache.getAllFiles(IndexType.CONFIGS.id, configInfo.id);
+        if (!fs.existsSync(this.outFolder + "CONFIGS"))
+            fs.mkdirSync(this.outFolder + "CONFIGS");
+        if (!fs.existsSync(this.outFolder + "CONFIGS/" + name))
+            fs.mkdirSync(this.outFolder + "CONFIGS/" + name);
+        let files = await this.cache.getAllFiles(
+            IndexType.CONFIGS.id,
+            configInfo.id,
+        );
         files.forEach((file) => {
             fs.writeFileSync(
-                this.outFolder + "CONFIGS/" + name + "/" + file.def.id + ".json",
+                this.outFolder +
+                    "CONFIGS/" +
+                    name +
+                    "/" +
+                    file.def.id +
+                    ".json",
                 JSON.stringify(file.def, null, 2),
             );
         });
@@ -93,7 +106,8 @@ export default class CacheDumper {
     async dumpIndex(indexInfo, name) {
         this.outFolderCheck();
         const archivesCount = this.cache.indicies[indexInfo.id].archivesCount;
-        if (!fs.existsSync(this.outFolder + name)) fs.mkdirSync(this.outFolder + name);
+        if (!fs.existsSync(this.outFolder + name))
+            fs.mkdirSync(this.outFolder + name);
 
         this.dumpArchives(indexInfo, name, 3591);
         this.totalJobs += archivesCount;
@@ -107,7 +121,13 @@ export default class CacheDumper {
             fs.mkdir(this.outFolder + name + "/" + archiveId, () => {
                 files.forEach((file) => {
                     fs.writeFile(
-                        this.outFolder + name + "/" + archiveId + "/" + file.def.id + ".json",
+                        this.outFolder +
+                            name +
+                            "/" +
+                            archiveId +
+                            "/" +
+                            file.def.id +
+                            ".json",
                         JSON.stringify(file.def, null, 2),
                         () => {
                             this.updateProgress(true);
@@ -117,7 +137,9 @@ export default class CacheDumper {
             });
         } catch (e) {
             this.updateProgress(false);
-            console.warn(`Error Loading { Index: ${indexInfo.id} Archive: ${archiveId} }`);
+            console.warn(
+                `Error Loading { Index: ${indexInfo.id} Archive: ${archiveId} }`,
+            );
             console.log(e);
         }
 
