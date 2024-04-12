@@ -2,40 +2,6 @@ import * as base64 from "../helpers/base64.js";
 
 import { createCanvas } from "canvas";
 
-function HSVtoRGB(h, s, v) {
-    let r, g, b, i, f, p, q, t;
-    if (arguments.length === 1) {
-        (s = h.s), (v = h.v), (h = h.h);
-    }
-    i = Math.floor(h * 6);
-    f = h * 6 - i;
-    p = v * (1 - s);
-    q = v * (1 - f * s);
-    t = v * (1 - (1 - f) * s);
-    switch (i % 6) {
-        case 0:
-            (r = v), (g = t), (b = p);
-            break;
-        case 1:
-            (r = q), (g = v), (b = p);
-            break;
-        case 2:
-            (r = p), (g = v), (b = t);
-            break;
-        case 3:
-            (r = p), (g = q), (b = v);
-            break;
-        case 4:
-            (r = t), (g = p), (b = v);
-            break;
-        case 5:
-            (r = v), (g = p), (b = q);
-            break;
-    }
-    //IT MUST BE * 255 AND ROUNDED INORDER TO GET THE CORRECT NUMBERS
-    return [Math.round(r * 255) / 255, Math.round(g * 255) / 255, Math.round(b * 255) / 255];
-}
-
 const BRIGHTNESS_MAX = 0.6;
 const HUE_OFFSET = 0.5 / 64;
 const SATURATION_OFFSET = 0.5 / 8;
@@ -545,9 +511,6 @@ export default class GLTFExporter {
             }
             let rscolor = def.faceColors[i];
             let color = HSLtoRGB(rscolor, BRIGHTNESS_MAX);
-            let r = ((color >> 16) & 0xff) / 255.0;
-            let g = ((color >> 8) & 0xff) / 255.0;
-            let b = (color & 0xff) / 255.0;
             let a = def.faceAlphas[i] ?? 0;
             let rscolorWithAlpha = this.combineColorAndAlpha(color, a);
             seenColors[lookupIndex] = color;

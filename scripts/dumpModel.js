@@ -2,10 +2,8 @@ import fs from "fs";
 
 import { RSCache, IndexType, ConfigType, GLTFExporter } from "osrscachereader";
 
-const DUMP_FRAMES = false;
-
 const npcsAndAnimations = [
-    {
+    /*{
         npcId: 7706, // zuk
         animations: [
             7564, // idle
@@ -45,7 +43,7 @@ const npcsAndAnimations = [
             7575, // flinch
             7676, // die
         ],
-    },
+    },*/
     {
         npcId: 7692, // bat
         animations: [
@@ -66,7 +64,7 @@ const npcsAndAnimations = [
             7585, // flinch
             7584, // die
         ],
-    },
+    },/*
     {
         npcId: 7697, // meleer
         animations: [
@@ -97,14 +95,7 @@ const npcsAndAnimations = [
             7567, // idle
             7569, // dying
         ],
-    },
-    /*{
-		npcId: 8636, // third age ranger. doesnt work, better luck next time
-		animations: [
-			808, // idle
-			819, // walking
-		]
-	}*/
+    },*/
 ];
 
 const processNpc = async ({ npcId, animations }) => {
@@ -117,7 +108,7 @@ const processNpc = async ({ npcId, animations }) => {
         // note: only need to ask for frames for the first animation
         let selectedAnimation = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animations[0]);
         let shiftedId = selectedAnimation.def.frameIDs[0] >> 16;
-        let frames = await model.loadSkeletonAnims(cache, model, shiftedId);
+        let frames = await model.loadSkeletonAnims(cache, model, shiftedId, false);
         loadedFrames.push(...frames);
 
         const loadedAnimations = [];
@@ -139,33 +130,6 @@ const processNpc = async ({ npcId, animations }) => {
         const path = `./out/${npc.id}_${model.id}.gltf`;
         fs.writeFileSync(path, gltf);
         console.log(`Wrote single file to ${path}`);
-
-        if (DUMP_FRAMES) {
-            let initialVertexPositionsX = model.vertexPositionsX;
-            let initialVertexPositionsY = model.vertexPositionsY;
-            let initialVertexPositionsZ = model.vertexPositionsZ;
-
-            let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map((x) => x.def);
-            for (const frame of frameDefs) {
-                model.vertexPositionsX = initialVertexPositionsX;
-                model.vertexPositionsY = initialVertexPositionsY;
-                model.vertexPositionsZ = initialVertexPositionsZ;
-                const loaded = model.loadFrame(model, frame);
-                model.vertexPositionsX = loaded.vertices.map((v) => v[0]);
-                model.vertexPositionsY = loaded.vertices.map((v) => -v[1]);
-                model.vertexPositionsZ = loaded.vertices.map((v) => -v[2]);
-
-                const exporter = new GLTFExporter(model);
-                //frames.forEach((frame) => exporter.addMorphTarget(frame.vertices));
-                //exporter.addAnimation(animation);
-
-                const gltf = exporter.export();
-
-                const path = `./out/${npc.id}_${model.id}_${animation.id}_${frame.id}.gltf`;
-                fs.writeFileSync(path, gltf);
-                console.log(`Wrote file to ${path}`);
-            }
-        }
     }
 };
 

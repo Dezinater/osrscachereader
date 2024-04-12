@@ -334,9 +334,9 @@ export class ModelDefinition {
         return this;
     }
 
-    async loadSkeletonAnims(cache, model, id) {
+    async loadSkeletonAnims(cache, model, id, invertZ = true) {
         let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, id)).map((x) => x.def);
-        let loadedAnims = frameDefs.map((frameDef) => this.loadFrame(model, frameDef));
+        let loadedAnims = frameDefs.map((frameDef) => this.loadFrame(model, frameDef, invertZ));
 
         return loadedAnims;
     }
@@ -377,10 +377,10 @@ export class ModelDefinition {
         };
     }
 
-    loadFrame(model, frame) {
+    loadFrame(model, frame, invertZ = true) {
         let verticesX = [...model.vertexPositionsX];
         let verticesY = [...model.vertexPositionsY];
-        let verticesZ = [...model.vertexPositionsZ];
+        let verticesZ = invertZ ? model.vertexPositionsZ.map((z) => -z) : [...model.vertexPositionsZ];
         let framemap = frame.framemap;
         let animOffsets = {
             x: 0,
