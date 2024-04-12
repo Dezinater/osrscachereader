@@ -49,9 +49,7 @@ class class127 {
 
     method702(var1) {
         let var2 = this.method706(var1);
-        return var2 >= 0 && var2 < this.field1203.length
-            ? this.field1203[var2]
-            : null;
+        return var2 >= 0 && var2 < this.field1203.length ? this.field1203[var2] : null;
     }
 
     method705() {
@@ -60,10 +58,7 @@ class class127 {
         this.field1217 = new Array(this.method701() + 1).fill(0);
 
         for (let var1 = this.method704(); var1 <= this.method700(); ++var1) {
-            this.field1217[var1 - this.method704()] = AttackOption.method590(
-                this,
-                var1,
-            );
+            this.field1217[var1 - this.method704()] = AttackOption.method590(this, var1);
         }
 
         this.field1203 = null;
@@ -75,9 +70,7 @@ class class127 {
         if (var1 < this.method704()) {
             return this.field1220;
         } else {
-            return var1 > this.method700()
-                ? this.field1216
-                : this.field1217[var1 - this.method704()];
+            return var1 > this.method700() ? this.field1216 : this.field1217[var1 - this.method704()];
         }
     }
 
@@ -211,13 +204,7 @@ export class class129 {
             foundValue = this.values[0];
         }
 
-        return new this(
-            foundValue[0],
-            foundValue[1],
-            foundValue[2],
-            foundValue[3],
-            foundValue[5],
-        );
+        return new this(foundValue[0], foundValue[1], foundValue[2], foundValue[3], foundValue[5]);
     }
 
     constructor(var1, var2, var3, var4, var5) {
@@ -246,13 +233,7 @@ export class class128 {
             foundValue = this.values[0];
         }
 
-        return new this(
-            foundValue[0],
-            foundValue[1],
-            foundValue[2],
-            foundValue[3],
-            foundValue[5],
-        );
+        return new this(foundValue[0], foundValue[1], foundValue[2], foundValue[3], foundValue[5]);
     }
 
     constructor(var1, var2, var3, var4) {
@@ -287,9 +268,7 @@ export default class AnimayaLoader {
                 dataview.readUint16();
                 def.field1257 = dataview.readUint8();
                 let var3 = dataview.readUint16();
-                def.field1265 = new Array(
-                    framemap.animayaSkeleton.bones.length,
-                );
+                def.field1265 = new Array(framemap.animayaSkeleton.bones.length);
                 def.field1258 = new Array(framemap.length);
                 let var4 = new Array(var3);
 

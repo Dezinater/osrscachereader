@@ -28,13 +28,7 @@ export default class CacheRequester {
         this.readSector(compressedData, segment, archiveId);
         compressedData = compressedData.buffer;
 
-        return this.workerPool.doWork(
-            index,
-            segment,
-            archiveId,
-            compressedData,
-            key,
-        );
+        return this.workerPool.doWork(index, segment, archiveId, compressedData, key);
     }
 
     readData(index, size, segment, archiveId = 0, keys) {
@@ -58,18 +52,14 @@ export default class CacheRequester {
             let decompressedData;
             if (compressionOpcode == 0) {
                 //none
-                data = new Uint8Array(
-                    dataview.buffer.slice(5, 5 + compressedLength),
-                );
+                data = new Uint8Array(dataview.buffer.slice(5, 5 + compressedLength));
                 data = this.decrypt(data, compressedLength, key);
                 decompressedData = data;
                 index.revision = dataview.getUint16(data.buffer.byteLength);
             } else if (compressionOpcode == 1) {
                 //bz2
                 let decompressedLength = dataview.getInt32(5);
-                data = new Uint8Array(
-                    dataview.buffer.slice(9, 9 + compressedLength),
-                );
+                data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
                 this.decrypt(data, compressedLength, key);
 
                 let bzData = new Uint8Array(4 + data.length);
@@ -82,14 +72,8 @@ export default class CacheRequester {
                 decompressedData = compressjs.Bzip2.decompressFile(bzData);
             } else if (compressionOpcode == 2) {
                 //gzip
-                let unencryptedData = new Uint8Array(
-                    dataview.buffer.slice(5, 9 + compressedLength),
-                );
-                data = this.decrypt(
-                    unencryptedData,
-                    unencryptedData.length,
-                    key,
-                );
+                let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
+                data = this.decrypt(unencryptedData, unencryptedData.length, key);
                 let leftOver = unencryptedData.slice(data.length);
 
                 let mergedArray = new Uint8Array(data.length + leftOver.length);
@@ -137,20 +121,11 @@ export default class CacheRequester {
         }
 
         let data;
-        if (
-            nextSector != 0 ||
-            buffer.byteLength == 512 ||
-            buffer.byteLength % 512 == 0
-        )
-            data = new Uint8Array(
-                dataview.buffer.slice(convertedPos + 8, convertedPos + 520),
-            );
+        if (nextSector != 0 || buffer.byteLength == 512 || buffer.byteLength % 512 == 0)
+            data = new Uint8Array(dataview.buffer.slice(convertedPos + 8, convertedPos + 520));
         else
             data = new Uint8Array(
-                dataview.buffer.slice(
-                    convertedPos + 8,
-                    convertedPos + 8 + (buffer.byteLength % 512),
-                ),
+                dataview.buffer.slice(convertedPos + 8, convertedPos + 8 + (buffer.byteLength % 512)),
             );
 
         buffer.set(data, dataview.getInt16(convertedPos + 2) * 512);
@@ -176,9 +151,7 @@ export default class CacheRequester {
             let v1 = dataview.readInt32();
             let sum = GOLDEN_RATIO * ROUNDS;
             for (let i = 0; i < ROUNDS; ++i) {
-                v1 -=
-                    (((v0 << 4) ^ (v0 >>> 5)) + v0) ^
-                    (sum + key[(sum >>> 11) & 3]);
+                v1 -= (((v0 << 4) ^ (v0 >>> 5)) + v0) ^ (sum + key[(sum >>> 11) & 3]);
                 sum -= GOLDEN_RATIO;
                 v0 -= (((v1 << 4) ^ (v1 >>> 5)) + v1) ^ (sum + key[sum & 3]);
             }

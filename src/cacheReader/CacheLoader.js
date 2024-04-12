@@ -31,10 +31,7 @@ export default class CacheLoader {
         if (path == "latest" || path == undefined) {
             //load by current date
             this.loadByTimestamp(new Date());
-        } else if (
-            path.constructor != undefined &&
-            path.constructor.name == "Date"
-        ) {
+        } else if (path.constructor != undefined && path.constructor.name == "Date") {
             //load by date
             this.loadByTimestamp(path);
         } else if (!isNaN(path)) {
@@ -54,9 +51,7 @@ export default class CacheLoader {
         return new Promise(async (resolve) => {
             await this.cachePromise;
             const datPromiseResults = await this.promises.datFile;
-            const indexPromiseResults = await Promise.all(
-                this.promises.indexFiles,
-            );
+            const indexPromiseResults = await Promise.all(this.promises.indexFiles);
             const xteasResults = await this.promises.xteas;
             const result = {
                 datFile: datPromiseResults,
@@ -78,17 +73,13 @@ export default class CacheLoader {
     }
 
     handleZip(zipBufferPromise) {
-        const zip = zipBufferPromise.then((zip) =>
-            unzipSync(new Uint8Array(zip)),
-        );
+        const zip = zipBufferPromise.then((zip) => unzipSync(new Uint8Array(zip)));
         this.promises.datFile = zip.then((dir) => dir["cache/" + this.datFile]);
         this.promises.indexFiles = this.indexFiles.map((indexFile, i) => {
             return zip
                 .then((dir) => dir["cache/" + indexFile])
                 .catch((_) => {
-                    console.warn(
-                        `${IndexType.keyOf(i)} (Index ${i}) will not load without ${indexFile}`,
-                    );
+                    console.warn(`${IndexType.keyOf(i)} (Index ${i}) will not load without ${indexFile}`);
                 });
         });
         this.promises.xteas = zip
@@ -105,17 +96,10 @@ export default class CacheLoader {
             })
             .then((caches) => {
                 let filtered = caches.data.filter(
-                    (x) =>
-                        x.game == "oldschool" &&
-                        x.builds.length > 0 &&
-                        x.builds[0].major == version,
+                    (x) => x.game == "oldschool" && x.builds.length > 0 && x.builds[0].major == version,
                 );
-                let sorted = filtered.sort(
-                    (a, b) => new Date(b.timestamp) - new Date(a.timestamp),
-                );
-                this.fetchURL(
-                    `https://archive.openrs2.org/caches/runescape/${sorted[0].id}/disk.zip`,
-                );
+                let sorted = filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                this.fetchURL(`https://archive.openrs2.org/caches/runescape/${sorted[0].id}/disk.zip`);
             });
     }
 
@@ -126,24 +110,15 @@ export default class CacheLoader {
             })
             .then((caches) => {
                 let filtered = caches.data.filter((x) => x.game == "oldschool");
-                filtered.forEach(
-                    (x) =>
-                        (x.score = Math.abs(new Date(x.timestamp) - timestamp)),
-                ); //rank them by distance
+                filtered.forEach((x) => (x.score = Math.abs(new Date(x.timestamp) - timestamp))); //rank them by distance
                 let sorted = filtered.sort((a, b) => a.score - b.score);
-                this.fetchURL(
-                    `https://archive.openrs2.org/caches/runescape/${sorted[0].id}/disk.zip`,
-                );
+                this.fetchURL(`https://archive.openrs2.org/caches/runescape/${sorted[0].id}/disk.zip`);
             });
     }
 
     fetchURL(url) {
         if (url.endsWith(".zip")) {
-            this.handleZip(
-                axios
-                    .get(url, { responseType: "arraybuffer" })
-                    .then((zip) => zip.data),
-            );
+            this.handleZip(axios.get(url, { responseType: "arraybuffer" }).then((zip) => zip.data));
         } else {
             if (!url.endsWith("/")) {
                 url += "/";
@@ -160,9 +135,7 @@ export default class CacheLoader {
                     .get(url + indexFile, { responseType: "arraybuffer" })
                     .then((x) => new Uint8Array(x.data))
                     .catch((_) => {
-                        console.warn(
-                            `${IndexType.keyOf(i)} (Index ${i}) will not load without ${indexFile}`,
-                        );
+                        console.warn(`${IndexType.keyOf(i)} (Index ${i}) will not load without ${indexFile}`);
                     });
                 this.promises.indexFiles.push(indexPromise);
             });
@@ -170,9 +143,7 @@ export default class CacheLoader {
                 .get(url + "xteas.json", { responseType: "json" })
                 .then((x) => this.readXteas(x.data))
                 .catch((e) => {
-                    console.warn(
-                        "Maps (Index 5) will not load without xteas.json",
-                    );
+                    console.warn("Maps (Index 5) will not load without xteas.json");
                 });
         }
 
@@ -200,9 +171,7 @@ export default class CacheLoader {
                 }),
             );
             this.indexFiles.forEach(async (indexFile) => {
-                let newPromise = new Promise((resolve) =>
-                    fs.readFile(path + indexFile, (err, data) => resolve(data)),
-                );
+                let newPromise = new Promise((resolve) => fs.readFile(path + indexFile, (err, data) => resolve(data)));
                 this.promises.indexFiles.push(newPromise);
             });
 

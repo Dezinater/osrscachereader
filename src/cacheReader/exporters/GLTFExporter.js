@@ -33,11 +33,7 @@ function HSVtoRGB(h, s, v) {
             break;
     }
     //IT MUST BE * 255 AND ROUNDED INORDER TO GET THE CORRECT NUMBERS
-    return [
-        Math.round(r * 255) / 255,
-        Math.round(g * 255) / 255,
-        Math.round(b * 255) / 255,
-    ];
+    return [Math.round(r * 255) / 255, Math.round(g * 255) / 255, Math.round(b * 255) / 255];
 }
 
 const BRIGHTNESS_MAX = 0.6;
@@ -96,10 +92,7 @@ function HSLtoRGB(hsl, brightness) {
             break;
     }
 
-    let rgb =
-        (parseInt(r * 256.0) << 16) |
-        (parseInt(g * 256.0) << 8) |
-        parseInt(b * 256.0);
+    let rgb = (parseInt(r * 256.0) << 16) | (parseInt(g * 256.0) << 8) | parseInt(b * 256.0);
 
     rgb = adjustForBrightness(rgb, brightness);
 
@@ -118,11 +111,7 @@ function adjustForBrightness(rgb, brightness) {
     g = Math.pow(g, brightness);
     b = Math.pow(b, brightness);
 
-    return (
-        (parseInt(r * 256.0) << 16) |
-        (parseInt(g * 256.0) << 8) |
-        parseInt(b * 256.0)
-    );
+    return (parseInt(r * 256.0) << 16) | (parseInt(g * 256.0) << 8) | parseInt(b * 256.0);
 }
 
 class GLTFFile {
@@ -150,14 +139,10 @@ class GLTFFile {
     };
 
     addIndicies(indicies) {
-        let indicesBytes = new Uint8Array(
-            new Uint16Array(indicies.flat()).buffer,
-        );
+        let indicesBytes = new Uint8Array(new Uint16Array(indicies.flat()).buffer);
         let buffersAmount = this.buffers.length;
         this.buffers.push({
-            uri:
-                "data:application/octet-stream;base64," +
-                base64.bytesToBase64(indicesBytes),
+            uri: "data:application/octet-stream;base64," + base64.bytesToBase64(indicesBytes),
             byteLength: indicesBytes.length,
         });
 
@@ -168,9 +153,7 @@ class GLTFFile {
             target: 34963,
         });
 
-        let max = indicies
-            .flat()
-            .reduce((max, current) => Math.max(max, current), 0);
+        let max = indicies.flat().reduce((max, current) => Math.max(max, current), 0);
         this.accessors.push({
             bufferView: buffersAmount,
             byteOffset: 0,
@@ -205,15 +188,11 @@ class GLTFFile {
             ];
         }
 
-        let verticiesBytes = new Uint8Array(
-            new Float32Array(verticies.flat()).buffer,
-        );
+        let verticiesBytes = new Uint8Array(new Float32Array(verticies.flat()).buffer);
 
         let buffersAmount = this.buffers.length;
         this.buffers.push({
-            uri:
-                "data:application/octet-stream;base64," +
-                base64.bytesToBase64(verticiesBytes),
+            uri: "data:application/octet-stream;base64," + base64.bytesToBase64(verticiesBytes),
             byteLength: verticiesBytes.length,
         });
 
@@ -250,9 +229,7 @@ class GLTFFile {
             ];
         }
 
-        let verticiesBytes = new Uint8Array(
-            new Float32Array(verticies.flat()).buffer,
-        );
+        let verticiesBytes = new Uint8Array(new Float32Array(verticies.flat()).buffer);
 
         if (!("targets" in this.meshes[0].primitives[primitive])) {
             this.meshes[0].primitives[primitive].targets = [];
@@ -273,9 +250,7 @@ class GLTFFile {
         });
 
         this.buffers.push({
-            uri:
-                "data:application/octet-stream;base64," +
-                base64.bytesToBase64(verticiesBytes),
+            uri: "data:application/octet-stream;base64," + base64.bytesToBase64(verticiesBytes),
             byteLength: verticiesBytes.length,
         });
         this.bufferViews.push({
@@ -305,22 +280,16 @@ class GLTFFile {
             return oneHot;
         }); //one hot encoding
 
-        let targetBytes = new Uint8Array(
-            new Float32Array(targets.flat()).buffer,
-        );
+        let targetBytes = new Uint8Array(new Float32Array(targets.flat()).buffer);
         let lengthsBytes = new Uint8Array(new Float32Array(lengths).buffer);
 
-        let mergedBytes = new Uint8Array(
-            lengthsBytes.length + targetBytes.length,
-        );
+        let mergedBytes = new Uint8Array(lengthsBytes.length + targetBytes.length);
         mergedBytes.set(lengthsBytes);
         mergedBytes.set(targetBytes, lengthsBytes.length);
 
         let buffersAmount = this.buffers.length;
         this.buffers.push({
-            uri:
-                "data:application/octet-stream;base64," +
-                base64.bytesToBase64(mergedBytes),
+            uri: "data:application/octet-stream;base64," + base64.bytesToBase64(mergedBytes),
             byteLength: mergedBytes.length,
         });
 
@@ -420,9 +389,7 @@ class GLTFFile {
 
         let buffersAmount = this.buffers.length;
         this.buffers.push({
-            uri:
-                "data:application/gltf-buffer;base64," +
-                base64.bytesToBase64(uvBytes),
+            uri: "data:application/gltf-buffer;base64," + base64.bytesToBase64(uvBytes),
             byteLength: uvBytes.length,
         });
 
@@ -449,10 +416,8 @@ class GLTFFile {
             min,
         });
 
-        this.meshes[0].primitives[primitive].attributes.TEXCOORD_0 =
-            this.accessors.length - 1;
-        this.meshes[0].primitives[primitive].material =
-            this.materials.length - 1;
+        this.meshes[0].primitives[primitive].attributes.TEXCOORD_0 = this.accessors.length - 1;
+        this.meshes[0].primitives[primitive].material = this.materials.length - 1;
     }
 }
 
@@ -472,8 +437,7 @@ export default class GLTFExporter {
      */
     remappedVertices = {};
 
-    combineColorAndAlpha = (color, alpha) =>
-        (color & 0xffffff) | ((alpha & 0xff) << 24);
+    combineColorAndAlpha = (color, alpha) => (color & 0xffffff) | ((alpha & 0xff) << 24);
 
     constructor(def) {
         this.file = new GLTFFile();
@@ -492,9 +456,7 @@ export default class GLTFExporter {
             const isAlpha = alpha !== 0;
             const dest = isAlpha ? this.alphaVertices : this.verticies;
             const destIndices = isAlpha ? alphaIndices : indices;
-            const destPairs = isAlpha
-                ? alphaVertexColorPairs
-                : vertexColorPairs;
+            const destPairs = isAlpha ? alphaVertexColorPairs : vertexColorPairs;
             if (isAlpha) {
                 this.alphaFaces.push(i);
             } else {
@@ -514,11 +476,7 @@ export default class GLTFExporter {
                 if (!(pairKey in destPairs[idx])) {
                     // encountering this vertex-color pair for the first time
                     destPairs[idx][pairKey] = dest.length;
-                    dest.push([
-                        def.vertexPositionsX[idx],
-                        -def.vertexPositionsY[idx],
-                        -def.vertexPositionsZ[idx],
-                    ]);
+                    dest.push([def.vertexPositionsX[idx], -def.vertexPositionsY[idx], -def.vertexPositionsZ[idx]]);
                 }
                 const vertexIndex = destPairs[idx][pairKey];
                 destIndices.push(vertexIndex);
@@ -580,10 +538,7 @@ export default class GLTFExporter {
         const colorToPaletteIndex = {};
         const order = [];
         for (let i = 0; i < def.faceColors.length; ++i) {
-            const lookupIndex = this.combineColorAndAlpha(
-                def.faceColors[i],
-                def.faceAlphas[i] ?? 0,
-            );
+            const lookupIndex = this.combineColorAndAlpha(def.faceColors[i], def.faceAlphas[i] ?? 0);
             // ensure unique color + alpha combinations
             if (seenColors[lookupIndex]) {
                 continue;
@@ -629,15 +584,9 @@ export default class GLTFExporter {
             const lookupKey = this.combineColorAndAlpha(faceColor, faceAlpha);
             const paletteIndex = colorToPaletteIndex[lookupKey];
             // remap to new position within the vertices based on its color and alpha
-            let v1 =
-                this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey]
-                    .idx;
-            let v2 =
-                this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey]
-                    .idx;
-            let v3 =
-                this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey]
-                    .idx;
+            let v1 = this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey].idx;
+            let v2 = this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey].idx;
+            let v3 = this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey].idx;
             normalUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
             normalUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
             normalUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
@@ -649,15 +598,9 @@ export default class GLTFExporter {
             const lookupKey = this.combineColorAndAlpha(faceColor, faceAlpha);
             const paletteIndex = colorToPaletteIndex[lookupKey];
             // remap to new position within the vertices based on its color and alpha
-            let v1 =
-                this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey]
-                    .idx;
-            let v2 =
-                this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey]
-                    .idx;
-            let v3 =
-                this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey]
-                    .idx;
+            let v1 = this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey].idx;
+            let v2 = this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey].idx;
+            let v3 = this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey].idx;
             alphaUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
             alphaUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
             alphaUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];

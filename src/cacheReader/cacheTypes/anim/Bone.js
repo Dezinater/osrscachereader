@@ -26,15 +26,9 @@ export default class Bone {
     }
 
     init() {
-        this.rotations = new Array(this.matricies.length)
-            .fill()
-            .map((x) => new Array(3));
-        this.translations = new Array(this.matricies.length)
-            .fill()
-            .map((x) => new Array(3));
-        this.vectorMagnitudes = new Array(this.matricies.length)
-            .fill()
-            .map((x) => new Array(3));
+        this.rotations = new Array(this.matricies.length).fill().map((x) => new Array(3));
+        this.translations = new Array(this.matricies.length).fill().map((x) => new Array(3));
+        this.vectorMagnitudes = new Array(this.matricies.length).fill().map((x) => new Array(3));
         let var7 = new Matrix();
 
         for (let i = 0; i < this.matricies.length; ++i) {

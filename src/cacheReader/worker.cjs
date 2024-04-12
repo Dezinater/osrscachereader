@@ -37,9 +37,7 @@ onmessage = async function (e) {
         decompressedData = compressjs.Bzip2.decompressFile(bzData);
     } else if (compressionOpcode == 2) {
         //gzip
-        let unencryptedData = new Uint8Array(
-            dataview.buffer.slice(5, 9 + compressedLength),
-        );
+        let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
         data = decrypt(unencryptedData, unencryptedData.length, e?.key);
         let leftOver = unencryptedData.slice(data.length);
 
@@ -66,9 +64,7 @@ onmessage = async function (e) {
 
     let length = decompressedData.byteLength;
     const finalBuffer = decompressedData.buffer.slice(0, length);
-    postMessage({ index, archiveId, decompressedData: finalBuffer }, [
-        finalBuffer,
-    ]);
+    postMessage({ index, archiveId, decompressedData: finalBuffer }, [finalBuffer]);
 };
 
 function decrypt(data, len, key) {
@@ -89,8 +85,7 @@ function decrypt(data, len, key) {
         let v1 = dataview.readInt32();
         let sum = GOLDEN_RATIO * ROUNDS;
         for (let i = 0; i < ROUNDS; ++i) {
-            v1 -=
-                (((v0 << 4) ^ (v0 >>> 5)) + v0) ^ (sum + key[(sum >>> 11) & 3]);
+            v1 -= (((v0 << 4) ^ (v0 >>> 5)) + v0) ^ (sum + key[(sum >>> 11) & 3]);
             sum -= GOLDEN_RATIO;
             v0 -= (((v1 << 4) ^ (v1 >>> 5)) + v1) ^ (sum + key[sum & 3]);
         }

@@ -121,12 +121,7 @@ export default class MusicTrackLoader {
 
             offset += 5 * tempoOpcodes;
             offset +=
-                2 *
-                (noteOnOpcodes +
-                    noteOffOpcodes +
-                    ctrlChangeOpcodes +
-                    wheelChangeOpcodes +
-                    keyAfterTchOpcodes);
+                2 * (noteOnOpcodes + noteOffOpcodes + ctrlChangeOpcodes + wheelChangeOpcodes + keyAfterTchOpcodes);
             offset += chnnlAfterTchOpcodes + progmChangeOpcodes;
             var13 = dataview.getPosition();
             opcode =
@@ -140,11 +135,7 @@ export default class MusicTrackLoader {
                 keyAfterTchOpcodes +
                 progmChangeOpcodes;
 
-            for (
-                controlChangeIndex = 0;
-                controlChangeIndex < opcode;
-                ++controlChangeIndex
-            ) {
+            for (controlChangeIndex = 0; controlChangeIndex < opcode; ++controlChangeIndex) {
                 dataview.readVarInt();
             }
 
@@ -166,12 +157,8 @@ export default class MusicTrackLoader {
 
             let var29;
             for (var29 = 0; var29 < ctrlChangeOpcodes; ++var29) {
-                controllerNumber =
-                    (controllerNumber + dataview.readUint8()) & 127;
-                if (
-                    controllerNumber == CONTROLLER_BANK_SELECT ||
-                    controllerNumber == CONTROLLER_BANK_SELECT_2
-                ) {
+                controllerNumber = (controllerNumber + dataview.readUint8()) & 127;
+                if (controllerNumber == CONTROLLER_BANK_SELECT || controllerNumber == CONTROLLER_BANK_SELECT_2) {
                     ++progmChangeOpcodes;
                 } else if (controllerNumber == CONTROLLER_MODULATION_WHEEL) {
                     ++modulationWheelSize;
@@ -185,25 +172,13 @@ export default class MusicTrackLoader {
                     ++panSize;
                 } else if (controllerNumber == CONTROLLER_PAN_2) {
                     ++pan2Size;
-                } else if (
-                    controllerNumber ==
-                    CONTROLLER_NON_REGISTERED_PARAMETER_NUMBER_MSB
-                ) {
+                } else if (controllerNumber == CONTROLLER_NON_REGISTERED_PARAMETER_NUMBER_MSB) {
                     ++nonRegisteredMsbSize;
-                } else if (
-                    controllerNumber ==
-                    CONTROLLER_NON_REGISTERED_PARAMETER_NUMBER_LSB
-                ) {
+                } else if (controllerNumber == CONTROLLER_NON_REGISTERED_PARAMETER_NUMBER_LSB) {
                     ++nonRegisteredLsbSize;
-                } else if (
-                    controllerNumber ==
-                    CONTROLLER_REGISTERED_PARAMETER_NUMBER_MSB
-                ) {
+                } else if (controllerNumber == CONTROLLER_REGISTERED_PARAMETER_NUMBER_MSB) {
                     ++registeredNumberMsb;
-                } else if (
-                    controllerNumber ==
-                    CONTROLLER_REGISTERED_PARAMETER_NUMBER_LSB
-                ) {
+                } else if (controllerNumber == CONTROLLER_REGISTERED_PARAMETER_NUMBER_LSB) {
                     ++registeredLsbSize;
                 } else if (
                     controllerNumber != CONTROLLER_DAMPER_PEDAL &&
@@ -234,9 +209,7 @@ export default class MusicTrackLoader {
             let panOffset = dataview.getPosition();
             dataview.addPosition(panSize);
             let notesIndex = dataview.getPosition();
-            dataview.addPosition(
-                noteOnOpcodes + noteOffOpcodes + keyAfterTchOpcodes,
-            );
+            dataview.addPosition(noteOnOpcodes + noteOffOpcodes + keyAfterTchOpcodes);
             let notesOnIndex = dataview.getPosition();
             dataview.addPosition(noteOnOpcodes);
             let otherIndex = dataview.getPosition();
@@ -342,10 +315,7 @@ export default class MusicTrackLoader {
                                 var51.writeInt8(CONTROL_CHANGE + channel);
                             }
 
-                            controllerNumber =
-                                (controllerNumber +
-                                    dataview.getInt8(controlChangeIndex++)) &
-                                127;
+                            controllerNumber = (controllerNumber + dataview.getInt8(controlChangeIndex++)) & 127;
                             var51.writeInt8(controllerNumber);
                             let var66;
                             if (
@@ -353,62 +323,31 @@ export default class MusicTrackLoader {
                                 controllerNumber == CONTROLLER_BANK_SELECT_2
                             ) {
                                 var66 = dataview.getInt8(programChangeIndex++);
-                            } else if (
-                                controllerNumber == CONTROLLER_MODULATION_WHEEL
-                            ) {
-                                var66 = dataview.getInt8(
-                                    modulationWheelOffset++,
-                                );
-                            } else if (
-                                controllerNumber == CONTROLLER_MODULATION_WHEEL2
-                            ) {
-                                var66 = dataview.getInt8(
-                                    modulationWheel2Offset++,
-                                );
-                            } else if (
-                                controllerNumber == CONTROLLER_CHANNEL_VOLUME
-                            ) {
+                            } else if (controllerNumber == CONTROLLER_MODULATION_WHEEL) {
+                                var66 = dataview.getInt8(modulationWheelOffset++);
+                            } else if (controllerNumber == CONTROLLER_MODULATION_WHEEL2) {
+                                var66 = dataview.getInt8(modulationWheel2Offset++);
+                            } else if (controllerNumber == CONTROLLER_CHANNEL_VOLUME) {
                                 var66 = dataview.getInt8(channelVolumeOffset++);
-                            } else if (
-                                controllerNumber == CONTROLLER_CHANNEL_VOLUME_2
-                            ) {
-                                var66 = dataview.getInt8(
-                                    channelVolume2Offset++,
-                                );
+                            } else if (controllerNumber == CONTROLLER_CHANNEL_VOLUME_2) {
+                                var66 = dataview.getInt8(channelVolume2Offset++);
                             } else if (controllerNumber == CONTROLLER_PAN) {
                                 var66 = dataview.getInt8(panOffset++);
                             } else if (controllerNumber == CONTROLLER_PAN_2) {
                                 var66 = dataview.getInt8(pan2Offset++);
-                            } else if (
-                                controllerNumber ==
-                                CONTROLLER_NON_REGISTERED_PARAMETER_NUMBER_MSB
-                            ) {
-                                var66 = dataview.getInt8(
-                                    nonRegisteredMsbIndex++,
-                                );
-                            } else if (
-                                controllerNumber ==
-                                CONTROLLER_NON_REGISTERED_PARAMETER_NUMBER_LSB
-                            ) {
-                                var66 = dataview.getInt8(
-                                    nonRegisteredLsbIndex++,
-                                );
-                            } else if (
-                                controllerNumber ==
-                                CONTROLLER_REGISTERED_PARAMETER_NUMBER_MSB
-                            ) {
+                            } else if (controllerNumber == CONTROLLER_NON_REGISTERED_PARAMETER_NUMBER_MSB) {
+                                var66 = dataview.getInt8(nonRegisteredMsbIndex++);
+                            } else if (controllerNumber == CONTROLLER_NON_REGISTERED_PARAMETER_NUMBER_LSB) {
+                                var66 = dataview.getInt8(nonRegisteredLsbIndex++);
+                            } else if (controllerNumber == CONTROLLER_REGISTERED_PARAMETER_NUMBER_MSB) {
                                 var66 = dataview.getInt8(registeredMsbIndex++);
-                            } else if (
-                                controllerNumber ==
-                                CONTROLLER_REGISTERED_PARAMETER_NUMBER_LSB
-                            ) {
+                            } else if (controllerNumber == CONTROLLER_REGISTERED_PARAMETER_NUMBER_LSB) {
                                 var66 = dataview.getInt8(registeredLsbIndex++);
                             } else if (
                                 controllerNumber != CONTROLLER_DAMPER_PEDAL &&
                                 controllerNumber != CONTROLLER_PORTAMENTO &&
                                 controllerNumber != CONTROLLER_ALL_SOUND_OFF &&
-                                controllerNumber !=
-                                    CONTROLLER_RESET_ALL_CONTROLLERS &&
+                                controllerNumber != CONTROLLER_RESET_ALL_CONTROLLERS &&
                                 controllerNumber != CONTROLLER_ALL_NOTES_OFF
                             ) {
                                 var66 = dataview.getInt8(otherIndex++);
@@ -425,8 +364,7 @@ export default class MusicTrackLoader {
                             }
 
                             var56 += dataview.getInt8(pitchWheelLowIndex++);
-                            var56 +=
-                                dataview.getInt8(pitchWheelHighIndex++) << 7;
+                            var56 += dataview.getInt8(pitchWheelHighIndex++) << 7;
                             var51.writeInt8(var56 & 127);
                             var51.writeInt8((var56 >> 7) & 127);
                         } else if (var62 == JAG_CHANNEL_PRESSURE) {
@@ -438,9 +376,7 @@ export default class MusicTrackLoader {
                             var51.writeInt8(var57 & 127);
                         } else if (var62 == JAG_POLY_PRESSURE) {
                             if (var65) {
-                                var51.writeInt8(
-                                    POLYPHONIC_KEY_PRESSURE + channel,
-                                );
+                                var51.writeInt8(POLYPHONIC_KEY_PRESSURE + channel);
                             }
 
                             var53 += dataview.getInt8(notesIndex++);
@@ -452,9 +388,7 @@ export default class MusicTrackLoader {
                                 var51.writeInt8(PROGRAM_CHANGE + channel);
                             }
 
-                            var51.writeInt8(
-                                dataview.getInt8(programChangeIndex++),
-                            );
+                            var51.writeInt8(dataview.getInt8(programChangeIndex++));
                         } else {
                             throw new RuntimeException();
                         }

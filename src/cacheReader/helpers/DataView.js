@@ -158,11 +158,7 @@ DataView.prototype.readUnsignedIntSmartShortCompat = function () {
     let var1 = 0;
 
     let var2;
-    for (
-        var2 = this.readUnsignedShortSmart();
-        var2 == 32767;
-        var2 = this.readUnsignedShortSmart()
-    ) {
+    for (var2 = this.readUnsignedShortSmart(); var2 == 32767; var2 = this.readUnsignedShortSmart()) {
         var1 += 32767;
     }
 

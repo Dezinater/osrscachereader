@@ -79,8 +79,7 @@ export default class KitLoader {
                 var length = dataview.readUint8();
                 def.models = [];
 
-                for (var index = 0; index < length; ++index)
-                    def.models[index] = dataview.readUint16();
+                for (var index = 0; index < length; ++index) def.models[index] = dataview.readUint16();
                 break;
 
             case 3:
@@ -111,8 +110,7 @@ export default class KitLoader {
 
             default:
                 if (opcode >= 60 && opcode < 70) {
-                    if (def.chatheadModels == undefined)
-                        def.chatheadModels = [];
+                    if (def.chatheadModels == undefined) def.chatheadModels = [];
                     def.chatheadModels[opcode - 60] = dataview.readUint16();
                 } else {
                     throw "Unknown opcode found: " + opcode;

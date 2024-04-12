@@ -115,30 +115,20 @@ const processNpc = async ({ npcId, animations }) => {
 
         const loadedFrames = [];
         // note: only need to ask for frames for the first animation
-        let selectedAnimation = await cache.getFile(
-            IndexType.CONFIGS.id,
-            ConfigType.SEQUENCE.id,
-            animations[0],
-        );
+        let selectedAnimation = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animations[0]);
         let shiftedId = selectedAnimation.def.frameIDs[0] >> 16;
         let frames = await model.loadSkeletonAnims(cache, model, shiftedId);
         loadedFrames.push(...frames);
 
         const loadedAnimations = [];
         for (const animId of animations) {
-            const animationDef = await cache.getFile(
-                IndexType.CONFIGS.id,
-                ConfigType.SEQUENCE.id,
-                animId,
-            );
+            const animationDef = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animId);
             let animation = animationDef.def;
             loadedAnimations.push(animation);
         }
 
         const exporter = new GLTFExporter(model);
-        loadedFrames.forEach((frame) =>
-            exporter.addMorphTarget(frame.vertices),
-        );
+        loadedFrames.forEach((frame) => exporter.addMorphTarget(frame.vertices));
         exporter.addColors(model);
         loadedAnimations.forEach((animation) => {
             exporter.addAnimation(animation);
@@ -155,9 +145,7 @@ const processNpc = async ({ npcId, animations }) => {
             let initialVertexPositionsY = model.vertexPositionsY;
             let initialVertexPositionsZ = model.vertexPositionsZ;
 
-            let frameDefs = (
-                await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)
-            ).map((x) => x.def);
+            let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map((x) => x.def);
             for (const frame of frameDefs) {
                 model.vertexPositionsX = initialVertexPositionsX;
                 model.vertexPositionsY = initialVertexPositionsY;

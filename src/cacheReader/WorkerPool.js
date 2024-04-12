@@ -16,21 +16,16 @@ export default class WorkerPool {
             (workerObject) =>
                 (workerObject.worker.onmessage = (event) => {
                     const data = event.data;
-                    data.decompressedData = new Uint8Array(
-                        data.decompressedData,
-                    );
+                    data.decompressedData = new Uint8Array(data.decompressedData);
 
-                    const promise =
-                        this.promises[data.index.id][data.archiveId];
+                    const promise = this.promises[data.index.id][data.archiveId];
                     promise.resolve(data);
 
                     this.promises[data.index.id][data.archiveId] = undefined;
 
                     if (this.workQueue.length != 0) {
                         const newWork = this.workQueue.shift();
-                        workerObject.worker.postMessage(newWork, [
-                            newWork.compressedData,
-                        ]);
+                        workerObject.worker.postMessage(newWork, [newWork.compressedData]);
                     } else {
                         workerObject.active = false;
                     }
@@ -68,10 +63,7 @@ export default class WorkerPool {
         }
 
         unactiveWorker.active = true;
-        unactiveWorker.worker.postMessage(
-            { index, segment, archiveId, compressedData, key },
-            [compressedData],
-        );
+        unactiveWorker.worker.postMessage({ index, segment, archiveId, compressedData, key }, [compressedData]);
 
         return this.promises[index][archiveId].promise;
     }

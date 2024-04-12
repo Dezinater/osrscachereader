@@ -87,17 +87,7 @@ export class Sprite {
                 image.onload = () => {
                     canvas.width = height;
                     canvas.height = width;
-                    ctx.drawImage(
-                        image,
-                        0,
-                        0,
-                        this.getWidth(),
-                        this.getHeight(),
-                        0,
-                        0,
-                        width,
-                        height,
-                    );
+                    ctx.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), 0, 0, width, height);
                     resolve(canvas);
                 };
             },
@@ -187,9 +177,7 @@ export default class SpriteLoader {
         }
 
         // same as above + 3 bytes for each palette entry, except for the first one (which is transparent)
-        dataview.setPosition(
-            dataview.byteLength - 7 - spriteCount * 8 - (paletteLength - 1) * 3,
-        );
+        dataview.setPosition(dataview.byteLength - 7 - spriteCount * 8 - (paletteLength - 1) * 3);
         let palette = new Array(paletteLength).fill(0);
 
         for (let i = 1; i < paletteLength; ++i) {
@@ -223,8 +211,7 @@ export default class SpriteLoader {
                 // read vertically
                 for (let j = 0; j < spriteWidth; ++j) {
                     for (let k = 0; k < spriteHeight; ++k) {
-                        pixelPaletteIndicies[spriteWidth * k + j] =
-                            dataview.readInt8();
+                        pixelPaletteIndicies[spriteWidth * k + j] = dataview.readInt8();
                     }
                 }
             }
@@ -240,8 +227,7 @@ export default class SpriteLoader {
                     // read vertically
                     for (let j = 0; j < spriteWidth; ++j) {
                         for (let k = 0; k < spriteHeight; ++k) {
-                            pixelAlphas[spriteWidth * k + j] =
-                                dataview.readInt8();
+                            pixelAlphas[spriteWidth * k + j] = dataview.readInt8();
                         }
                     }
                 }

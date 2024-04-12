@@ -90,9 +90,7 @@ export default class TextureLoader {
         def.animationSpeed = dataview.readUint8();
 
         if (options.loadSprites) {
-            let sprites = def.fileIds.map((x) =>
-                cache.getFile(IndexType.SPRITES.id, x),
-            );
+            let sprites = def.fileIds.map((x) => cache.getFile(IndexType.SPRITES.id, x));
             def.sprites = await Promise.all(sprites);
 
             return def;

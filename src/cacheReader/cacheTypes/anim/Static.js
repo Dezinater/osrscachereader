@@ -2,9 +2,7 @@ export class AttackOption {
     static method590(var0, var1) {
         if (var0 != null && var0.method703() != 0) {
             if (var1 < var0.field1203[0].field1165) {
-                return var0.field1201 == 0
-                    ? var0.field1203[0].field1158
-                    : class181.method922(var0, var1, true);
+                return var0.field1201 == 0 ? var0.field1203[0].field1158 : class181.method922(var0, var1, true);
             } else if (var1 > var0.field1203[var0.method703() - 1].field1165) {
                 return var0.field1214 == 0
                     ? var0.field1203[var0.method703() - 1].field1158
@@ -20,10 +18,7 @@ export class AttackOption {
                 } else {
                     if (var2.field1161 == 0.0 && var2.field1162 == 0.0) {
                         var3 = true;
-                    } else if (
-                        var2.field1161 == 3.4028234663852886e38 &&
-                        3.4028234663852886e38 == var2.field1162
-                    ) {
+                    } else if (var2.field1161 == 3.4028234663852886e38 && 3.4028234663852886e38 == var2.field1162) {
                         var4 = true;
                     } else if (var2.field1163 != null) {
                         if (var0.field1215) {
@@ -33,34 +28,12 @@ export class AttackOption {
                             let var10 = var9 + var2.field1162 * 0.33333334;
                             let var8 = var2.field1163.field1165;
                             let var12 = var2.field1163.field1158;
-                            let var7 =
-                                var8 - var2.field1163.field1159 * 0.33333334;
-                            let var11 =
-                                var12 - var2.field1163.field1160 * 0.33333334;
+                            let var7 = var8 - var2.field1163.field1159 * 0.33333334;
+                            let var11 = var12 - var2.field1163.field1160 * 0.33333334;
                             if (var0.field1210) {
-                                class145.method767(
-                                    var0,
-                                    var5,
-                                    var6,
-                                    var7,
-                                    var8,
-                                    var9,
-                                    var10,
-                                    var11,
-                                    var12,
-                                );
+                                class145.method767(var0, var5, var6, var7, var8, var9, var10, var11, var12);
                             } else {
-                                class136.method735(
-                                    var0,
-                                    var5,
-                                    var6,
-                                    var7,
-                                    var8,
-                                    var9,
-                                    var10,
-                                    var11,
-                                    var12,
-                                );
+                                class136.method735(var0, var5, var6, var7, var8, var9, var10, var11, var12);
                             }
 
                             var0.field1215 = false;
@@ -76,9 +49,7 @@ export class AttackOption {
                             ? var2.field1163.field1158
                             : var2.field1158;
                     } else {
-                        return var0.field1210
-                            ? Tiles.method453(var0, var1)
-                            : class467.method2360(var0, var1);
+                        return var0.field1210 ? Tiles.method453(var0, var1) : class467.method2360(var0, var1);
                     }
                 }
             }
@@ -94,12 +65,7 @@ export class class467 {
             return 0.0;
         } else {
             let var2 = var1 - var0.field1207;
-            return (
-                var0.field1202 +
-                var2 *
-                    (var2 * (var2 * var0.field1223 + var0.field1208) +
-                        var0.field1209)
-            );
+            return var0.field1202 + var2 * (var2 * (var2 * var0.field1223 + var0.field1208) + var0.field1209);
         }
     }
 }
@@ -137,10 +103,7 @@ export class class181 {
                         } else {
                             var11 = var5 - var11;
                         }
-                    } else if (
-                        var0.field1201 != class125.field1189 &&
-                        var0.field1201 != class125.field1188
-                    ) {
+                    } else if (var0.field1201 != class125.field1189 && var0.field1201 != class125.field1188) {
                         if (var0.field1201 == class125.field1193) {
                             var11 = var4 - var1;
                             var16 = var0.field1203[0].field1159;
@@ -161,10 +124,7 @@ export class class181 {
                     } else {
                         var11 += var4;
                     }
-                } else if (
-                    var0.field1214 != class125.field1189 &&
-                    var0.field1214 != class125.field1188
-                ) {
+                } else if (var0.field1214 != class125.field1189 && var0.field1214 != class125.field1188) {
                     if (var0.field1214 == class125.field1193) {
                         var11 = var1 - var5;
                         var16 = var0.field1203[var0.method703() - 1].field1161;
@@ -183,14 +143,10 @@ export class class181 {
                 var3 = AttackOption.method590(var0, var11);
                 let var18;
                 if (var2 && var0.field1201 == class125.field1188) {
-                    var18 =
-                        var0.field1203[var0.method703() - 1].field1158 -
-                        var0.field1203[0].field1158;
+                    var18 = var0.field1203[var0.method703() - 1].field1158 - var0.field1203[0].field1158;
                     var3 = var3 - var8 * var18;
                 } else if (!var2 && var0.field1214 == class125.field1188) {
-                    var18 =
-                        var0.field1203[var0.method703() - 1].field1158 -
-                        var0.field1203[0].field1158;
+                    var18 = var0.field1203[var0.method703() - 1].field1158 - var0.field1203[0].field1158;
                     var3 = var3 + var8 * var18;
                 }
 
@@ -210,8 +166,7 @@ export class class145 {
                 let var10 = var2 - var1;
                 let var11 = var3 - var1;
                 let var12 = [var10 / var9, var11 / var9];
-                var0.field1221 =
-                    var12[0] == 0.33333334 && 0.6666667 == var12[1];
+                var0.field1221 = var12[0] == 0.33333334 && 0.6666667 == var12[1];
                 let var13 = var12[0];
                 let var14 = var12[1];
                 if (var12[0] < 0.0) {
@@ -234,10 +189,7 @@ export class class145 {
                     }
 
                     if (var12[0] > 1.0 || var12[1] > 1.0) {
-                        var15 =
-                            1.0 +
-                            var12[1] * (var12[1] - 2.0) +
-                            var12[0] * (var12[1] + (var12[0] - 2.0));
+                        var15 = 1.0 + var12[1] * (var12[1] - 2.0) + var12[0] * (var12[1] + (var12[0] - 2.0));
                         if (var15 + class123.field1167 > 0.0) {
                             Client.method384(var12);
                         }
@@ -257,9 +209,7 @@ export class class145 {
                 if (var12[1] != var14) {
                     var10000 = var1 + var12[1] * var9;
                     if (1.0 != var14) {
-                        var7 =
-                            var8 -
-                            ((var8 - var7) * (1.0 - var12[1])) / (1.0 - var14);
+                        var7 = var8 - ((var8 - var7) * (1.0 - var12[1])) / (1.0 - var14);
                     }
                 }
 
@@ -275,13 +225,7 @@ export class class145 {
                 var0.field1209 = var20 + var20 + var20;
                 var0.field1208 = var17 + var17 + var17;
                 var0.field1223 = 0.0;
-                DesktopPlatformInfoProvider.method2241(
-                    var5,
-                    var6,
-                    var7,
-                    var8,
-                    var0,
-                );
+                DesktopPlatformInfoProvider.method2241(var5, var6, var7, var8, var0);
             }
         }
     }
@@ -354,8 +298,7 @@ export class class136 {
             let var15 = var9 * var12;
             let var16 = var13 * var9;
             var0.field1223 = ((var16 + var15 - var10 - var10) * var14) / var9;
-            var0.field1208 =
-                (var10 + var10 + var10 - var15 - var15 - var16) * var14;
+            var0.field1208 = (var10 + var10 + var10 - var15 - var15 - var16) * var14;
             var0.field1209 = var12;
             var0.field1202 = var5;
         }
@@ -373,8 +316,7 @@ export class Tiles {
             } else if (var0.field1206 == var1) {
                 var2 = 1.0;
             } else {
-                var2 =
-                    (var1 - var0.field1207) / (var0.field1206 - var0.field1207);
+                var2 = (var1 - var0.field1207) / (var0.field1206 - var0.field1207);
             }
 
             let var3;
@@ -390,15 +332,7 @@ export class Tiles {
                 class123.field1169[2] = 0.0;
                 class123.field1169[3] = 0.0;
                 class123.field1169[4] = 0.0;
-                let var4 = class368.method1942(
-                    class123.field1168,
-                    3,
-                    0.0,
-                    true,
-                    1.0,
-                    true,
-                    class123.field1169,
-                );
+                let var4 = class368.method1942(class123.field1168, 3, 0.0, true, 1.0, true, class123.field1169);
                 if (var4 == 1) {
                     var3 = class123.field1169[0];
                 } else {
@@ -406,12 +340,7 @@ export class Tiles {
                 }
             }
 
-            return (
-                var0.field1211 +
-                (var0.field1212 +
-                    (var3 * var0.field1222 + var0.field1213) * var3) *
-                    var3
-            );
+            return var0.field1211 + (var0.field1212 + (var3 * var0.field1222 + var0.field1213) * var3) * var3;
         }
     }
 }
@@ -424,10 +353,7 @@ export class class368 {
             var7 += Math.abs(var0[var8]);
         }
 
-        let var24 =
-            (Math.abs(var2) + Math.abs(var4)) *
-            float(var1 + 1) *
-            class123.field1167;
+        let var24 = (Math.abs(var2) + Math.abs(var4)) * float(var1 + 1) * class123.field1167;
         if (var7 <= var24) {
             return -1;
         } else {
@@ -447,12 +373,8 @@ export class class368 {
                 return var10;
             } else if (var1 == 1) {
                 var6[0] = -var9[0] / var9[1];
-                let var11 = var3
-                    ? var2 < var24 + var6[0]
-                    : var2 < var6[0] - var24;
-                let var12 = var5
-                    ? var4 > var6[0] - var24
-                    : var4 > var24 + var6[0];
+                let var11 = var3 ? var2 < var24 + var6[0] : var2 < var6[0] - var24;
+                let var12 = var5 ? var4 > var6[0] - var24 : var4 > var24 + var6[0];
                 var10 = var11 && var12 ? 1 : 0;
                 if (var10 > 0) {
                     if (var3 && var6[0] < var2) {
@@ -472,15 +394,7 @@ export class class368 {
                 }
 
                 let var23 = new Array(var1 + 1);
-                let var14 = this.method1942(
-                    var22,
-                    var1 - 1,
-                    var2,
-                    false,
-                    var4,
-                    false,
-                    var23,
-                );
+                let var14 = this.method1942(var22, var1 - 1, var2, false, var4, false, var23);
                 if (var14 == -1) {
                     return 0;
                 } else {
@@ -521,22 +435,10 @@ export class class368 {
                                 var6[var10++] = var19;
                                 var15 = true;
                             }
-                        } else if (
-                            (var18 < 0.0 && var17 > 0.0) ||
-                            (var18 > 0.0 && var17 < 0.0)
-                        ) {
-                            var6[var10++] = class88.method478(
-                                var21,
-                                var16,
-                                var19,
-                                0.0,
-                            );
-                            if (
-                                var10 > 1 &&
-                                var6[var10 - 2] >= var6[var10 - 1] - var24
-                            ) {
-                                var6[var10 - 2] =
-                                    (var6[var10 - 2] + var6[var10 - 1]) * 0.5;
+                        } else if ((var18 < 0.0 && var17 > 0.0) || (var18 > 0.0 && var17 < 0.0)) {
+                            var6[var10++] = class88.method478(var21, var16, var19, 0.0);
+                            if (var10 > 1 && var6[var10 - 2] >= var6[var10 - 1] - var24) {
+                                var6[var10 - 2] = (var6[var10 - 2] + var6[var10 - 1]) * 0.5;
                                 --var10;
                             }
                         }
@@ -597,15 +499,11 @@ export class class188 {
                         var13 = var4;
                     }
 
-                    let var16 =
-                        class123.field1166 * Math.abs(var2) + var3 * 0.5;
+                    let var16 = class123.field1166 * Math.abs(var2) + var3 * 0.5;
                     let var17 = (var6 - var2) * 0.5;
                     let var18 = Math.abs(var17) > var16 && 0.0 != var5;
                     if (var18) {
-                        if (
-                            Math.abs(var8) >= var16 &&
-                            Math.abs(var4) > Math.abs(var5)
-                        ) {
+                        if (Math.abs(var8) >= var16 && Math.abs(var4) > Math.abs(var5)) {
                             let var12 = var5 / var4;
                             let var9;
                             let var10;
@@ -615,14 +513,8 @@ export class class188 {
                             } else {
                                 var10 = var4 / var13;
                                 let var11 = var5 / var13;
-                                var9 =
-                                    (var17 * 2.0 * var10 * (var10 - var11) -
-                                        (var2 - var1) * (var11 - 1.0)) *
-                                    var12;
-                                var10 =
-                                    (var10 - 1.0) *
-                                    (var11 - 1.0) *
-                                    (var12 - 1.0);
+                                var9 = (var17 * 2.0 * var10 * (var10 - var11) - (var2 - var1) * (var11 - 1.0)) * var12;
+                                var10 = (var10 - 1.0) * (var11 - 1.0) * (var12 - 1.0);
                             }
 
                             if (var9 > 0.0) {
@@ -634,9 +526,7 @@ export class class188 {
                             var12 = var8;
                             var8 = var7;
                             if (
-                                var9 * 2.0 <
-                                    var10 * var17 * 3.0 -
-                                        Math.abs(var16 * var10) &&
+                                var9 * 2.0 < var10 * var17 * 3.0 - Math.abs(var16 * var10) &&
                                 var9 < Math.abs(var10 * var12 * 0.5)
                             ) {
                                 var7 = var9 / var10;
@@ -659,11 +549,7 @@ export class class188 {
                             var2 -= var16;
                         }
 
-                        var5 = class102.method598(
-                            var0.field3760,
-                            var0.field3761,
-                            var2,
-                        );
+                        var5 = class102.method598(var0.field3760, var0.field3761, var2);
                         if (var5 * (var13 / Math.abs(var13)) > 0.0) {
                             var14 = true;
                             var15 = true;

@@ -106,23 +106,13 @@ class Index {
                 numberOfFiles = dataview.readUint16();
             }
             if (numberOfFiles <= 0)
-                console.log(
-                    "Warning: Files <= 0 for archive " +
-                        i +
-                        ". Files amount: " +
-                        numberOfFiles,
-                );
-            this.archives[archiveKeys[i]].files =
-                Array(numberOfFiles).fill(undefined);
+                console.log("Warning: Files <= 0 for archive " + i + ". Files amount: " + numberOfFiles);
+            this.archives[archiveKeys[i]].files = Array(numberOfFiles).fill(undefined);
         }
 
         for (let i = 0; i < this.archivesCount; i++) {
             let fileID = 0;
-            for (
-                let j = 0;
-                j < this.archives[archiveKeys[i]].files.length;
-                j++
-            ) {
+            for (let j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
                 if (this.protocol >= 7) {
                     fileID += dataview.readBigSmart();
                 } else {
@@ -134,11 +124,7 @@ class Index {
 
         if (this.named) {
             for (let i = 0; i < this.archivesCount; i++) {
-                for (
-                    let j = 0;
-                    j < this.archives[archiveKeys[i]].files.length;
-                    j++
-                ) {
+                for (let j = 0; j < this.archives[archiveKeys[i]].files.length; j++) {
                     let fileName = dataview.readUint32();
                     if (fileName == 0) {
                         fileName = this.archives[archiveKeys[i]].nameHash;
