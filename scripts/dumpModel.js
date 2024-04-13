@@ -4,28 +4,6 @@ import YAML from "yaml";
 
 import { RSCache, IndexType, ConfigType, GLTFExporter } from "osrscachereader";
 
-const exportObjects2 = [
-    {
-        name: "max_range",
-        gender: "male",
-        models: [],
-        items: [
-            26684, // tzkal slayer helmet
-            20997, // twisted bow
-            27238, // masori body (f)
-            27241, // masori legs (f)
-            26235, // zaryte vambracess
-            28902, // dizana's max cape (l)
-            13237, // pegasian boots
-            22249, // anguish (or)
-        ],
-        animations: [
-            808, // idle
-            1825, // running
-        ],
-    },
-];
-
 const processNpc = async ({ npcId, animations }) => {
     let npc = await cache.getDef(IndexType.CONFIGS, ConfigType.NPC, npcId);
     return await processObject(npcId, npc.models, animations);
