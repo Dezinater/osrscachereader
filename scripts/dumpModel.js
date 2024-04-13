@@ -28,20 +28,20 @@ import { RSCache, IndexType, ConfigType, GLTFExporter } from "osrscachereader";
   ]
 */
 const npcsAndAnimations = [
-    {
+    /*{
         npcId: 397, // "guard"
         animations: [
             808, // idle
             1825 // running
         ]
-    },
-    /*{
+    },*/
+    {
         npcId: 11789, // akkha
         animations: [
             9780, // special
             9765, // walking
         ]
-    },*/
+    },
     /*{
         npcId: 7706, // zuk
         animations: [
@@ -61,7 +61,7 @@ const npcsAndAnimations = [
             7606, // die
             7607, // flinch
         ],
-    },
+    },*/
     {
         npcId: 7699, // mager
         animations: [
@@ -73,7 +73,7 @@ const npcsAndAnimations = [
             7613, // death
         ],
     },
-    {
+    /*{
         npcId: 7691, // nibbler
         animations: [
             7573, // idle
@@ -150,13 +150,6 @@ const processNpc = async ({ npcId, animations }) => {
 
     const exporter = new GLTFExporter(model);
 
-    const loadedFrames = [];
-    // note: only need to ask for frames for the first animation
-    let selectedAnimation = await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animations[0]);
-    let shiftedId = selectedAnimation.def.frameIDs[0] >> 16;
-    let frames = await model.loadSkeletonAnims(cache, model, shiftedId, false);
-    loadedFrames.push(...frames);
-
     let allLengths = [];
     let allMorphTargets = [];
     for (const animId of animations) {
@@ -171,7 +164,6 @@ const processNpc = async ({ npcId, animations }) => {
         exporter.addAnimation(morphTargets, lengths);
     }
 
-    //loadedFrames.forEach((frame) => exporter.addMorphTarget(frame.vertices));
     exporter.addColors(model);
 
     const gltf = exporter.export();

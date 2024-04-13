@@ -140,7 +140,7 @@ class GLTFFile {
             indices: this.buffers.length - 1,
         });
         let max = [0, 0, 0];
-        let min = [0, 0, 0];
+        let min = [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER];
         for (let i = 0; i < verticies.length; i++) {
             max = [
                 Math.max(max[0], verticies[i][0]),
@@ -199,17 +199,13 @@ class GLTFFile {
 
         if (!("targets" in this.meshes[0].primitives[primitive])) {
             this.meshes[0].primitives[primitive].targets = [];
-            this.meshes[0].weights = [];
+            this.meshes[0].weights = [1];
         }
 
         let buffersAmount = this.buffers.length;
 
         if (primitive === 0) {
-            if (this.meshes[0].weights.length == 0) {
-                this.meshes[0].weights.push(1);
-            } else {
-                this.meshes[0].weights.push(0);
-            }
+            this.meshes[0].weights.push(0);
         }
         this.meshes[0].primitives[primitive].targets.push({
             POSITION: this.accessors.length, // the one we're about to add
