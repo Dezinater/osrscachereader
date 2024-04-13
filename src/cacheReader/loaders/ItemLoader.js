@@ -168,6 +168,9 @@ export class ItemDefinition {
 
     /** @type {Object} */
     params;
+
+    /** @type {String} */
+    examineText;
 }
 
 export default class ItemLoader {
@@ -191,10 +194,14 @@ export default class ItemLoader {
     }
 
     handleOpcode(def, opcode, dataview, lastOpCode) {
-        if (opcode == 1) {
+        if (opcode == 0) {
+            return;
+        } else if (opcode == 1) {
             def.inventoryModel = dataview.readUint16();
         } else if (opcode == 2) {
             def.name = dataview.readString();
+        } else if (opcode == 3) {
+            def.examineText = dataview.readString();
         } else if (opcode == 4) {
             def.zoom2d = dataview.readUint16();
         } else if (opcode == 5) {
@@ -217,7 +224,7 @@ export default class ItemLoader {
             def.stackable = 1;
         } else if (opcode == 12) {
             def.cost = dataview.readInt32();
-        } else if (opcode == 13) {
+}        else if (opcode == 13) {
             def.wearPos1 = dataview.readInt8();
         } else if (opcode == 14) {
             def.wearPos2 = dataview.readInt8();
@@ -335,8 +342,8 @@ export default class ItemLoader {
 
                 def.params[key] = value;
             }
-        } else {
-            //console.error("UNHANDLED OPCODE [ItemLoader]: " + opcode + " last: " + lastOpCode)
+}        else {
+            console.error("UNHANDLED OPCODE [ItemLoader]: " + opcode + " last: " + lastOpCode)
         }
     }
 }

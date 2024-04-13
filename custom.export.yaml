@@ -1,0 +1,38 @@
+# this export defines normal models with equipment IDs
+targets:
+  - name: max_range_tbow
+    gender: male
+    models:
+    items:
+        - 26684 # tzkal slayer helmet
+        - 20997 # twisted bow
+        - 27238 # masori body (f)
+        - 27241 # masori legs (f)
+        - 26235 # zaryte vambracess
+        - 28902 # dizana's max cape (l)
+        - 13237 # pegasian boots
+        - 22249 # anguish (or)
+    animations:
+      - 808 # idle
+      - 426 # fire bow
+  - name: max_range_blowpipe
+    gender: male
+    models:
+    items:
+        - 26684 # tzkal slayer helmet
+        - 12926 # toxic blowpipe
+        - 27238 # masori body (f)
+        - 27241 # masori legs (f)
+        - 26235 # zaryte vambracess
+        - 28902 # dizana's max cape (l)
+        - 13237 # pegasian boots
+        - 22249 # anguish (or)
+    animations:
+      - 813 # idle
+      - 5061 # fire blowpipe
+base_animations: # anims to load for all
+  - 819 # walk
+  - 824 # run
+  - 820 # rotate 180
+  - 822 # strafe left
+  - 821 # strafe right

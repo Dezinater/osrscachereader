@@ -1,160 +1,78 @@
 import fs from "fs";
+import _ from "lodash";
+import YAML from "yaml";
 
 import { RSCache, IndexType, ConfigType, GLTFExporter } from "osrscachereader";
 
-/*
-  "id": 301,
-  "models": [
-    401, //  head
-    456, // torso
-    348, //arms 
-    353, // hands
-    435, // legs
-    490, // steel scimitar
-    481 // cape
-  ],
-    "id": 4776,
-  "models": [
-    7668, // head
-    252, // beard
-    294, // torso
-    317, // cape
-    151, // arms
-    177, // hands
-    518, // sword
-    541, // shield
-    254, // legs
-    185 // boots
-  ]
-*/
-const npcsAndAnimations = [
-    /*{
-        npcId: 397, // "guard"
+const exportObjects2 = [
+    {
+        name: "max_range",
+        gender: "male",
+        models: [],
+        items: [
+            26684, // tzkal slayer helmet
+            20997, // twisted bow
+            27238, // masori body (f)
+            27241, // masori legs (f)
+            26235, // zaryte vambracess
+            28902, // dizana's max cape (l)
+            13237, // pegasian boots
+            22249, // anguish (or)
+        ],
         animations: [
             808, // idle
-            1825 // running
-        ]
-    },*/
-    {
-        npcId: 11789, // akkha
-        animations: [
-            9780, // special
-            9765, // walking
-        ]
-    },
-    /*{
-        npcId: 7706, // zuk
-        animations: [
-            7564, // idle
-            7566, // fire
-            7565, // flinch
-            7562, // die
+            1825, // running
         ],
     },
-    {
-        npcId: 7698, // ranger
-        animations: [
-            7602, // idle
-            7603, // walk
-            7605, // fire
-            7604, // melee attack
-            7606, // die
-            7607, // flinch
-        ],
-    },*/
-    {
-        npcId: 7699, // mager
-        animations: [
-            7609, // idle
-            7608, // walk
-            7610, // mage fire
-            7611, // revive
-            7612, // melee attack
-            7613, // death
-        ],
-    },
-    /*{
-        npcId: 7691, // nibbler
-        animations: [
-            7573, // idle
-            7572, // walk
-            7574, // attack
-            7575, // flinch
-            7676, // die
-        ],
-    },*/
-    /*{
-        npcId: 7692, // bat
-        animations: [
-            7577, // idle and walk
-            7578, // attack
-            7579, // flinch
-            7580, // die
-        ],
-    },
-    {
-        npcId: 7693, // blob
-        animations: [
-            7586, // idle
-            7587, // walk
-            7581, // attack (is it mage?)
-            7582, // attack melee
-            7583, // attack range
-            7585, // flinch
-            7584, // die
-        ],
-    },*/
-    /*
-    {
-        npcId: 7697, // meleer
-        animations: [
-            7595, // idle
-            7596, // walk
-            7597, // attack
-            7600, // dig down
-            7601, // dig up
-            7598, // flinch
-            7599, // die
-        ],
-    },
-    {
-        npcId: 7700, // jad
-        animations: [
-            7589, // idle
-            7588, // walk
-            7592, // attack mage
-            7593, // attack range
-            7590, // attack melee
-            7591, // flinch
-            7594, // die
-        ],
-    },
-    {
-        npcId: 7707, // ancestral glyph
-        animations: [
-            7567, // idle
-            7569, // dying
-        ],
-    },*/
 ];
 
 const processNpc = async ({ npcId, animations }) => {
     let npc = await cache.getDef(IndexType.CONFIGS, ConfigType.NPC, npcId);
+    return await processObject(npcId, npc.models, animations);
+};
 
-    let model = await cache.getDef(IndexType.MODELS, npc.models[0]);
-    for (let i = 1; i < npc.models.length; ++i) {
-        const extraModel = await cache.getDef(IndexType.MODELS, npc.models[i]);
-        model.mergeWith(extraModel);
+const processCustom = async ({ name, models, items, gender, animations }) => {
+    const customModels = [...(models || [])];
+    const customAnimations = [...animations];
 
+    if (items) {
+        for (const item of items) {
+            const itemDef = await cache.getDef(IndexType.CONFIGS, ConfigType.ITEM, item);
+            if (!itemDef) {
+                throw new Error(`Item ${item} not found`);
+            }
+            if (gender === "male") {
+                if (itemDef.maleModel0 < 0) {
+                    throw new Error(`Item ${item} has no male model`);
+                }
+                customModels.push(itemDef.maleModel0);
+            }
+            if (gender === "female") {
+                if (itemDef.femaleModel0 < 0) {
+                    throw new Error(`Item ${item} has no female model`);
+                }
+                customModels.push(itemDef.femaleModel0);
+            }
+        }
     }
+    return await processObject(name, customModels, _.uniq(customAnimations));
+};
 
+const processObject = async (name, modelIds, animations) => {
+    let model = await cache.getDef(IndexType.MODELS, modelIds[0]);
+    for (let i = 1; i < modelIds.length; ++i) {
+        const extraModel = await cache.getDef(IndexType.MODELS, modelIds[i]);
+        model.mergeWith(extraModel);
+    }
     const exporter = new GLTFExporter(model);
 
     let allLengths = [];
     let allMorphTargets = [];
     for (const animId of animations) {
         const appliedAnimation = await model.loadAnimation(cache, animId, false);
-        const morphTargetIndices = appliedAnimation.vertexData.map((frameVertices) => exporter.addMorphTarget(frameVertices));
+        const morphTargetIndices = appliedAnimation.vertexData.map((frameVertices) =>
+            exporter.addMorphTarget(frameVertices),
+        );
         allLengths.push(appliedAnimation.lengths);
         allMorphTargets.push(morphTargetIndices);
     }
@@ -168,17 +86,37 @@ const processNpc = async ({ npcId, animations }) => {
 
     const gltf = exporter.export();
 
-    const path = `./out/${npc.id}.gltf`;
+    const path = `./out/${name}.gltf`;
     fs.writeFileSync(path, gltf);
     console.log(`Wrote single file to ${path}`);
 };
 
+// load export spec from yaml files
+const loadExportSpecs = (files) => {
+    if (files.length === 0) {
+        throw new Error("must pass an array of export spec files (yaml)");
+    }
+    return files.map((file) => {
+        return YAML.parse(fs.readFileSync(file, "utf8"));
+    });
+};
+
+const exportSpecs = loadExportSpecs(process.argv.slice(2));
+
 let cache = new RSCache("./cache");
 cache.onload.then(async () => {
     console.log("Loaded");
-    for (const npc of npcsAndAnimations) {
-        console.log("loading npc:", npc.npcId);
-        await processNpc(npc);
+    for (const { targets, base_animations } of exportSpecs) {
+        for (const object of targets) {
+            object.animations.push(...(base_animations || []));
+            if ("npcId" in object) {
+                console.log("loading npc:", object.npcId);
+                await processNpc(object);
+            } else if ("models" in object) {
+                console.log("loading custom: " + object.name, object);
+                await processCustom(object);
+            }
+        }
     }
     cache.close();
     return true;

@@ -1,0 +1,69 @@
+# This export spec includes most of the monsters/animations from Inferno.
+targets:
+  - npcId: 7706 # Zuk
+    animations:
+      - 7564 # Idle
+      - 7566 # Fire
+      - 7565 # Flinch
+      - 7562 # Die
+  - npcId: 7698 # Ranger
+    animations:
+      - 7602 # idle
+      - 7603 # walk
+      - 7605 # fire
+      - 7604 # melee attack
+      - 7606 # die
+      - 7607 # flinch
+  - npcId: 7699 # mager
+    animations:
+      - 7609 #idle
+      - 7608 # walk
+      - 7610 # mage fire
+      - 7611 # revive
+      - 7612 # melee attack
+      - 7613 # death
+  - npcId: 7691 # nibbler
+    animations:
+      - 7573 #idle
+      - 7572 # walk
+      - 7574 # attack
+      - 7575 # flinch
+      - 7676 # die
+  - npcId: 7692 # bat
+    animations:
+      - 7577 # idle/walk
+      - 7578 # attack
+      - 7579 # flinch
+      - 7580 #die
+  - npcId: 7693 # blob
+    animations:
+      - 7586 # idle
+      - 7587 # walk
+      - 7581 # mage attack
+      - 7582 # melee attack
+      - 7583 # range attack
+      - 7585 # flinch
+      - 7584 # die
+  - npcId: 7697 # meleer
+    animations:
+      - 7595 # idle
+      - 7596 # walk
+      - 7597 # attack
+      - 7600 # dig down
+      - 7601 # dig up
+      - 7598 # flinch
+      - 7599 # die
+  - npcId: 7700 # jad
+    animations:
+      - 7589 # idle
+      - 7588 # walk
+      - 7592 # attack mage
+      - 7593 # attack range
+      - 7590 # attack melee
+      - 7591 # flinch
+      - 7594 # die
+  - npcId: 7707 # ancestral glyph
+    animations:
+      - 7567 # idle
+      - 7569 # dying
+      
