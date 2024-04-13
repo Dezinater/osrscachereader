@@ -199,7 +199,7 @@ class GLTFFile {
 
         if (!("targets" in this.meshes[0].primitives[primitive])) {
             this.meshes[0].primitives[primitive].targets = [];
-            this.meshes[0].weights = [0];
+            this.meshes[0].weights = [];
         }
 
         let buffersAmount = this.buffers.length;
@@ -212,7 +212,7 @@ class GLTFFile {
             }
         }
         this.meshes[0].primitives[primitive].targets.push({
-            POSITION: buffersAmount,
+            POSITION: this.accessors.length, // the one we're about to add
         });
 
         this.buffers.push({
@@ -227,7 +227,7 @@ class GLTFFile {
         });
 
         this.accessors.push({
-            bufferView: buffersAmount,
+            bufferView: this.bufferViews.length - 1,
             byteOffset: 0,
             componentType: 5126,
             count: verticies.length,
@@ -235,8 +235,6 @@ class GLTFFile {
             max,
             min,
         });
-
-        //animations needs to be adjusted if more morph targets are added after anims
     }
 
     addAnimation(targets, lengths, morphTargetsAmount) {
@@ -359,6 +357,7 @@ class GLTFFile {
             byteLength: uvBytes.length,
         });
 
+        let bufferViewAmount = this.bufferViews.length;
         this.bufferViews.push({
             buffer: buffersAmount,
             byteOffset: 0,
@@ -373,7 +372,7 @@ class GLTFFile {
             min = [Math.min(min[0], uvs[i][0]), Math.min(min[1], uvs[i][1])];
         }
         this.accessors.push({
-            bufferView: buffersAmount,
+            bufferView: bufferViewAmount,
             byteOffset: 0,
             componentType: 5126,
             count: uvs.length,
@@ -466,6 +465,11 @@ export default class GLTFExporter {
         }
     }
 
+    /**
+     * 
+     * @param {*} morphVertices array of vertices for the morph target
+     * @returns the position of the morph target that was inserted
+     */
     addMorphTarget(morphVertices) {
         let newMorphVertices = [];
         let newAlphaMorphVertices = [];
@@ -482,21 +486,20 @@ export default class GLTFExporter {
             }
         }
 
-        this.morphTargetsAmount++;
         this.file.addMorphTarget(newMorphVertices, 0);
         if (this.alphaVertices.length > 0) {
             this.file.addMorphTarget(newAlphaMorphVertices, 1);
         }
+        return this.morphTargetsAmount++;
     }
 
-    addAnimation(def) {
-        let frames = def.frameIDs.map((x) => x & 65535);
-        let lengths = Object.assign([], def.frameLengths);
+    addAnimation(morphTargetIds, baseLengths) {
+        let lengths = Object.assign([], baseLengths);
         for (let i = 1; i < lengths.length; i++) {
             lengths[i] += lengths[i - 1];
         }
         lengths = lengths.map((x) => x / 50);
-        this.file.addAnimation(frames, lengths, this.morphTargetsAmount);
+        this.file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount);
     }
 
     addColors(def) {

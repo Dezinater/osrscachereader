@@ -347,7 +347,7 @@ export class ModelDefinition {
      * @param {number} animationId Animation ID you want to play on this model
      * @returns AnimationData
      */
-    async loadAnimation(cache, animationId) {
+    async loadAnimation(cache, animationId, invertZ = true) {
         let animation = (await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animationId)).def;
         let vertexData;
         let lengths;
@@ -365,7 +365,7 @@ export class ModelDefinition {
             let frames = animation.frameIDs.map((frameId) =>
                 frameDefs.find((frameDef) => frameDef?.id == (frameId & 65535)),
             );
-            let loadedFrames = frames.map((x) => this.loadFrame(this, x));
+            let loadedFrames = frames.map((x) => this.loadFrame(this, x, invertZ));
 
             vertexData = loadedFrames.map((x) => x.vertices);
             lengths = animation.frameLengths;
