@@ -4,6 +4,8 @@ import { IndexType, ConfigType, GLTFExporter, ModelGroup } from "osrscachereader
 
 let finalModel = new ModelGroup();
 let individualModels = [];
+let modelVertexIndices = [];
+let individualModelNames = [];
 let name = "model";
 let animations = [];
 let split = false;
@@ -39,7 +41,7 @@ async function processCommand(cache, command, options) {
 function listToIds(options) {
     let ids;
     if (options[0].includes(",")) {
-        ids = options[0].split(",").map(Number);
+        ids = options[0].split(",").map((n) => n.trim()).filter((n) => n !== "").map((n) => Number(n));
     } else {
         ids = [Number(options[0])];
     }
@@ -55,12 +57,17 @@ async function loadEntityIds(cache, options, configType, modelType) {
             return;
         }
         let model = await cache.getDef(IndexType.MODELS, entityDef[modelType]);
+        individualModels.push(model);
+        individualModelNames.push(entityDef.name ?? model.id.toString());
         finalModel.addModel(model);
+        // save where the model vertices start for the corresponding model
+        modelVertexIndices.push(i === 0 ? 0 : modelVertexIndices[i - 1] + individualModels[i - 1].vertexPositionsX.length);
     }
 }
 
 async function exportGLTFModel(cache) {
     const exporter = new GLTFExporter(finalModel.getMergedModel());
+    const exporters = individualModels.map((m) => new GLTFExporter(m));
 
     let allLengths = [];
     let allMorphTargets = [];
@@ -69,6 +76,14 @@ async function exportGLTFModel(cache) {
         const morphTargetIndices = appliedAnimation.vertexData.map((frameVertices) =>
             exporter.addMorphTarget(frameVertices),
         );
+        // apply subset of the animation to the partial models
+        appliedAnimation.vertexData.forEach((frameVertices) => {
+            for (let i = 0; i < individualModels.length; ++i) {
+                const startIdx = modelVertexIndices[i];
+                const endIdx = modelVertexIndices[i] + individualModels[i].vertexPositionsX.length;
+                exporters[i].addMorphTarget(frameVertices.slice(startIdx, endIdx));
+            }
+        });
         allLengths.push(appliedAnimation.lengths);
         allMorphTargets.push(morphTargetIndices);
     }
@@ -76,15 +91,29 @@ async function exportGLTFModel(cache) {
         const lengths = allLengths[i];
         const morphTargets = allMorphTargets[i];
         exporter.addAnimation(morphTargets, lengths);
+        exporters.forEach((e) => e.addAnimation(morphTargets, lengths));
     }
 
     exporter.addColors(finalModel.getMergedModel());
-    const gltf = exporter.export();
+    exporters.forEach((e, i) => e.addColors(individualModels[i]));
 
-    const path = `./out/${name}.gltf`;
-    fs.writeFileSync(path, gltf);
+    if (!split) {
+        const gltf = exporter.export();
+        const path = `./out/${name}.gltf`;
+        fs.writeFileSync(path, gltf);
+        console.log(`Wrote single file to ${path}`);
+    } else {
+        for (let i = 0; i < exporters.length; ++i) {
+            const gltf = exporters[i].export();
+            const path = `./out/${name}_${formatName(individualModelNames[i])}.gltf`;
+            fs.writeFileSync(path, gltf);
+            console.log(`Wrote split file to ${path}`);
+        }
+    }
+}
 
-    console.log(`Wrote single file to ${path}`);
+function formatName(name) {
+    return name.replace(/[^a-z0-9]/gi, "_").toLowerCase();
 }
 
 async function addItem(cache, options) {
