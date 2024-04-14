@@ -568,9 +568,57 @@ export default class GLTFExporter {
         }
     }
 
-    constructFile() {
+    /*
+     * @param {number} start first vertex to include in the export, inclusive
+     * @param {number} end last vertex to include in the export, exclusive
+     */
+    constructPartialFile(start, end) {
         const file = new GLTFFile();
+        // add vertices
 
+        const getIncludedVertices = (isAlpha) => {
+            const result = [];
+            for (let i = start; i < end; ++i) {
+                const newIdxs = Object.values(this.remappedVertices[i])
+                    .filter(({ alpha }) => alpha === isAlpha)
+                    .map(({ idx }) => idx);
+                result.push(...newIdxs.map((newIdx) => this.verticies[newIdx]));
+            }
+            return result;
+        };
+        file.addIndicies(this.indices.filter((v) => v in this.remappedVertices));
+        const vertices = getIncludedVertices(false);
+        file.addVerticies(vertices);
+        if (this.alphaVertices.length > 0) {
+            file.addIndicies(this.alphaIndices.filter((v) => v in this.remappedVertices));
+            file.addVerticies(getIncludedVertices(true));
+        }
+
+        // add morph vertices
+        for (let i = 0; i < this.morphVertices.length; ++i) {
+            const morphVertices = this.morphVertices[i];
+            const alphaMorphVertices = this.alphaMorphVertices[i];
+            file.addMorphTarget(morphVertices, 0);
+            if (alphaMorphVertices) {
+                file.addMorphTarget(alphaMorphVertices, 1);
+            }
+        }
+
+        // add animations
+        this.animations.forEach(({ morphTargetIds, lengths }) => {
+            file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount);
+        });
+
+        // add UVs and palette texture
+        file.addColors(this.uvs, this.colorPalettePng, 0);
+        if (this.alphaVertices.length > 0) {
+            file.addColors(this.alphaUvs, null, 1, true);
+        }
+        return file;
+    }
+
+    constructFile(start = 0, end = Number.MAX_SAFE_INTEGER) {
+        const file = new GLTFFile();
         // add vertices
         file.addIndicies(this.indices);
         file.addVerticies(this.verticies);
@@ -608,11 +656,11 @@ export default class GLTFExporter {
 
     /**
      *
-     * @param {number} start first vertex to include in the import, inclusive
+     * @param {number} start first vertex to include in the export, inclusive
      * @param {number} end last vertex to include in the export, exclusive
      * @returns
      */
     exportVerticesRange(start, end) {
-        return JSON.stringify(this.file.getRange(start, end));
+        return JSON.stringify(this.constructPartialFile(start, end));
     }
 }

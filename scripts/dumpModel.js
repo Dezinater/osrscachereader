@@ -12,6 +12,7 @@ const processNpc = async ({ npcId, animations }) => {
 const processCustom = async ({ name, models, items, gender, animations, split = false }) => {
     const customModels = [...(models || [])];
     const customAnimations = [...animations];
+    const splitNames = [];
 
     if (items) {
         for (const item of items) {
@@ -31,28 +32,41 @@ const processCustom = async ({ name, models, items, gender, animations, split = 
                 }
                 customModels.push(itemDef.femaleModel0);
             }
+            splitNames.push(itemDef.name.replace(" ", "_"));
         }
     }
-    return await processObject(name, customModels, _.uniq(customAnimations), split);
+    return await processObject(name, customModels, _.uniq(customAnimations), split, splitNames);
 };
 
-const processObject = async (name, modelIds, animations, split) => {
-    let model = await cache.getDef(IndexType.MODELS, modelIds[0]);
+const processObject = async (name, modelIds, animations, split, splitNames) => {
+    let fullModel = await cache.getDef(IndexType.MODELS, modelIds[0]);
+    let origModel = await cache.getDef(IndexType.MODELS, modelIds[0]);
     let modelVertexIndices = [0];
+    let models = [origModel];
     for (let i = 1; i < modelIds.length; ++i) {
         const extraModel = await cache.getDef(IndexType.MODELS, modelIds[i]);
-        model.mergeWith(extraModel);
-        modelVertexIndices.push(modelVertexIndices[i - 1] + extraModel.vertexPositionsX.length);
+        fullModel.mergeWith(extraModel);
+        modelVertexIndices.push(modelVertexIndices[i - 1] + models[i - 1].vertexPositionsX.length);
+        models.push(extraModel);
     }
-    const exporter = new GLTFExporter(model);
+    const exporter = new GLTFExporter(fullModel);
+    const exporters = models.map((m) => new GLTFExporter(m));
 
     let allLengths = [];
     let allMorphTargets = [];
     for (const animId of animations) {
-        const appliedAnimation = await model.loadAnimation(cache, animId, false);
+        const appliedAnimation = await fullModel.loadAnimation(cache, animId, false);
         const morphTargetIndices = appliedAnimation.vertexData.map((frameVertices) =>
             exporter.addMorphTarget(frameVertices),
         );
+        // apply subset of the animation to the partial model
+        appliedAnimation.vertexData.forEach((frameVertices) => {
+            for (let i = 0; i < models.length; ++i) {
+                const startIdx = modelVertexIndices[i];
+                const endIdx = modelVertexIndices[i] + models[i].vertexPositionsX.length;
+                exporters[i].addMorphTarget(frameVertices.slice(startIdx, endIdx));
+            }
+        });
         allLengths.push(appliedAnimation.lengths);
         allMorphTargets.push(morphTargetIndices);
     }
@@ -60,8 +74,10 @@ const processObject = async (name, modelIds, animations, split) => {
         const lengths = allLengths[i];
         const morphTargets = allMorphTargets[i];
         exporter.addAnimation(morphTargets, lengths);
+        exporters.forEach((e) => e.addAnimation(morphTargets, lengths));
     }
-    exporter.addColors(model);
+    exporter.addColors(fullModel);
+    exporters.forEach((e, i) => e.addColors(models[i]));
 
     if (!split) {
         const gltf = exporter.export();
@@ -69,11 +85,9 @@ const processObject = async (name, modelIds, animations, split) => {
         fs.writeFileSync(path, gltf);
         console.log(`Wrote single file to ${path}`);
     } else {
-        for (let i = 0; i < modelIds.length; ++i) {
-            const startIndex = modelVertexIndices[i];
-            const endIndex = i < modelIds.length - 1 ? modelVertexIndices[i + 1] : model.vertexPositionsX.length;
-            const gltf = exporter.exportVerticesRange(startIndex, endIndex);
-            const path = `./out/${name}_${modelIds[i]}.gltf`;
+        for (let i = 0; i < exporters.length; ++i) {
+            const gltf = exporters[i].export();
+            const path = `./out/${name}_${splitNames[i]}.gltf`;
             fs.writeFileSync(path, gltf);
             console.log(`Wrote split file to ${path}`);
         }
