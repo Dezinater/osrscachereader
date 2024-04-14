@@ -3,6 +3,7 @@ import _ from "lodash";
 import { IndexType, ConfigType, GLTFExporter, ModelGroup } from "osrscachereader";
 
 let finalModel = new ModelGroup();
+let individualModels = [];
 let name = "model";
 let animations = [];
 let split = false;
