@@ -473,7 +473,7 @@ export default class GLTFExporter {
         for (let i = 0; i < morphVertices.length; i++) {
             const realVertices = this.remappedVertices[i];
             // may end up reprocessing each vertex multiple times if it appears in multiple colours, but thats OK
-            for (const { idx: newIdx, alpha } of Object.values(realVertices)) {
+            for (const { idx: newIdx, alpha } of Object.values(realVertices || {})) {
                 const src = alpha ? this.alphaVertices : this.verticies;
                 const dest = alpha ? newAlphaMorphVertices : newMorphVertices;
                 dest[newIdx] = [];
