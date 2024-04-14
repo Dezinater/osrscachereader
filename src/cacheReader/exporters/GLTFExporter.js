@@ -391,6 +391,19 @@ export default class GLTFExporter {
     alphaFaces = [];
     morphTargetsAmount = 0;
 
+    // every {vertex + color} pair is deduplicated so that combination only appears once in the vertex buffer
+    indices = [];
+    alphaIndices = [];
+
+    morphVertices = [];
+    alphaMorphVertices = [];
+
+    animations = [];
+    uvs = [];
+    alphaUvs = [];
+
+    colorPalettePng = null;
+
     /**
      * mapping of original vertex ID to new vertex IDs
      * if alpha is true, it refers to the position in this.alphaVertices, otherwise this.verticies
@@ -406,17 +419,13 @@ export default class GLTFExporter {
         this.verticies = [];
         this.alphaVertices = [];
 
-        // every {vertex + color} pair is deduplicated so that combination only appears once in the vertex buffer
-        let indices = [];
-        let alphaIndices = [];
-
         const vertexColorPairs = {};
         const alphaVertexColorPairs = {};
         for (let i = 0; i < def.faceVertexIndices1.length; i++) {
             const alpha = def.faceAlphas[i] ?? 0;
             const isAlpha = alpha !== 0;
             const dest = isAlpha ? this.alphaVertices : this.verticies;
-            const destIndices = isAlpha ? alphaIndices : indices;
+            const destIndices = isAlpha ? this.alphaIndices : this.indices;
             const destPairs = isAlpha ? alphaVertexColorPairs : vertexColorPairs;
             if (isAlpha) {
                 this.alphaFaces.push(i);
@@ -453,16 +462,16 @@ export default class GLTFExporter {
                 };
             });
         }
-        this.file.addIndicies(indices);
+        this.file.addIndicies(this.indices);
         this.file.addVerticies(this.verticies);
         if (this.alphaVertices.length > 0) {
-            this.file.addIndicies(alphaIndices);
+            this.file.addIndicies(this.alphaIndices);
             this.file.addVerticies(this.alphaVertices);
         }
     }
 
     /**
-     * 
+     *
      * @param {*} morphVertices array of vertices for the morph target
      * @returns the position of the morph target that was inserted
      */
@@ -483,8 +492,10 @@ export default class GLTFExporter {
         }
 
         this.file.addMorphTarget(newMorphVertices, 0);
+        this.morphVertices.push(newMorphVertices);
         if (this.alphaVertices.length > 0) {
             this.file.addMorphTarget(newAlphaMorphVertices, 1);
+            this.alphaMorphVertices.push(newAlphaMorphVertices);
         }
         return this.morphTargetsAmount++;
     }
@@ -495,6 +506,7 @@ export default class GLTFExporter {
             lengths[i] += lengths[i - 1];
         }
         lengths = lengths.map((x) => x / 50);
+        this.animations.push({ morphTargetIds, lengths });
         this.file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount);
     }
 
@@ -532,10 +544,10 @@ export default class GLTFExporter {
             ctx.fillRect(xx, 0, pSize, pSize);
             xx += pSize;
         }
-        const colorPalettePng = canvas.toDataURL();
+        this.colorPalettePng = canvas.toDataURL();
 
-        let normalUvs = new Array(this.verticies.length);
-        let alphaUvs = new Array(this.alphaVertices.length);
+        this.uvs = new Array(this.verticies.length);
+        this.alphaUvs = new Array(this.alphaVertices.length);
         const half = 1 / numUniqueColors / 2;
         for (let i = 0; i < this.faces.length; i++) {
             let faceId = this.faces[i];
@@ -547,9 +559,9 @@ export default class GLTFExporter {
             let v1 = this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey].idx;
             let v2 = this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey].idx;
             let v3 = this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey].idx;
-            normalUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
-            normalUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
-            normalUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
+            this.uvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
+            this.uvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
+            this.uvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
         }
         for (let i = 0; i < this.alphaFaces.length; i++) {
             let faceId = this.alphaFaces[i];
@@ -561,17 +573,27 @@ export default class GLTFExporter {
             let v1 = this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey].idx;
             let v2 = this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey].idx;
             let v3 = this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey].idx;
-            alphaUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
-            alphaUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
-            alphaUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
+            this.alphaUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
+            this.alphaUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
+            this.alphaUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
         }
-        this.file.addColors(normalUvs, colorPalettePng, 0);
+        this.file.addColors(this.uvs, this.colorPalettePng, 0);
         if (this.alphaVertices.length > 0) {
-            this.file.addColors(alphaUvs, null, 1, true);
+            this.file.addColors(this.alphaUvs, null, 1, true);
         }
     }
 
     export() {
         return JSON.stringify(this.file);
+    }
+
+    /**
+     *
+     * @param {number} start first vertex to include in the import, inclusive
+     * @param {number} end last vertex to include in the export, exclusive
+     * @returns
+     */
+    exportVerticesRange(start, end) {
+        return JSON.stringify(this.file.getRange(start, end));
     }
 }

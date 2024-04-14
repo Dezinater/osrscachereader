@@ -5,6 +5,7 @@ import { IndexType, ConfigType, GLTFExporter, ModelGroup } from "osrscachereader
 let finalModel = new ModelGroup();
 let name = "model";
 let animations = [];
+let split = false;
 
 async function processCommand(cache, command, options) {
     switch (command) {
@@ -27,6 +28,9 @@ async function processCommand(cache, command, options) {
                 return;
             }
             name = options[0];
+            break;
+        case "split":
+            split = true;
             break;
     }
 }

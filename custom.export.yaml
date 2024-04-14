@@ -1,6 +1,7 @@
 # this export defines normal models with equipment IDs
 targets:
   - name: max_range_tbow
+    split: false
     gender: male
     models:
     items:
