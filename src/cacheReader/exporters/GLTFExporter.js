@@ -414,8 +414,6 @@ export default class GLTFExporter {
     combineColorAndAlpha = (color, alpha) => (color & 0xffffff) | ((alpha & 0xff) << 24);
 
     constructor(def) {
-        this.file = new GLTFFile();
-
         this.verticies = [];
         this.alphaVertices = [];
 
@@ -462,12 +460,6 @@ export default class GLTFExporter {
                 };
             });
         }
-        this.file.addIndicies(this.indices);
-        this.file.addVerticies(this.verticies);
-        if (this.alphaVertices.length > 0) {
-            this.file.addIndicies(this.alphaIndices);
-            this.file.addVerticies(this.alphaVertices);
-        }
     }
 
     /**
@@ -491,10 +483,8 @@ export default class GLTFExporter {
             }
         }
 
-        this.file.addMorphTarget(newMorphVertices, 0);
         this.morphVertices.push(newMorphVertices);
         if (this.alphaVertices.length > 0) {
-            this.file.addMorphTarget(newAlphaMorphVertices, 1);
             this.alphaMorphVertices.push(newAlphaMorphVertices);
         }
         return this.morphTargetsAmount++;
@@ -507,7 +497,6 @@ export default class GLTFExporter {
         }
         lengths = lengths.map((x) => x / 50);
         this.animations.push({ morphTargetIds, lengths });
-        this.file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount);
     }
 
     addColors(def) {
@@ -577,14 +566,44 @@ export default class GLTFExporter {
             this.alphaUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
             this.alphaUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
         }
-        this.file.addColors(this.uvs, this.colorPalettePng, 0);
+    }
+
+    constructFile() {
+        const file = new GLTFFile();
+
+        // add vertices
+        file.addIndicies(this.indices);
+        file.addVerticies(this.verticies);
         if (this.alphaVertices.length > 0) {
-            this.file.addColors(this.alphaUvs, null, 1, true);
+            file.addIndicies(this.alphaIndices);
+            file.addVerticies(this.alphaVertices);
         }
+
+        // add morph vertices
+        for (let i = 0; i < this.morphVertices.length; ++i) {
+            const morphVertices = this.morphVertices[i];
+            const alphaMorphVertices = this.alphaMorphVertices[i];
+            file.addMorphTarget(morphVertices, 0);
+            if (alphaMorphVertices) {
+                file.addMorphTarget(alphaMorphVertices, 1);
+            }
+        }
+
+        // add animations
+        this.animations.forEach(({ morphTargetIds, lengths }) => {
+            file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount);
+        });
+
+        // add UVs and palette texture
+        file.addColors(this.uvs, this.colorPalettePng, 0);
+        if (this.alphaVertices.length > 0) {
+            file.addColors(this.alphaUvs, null, 1, true);
+        }
+        return file;
     }
 
     export() {
-        return JSON.stringify(this.file);
+        return JSON.stringify(this.constructFile());
     }
 
     /**
