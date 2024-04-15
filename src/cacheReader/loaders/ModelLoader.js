@@ -250,9 +250,10 @@ export class ModelDefinition {
     /**
      * Merge this model with another model
      * @param {ModelDefinition} otherModel Other model to combine with this
+     * @param {boolean} init initialise empty arrays if necessary. set to false if merging a model into a blank model
      * @returns ModelDefinition
      */
-    mergeWith(otherModel) {
+    mergeWith(otherModel, init = true) {
         let verticesCount = this.vertexPositionsX.length;
         this.vertexPositionsX = [...this.vertexPositionsX, ...otherModel.vertexPositionsX];
         this.vertexPositionsY = [...this.vertexPositionsY, ...otherModel.vertexPositionsY];
@@ -288,25 +289,25 @@ export class ModelDefinition {
         }
         this.vertexGroups = newVertexGroups;
 
-        if (this.faceTextures == undefined || this.faceTextures.length == 0)
+        if (init && (this.faceTextures == undefined || this.faceTextures.length == 0))
             this.faceTextures = new Array(this.faceCount).fill(-1);
-        if (otherModel.faceTextures == undefined || otherModel.faceTextures.length == 0)
+        if (init && (otherModel.faceTextures == undefined || otherModel.faceTextures.length == 0))
             otherModel.faceTextures = new Array(otherModel.faceCount).fill(-1);
 
-        if (this.faceRenderTypes == undefined || this.faceRenderTypes.length == 0)
+        if (init && (this.faceRenderTypes == undefined || this.faceRenderTypes.length == 0))
             this.faceRenderTypes = new Array(this.faceCount).fill(-1);
-        if (otherModel.faceRenderTypes == undefined || otherModel.faceRenderTypes.length == 0)
+        if (init && (otherModel.faceRenderTypes == undefined || otherModel.faceRenderTypes.length == 0))
             otherModel.faceRenderTypes = new Array(otherModel.faceCount).fill(-1);
 
         this.vertexCount += otherModel.vertexCount;
         this.faceCount += otherModel.faceCount;
 
-        if (this.animayaGroups == undefined) this.animayaGroups = new Array(this.vertexCount).fill([0]);
-        if (otherModel.animayaGroups == undefined)
+        if (init && this.animayaGroups == undefined) this.animayaGroups = new Array(this.vertexCount).fill([0]);
+        if (init && otherModel.animayaGroups == undefined)
             otherModel.animayaGroups = new Array(otherModel.vertexCount).fill([0]);
 
-        if (this.animayaScales == undefined) this.animayaScales = new Array(this.vertexCount).fill([255]);
-        if (otherModel.animayaScales == undefined)
+        if (init && this.animayaScales == undefined) this.animayaScales = new Array(this.vertexCount).fill([255]);
+        if (init && otherModel.animayaScales == undefined)
             otherModel.animayaScales = new Array(otherModel.vertexCount).fill([255]);
 
         let copy = (property) => {
