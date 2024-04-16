@@ -358,7 +358,7 @@ export class ModelDefinition {
                 isAnimaya: true,
             });
 
-            vertexData = this.loadMayaAnimation(framesInfo[0].def, animation);
+            vertexData = this.loadMayaAnimation(framesInfo[0].def, animation, invertZ);
             lengths = new Array(vertexData.length).fill(1);
         } else {
             let shiftedId = animation.frameIDs[0] >> 16;
@@ -538,7 +538,7 @@ export class ModelDefinition {
         }
     }
 
-    loadMayaAnimation(frameDef, sequenceDefinition) {
+    loadMayaAnimation(frameDef, sequenceDefinition, invertZ = true) {
         let animations = [];
         let animayaSkeleton = frameDef.framemap.animayaSkeleton;
 
@@ -581,7 +581,7 @@ export class ModelDefinition {
 
                         let var3 = this.vertexPositionsX[vertexIndex];
                         let var4 = -this.vertexPositionsY[vertexIndex];
-                        let var5 = this.vertexPositionsZ[vertexIndex];
+                        let var5 = (invertZ ? 1 : -1) * this.vertexPositionsZ[vertexIndex];
                         let var6 = 1.0;
                         verticesX[vertexIndex] =
                             matrix.matrixVals[0] * var3 +

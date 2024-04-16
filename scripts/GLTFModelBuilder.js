@@ -56,12 +56,16 @@ async function loadEntityIds(cache, options, configType, modelType) {
             console.error(`${modelType} key not found`);
             return;
         }
-        let model = await cache.getDef(IndexType.MODELS, entityDef[modelType]);
-        individualModels.push(model);
-        individualModelNames.push(entityDef.name ?? model.id.toString());
-        finalModel.addModel(model);
-        // save where the model vertices start for the corresponding model
-        modelVertexIndices.push(i === 0 ? 0 : modelVertexIndices[i - 1] + individualModels[i - 1].vertexPositionsX.length);
+        const entry = entityDef[modelType];
+        const modelIds = Array.isArray(entry) ? entry : [entry];
+        for (const modelId of modelIds) {
+            let model = await cache.getDef(IndexType.MODELS, modelId);
+            individualModels.push(model);
+            individualModelNames.push(entityDef.name ?? model.id.toString());
+            finalModel.addModel(model);
+            // save where the model vertices start for the corresponding model
+            modelVertexIndices.push(i === 0 ? 0 : modelVertexIndices[i - 1] + individualModels[i - 1].vertexPositionsX.length);
+        }
     }
 }
 
