@@ -48,23 +48,27 @@ function listToIds(options) {
     return ids;
 }
 
-async function loadEntityIds(cache, options, configType, modelType) {
+async function loadEntityIds(cache, options, configType, modelTypeKeys) {
     let ids = listToIds(options);
     for (let i = 0; i < ids.length; i++) {
-        const entityDef = await cache.getDef(IndexType.CONFIGS, configType, ids[i]);
-        if (!(modelType in entityDef)) {
-            console.error(`${modelType} key not found`);
-            return;
-        }
-        const entry = entityDef[modelType];
-        const modelIds = Array.isArray(entry) ? entry : [entry];
-        for (const modelId of modelIds) {
-            let model = await cache.getDef(IndexType.MODELS, modelId);
-            individualModels.push(model);
-            individualModelNames.push(entityDef.name ?? model.id.toString());
-            finalModel.addModel(model);
-            // save where the model vertices start for the corresponding model
-            modelVertexIndices.push(i === 0 ? 0 : modelVertexIndices[i - 1] + individualModels[i - 1].vertexPositionsX.length);
+        for (const modelType of modelTypeKeys) {
+            const entityDef = await cache.getDef(IndexType.CONFIGS, configType, ids[i]);
+            if (!(modelType in entityDef)) {
+                console.error(`${modelType} key not found`);
+                return;
+            }
+            const entry = entityDef[modelType];
+            const modelIds = Array.isArray(entry) ? entry : [entry];
+            for (const modelId of modelIds) {
+                if (modelId < 0) continue;
+                console.log(modelType, ' = ' , modelId);
+                let model = await cache.getDef(IndexType.MODELS, modelId);
+                individualModels.push(model);
+                individualModelNames.push(entityDef.name ?? model.id.toString());
+                finalModel.addModel(model);
+                // save where the model vertices start for the corresponding model
+                modelVertexIndices.push(i === 0 ? 0 : modelVertexIndices[i - 1] + individualModels[i - 1].vertexPositionsX.length);
+            }
         }
     }
 }
@@ -126,13 +130,13 @@ async function addItem(cache, options) {
         return;
     }
 
-    let modelType = "maleModel0"; //maleModel1, femaleModel0, femaleModel1
+    let modelTypes = ["maleModel0", "maleModel1"]; //maleModel1, femaleModel0, femaleModel1
     if (options[1] != undefined) {
-        modelType = options[1];
+        modelTypes = options[1].split(",");
     }
 
 
-    await loadEntityIds(cache, options, ConfigType.ITEM, modelType);
+    await loadEntityIds(cache, options, ConfigType.ITEM, modelTypes);
 }
 
 async function addNpc(cache, options) {
@@ -141,12 +145,12 @@ async function addNpc(cache, options) {
         return;
     }
 
-    let modelType = "models"; //chatheadModels
+    let modelTypes = ["models"]; //chatheadModels
     if (options[1] != undefined) {
-        modelType = options[1];
+        modelTypes = [options[1]];
     }
 
-    await loadEntityIds(cache, options, ConfigType.NPC, modelType);
+    await loadEntityIds(cache, options, ConfigType.NPC, modelTypes);
 }
 
 async function addModels(cache, options) {
