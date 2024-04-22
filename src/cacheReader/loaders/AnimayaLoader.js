@@ -5,10 +5,10 @@ import { AttackOption } from "../cacheTypes/anim/Static.js";
 class class122 {
     field1165;
     field1158;
-    field1159 = 3.4028234663852886e+38; //Java Float MAX_VALUE
-    field1160 = 3.4028234663852886e+38;
-    field1161 = 3.4028234663852886e+38;
-    field1162 = 3.4028234663852886e+38;
+    field1159 = 3.4028234663852886e38; //Java Float MAX_VALUE
+    field1160 = 3.4028234663852886e38;
+    field1161 = 3.4028234663852886e38;
+    field1162 = 3.4028234663852886e38;
 
     method673(var1, var2) {
         this.field1165 = var1.readInt16();
@@ -75,7 +75,12 @@ class class127 {
     }
 
     method706(var1) {
-        if (this.field1205 < 0 || this.field1203[this.field1205].field1165 > var1 || this.field1203[this.field1205].field1163 != null && this.field1203[this.field1205].field1163.field1165 <= var1) {
+        if (
+            this.field1205 < 0 ||
+            this.field1203[this.field1205].field1165 > var1 ||
+            (this.field1203[this.field1205].field1163 != null &&
+                this.field1203[this.field1205].field1163.field1165 <= var1)
+        ) {
             if (var1 >= this.method704() && var1 <= this.method700()) {
                 let var2 = this.method703();
                 let var3 = this.field1205;
@@ -84,7 +89,7 @@ class class127 {
                     let var5 = var2 - 1;
 
                     do {
-                        let var6 = var4 + var5 >> 1;
+                        let var6 = (var4 + var5) >> 1;
                         if (var1 < this.field1203[var6].field1165) {
                             if (var1 > this.field1203[var6 - 1].field1165) {
                                 var3 = var6 - 1;
@@ -137,40 +142,39 @@ class class127 {
     method704() {
         return this.field1218;
     }
-
 }
 
 /**
-* @class AnimayaDefinition
-* @category Definitions
-* @hideconstructor
-*/
+ * @class AnimayaDefinition
+ * @category Definitions
+ * @hideconstructor
+ */
 export class AnimayaDefinition {
     /** @type {Byte} */
     version;
 
-	/** 
+    /**
      * Which framemap to load the skeleton info from
-     * @type {boolean} 
+     * @type {boolean}
      */
     skeletonId;
-    
-	/** 
+
+    /**
      * Used for something related to matricies, translation and rotation
-     * @type {Byte} 
-    */
+     * @type {Byte}
+     */
     field1257;
-    
-	/** 
+
+    /**
      * Something to do with bones
-     * @type {Array<number>} 
-    */
+     * @type {Array<number>}
+     */
     field1265;
 
-	/** @type {Array<number>} */
+    /** @type {Array<number>} */
     field1258;
 
-	/** @type {boolean} */
+    /** @type {boolean} */
     field1259;
 }
 
@@ -195,7 +199,7 @@ export class class129 {
         [16, 16, null, 0, 5],
     ];
     static findEnumerated(val) {
-        let foundValue = this.values.find(x => x[1] == val);
+        let foundValue = this.values.find((x) => x[1] == val);
         if (foundValue == undefined) {
             foundValue = this.values[0];
         }
@@ -224,7 +228,7 @@ export class class128 {
         [5, 5, null, 3],
     ];
     static findEnumerated(val) {
-        let foundValue = this.values.find(x => x[1] == val);
+        let foundValue = this.values.find((x) => x[1] == val);
         if (foundValue == undefined) {
             foundValue = this.values[0];
         }
@@ -244,13 +248,12 @@ export class class128 {
 }
 
 export default class AnimayaLoader {
-
     load(def, bytes, cache, options) {
         let dataview = new DataView(bytes.buffer);
 
         def.version = dataview.readUint8();
         def.skeletonId = dataview.readUint16();
-        if(options.earlyStop) {
+        if (options.earlyStop) {
             return def;
         }
         //console.log(version, skeletonId, "TEST");
@@ -279,7 +282,8 @@ export default class AnimayaLoader {
 
                 let var11;
 
-                if (var6.field1230 == 1) { // var6 == class128.field1234
+                if (var6.field1230 == 1) {
+                    // var6 == class128.field1234
                     var11 = def.field1265;
                 } else {
                     var11 = def.field1258;
@@ -289,18 +293,20 @@ export default class AnimayaLoader {
                     var11[var7] = new Array(var10);
                 }
 
-                if (var6.field1230 == 4) { // var6 == class128.field1228
+                if (var6.field1230 == 4) {
+                    // var6 == class128.field1228
                     def.field1259 = true;
                 }
 
                 tasks.push({ var9, var6, var8, var7 });
             }
 
-            tasks.forEach(task => {
+            tasks.forEach((task) => {
                 task.var9.method705();
 
                 let var1;
-                if (task.var6.field1230 == 1) { //var8 == class128.field1234
+                if (task.var6.field1230 == 1) {
+                    //var8 == class128.field1234
                     var1 = def.field1265;
                 } else {
                     var1 = def.field1258;
@@ -308,9 +314,7 @@ export default class AnimayaLoader {
 
                 var1[task.var7][task.var8.method711()] = task.var9;
             });
-            for (var5 = 0; var5 < var3; ++var5) {
-
-            }
+            for (var5 = 0; var5 < var3; ++var5) {}
 
             def.framemap = framemap;
             return def;

@@ -3,21 +3,21 @@ import { createCanvas } from "canvas";
 const FLAG_VERTICAL = 0b01;
 const FLAG_ALPHA = 0b10;
 /**
-* @class Sprite
-* @category Definitions
-* @hideconstructor
-*/
+ * @class Sprite
+ * @category Definitions
+ * @hideconstructor
+ */
 export class Sprite {
-    /** 
-    * The ID of this Sprite
-    * @type {number} 
-    */
+    /**
+     * The ID of this Sprite
+     * @type {number}
+     */
     id;
 
-    /** 
-    * Frame index for this sprite
-    * @type {number} 
-    */
+    /**
+     * Frame index for this sprite
+     * @type {number}
+     */
     frame;
 
     /** @type {number} */
@@ -32,9 +32,9 @@ export class Sprite {
     /** @type {number} */
     height;
 
-    /** 
+    /**
      * RGB Pixel data
-     * @type {number} 
+     * @type {number}
      */
     pixels = [];
 
@@ -74,23 +74,25 @@ export class Sprite {
         if (height == undefined) height = this.getHeight();
 
         const canvas = createCanvas(this.getWidth(), this.getHeight());
-        const ctx = canvas.getContext('2d');
+        const ctx = canvas.getContext("2d");
 
         let imageData = this.createImageData(ctx);
         ctx.putImageData(imageData, 0, 0);
 
-
         let image = new Image();
         image.src = canvas.toDataURL();
 
-        let loadPromise = new Promise(resolve => {
-            image.onload = () => {
-                canvas.width = height;
-                canvas.height = width;
-                ctx.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), 0, 0, width, height);
-                resolve(canvas);
-            }
-        }, reject => { })
+        let loadPromise = new Promise(
+            (resolve) => {
+                image.onload = () => {
+                    canvas.width = height;
+                    canvas.height = width;
+                    ctx.drawImage(image, 0, 0, this.getWidth(), this.getHeight(), 0, 0, width, height);
+                    resolve(canvas);
+                };
+            },
+            (reject) => {},
+        );
 
         return loadPromise;
     }
@@ -98,7 +100,7 @@ export class Sprite {
     createImageData(ctx) {
         if (ctx == undefined) {
             const canvas = createCanvas(this.getWidth(), this.getHeight());
-            ctx = canvas.getContext('2d');
+            ctx = canvas.getContext("2d");
         }
 
         let imageData = ctx.createImageData(this.getWidth(), this.getHeight());
@@ -115,25 +117,24 @@ export class Sprite {
 }
 
 /**
-* @class SpriteDefinition
-* @category Definitions
-* @hideconstructor
-*/
+ * @class SpriteDefinition
+ * @category Definitions
+ * @hideconstructor
+ */
 export class SpriteDefinition {
-    /** 
-    * The ID of this Sprite
-    * @type {number} 
-    */
+    /**
+     * The ID of this Sprite
+     * @type {number}
+     */
     id;
 
-    /** 
-    * Sprites that make up this SpriteDefinition. There can be multiple sprites for animated SpriteDefinitions.
-    * @type {Array<Sprite>} 
-    */
+    /**
+     * Sprites that make up this SpriteDefinition. There can be multiple sprites for animated SpriteDefinitions.
+     * @type {Array<Sprite>}
+     */
     sprites = [];
 }
 export default class SpriteLoader {
-
     load(bytes, id) {
         let def = new SpriteDefinition();
         def.id = id;
@@ -206,8 +207,7 @@ export default class SpriteLoader {
                 for (let j = 0; j < dimension; ++j) {
                     pixelPaletteIndicies[j] = dataview.readInt8();
                 }
-            }
-            else {
+            } else {
                 // read vertically
                 for (let j = 0; j < spriteWidth; ++j) {
                     for (let k = 0; k < spriteHeight; ++k) {
@@ -223,8 +223,7 @@ export default class SpriteLoader {
                     for (let j = 0; j < dimension; ++j) {
                         pixelAlphas[j] = dataview.readInt8();
                     }
-                }
-                else {
+                } else {
                     // read vertically
                     for (let j = 0; j < spriteWidth; ++j) {
                         for (let k = 0; k < spriteHeight; ++k) {
@@ -232,14 +231,12 @@ export default class SpriteLoader {
                         }
                     }
                 }
-            }
-            else {
+            } else {
                 // everything non-zero is opaque
                 for (let j = 0; j < dimension; ++j) {
                     let index = pixelPaletteIndicies[j];
 
-                    if (index != 0)
-                        pixelAlphas[j] = 0xFF;
+                    if (index != 0) pixelAlphas[j] = 0xff;
                 }
             }
 
@@ -247,7 +244,7 @@ export default class SpriteLoader {
 
             // build argb pixels from palette/alphas
             for (let j = 0; j < dimension; ++j) {
-                let index = pixelPaletteIndicies[j] & 0xFF;
+                let index = pixelPaletteIndicies[j] & 0xff;
 
                 pixels[j] = palette[index] | (pixelAlphas[j] << 24);
             }
@@ -255,10 +252,7 @@ export default class SpriteLoader {
             sprite.setPixels(pixels);
         }
 
-
-
         //ctx.putImageData
         return def;
-
     }
 }

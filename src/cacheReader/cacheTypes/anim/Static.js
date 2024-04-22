@@ -4,7 +4,9 @@ export class AttackOption {
             if (var1 < var0.field1203[0].field1165) {
                 return var0.field1201 == 0 ? var0.field1203[0].field1158 : class181.method922(var0, var1, true);
             } else if (var1 > var0.field1203[var0.method703() - 1].field1165) {
-                return var0.field1214 == 0 ? var0.field1203[var0.method703() - 1].field1158 : class181.method922(var0, var1, false);
+                return var0.field1214 == 0
+                    ? var0.field1203[var0.method703() - 1].field1158
+                    : class181.method922(var0, var1, false);
             } else if (var0.field1200) {
                 return var0.field1203[0].field1158;
             } else {
@@ -16,7 +18,7 @@ export class AttackOption {
                 } else {
                     if (var2.field1161 == 0.0 && var2.field1162 == 0.0) {
                         var3 = true;
-                    } else if (var2.field1161 == 3.4028234663852886e+38 && 3.4028234663852886e+38 == var2.field1162) {
+                    } else if (var2.field1161 == 3.4028234663852886e38 && 3.4028234663852886e38 == var2.field1162) {
                         var4 = true;
                     } else if (var2.field1163 != null) {
                         if (var0.field1215) {
@@ -43,7 +45,9 @@ export class AttackOption {
                     if (var3) {
                         return var2.field1158;
                     } else if (var4) {
-                        return var2.field1165 != var1 && var2.field1163 != null ? var2.field1163.field1158 : var2.field1158;
+                        return var2.field1165 != var1 && var2.field1163 != null
+                            ? var2.field1163.field1158
+                            : var2.field1158;
                     } else {
                         return var0.field1210 ? Tiles.method453(var0, var1) : class467.method2360(var0, var1);
                     }
@@ -83,13 +87,13 @@ export class class181 {
                     var7 = (var1 - var4) / var6;
                 }
 
-                let var8 = (var7);
-                let var10 = Math.abs((float)(var7 - var8));
+                let var8 = var7;
+                let var10 = Math.abs(float(var7 - var8));
                 let var11 = var10 * var6;
                 var8 = Math.abs(var8 + 1.0);
                 let var12 = var8 / 2.0;
-                let var14 = (var12);
-                var10 = (var12 - var14);
+                let var14 = var12;
+                var10 = var12 - var14;
                 let var16;
                 let var17;
                 if (var2) {
@@ -106,7 +110,7 @@ export class class181 {
                             var17 = var0.field1203[0].field1160;
                             var3 = var0.field1203[0].field1158;
                             if (var16 != 0.0) {
-                                var3 -= var11 * var17 / var16;
+                                var3 -= (var11 * var17) / var16;
                             }
 
                             return var3;
@@ -127,7 +131,7 @@ export class class181 {
                         var17 = var0.field1203[var0.method703() - 1].field1162;
                         var3 = var0.field1203[var0.method703() - 1].field1158;
                         if (0.0 != var16) {
-                            var3 += var11 * var17 / var16;
+                            var3 += (var11 * var17) / var16;
                         }
 
                         return var3;
@@ -140,10 +144,10 @@ export class class181 {
                 let var18;
                 if (var2 && var0.field1201 == class125.field1188) {
                     var18 = var0.field1203[var0.method703() - 1].field1158 - var0.field1203[0].field1158;
-                    var3 = (var3 - var8 * var18);
+                    var3 = var3 - var8 * var18;
                 } else if (!var2 && var0.field1214 == class125.field1188) {
                     var18 = var0.field1203[var0.method703() - 1].field1158 - var0.field1203[0].field1158;
-                    var3 = (var3 + var8 * var18);
+                    var3 = var3 + var8 * var18;
                 }
 
                 return var3;
@@ -185,7 +189,7 @@ export class class145 {
                     }
 
                     if (var12[0] > 1.0 || var12[1] > 1.0) {
-                        var15 = (1.0 + var12[1] * (var12[1] - 2.0) + (var12[0] * (var12[1] + (var12[0] - 2.0))));
+                        var15 = 1.0 + var12[1] * (var12[1] - 2.0) + var12[0] * (var12[1] + (var12[0] - 2.0));
                         if (var15 + class123.field1167 > 0.0) {
                             Client.method384(var12);
                         }
@@ -198,14 +202,14 @@ export class class145 {
                 if (var13 != var12[0]) {
                     var10000 = var1 + var9 * var12[0];
                     if (0.0 != var13) {
-                        var6 = var5 + var12[0] * (var6 - var5) / var13;
+                        var6 = var5 + (var12[0] * (var6 - var5)) / var13;
                     }
                 }
 
                 if (var12[1] != var14) {
                     var10000 = var1 + var12[1] * var9;
                     if (1.0 != var14) {
-                        var7 = (var8 - (var8 - var7) * (1.0 - var12[1]) / (1.0 - var14));
+                        var7 = var8 - ((var8 - var7) * (1.0 - var12[1])) / (1.0 - var14);
                     }
                 }
 
@@ -225,11 +229,10 @@ export class class145 {
             }
         }
     }
-
 }
 
 export class class123 {
-    static field1167 = 1.1920929E-7;
+    static field1167 = 1.1920929e-7;
     static field1166;
     static field1168 = [];
     static field1169 = [];
@@ -243,7 +246,7 @@ export class Client {
         if (class123.field1167 + var0[0] < 1.3333334) {
             let var1 = var0[0] - 2.0;
             let var2 = var0[0] - 1.0;
-            let var3 = Math.sqrt((double)(var1 * var1 - var2 * var2 * 4.0));
+            let var3 = Math.sqrt(double(var1 * var1 - var2 * var2 * 4.0));
             let var4 = 0.5 * (var3 + -var1);
             if (var0[1] + class123.field1167 > var4) {
                 var0[1] = var4 - class123.field1167;
@@ -257,7 +260,6 @@ export class Client {
             var0[0] = 1.3333334 - class123.field1167;
             var0[1] = 0.33333334 - class123.field1167;
         }
-
     }
 }
 
@@ -295,7 +297,7 @@ export class class136 {
             let var14 = 1.0 / (var9 * var9);
             let var15 = var9 * var12;
             let var16 = var13 * var9;
-            var0.field1223 = (var16 + var15 - var10 - var10) * var14 / var9;
+            var0.field1223 = ((var16 + var15 - var10 - var10) * var14) / var9;
             var0.field1208 = (var10 + var10 + var10 - var15 - var15 - var16) * var14;
             var0.field1209 = var12;
             var0.field1202 = var5;
@@ -351,7 +353,7 @@ export class class368 {
             var7 += Math.abs(var0[var8]);
         }
 
-        let var24 = (Math.abs(var2) + Math.abs(var4)) * (float)(var1 + 1) * class123.field1167;
+        let var24 = (Math.abs(var2) + Math.abs(var4)) * float(var1 + 1) * class123.field1167;
         if (var7 <= var24) {
             return -1;
         } else {
@@ -433,7 +435,7 @@ export class class368 {
                                 var6[var10++] = var19;
                                 var15 = true;
                             }
-                        } else if (var18 < 0.0 && var17 > 0.0 || var18 > 0.0 && var17 < 0.0) {
+                        } else if ((var18 < 0.0 && var17 > 0.0) || (var18 > 0.0 && var17 < 0.0)) {
                             var6[var10++] = class88.method478(var21, var16, var19, 0.0);
                             if (var10 > 1 && var6[var10 - 2] >= var6[var10 - 1] - var24) {
                                 var6[var10 - 2] = (var6[var10 - 2] + var6[var10 - 1]) * 0.5;
@@ -523,7 +525,10 @@ export class class188 {
 
                             var12 = var8;
                             var8 = var7;
-                            if (var9 * 2.0 < var10 * var17 * 3.0 - Math.abs(var16 * var10) && var9 < Math.abs(var10 * var12 * 0.5)) {
+                            if (
+                                var9 * 2.0 < var10 * var17 * 3.0 - Math.abs(var16 * var10) &&
+                                var9 < Math.abs(var10 * var12 * 0.5)
+                            ) {
                                 var7 = var9 / var10;
                             } else {
                                 var7 = var17;
@@ -545,7 +550,7 @@ export class class188 {
                         }
 
                         var5 = class102.method598(var0.field3760, var0.field3761, var2);
-                        if ((var5 * (var13 / Math.abs(var13))) > 0.0) {
+                        if (var5 * (var13 / Math.abs(var13)) > 0.0) {
                             var14 = true;
                             var15 = true;
                         } else {

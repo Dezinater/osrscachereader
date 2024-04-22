@@ -19,22 +19,24 @@ onmessage = async function (e) {
     let data;
     let decompressedData;
 
-    if (compressionOpcode == 0) { //none
+    if (compressionOpcode == 0) {
+        //none
         data = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
         decompressedData = data;
-        index.revision = dataview.getUint16(data.buffer.byteLength)
-    } else if (compressionOpcode == 1) { //bz2
+        index.revision = dataview.getUint16(data.buffer.byteLength);
+    } else if (compressionOpcode == 1) {
+        //bz2
         let decompressedLength = dataview.getInt32(5);
         data = new Uint8Array(dataview.buffer.slice(9, 9 + compressedLength));
         data = decrypt(data, compressedLength, e?.key);
         let bzData = new Uint8Array(4 + data.length);
-        const bzHeader = [66, 90, 104, 49] //BZh1
+        const bzHeader = [66, 90, 104, 49]; //BZh1
         bzData.set(bzHeader, 0);
-        bzData.set(data, 4)
+        bzData.set(data, 4);
 
         decompressedData = compressjs.Bzip2.decompressFile(bzData);
-
-    } else if (compressionOpcode == 2) { //gzip
+    } else if (compressionOpcode == 2) {
+        //gzip
         let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
         data = decrypt(unencryptedData, unencryptedData.length, e?.key);
         let leftOver = unencryptedData.slice(data.length);
@@ -46,7 +48,7 @@ onmessage = async function (e) {
         //add the end of the compressed data onto the decrypted?
         let decryptedDataview = new DataView(mergedArray.buffer);
 
-        data = new Uint8Array(decryptedDataview.buffer.slice(4))
+        data = new Uint8Array(decryptedDataview.buffer.slice(4));
 
         let unzipped;
         try {
@@ -63,14 +65,14 @@ onmessage = async function (e) {
     let length = decompressedData.byteLength;
     const finalBuffer = decompressedData.buffer.slice(0, length);
     postMessage({ index, archiveId, decompressedData: finalBuffer }, [finalBuffer]);
-}
+};
 
 function decrypt(data, len, key) {
     if (key == undefined) {
         return data;
     }
 
-    let GOLDEN_RATIO = 0x9E3779B9;
+    let GOLDEN_RATIO = 0x9e3779b9;
     let ROUNDS = 32;
 
     let dataview = new DataView(data.buffer);
@@ -87,15 +89,15 @@ function decrypt(data, len, key) {
             sum -= GOLDEN_RATIO;
             v0 -= (((v1 << 4) ^ (v1 >>> 5)) + v1) ^ (sum + key[sum & 3]);
         }
-        out.push((v0 >> 24) & 0xFF);
-        out.push((v0 >> 16) & 0xFF);
-        out.push((v0 >> 8) & 0xFF);
-        out.push(v0 & 0xFF);
+        out.push((v0 >> 24) & 0xff);
+        out.push((v0 >> 16) & 0xff);
+        out.push((v0 >> 8) & 0xff);
+        out.push(v0 & 0xff);
 
-        out.push((v1 >> 24) & 0xFF);
-        out.push((v1 >> 16) & 0xFF);
-        out.push((v1 >> 8) & 0xFF);
-        out.push(v1 & 0xFF);
+        out.push((v1 >> 24) & 0xff);
+        out.push((v1 >> 16) & 0xff);
+        out.push((v1 >> 8) & 0xff);
+        out.push(v1 & 0xff);
     }
 
     return new Uint8Array(out);

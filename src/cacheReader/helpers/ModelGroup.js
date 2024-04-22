@@ -1,8 +1,7 @@
 import { ModelDefinition } from "../loaders/ModelLoader.js";
 
 export default class ModelGroup {
-
-    translation = { x: 0, y: 0, z: 0 }
+    translation = { x: 0, y: 0, z: 0 };
     needsUpdate = false;
 
     constructor(models = []) {
@@ -16,13 +15,12 @@ export default class ModelGroup {
     }
 
     removeModel() {
-
         this.needsUpdate = true;
     }
 
     mergeModels() {
         this.mergedModel = new ModelDefinition();
-        this.models.forEach(model => {
+        this.models.forEach((model) => {
             this.mergedModel.mergeWith(model);
         });
         this.mergedModel.translation = this.translation;

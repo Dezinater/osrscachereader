@@ -5,38 +5,37 @@
  * @hideconstructor
  */
 class File {
-	constructor(id) {
-		/**
-		 * The ID of the file
-		 * @type {number}
-		 */
-		this.id = id;
+    constructor(id) {
+        /**
+         * The ID of the file
+         * @type {number}
+         */
+        this.id = id;
 
+        this.name = "";
 
-		this.name = "";
+        /**
+         * The definition that is loaded from the content array
+         * @type {Definition}
+         */
+        this.def = undefined;
 
-		/**
-		 * The definition that is loaded from the content array
-		 * @type {Definition}
-		 */
-		this.def = undefined;
-		
-		/**
-		 * @type {number}
-		 */
-		this.nameHash = 0;
-		
-		/**
-		 * @type {number}
-		 */
-		this.size = 0;
-		
-		/**
-		 * Byte array of content to be loaded into a definition
-		 * @type {Array}
-		 */
-		this.content = [];
-	}
+        /**
+         * @type {number}
+         */
+        this.nameHash = 0;
+
+        /**
+         * @type {number}
+         */
+        this.size = 0;
+
+        /**
+         * Byte array of content to be loaded into a definition
+         * @type {Array}
+         */
+        this.content = [];
+    }
 }
 
 export default File;

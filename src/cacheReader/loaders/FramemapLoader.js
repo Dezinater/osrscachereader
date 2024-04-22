@@ -1,26 +1,25 @@
 import Bone from "../cacheTypes/anim/Bone.js";
 
 /**
-* @class FramemapDefinition
-* @category Definitions
-* @hideconstructor
-*/
+ * @class FramemapDefinition
+ * @category Definitions
+ * @hideconstructor
+ */
 export class FramemapDefinition {
-    id
+    id;
 
     /** @type {Byte} */
-    length
+    length;
 
     /** @type {Array<number>} */
-    types
+    types;
 
     /** @type {Array<number>} */
-    frameMaps
+    frameMaps;
 
     /** @type {AnimayaSkeleton} */
-    animayaSkeleton
+    animayaSkeleton;
 }
-
 
 class AnimayaSkeleton {
     constructor(dataview, bonesCount) {
@@ -53,7 +52,6 @@ class AnimayaSkeleton {
 }
 
 export default class FramemapLoader {
-
     load(bytes, id) {
         let def = new FramemapDefinition();
         def.id = id;

@@ -1,44 +1,43 @@
-import Matrix from '../cacheTypes/anim/Matrix.js';
-import IndexType from '../cacheTypes/IndexType.js'
-import AnimayaLoader from './AnimayaLoader.js';
-import Quaternion from '../cacheTypes/anim/Quaternion.js';
+import Matrix from "../cacheTypes/anim/Matrix.js";
+import IndexType from "../cacheTypes/IndexType.js";
+import AnimayaLoader from "./AnimayaLoader.js";
+import Quaternion from "../cacheTypes/anim/Quaternion.js";
 
 /**
-* @class FramesDefinition
-* @category Definitions
-* @hideconstructor
-*/
+ * @class FramesDefinition
+ * @category Definitions
+ * @hideconstructor
+ */
 export class FramesDefinition {
-    /** 
-	 * The file ID of this Frame
-	 * @type {number} 
-	 */
+    /**
+     * The file ID of this Frame
+     * @type {number}
+     */
     id;
 
-    /** 
-	 * Skeleton used for this frame
-	 * @type {FramemapDefinition} 
-	 */
-	framemap;
+    /**
+     * Skeleton used for this frame
+     * @type {FramemapDefinition}
+     */
+    framemap;
 
-    
-	/** @type {Array<number>} */
-	translator_x = [];
-    
-	/** @type {Array<number>} */
-	translator_y = [];
-    
-	/** @type {Array<number>} */
-	translator_z = [];
-    
-	/** @type {number} */
-	translatorCount = -1;
-    
-	/** @type {Array<number>} */
-	indexFrameIds = [];
+    /** @type {Array<number>} */
+    translator_x = [];
 
-	/** @type {boolean} */
-	showing;
+    /** @type {Array<number>} */
+    translator_y = [];
+
+    /** @type {Array<number>} */
+    translator_z = [];
+
+    /** @type {number} */
+    translatorCount = -1;
+
+    /** @type {Array<number>} */
+    indexFrameIds = [];
+
+    /** @type {boolean} */
+    showing;
 
     method727(var1, var2, var3) {
         let var5 = new Matrix();
@@ -94,7 +93,6 @@ export class FramesDefinition {
         var13.rotate(var12);
         var1.multiply(var13);
     }
-
 
     method730(var1, var2, var3, var4) {
         let var5 = var3.getTranslation(this.field1257);
@@ -152,7 +150,6 @@ export class FramesDefinition {
 }
 
 export default class FramesLoader {
-
     load(bytes, id, cache, options) {
         let def = new FramesDefinition();
         def.id = id;
@@ -177,69 +174,63 @@ export default class FramesLoader {
         let lastI = -1;
         let index = 0;
         //return this.def;
-        return cache.getFile(IndexType.FRAMEMAPS.id, framemapArchiveIndex, 0, { cacheResults: true }).then((framemap) => {
+        return cache
+            .getFile(IndexType.FRAMEMAPS.id, framemapArchiveIndex, 0, { cacheResults: true })
+            .then((framemap) => {
+                def.framemap = framemap.def;
 
-            def.framemap = framemap.def;
+                for (let i = 0; i < length; ++i) {
+                    let var9 = inview.readUint8();
 
-            for (let i = 0; i < length; ++i) {
-                let var9 = inview.readUint8();
+                    if (var9 <= 0) {
+                        continue;
+                    }
 
-                if (var9 <= 0) {
-                    continue;
-                }
-
-                if (def.framemap.types[i] != 0) {
-                    for (let var10 = i - 1; var10 > lastI; --var10) {
-                        if (def.framemap.types[var10] == 0) {
-                            def.indexFrameIds[index] = var10;
-                            def.translator_x[index] = 0;
-                            def.translator_y[index] = 0;
-                            def.translator_z[index] = 0;
-                            ++index;
-                            break;
+                    if (def.framemap.types[i] != 0) {
+                        for (let var10 = i - 1; var10 > lastI; --var10) {
+                            if (def.framemap.types[var10] == 0) {
+                                def.indexFrameIds[index] = var10;
+                                def.translator_x[index] = 0;
+                                def.translator_y[index] = 0;
+                                def.translator_z[index] = 0;
+                                ++index;
+                                break;
+                            }
                         }
+                    }
+
+                    def.indexFrameIds[index] = i;
+                    let var11 = 0;
+                    if (def.framemap.types[i] == 3) {
+                        var11 = 128;
+                    }
+
+                    if ((var9 & 1) != 0) {
+                        def.translator_x[index] = dataview.readShortSmart();
+                    } else {
+                        def.translator_x[index] = var11;
+                    }
+
+                    if ((var9 & 2) != 0) {
+                        def.translator_y[index] = dataview.readShortSmart();
+                    } else {
+                        def.translator_y[index] = var11;
+                    }
+
+                    if ((var9 & 4) != 0) {
+                        def.translator_z[index] = dataview.readShortSmart();
+                    } else {
+                        def.translator_z[index] = var11;
+                    }
+
+                    lastI = i;
+                    ++index;
+                    if (def.framemap.types[i] == 5) {
+                        def.showing = true;
                     }
                 }
 
-                def.indexFrameIds[index] = i;
-                let var11 = 0;
-                if (def.framemap.types[i] == 3) {
-                    var11 = 128;
-                }
-
-                if ((var9 & 1) != 0) {
-                    def.translator_x[index] = dataview.readShortSmart();
-                }
-                else {
-                    def.translator_x[index] = var11;
-                }
-
-                if ((var9 & 2) != 0) {
-                    def.translator_y[index] = dataview.readShortSmart();
-                }
-                else {
-                    def.translator_y[index] = var11;
-                }
-
-                if ((var9 & 4) != 0) {
-                    def.translator_z[index] = dataview.readShortSmart();
-                }
-                else {
-                    def.translator_z[index] = var11;
-                }
-
-                lastI = i;
-                ++index;
-                if (def.framemap.types[i] == 5) {
-                    def.showing = true;
-                }
-            }
-
-            return def;
-        });
-
-
+                return def;
+            });
     }
-
-
 }
