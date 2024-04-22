@@ -7,13 +7,20 @@ const command = process.argv.shift();
 const options = process.argv;
 
 const optionTokens = ["item", "npc", "object", "model", "spotanim", "anim", "name"];
+// tokens that do not take an argument
+const flagTokens = ["split"];
 function groupTokens(options) {
+    let expectingArgs = false;
     let groups = options.reduce((prev, current) => {
         if (optionTokens.includes(current.toLowerCase())) {
             prev.push(current);
             prev.push([]);
+            expectingArgs = true;
+        } else if (!expectingArgs && flagTokens.includes(current.toLowerCase())) {
+            prev.push(current);
         } else {
             prev[prev.length - 1].push(current);
+            expectingArgs = false;
         }
         return prev;
     }, []);

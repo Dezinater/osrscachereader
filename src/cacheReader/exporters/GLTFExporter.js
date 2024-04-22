@@ -93,7 +93,7 @@ class GLTFFile {
     images = [];
     samplers = [];
     materials = [];
-    animations = [];
+    animations;
 
     buffers = [];
     bufferViews = [];
@@ -234,6 +234,9 @@ class GLTFFile {
     }
 
     addAnimation(targets, lengths, morphTargetsAmount) {
+        if (!this.animations) {
+            this.animations = [];
+        }
         targets = targets.map((x) => {
             let oneHot = new Array(morphTargetsAmount).fill(0);
             oneHot[x] = 1;
@@ -391,6 +394,19 @@ export default class GLTFExporter {
     alphaFaces = [];
     morphTargetsAmount = 0;
 
+    // every {vertex + color} pair is deduplicated so that combination only appears once in the vertex buffer
+    indices = [];
+    alphaIndices = [];
+
+    morphVertices = [];
+    alphaMorphVertices = [];
+
+    animations = [];
+    uvs = [];
+    alphaUvs = [];
+
+    colorPalettePng = null;
+
     /**
      * mapping of original vertex ID to new vertex IDs
      * if alpha is true, it refers to the position in this.alphaVertices, otherwise this.verticies
@@ -401,14 +417,8 @@ export default class GLTFExporter {
     combineColorAndAlpha = (color, alpha) => (color & 0xffffff) | ((alpha & 0xff) << 24);
 
     constructor(def) {
-        this.file = new GLTFFile();
-
         this.verticies = [];
         this.alphaVertices = [];
-
-        // every {vertex + color} pair is deduplicated so that combination only appears once in the vertex buffer
-        let indices = [];
-        let alphaIndices = [];
 
         const vertexColorPairs = {};
         const alphaVertexColorPairs = {};
@@ -416,7 +426,7 @@ export default class GLTFExporter {
             const alpha = def.faceAlphas[i] ?? 0;
             const isAlpha = alpha !== 0;
             const dest = isAlpha ? this.alphaVertices : this.verticies;
-            const destIndices = isAlpha ? alphaIndices : indices;
+            const destIndices = isAlpha ? this.alphaIndices : this.indices;
             const destPairs = isAlpha ? alphaVertexColorPairs : vertexColorPairs;
             if (isAlpha) {
                 this.alphaFaces.push(i);
@@ -453,16 +463,10 @@ export default class GLTFExporter {
                 };
             });
         }
-        this.file.addIndicies(indices);
-        this.file.addVerticies(this.verticies);
-        if (this.alphaVertices.length > 0) {
-            this.file.addIndicies(alphaIndices);
-            this.file.addVerticies(this.alphaVertices);
-        }
     }
 
     /**
-     * 
+     *
      * @param {*} morphVertices array of vertices for the morph target
      * @returns the position of the morph target that was inserted
      */
@@ -472,7 +476,7 @@ export default class GLTFExporter {
         for (let i = 0; i < morphVertices.length; i++) {
             const realVertices = this.remappedVertices[i];
             // may end up reprocessing each vertex multiple times if it appears in multiple colours, but thats OK
-            for (const { idx: newIdx, alpha } of Object.values(realVertices)) {
+            for (const { idx: newIdx, alpha } of Object.values(realVertices || {})) {
                 const src = alpha ? this.alphaVertices : this.verticies;
                 const dest = alpha ? newAlphaMorphVertices : newMorphVertices;
                 dest[newIdx] = [];
@@ -482,9 +486,9 @@ export default class GLTFExporter {
             }
         }
 
-        this.file.addMorphTarget(newMorphVertices, 0);
+        this.morphVertices.push(newMorphVertices);
         if (this.alphaVertices.length > 0) {
-            this.file.addMorphTarget(newAlphaMorphVertices, 1);
+            this.alphaMorphVertices.push(newAlphaMorphVertices);
         }
         return this.morphTargetsAmount++;
     }
@@ -495,7 +499,7 @@ export default class GLTFExporter {
             lengths[i] += lengths[i - 1];
         }
         lengths = lengths.map((x) => x / 50);
-        this.file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount);
+        this.animations.push({ morphTargetIds, lengths });
     }
 
     addColors(def) {
@@ -532,10 +536,10 @@ export default class GLTFExporter {
             ctx.fillRect(xx, 0, pSize, pSize);
             xx += pSize;
         }
-        const colorPalettePng = canvas.toDataURL();
+        this.colorPalettePng = canvas.toDataURL();
 
-        let normalUvs = new Array(this.verticies.length);
-        let alphaUvs = new Array(this.alphaVertices.length);
+        this.uvs = new Array(this.verticies.length);
+        this.alphaUvs = new Array(this.alphaVertices.length);
         const half = 1 / numUniqueColors / 2;
         for (let i = 0; i < this.faces.length; i++) {
             let faceId = this.faces[i];
@@ -547,9 +551,9 @@ export default class GLTFExporter {
             let v1 = this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey].idx;
             let v2 = this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey].idx;
             let v3 = this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey].idx;
-            normalUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
-            normalUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
-            normalUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
+            this.uvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
+            this.uvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
+            this.uvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
         }
         for (let i = 0; i < this.alphaFaces.length; i++) {
             let faceId = this.alphaFaces[i];
@@ -561,17 +565,52 @@ export default class GLTFExporter {
             let v1 = this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey].idx;
             let v2 = this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey].idx;
             let v3 = this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey].idx;
-            alphaUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
-            alphaUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
-            alphaUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
-        }
-        this.file.addColors(normalUvs, colorPalettePng, 0);
-        if (this.alphaVertices.length > 0) {
-            this.file.addColors(alphaUvs, null, 1, true);
+            this.alphaUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
+            this.alphaUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
+            this.alphaUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
         }
     }
 
+    constructFile() {
+        const file = new GLTFFile();
+        let alphaPrimitiveIndex = 0;
+        // add vertices
+        if (this.verticies.length > 0) {
+            file.addIndicies(this.indices);
+            file.addVerticies(this.verticies);
+            ++alphaPrimitiveIndex;
+        }
+        if (this.alphaVertices.length > 0) {
+            file.addIndicies(this.alphaIndices);
+            file.addVerticies(this.alphaVertices);
+        }
+
+        // add morph vertices
+        for (let i = 0; i < this.morphVertices.length; ++i) {
+            const morphVertices = this.morphVertices[i];
+            if (morphVertices?.length > 0) {
+                file.addMorphTarget(morphVertices, 0);
+            }
+            const alphaMorphVertices = this.alphaMorphVertices[i];
+            if (alphaMorphVertices?.length > 0) {
+                file.addMorphTarget(alphaMorphVertices, alphaPrimitiveIndex);
+            }
+        }
+
+        // add animations
+        this.animations.forEach(({ morphTargetIds, lengths }) => {
+            file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount);
+        });
+
+        // add UVs and palette texture
+        file.addColors(this.uvs, this.colorPalettePng, 0);
+        if (this.alphaVertices.length > 0) {
+            file.addColors(this.alphaUvs, alphaPrimitiveIndex === 1 ? null : this.colorPalettePng, alphaPrimitiveIndex, true);
+        }
+        return file;
+    }
+
     export() {
-        return JSON.stringify(this.file);
+        return JSON.stringify(this.constructFile());
     }
 }

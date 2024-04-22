@@ -21,7 +21,7 @@ export default class ModelGroup {
     mergeModels() {
         this.mergedModel = new ModelDefinition();
         this.models.forEach((model) => {
-            this.mergedModel.mergeWith(model);
+            this.mergedModel.mergeWith(model, false);
         });
         this.mergedModel.translation = this.translation;
         this.mergedModel.position = this.position;
