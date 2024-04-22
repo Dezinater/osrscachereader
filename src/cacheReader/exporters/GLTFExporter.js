@@ -605,7 +605,12 @@ export default class GLTFExporter {
         // add UVs and palette texture
         file.addColors(this.uvs, this.colorPalettePng, 0);
         if (this.alphaVertices.length > 0) {
-            file.addColors(this.alphaUvs, alphaPrimitiveIndex === 1 ? null : this.colorPalettePng, alphaPrimitiveIndex, true);
+            file.addColors(
+                this.alphaUvs,
+                alphaPrimitiveIndex === 1 ? null : this.colorPalettePng,
+                alphaPrimitiveIndex,
+                true,
+            );
         }
         return file;
     }

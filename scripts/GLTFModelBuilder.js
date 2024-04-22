@@ -44,7 +44,11 @@ async function processCommand(cache, command, options) {
 function listToIds(options) {
     let ids;
     if (options[0].includes(",")) {
-        ids = options[0].split(",").map((n) => n.trim()).filter((n) => n !== "").map((n) => Number(n));
+        ids = options[0]
+            .split(",")
+            .map((n) => n.trim())
+            .filter((n) => n !== "")
+            .map((n) => Number(n));
     } else {
         ids = [Number(options[0])];
     }
@@ -64,13 +68,15 @@ async function loadEntityIds(cache, options, configType, modelTypeKeys, animatio
             const modelIds = Array.isArray(entry) ? entry : [entry];
             for (const modelId of modelIds) {
                 if (modelId < 0) continue;
-                console.log(modelType, ' = ' , modelId);
+                console.log(modelType, " = ", modelId);
                 let model = await cache.getDef(IndexType.MODELS, modelId);
                 individualModels.push(model);
                 individualModelNames.push(entityDef.name ?? model.id.toString());
                 finalModel.addModel(model);
                 // save where the model vertices start for the corresponding model
-                modelVertexIndices.push(i === 0 ? 0 : modelVertexIndices[i - 1] + individualModels[i - 1].vertexPositionsX.length);
+                modelVertexIndices.push(
+                    i === 0 ? 0 : modelVertexIndices[i - 1] + individualModels[i - 1].vertexPositionsX.length,
+                );
             }
             if (animationKey) {
                 if (!(animationKey in entityDef)) {
@@ -147,7 +153,6 @@ async function addItem(cache, options) {
         modelTypes = options[1].split(",");
     }
 
-
     await loadEntityIds(cache, options, ConfigType.ITEM, modelTypes);
 }
 
@@ -176,7 +181,7 @@ async function addSpotAnim(cache, options) {
         modelTypes = [options[1]];
     }
 
-    await loadEntityIds(cache, options, ConfigType.SPOTANIM, modelTypes, 'animationId');
+    await loadEntityIds(cache, options, ConfigType.SPOTANIM, modelTypes, "animationId");
 }
 
 async function addModels(cache, options) {

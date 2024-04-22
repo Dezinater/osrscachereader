@@ -1,4 +1,4 @@
-import { processCommand, exportGLTFModel } from './GLTFModelBuilder.js';
+import { processCommand, exportGLTFModel } from "./GLTFModelBuilder.js";
 import { RSCache } from "osrscachereader";
 
 const nodePath = process.argv.shift();
@@ -29,15 +29,14 @@ function groupTokens(options) {
 
 async function processTokenPairs(tokenPairs) {
     for (let i = 0; i < tokenPairs.length; i += 2) {
-        await processCommand(cache, tokenPairs[i+0], tokenPairs[i+1]);
+        await processCommand(cache, tokenPairs[i + 0], tokenPairs[i + 1]);
     }
     exportGLTFModel(cache);
 }
 
-
 let cache = new RSCache("./cache");
 cache.onload.then(async () => {
-    if(command == "modelBuilder") {
+    if (command == "modelBuilder") {
         const tokenPairs = groupTokens(options);
         await processTokenPairs(tokenPairs);
     }
