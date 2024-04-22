@@ -18,6 +18,9 @@ async function processCommand(cache, command, options) {
         case "npc":
             await addNpc(cache, options);
             break;
+        case "spotanim":
+            await addSpotAnim(cache, options);
+            break;
         case "anim":
             if (options[0] == undefined) {
                 console.error("Output path undefined");
@@ -48,7 +51,7 @@ function listToIds(options) {
     return ids;
 }
 
-async function loadEntityIds(cache, options, configType, modelTypeKeys) {
+async function loadEntityIds(cache, options, configType, modelTypeKeys, animationKey = null) {
     let ids = listToIds(options);
     for (let i = 0; i < ids.length; i++) {
         for (const modelType of modelTypeKeys) {
@@ -68,6 +71,15 @@ async function loadEntityIds(cache, options, configType, modelTypeKeys) {
                 finalModel.addModel(model);
                 // save where the model vertices start for the corresponding model
                 modelVertexIndices.push(i === 0 ? 0 : modelVertexIndices[i - 1] + individualModels[i - 1].vertexPositionsX.length);
+            }
+            if (animationKey) {
+                if (!(animationKey in entityDef)) {
+                    console.error(`${animationKey} key not found`);
+                    return;
+                }
+                if (entityDef[animationKey] >= 0) {
+                    animations.push(entityDef[animationKey]);
+                }
             }
         }
     }
@@ -151,6 +163,20 @@ async function addNpc(cache, options) {
     }
 
     await loadEntityIds(cache, options, ConfigType.NPC, modelTypes);
+}
+
+async function addSpotAnim(cache, options) {
+    if (options[0] == undefined) {
+        console.error("Spot Anim ID undefined");
+        return;
+    }
+
+    let modelTypes = ["modelId"]; //chatheadModels
+    if (options[1] != undefined) {
+        modelTypes = [options[1]];
+    }
+
+    await loadEntityIds(cache, options, ConfigType.SPOTANIM, modelTypes, 'animationId');
 }
 
 async function addModels(cache, options) {

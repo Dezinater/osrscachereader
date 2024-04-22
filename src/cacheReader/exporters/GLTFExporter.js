@@ -93,7 +93,7 @@ class GLTFFile {
     images = [];
     samplers = [];
     materials = [];
-    animations = [];
+    animations;
 
     buffers = [];
     bufferViews = [];
@@ -234,6 +234,9 @@ class GLTFFile {
     }
 
     addAnimation(targets, lengths, morphTargetsAmount) {
+        if (!this.animations) {
+            this.animations = [];
+        }
         targets = targets.map((x) => {
             let oneHot = new Array(morphTargetsAmount).fill(0);
             oneHot[x] = 1;
@@ -570,9 +573,13 @@ export default class GLTFExporter {
 
     constructFile() {
         const file = new GLTFFile();
+        let alphaPrimitiveIndex = 0;
         // add vertices
-        file.addIndicies(this.indices);
-        file.addVerticies(this.verticies);
+        if (this.verticies.length > 0) {
+            file.addIndicies(this.indices);
+            file.addVerticies(this.verticies);
+            ++alphaPrimitiveIndex;
+        }
         if (this.alphaVertices.length > 0) {
             file.addIndicies(this.alphaIndices);
             file.addVerticies(this.alphaVertices);
@@ -581,10 +588,12 @@ export default class GLTFExporter {
         // add morph vertices
         for (let i = 0; i < this.morphVertices.length; ++i) {
             const morphVertices = this.morphVertices[i];
+            if (morphVertices?.length > 0) {
+                file.addMorphTarget(morphVertices, 0);
+            }
             const alphaMorphVertices = this.alphaMorphVertices[i];
-            file.addMorphTarget(morphVertices, 0);
-            if (alphaMorphVertices) {
-                file.addMorphTarget(alphaMorphVertices, 1);
+            if (alphaMorphVertices?.length > 0) {
+                file.addMorphTarget(alphaMorphVertices, alphaPrimitiveIndex);
             }
         }
 
@@ -596,7 +605,7 @@ export default class GLTFExporter {
         // add UVs and palette texture
         file.addColors(this.uvs, this.colorPalettePng, 0);
         if (this.alphaVertices.length > 0) {
-            file.addColors(this.alphaUvs, null, 1, true);
+            file.addColors(this.alphaUvs, alphaPrimitiveIndex === 1 ? null : this.colorPalettePng, alphaPrimitiveIndex, true);
         }
         return file;
     }
