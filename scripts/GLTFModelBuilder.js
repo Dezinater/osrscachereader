@@ -103,10 +103,12 @@ async function exportGLTFModel(cache) {
     let allLengths = [];
     let allMorphTargets = [];
     for (const animId of animations) {
-        const appliedAnimation = await finalModel.getMergedModel().loadAnimation(cache, animId, false);
+        const appliedAnimation = await finalModel.getMergedModel().loadAnimation(cache, animId, false, true);
+
         const morphTargetIndices = appliedAnimation.vertexData.map((frameVertices) =>
             exporter.addMorphTarget(frameVertices),
         );
+
         // apply subset of the animation to the partial models
         appliedAnimation.vertexData.forEach((frameVertices) => {
             for (let i = 0; i < individualModels.length; ++i) {
