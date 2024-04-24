@@ -9,6 +9,7 @@ let individualModelNames = [];
 let name = "model";
 let animations = [];
 let split = false;
+let excludeModelIds = [];
 
 async function processCommand(cache, command, options) {
     switch (command) {
@@ -37,6 +38,9 @@ async function processCommand(cache, command, options) {
             break;
         case "split":
             split = true;
+            break;
+        case "exclude":
+            excludeModelIds.push(...listToIds(options));
             break;
     }
 }
@@ -68,6 +72,7 @@ async function loadEntityIds(cache, options, configType, modelTypeKeys, animatio
             const modelIds = Array.isArray(entry) ? entry : [entry];
             for (const modelId of modelIds) {
                 if (modelId < 0) continue;
+                if (excludeModelIds.includes(modelId)) continue;
                 console.log(modelType, " = ", modelId);
                 let model = await cache.getDef(IndexType.MODELS, modelId);
                 individualModels.push(model);
@@ -182,10 +187,6 @@ async function addSpotAnim(cache, options) {
     }
 
     await loadEntityIds(cache, options, ConfigType.SPOTANIM, modelTypes, "animationId");
-}
-
-async function addModels(cache, options) {
-    console.log(options);
 }
 
 export { processCommand, exportGLTFModel };

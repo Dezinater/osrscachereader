@@ -6,7 +6,7 @@ const cmdPath = process.argv.shift();
 const command = process.argv.shift();
 const options = process.argv;
 
-const optionTokens = ["item", "npc", "object", "model", "spotanim", "anim", "name"];
+const optionTokens = ["item", "npc", "object", "model", "spotanim", "anim", "name", "exclude"];
 // tokens that do not take an argument
 const flagTokens = ["split"];
 function groupTokens(options) {
