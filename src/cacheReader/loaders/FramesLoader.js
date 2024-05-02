@@ -39,6 +39,8 @@ export class FramesDefinition {
     /** @type {boolean} */
     showing;
 
+    colorTransform;
+
     method727(var1, var2, var3) {
         let var5 = new Matrix();
 
@@ -175,7 +177,9 @@ export default class FramesLoader {
         let index = 0;
         //return this.def;
         return cache
-            .getFile(IndexType.FRAMEMAPS.id, framemapArchiveIndex, 0, { cacheResults: true })
+            .getFile(IndexType.FRAMEMAPS.id, framemapArchiveIndex, 0, {
+                cacheResults: true,
+            })
             .then((framemap) => {
                 def.framemap = framemap.def;
 
@@ -225,8 +229,13 @@ export default class FramesLoader {
 
                     lastI = i;
                     ++index;
+                    // alpha
                     if (def.framemap.types[i] == 5) {
                         def.showing = true;
+                    }
+                    if (def.framemap.types[i] == 7) {
+                        // color
+                        def.colorTransform = true;
                     }
                 }
 

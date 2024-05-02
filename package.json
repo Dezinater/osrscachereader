@@ -25,7 +25,9 @@
     },
     "scripts": {
         "test": "mocha",
+        "cmd": "node scripts/command.js",
         "generate": "node scripts/generateAnimList.js & node scripts/generateAnimayaAnimList.js",
+        "model": "node scripts/dumpModel.js",
         "docs": "jsdoc -r ./src/ -t ./node_modules/better-docs -c ./jsdoc.json -d docs --readme ./README.md",
         "dev": "webpack serve --mode development",
         "devnode": "node src/index-dev-node.js",

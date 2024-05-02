@@ -227,7 +227,12 @@ export default class MapLoader {
                 let type = attributes >> 2;
                 let orientation = attributes & 0x3;
 
-                def.locations.push({ id, type, orientation, position: { localX, localY, height } });
+                def.locations.push({
+                    id,
+                    type,
+                    orientation,
+                    position: { localX, localY, height },
+                });
             }
         }
 

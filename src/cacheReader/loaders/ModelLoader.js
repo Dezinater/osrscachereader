@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import IndexType from "../cacheTypes/IndexType.js";
 import ConfigType from "../cacheTypes/ConfigType.js";
 import Matrix from "../cacheTypes/anim/Matrix.js";
@@ -211,7 +213,12 @@ export class ModelDefinition {
         this.vertexPositionsZ.push(this.position.y + z);
 
         if (this.vertexNormals == undefined) this.vertexNormals = [];
-        this.vertexNormals.push({ x: Math.random(), y: Math.random(), z: Math.random(), magnitude: Math.random() });
+        this.vertexNormals.push({
+            x: Math.random(),
+            y: Math.random(),
+            z: Math.random(),
+            magnitude: Math.random(),
+        });
 
         this.vertexCount = this.vertexPositionsX.length;
         if (this.vertexCount >= 3) {
@@ -245,9 +252,10 @@ export class ModelDefinition {
     /**
      * Merge this model with another model
      * @param {ModelDefinition} otherModel Other model to combine with this
+     * @param {boolean} init initialise empty arrays if necessary. set to false if merging a model into a blank model
      * @returns ModelDefinition
      */
-    mergeWith(otherModel) {
+    mergeWith(otherModel, init = true) {
         let verticesCount = this.vertexPositionsX.length;
         this.vertexPositionsX = [...this.vertexPositionsX, ...otherModel.vertexPositionsX];
         this.vertexPositionsY = [...this.vertexPositionsY, ...otherModel.vertexPositionsY];
@@ -283,25 +291,25 @@ export class ModelDefinition {
         }
         this.vertexGroups = newVertexGroups;
 
-        if (this.faceTextures == undefined || this.faceTextures.length == 0)
+        if (init && (this.faceTextures == undefined || this.faceTextures.length == 0))
             this.faceTextures = new Array(this.faceCount).fill(-1);
-        if (otherModel.faceTextures == undefined || otherModel.faceTextures.length == 0)
+        if (init && (otherModel.faceTextures == undefined || otherModel.faceTextures.length == 0))
             otherModel.faceTextures = new Array(otherModel.faceCount).fill(-1);
 
-        if (this.faceRenderTypes == undefined || this.faceRenderTypes.length == 0)
+        if (init && (this.faceRenderTypes == undefined || this.faceRenderTypes.length == 0))
             this.faceRenderTypes = new Array(this.faceCount).fill(-1);
-        if (otherModel.faceRenderTypes == undefined || otherModel.faceRenderTypes.length == 0)
+        if (init && (otherModel.faceRenderTypes == undefined || otherModel.faceRenderTypes.length == 0))
             otherModel.faceRenderTypes = new Array(otherModel.faceCount).fill(-1);
 
         this.vertexCount += otherModel.vertexCount;
         this.faceCount += otherModel.faceCount;
 
-        if (this.animayaGroups == undefined) this.animayaGroups = new Array(this.vertexCount).fill([0]);
-        if (otherModel.animayaGroups == undefined)
+        if (init && this.animayaGroups == undefined) this.animayaGroups = new Array(this.vertexCount).fill([0]);
+        if (init && otherModel.animayaGroups == undefined)
             otherModel.animayaGroups = new Array(otherModel.vertexCount).fill([0]);
 
-        if (this.animayaScales == undefined) this.animayaScales = new Array(this.vertexCount).fill([255]);
-        if (otherModel.animayaScales == undefined)
+        if (init && this.animayaScales == undefined) this.animayaScales = new Array(this.vertexCount).fill([255]);
+        if (init && otherModel.animayaScales == undefined)
             otherModel.animayaScales = new Array(otherModel.vertexCount).fill([255]);
 
         let copy = (property) => {
@@ -329,9 +337,9 @@ export class ModelDefinition {
         return this;
     }
 
-    async loadSkeletonAnims(cache, model, id) {
+    async loadSkeletonAnims(cache, model, id, invertZ = true) {
         let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, id)).map((x) => x.def);
-        let loadedAnims = frameDefs.map((frameDef) => this.loadFrame(model, frameDef));
+        let loadedAnims = frameDefs.map((frameDef) => this.loadFrame(model, frameDef, invertZ));
 
         return loadedAnims;
     }
@@ -340,9 +348,10 @@ export class ModelDefinition {
      *
      * @param {RSCache} cache OSRSCache object used to grab other files for the animation
      * @param {number} animationId Animation ID you want to play on this model
+     * @param {boolean} compress Perform run-length encoding on animations to compress the sequence. Useful for maya anims.
      * @returns AnimationData
      */
-    async loadAnimation(cache, animationId) {
+    async loadAnimation(cache, animationId, invertZ = true, compress = false) {
         let animation = (await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animationId)).def;
         let vertexData;
         let lengths;
@@ -352,15 +361,39 @@ export class ModelDefinition {
                 isAnimaya: true,
             });
 
-            vertexData = this.loadMayaAnimation(framesInfo[0].def, animation);
-            lengths = new Array(vertexData.length).fill(1);
+            const rawVertexData = this.loadMayaAnimation(framesInfo[0].def, animation, invertZ);
+            
+            // run-length encode maya animations
+            if (compress) {
+                let last = rawVertexData[0]
+                let currentRun = 1;
+                let longestRun = 1;
+                vertexData = [];
+                lengths = [];
+                for (let i = 1; i < rawVertexData.length; ++i) {
+                    if (_.isEqual(rawVertexData[i], last)) {
+                        currentRun++;
+                    } else {
+                        longestRun = Math.max(longestRun, currentRun);
+                        lengths.push(currentRun);
+                        currentRun = 1;
+                        vertexData.push(last);
+                        last = rawVertexData[i];
+                    }
+                }
+                vertexData.push(last);
+                lengths.push(currentRun);
+            } else {
+                vertexData = rawVertexData;
+                lengths = new Array(vertexData.length).fill(1);
+            }
         } else {
             let shiftedId = animation.frameIDs[0] >> 16;
             let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map((x) => x.def);
             let frames = animation.frameIDs.map((frameId) =>
                 frameDefs.find((frameDef) => frameDef?.id == (frameId & 65535)),
             );
-            let loadedFrames = frames.map((x) => this.loadFrame(this, x));
+            let loadedFrames = frames.map((x) => this.loadFrame(this, x, invertZ));
 
             vertexData = loadedFrames.map((x) => x.vertices);
             lengths = animation.frameLengths;
@@ -372,10 +405,10 @@ export class ModelDefinition {
         };
     }
 
-    loadFrame(model, frame) {
+    loadFrame(model, frame, invertZ = true) {
         let verticesX = [...model.vertexPositionsX];
         let verticesY = [...model.vertexPositionsY];
-        let verticesZ = model.vertexPositionsZ.map((z) => -z);
+        let verticesZ = invertZ ? model.vertexPositionsZ.map((z) => -z) : [...model.vertexPositionsZ];
         let framemap = frame.framemap;
         let animOffsets = {
             x: 0,
@@ -532,7 +565,7 @@ export class ModelDefinition {
         }
     }
 
-    loadMayaAnimation(frameDef, sequenceDefinition) {
+    loadMayaAnimation(frameDef, sequenceDefinition, invertZ = true) {
         let animations = [];
         let animayaSkeleton = frameDef.framemap.animayaSkeleton;
 
@@ -575,7 +608,7 @@ export class ModelDefinition {
 
                         let var3 = this.vertexPositionsX[vertexIndex];
                         let var4 = -this.vertexPositionsY[vertexIndex];
-                        let var5 = this.vertexPositionsZ[vertexIndex];
+                        let var5 = (invertZ ? 1 : -1) * this.vertexPositionsZ[vertexIndex];
                         let var6 = 1.0;
                         verticesX[vertexIndex] =
                             matrix.matrixVals[0] * var3 +
@@ -1001,7 +1034,7 @@ export default class ModelLoader {
         let var8 = new DataView(var1.buffer);
         var2.setPosition(var1.byteLength - 26);
         let var9 = var2.readUint16();
-        let var10 = var2.readUint16();
+        let numFaces = var2.readUint16();
         let var11 = var2.readUint8();
         let var12 = var2.readUint8();
         let var13 = var2.readUint8();
@@ -1043,39 +1076,39 @@ export default class ModelLoader {
         var28 = var11 + var9;
         let var58 = var28;
         if (var12 == 1) {
-            var28 += var10;
+            var28 += numFaces;
         }
 
         let var30 = var28;
-        var28 += var10;
+        var28 += numFaces;
         let var31 = var28;
         if (var13 == 255) {
-            var28 += var10;
+            var28 += numFaces;
         }
 
         let var32 = var28;
         if (var15 == 1) {
-            var28 += var10;
+            var28 += numFaces;
         }
 
         let var33 = var28;
         var28 += var24;
         let var34 = var28;
         if (var14 == 1) {
-            var28 += var10;
+            var28 += numFaces;
         }
 
         let var35 = var28;
         var28 += var22;
         let var36 = var28;
         if (var16 == 1) {
-            var28 += var10 * 2;
+            var28 += numFaces * 2;
         }
 
         let var37 = var28;
         var28 += var23;
         let var38 = var28;
-        var28 += var10 * 2;
+        var28 += numFaces * 2;
         let var39 = var28;
         var28 += var19;
         let var40 = var28;
@@ -1095,7 +1128,7 @@ export default class ModelLoader {
         let var47 = var28;
         var28 = var28 + var26 * 2 + var27 * 2;
         def.vertexCount = var9;
-        def.faceCount = var10;
+        def.faceCount = numFaces;
         def.numTextureFaces = var11;
         def.vertexPositionsX = [];
         def.vertexPositionsY = [];
@@ -1130,7 +1163,7 @@ export default class ModelLoader {
         }
 
         if (var16 == 1 && var11 > 0) {
-            def.textureCoords = new Array(var10).fill(0);
+            def.textureCoords = new Array(numFaces).fill(0);
         }
 
         if (var18 == 1) {
@@ -1210,7 +1243,7 @@ export default class ModelLoader {
         var7.setPosition(var36);
         var8.setPosition(var37);
 
-        for (var51 = 0; var51 < var10; ++var51) {
+        for (var51 = 0; var51 < numFaces; ++var51) {
             def.faceColors[var51] = var2.readUint16();
             if (var12 == 1) {
                 def.faceRenderTypes[var51] = var3.readInt8();
@@ -1221,7 +1254,7 @@ export default class ModelLoader {
             }
 
             if (var14 == 1) {
-                def.faceAlphas[var51] = var5.readInt8();
+                def.faceAlphas[var51] = var5.readUint8();
             }
 
             if (var15 == 1) {
@@ -1245,7 +1278,7 @@ export default class ModelLoader {
         var54 = 0;
 
         let var56;
-        for (var55 = 0; var55 < var10; ++var55) {
+        for (var55 = 0; var55 < numFaces; ++var55) {
             var56 = var3.readUint8();
             if (var56 == 1) {
                 var51 = var2.readShortSmart() + var54;

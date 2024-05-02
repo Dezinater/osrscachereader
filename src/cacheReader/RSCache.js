@@ -254,9 +254,13 @@ class RSCache {
             }
             this.indicies[i] = new Index(i);
             for (let j = 0; j < dataview.byteLength; j += 6) {
-                let size = dataview.readUint24();
-                let segment = dataview.readUint24();
-                this.indicies[i].indexSegments.push({ size, segment });
+                try {
+                    let size = dataview.readUint24();
+                    let segment = dataview.readUint24();
+                    this.indicies[i].indexSegments.push({ size, segment });
+                } catch (err) {
+                    console.error(`error reading index ${i} pos ${j}`, err);
+                }
             }
         }
 

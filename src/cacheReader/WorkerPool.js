@@ -41,7 +41,10 @@ export default class WorkerPool {
             let promise = new Promise((resolve, reject) => {
                 resolveMethod = resolve;
             });
-            this.promises[index][archiveId] = { resolve: resolveMethod, promise };
+            this.promises[index][archiveId] = {
+                resolve: resolveMethod,
+                promise,
+            };
         } else {
             //if its already being loaded
             return this.promises[index][archiveId].promise;
@@ -49,7 +52,13 @@ export default class WorkerPool {
 
         const unactiveWorker = this.workers.find((x) => !x.active);
         if (unactiveWorker == undefined) {
-            this.workQueue.push({ index, segment, archiveId, compressedData, key });
+            this.workQueue.push({
+                index,
+                segment,
+                archiveId,
+                compressedData,
+                key,
+            });
             return;
         }
 

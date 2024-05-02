@@ -90,22 +90,30 @@ export default class CacheLoader {
     }
 
     loadByVersion(version) {
-        axios.get("https://archive.openrs2.org/caches.json", { responseType: "json" }).then((caches) => {
-            let filtered = caches.data.filter(
-                (x) => x.game == "oldschool" && x.builds.length > 0 && x.builds[0].major == version,
-            );
-            let sorted = filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-            this.fetchURL(`https://archive.openrs2.org/caches/runescape/${sorted[0].id}/disk.zip`);
-        });
+        axios
+            .get("https://archive.openrs2.org/caches.json", {
+                responseType: "json",
+            })
+            .then((caches) => {
+                let filtered = caches.data.filter(
+                    (x) => x.game == "oldschool" && x.builds.length > 0 && x.builds[0].major == version,
+                );
+                let sorted = filtered.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                this.fetchURL(`https://archive.openrs2.org/caches/runescape/${sorted[0].id}/disk.zip`);
+            });
     }
 
     loadByTimestamp(timestamp) {
-        axios.get("https://archive.openrs2.org/caches.json", { responseType: "json" }).then((caches) => {
-            let filtered = caches.data.filter((x) => x.game == "oldschool");
-            filtered.forEach((x) => (x.score = Math.abs(new Date(x.timestamp) - timestamp))); //rank them by distance
-            let sorted = filtered.sort((a, b) => a.score - b.score);
-            this.fetchURL(`https://archive.openrs2.org/caches/runescape/${sorted[0].id}/disk.zip`);
-        });
+        axios
+            .get("https://archive.openrs2.org/caches.json", {
+                responseType: "json",
+            })
+            .then((caches) => {
+                let filtered = caches.data.filter((x) => x.game == "oldschool");
+                filtered.forEach((x) => (x.score = Math.abs(new Date(x.timestamp) - timestamp))); //rank them by distance
+                let sorted = filtered.sort((a, b) => a.score - b.score);
+                this.fetchURL(`https://archive.openrs2.org/caches/runescape/${sorted[0].id}/disk.zip`);
+            });
     }
 
     fetchURL(url) {
@@ -117,7 +125,10 @@ export default class CacheLoader {
             }
 
             this.promises.datFile = axios
-                .get(url + this.datFile, { onDownloadProgress: this.onDownloadProgress, responseType: "arraybuffer" })
+                .get(url + this.datFile, {
+                    onDownloadProgress: this.onDownloadProgress,
+                    responseType: "arraybuffer",
+                })
                 .then((x) => new Uint8Array(x.data));
             this.indexFiles.forEach((indexFile, i) => {
                 let indexPromise = axios

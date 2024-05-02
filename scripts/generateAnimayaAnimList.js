@@ -17,7 +17,12 @@ cache.onload.then(() => {
 
             console.log("Loading skeletons");
             animayaIds.forEach((x) => {
-                promises.push(cache.getAllFiles(IndexType.FRAMES.id, x >> 16, { isAnimaya: true, earlyStop: true }));
+                promises.push(
+                    cache.getAllFiles(IndexType.FRAMES.id, x >> 16, {
+                        isAnimaya: true,
+                        earlyStop: true,
+                    }),
+                );
             });
 
             let mappedAnims = {};
