@@ -1,3 +1,5 @@
+import _ from "lodash";
+
 import IndexType from "../cacheTypes/IndexType.js";
 import ConfigType from "../cacheTypes/ConfigType.js";
 import Matrix from "../cacheTypes/anim/Matrix.js";
@@ -346,9 +348,10 @@ export class ModelDefinition {
      *
      * @param {RSCache} cache OSRSCache object used to grab other files for the animation
      * @param {number} animationId Animation ID you want to play on this model
+     * @param {boolean} compress Perform run-length encoding on animations to compress the sequence. Useful for maya anims.
      * @returns AnimationData
      */
-    async loadAnimation(cache, animationId, invertZ = true) {
+    async loadAnimation(cache, animationId, invertZ = true, compress = false) {
         let animation = (await cache.getFile(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id, animationId)).def;
         let vertexData;
         let lengths;
@@ -358,8 +361,32 @@ export class ModelDefinition {
                 isAnimaya: true,
             });
 
-            vertexData = this.loadMayaAnimation(framesInfo[0].def, animation, invertZ);
-            lengths = new Array(vertexData.length).fill(1);
+            const rawVertexData = this.loadMayaAnimation(framesInfo[0].def, animation, invertZ);
+            
+            // run-length encode maya animations
+            if (compress) {
+                let last = rawVertexData[0]
+                let currentRun = 1;
+                let longestRun = 1;
+                vertexData = [];
+                lengths = [];
+                for (let i = 1; i < rawVertexData.length; ++i) {
+                    if (_.isEqual(rawVertexData[i], last)) {
+                        currentRun++;
+                    } else {
+                        longestRun = Math.max(longestRun, currentRun);
+                        lengths.push(currentRun);
+                        currentRun = 1;
+                        vertexData.push(last);
+                        last = rawVertexData[i];
+                    }
+                }
+                vertexData.push(last);
+                lengths.push(currentRun);
+            } else {
+                vertexData = rawVertexData;
+                lengths = new Array(vertexData.length).fill(1);
+            }
         } else {
             let shiftedId = animation.frameIDs[0] >> 16;
             let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map((x) => x.def);

@@ -9,6 +9,7 @@ let individualModelNames = [];
 let name = "model";
 let animations = [];
 let split = false;
+let excludeModelIds = [];
 
 async function processCommand(cache, command, options) {
     switch (command) {
@@ -38,6 +39,9 @@ async function processCommand(cache, command, options) {
         case "split":
             split = true;
             break;
+        case "exclude":
+            excludeModelIds.push(...listToIds(options));
+            break;
     }
 }
 
@@ -58,6 +62,8 @@ function listToIds(options) {
 async function loadEntityIds(cache, options, configType, modelTypeKeys, animationKey = null) {
     let ids = listToIds(options);
     for (let i = 0; i < ids.length; i++) {
+        // (for split mode only): an entry may contain multiple models, in which case they're grouped together under firstModel
+        let firstModel = null;
         for (const modelType of modelTypeKeys) {
             const entityDef = await cache.getDef(IndexType.CONFIGS, configType, ids[i]);
             if (!(modelType in entityDef)) {
@@ -68,15 +74,23 @@ async function loadEntityIds(cache, options, configType, modelTypeKeys, animatio
             const modelIds = Array.isArray(entry) ? entry : [entry];
             for (const modelId of modelIds) {
                 if (modelId < 0) continue;
-                console.log(modelType, " = ", modelId);
+                if (excludeModelIds.includes(modelId)) continue;
                 let model = await cache.getDef(IndexType.MODELS, modelId);
-                individualModels.push(model);
-                individualModelNames.push(entityDef.name ?? model.id.toString());
                 finalModel.addModel(model);
-                // save where the model vertices start for the corresponding model
-                modelVertexIndices.push(
-                    i === 0 ? 0 : modelVertexIndices[i - 1] + individualModels[i - 1].vertexPositionsX.length,
-                );
+                // first model in the group
+                if (firstModel === null) {
+                    firstModel = model;
+                    individualModels.push(firstModel);
+                    individualModelNames.push(entityDef.name ?? model.id.toString());
+                    // save where the model vertices start for the corresponding model
+                    modelVertexIndices.push(
+                        i === 0 ? 0 : modelVertexIndices[i - 1] + individualModels[i - 1].vertexPositionsX.length,
+                    );
+                } else {
+                    // subsequent models are just merged into the first model of the group
+                    firstModel.mergeWith(model);
+                    modelVertexIndices[modelVertexIndices.length - 1] += model.vertexPositionsX.length;
+                }
             }
             if (animationKey) {
                 if (!(animationKey in entityDef)) {
@@ -93,21 +107,23 @@ async function loadEntityIds(cache, options, configType, modelTypeKeys, animatio
 
 async function exportGLTFModel(cache) {
     const exporter = new GLTFExporter(finalModel.getMergedModel());
-    const exporters = individualModels.map((m) => new GLTFExporter(m));
+    const splitExporters = individualModels.map((m) => new GLTFExporter(m));
 
     let allLengths = [];
     let allMorphTargets = [];
     for (const animId of animations) {
-        const appliedAnimation = await finalModel.getMergedModel().loadAnimation(cache, animId, false);
+        const appliedAnimation = await finalModel.getMergedModel().loadAnimation(cache, animId, false, true);
+
         const morphTargetIndices = appliedAnimation.vertexData.map((frameVertices) =>
             exporter.addMorphTarget(frameVertices),
         );
+
         // apply subset of the animation to the partial models
         appliedAnimation.vertexData.forEach((frameVertices) => {
             for (let i = 0; i < individualModels.length; ++i) {
                 const startIdx = modelVertexIndices[i];
                 const endIdx = modelVertexIndices[i] + individualModels[i].vertexPositionsX.length;
-                exporters[i].addMorphTarget(frameVertices.slice(startIdx, endIdx));
+                splitExporters[i].addMorphTarget(frameVertices.slice(startIdx, endIdx));
             }
         });
         allLengths.push(appliedAnimation.lengths);
@@ -117,11 +133,11 @@ async function exportGLTFModel(cache) {
         const lengths = allLengths[i];
         const morphTargets = allMorphTargets[i];
         exporter.addAnimation(morphTargets, lengths);
-        exporters.forEach((e) => e.addAnimation(morphTargets, lengths));
+        splitExporters.forEach((e) => e.addAnimation(morphTargets, lengths));
     }
 
     exporter.addColors(finalModel.getMergedModel());
-    exporters.forEach((e, i) => e.addColors(individualModels[i]));
+    splitExporters.forEach((e, i) => e.addColors(individualModels[i]));
 
     if (!split) {
         const gltf = exporter.export();
@@ -129,8 +145,8 @@ async function exportGLTFModel(cache) {
         fs.writeFileSync(path, gltf);
         console.log(`Wrote single file to ${path}`);
     } else {
-        for (let i = 0; i < exporters.length; ++i) {
-            const gltf = exporters[i].export();
+        for (let i = 0; i < splitExporters.length; ++i) {
+            const gltf = splitExporters[i].export();
             const path = `./out/${name}_${formatName(individualModelNames[i])}.gltf`;
             fs.writeFileSync(path, gltf);
             console.log(`Wrote split file to ${path}`);
@@ -182,10 +198,6 @@ async function addSpotAnim(cache, options) {
     }
 
     await loadEntityIds(cache, options, ConfigType.SPOTANIM, modelTypes, "animationId");
-}
-
-async function addModels(cache, options) {
-    console.log(options);
 }
 
 export { processCommand, exportGLTFModel };
