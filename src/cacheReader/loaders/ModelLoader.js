@@ -367,14 +367,12 @@ export class ModelDefinition {
             if (compress) {
                 let last = rawVertexData[0]
                 let currentRun = 1;
-                let longestRun = 1;
                 vertexData = [];
                 lengths = [];
                 for (let i = 1; i < rawVertexData.length; ++i) {
                     if (_.isEqual(rawVertexData[i], last)) {
                         currentRun++;
                     } else {
-                        longestRun = Math.max(longestRun, currentRun);
                         lengths.push(currentRun);
                         currentRun = 1;
                         vertexData.push(last);
