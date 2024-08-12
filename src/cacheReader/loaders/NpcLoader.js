@@ -177,6 +177,12 @@ class NpcDefinition {
 
     /** @type {Array} */
     params = [];
+
+    /** @type {number} */
+    height = -1;
+
+    /** @type {Array} */
+    stats = [1, 1, 1, 1, 1, 1];
 }
 
 export { NpcDefinition };
@@ -257,6 +263,18 @@ export default class NpcLoader {
             for (index = 0; index < length; ++index) {
                 def.chatheadModels.push(dataview.readUint16());
             }
+        } else if (opcode == 74) {
+            def.stats[0] = dataview.readUint16();
+        } else if (opcode == 75) {
+            def.stats[1] = dataview.readUint16();
+        } else if (opcode == 76) {
+            def.stats[2] = dataview.readUint16();
+        } else if (opcode == 77) {
+            def.stats[3] = dataview.readUint16();
+        } else if (opcode == 78) {
+            def.stats[4] = dataview.readUint16();
+        } else if (opcode == 79) {
+            def.stats[5] = dataview.readUint16();
         } else if (opcode == 93) {
             def.isMinimapVisible = false;
         } else if (opcode == 95) {
@@ -376,6 +394,8 @@ export default class NpcLoader {
             def.isFollower = true;
         } else if (opcode == 123) {
             def.lowPriorityFollowerOps = true;
+        } else if (opcode == 124) {
+            def.height = dataview.readUint16();
         } else if (opcode == 249) {
             length = dataview.readUint8();
 

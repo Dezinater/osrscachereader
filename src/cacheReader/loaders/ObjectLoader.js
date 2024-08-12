@@ -209,7 +209,7 @@ export class ObjectDefinition {
     /** @type {Object} */
     params;
 
-    constructor() {}
+    constructor() { }
 
     async getModel(cache, modelType, rotation) {
         let modelData = null;
@@ -498,6 +498,8 @@ export default class ObjectLoader {
             def.mapAreaId = dataview.readUint16();
         } else if (opcode == 89) {
             def.randomizeAnimStart = true;
+        }else if (opcode == 90) {
+            def.deferAnimChange = true;
         } else if (opcode == 92) {
             var varpID = dataview.readUint16();
             if (varpID == 0xffff) {
