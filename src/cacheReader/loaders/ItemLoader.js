@@ -134,7 +134,7 @@ export class ItemDefinition {
     femaleHeadModel = -1;
 
     /** @type {number} */
-    femaleHeadModel2 = 1;
+    femaleHeadModel2 = -1;
 
     /** @type {number} */
     category;
