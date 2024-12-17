@@ -46,26 +46,26 @@ export class MapDefinition {
         let noise = (x, y) => {
             let n = x + y * 57;
             n ^= n << 13;
-            return (((n * (n * n * 15731 + 789221) + 1376312589) & 2147483647) >> 19) & 255;
+            return ((Math.imul(n, Math.imul(Math.imul(n, n), 15731) + 789221) + 1376312589) & 2147483647) >> 19 & 255;
         };
 
         let smoothedNoise1 = (x, y) => {
             let corners = noise(x - 1, y - 1) + noise(x + 1, y - 1) + noise(x - 1, 1 + y) + noise(x + 1, y + 1);
             let sides = noise(x - 1, y) + noise(1 + x, y) + noise(x, y - 1) + noise(x, 1 + y);
             let center = noise(x, y);
-            return center / 4 + sides / 8 + corners / 16;
+            return (center / 4 | 0) + (sides / 8 | 0) + (corners / 16 | 0);
         };
 
         let interpolate = (a, b, x, y) => {
-            let COS = Math.floor(65536 * Math.sin((((1024 * x) / y) * Math.PI) / 1024));
+            let COS = Math.floor(65536 * Math.cos((((1024 * x) / y) * Math.PI) / 1024));
             let f = (65536 - COS) >> 1;
             return ((f * b) >> 16) + ((a * (65536 - f)) >> 16);
         };
 
         let interpolateNoise = (x, y, frequency) => {
-            let intX = x / frequency;
+            let intX = (x / frequency) | 0;
             let fracX = x & (frequency - 1);
-            let intY = y / frequency;
+            let intY = (y / frequency) | 0;
             let fracY = y & (frequency - 1);
             let v1 = smoothedNoise1(intX, intY);
             let v2 = smoothedNoise1(intX + 1, intY);
@@ -88,7 +88,6 @@ export class MapDefinition {
             } else if (n > 60) {
                 n = 60;
             }
-
             return n;
         };
 
@@ -101,7 +100,7 @@ export class MapDefinition {
                     if (this.tiles[z][x][y].height == null) {
                         if (z == 0) {
                             tileHeights[0][x][y] =
-                                calculate(this.regionX + x + 0xe3b7b, this.regionY + y + 0x87cce) * 8;
+                                calculate((this.regionX * 64) + x + 0xe3b7b, (this.regionY * 64) + y + 0x87cce) * 8;
                         } else {
                             tileHeights[z][x][y] = tileHeights[z - 1][x][y] + 240;
                         }
