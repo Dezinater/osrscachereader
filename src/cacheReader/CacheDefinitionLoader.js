@@ -1,5 +1,6 @@
-import IndexType from "./cacheTypes/IndexType.js";
-import ConfigType from "./cacheTypes/ConfigType.js";
+import IndexType from './cacheTypes/IndexType.js'
+import ConfigType from './cacheTypes/ConfigType.js'
+import RawBytesLoader from './loaders/RawByteLoader.js';
 
 export default class CacheDefinitionLoader {
     constructor(indexId, archive, options = {}) {
@@ -7,12 +8,19 @@ export default class CacheDefinitionLoader {
         this.archive = archive;
         this.options = options;
 
-        if (this.indexType == IndexType.CONFIGS) {
-            this.loader = new (ConfigType.valueOf(this.archive.id).loader)();
-        } else {
-            this.loader = new this.indexType.loader();
-        }
-    }
+		let loaderObject;
+		if (this.indexType == IndexType.CONFIGS) {
+			loaderObject = ConfigType.valueOf(this.archive.id);
+		} else {
+			loaderObject = this.indexType;
+		}
+
+		if (loaderObject != undefined && loaderObject.loader != undefined) {
+			this.loader = new loaderObject.loader();
+		} else {
+			this.loader = new RawBytesLoader();
+		}
+	}
 
     loadAllFiles(rscache) {
         return new Promise(async (resolve, reject) => {
@@ -28,13 +36,13 @@ export default class CacheDefinitionLoader {
                 }
             }
 
-            if (this.options.cacheResults) {
-                this.archive.files = newFiles;
-            }
+			if (this.options.cacheResults) {
+				this.archive.files = newFiles;
+			}
 
-            resolve(newFiles);
-        });
-    }
+			resolve(newFiles);
+		});
+	}
 
     async loadFile(fileId, rscache) {
         const fileIndex = this.archive.files.index((x) => x.id == fileId);
