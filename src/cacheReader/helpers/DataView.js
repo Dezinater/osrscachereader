@@ -145,12 +145,12 @@ DataView.prototype.readUint32 = function () {
 };
 
 DataView.prototype.readUnsignedShortSmart = function () {
-    let peek = this.getUint8(this.pos) & 0xff;
+    let peek = this.getInt8(this.pos) & 0xff;
     return peek < 128 ? this.readUint8() : this.readUint16() - 0x8000;
 };
 
 DataView.prototype.readUnsignedShortSmartMinusOne = function () {
-    let peek = this.getUint8(this.pos) & 0xff;
+    let peek = this.getInt8(this.pos) & 0xff;
     return peek < 128 ? this.readUint8() - 1 : this.readUint16() - 0x8001;
 };
 
@@ -233,12 +233,12 @@ DataView.prototype.readInt32 = function () {
     return val;
 };
 DataView.prototype.readShortSmart = function () {
-    let peek = this.getUint8(this.pos) & 0xff;
+    let peek = this.getInt8(this.pos) & 0xff;
     return peek < 128 ? this.readUint8() - 64 : this.readUint16() - 0xc000;
 };
 
 DataView.prototype.readBigSmart = function () {
-    let peek = this.getUint8(this.pos);
+    let peek = this.getInt8(this.pos);
     if (peek >= 0) {
         return this.readUint16() & 0xffff;
     } else {
@@ -247,7 +247,7 @@ DataView.prototype.readBigSmart = function () {
 };
 
 DataView.prototype.readBigSmart2 = function () {
-    let peek = this.getUint8(this.pos);
+    let peek = this.getInt8(this.pos);
     if (peek < 0) {
         return this.readInt32() & 0x7fffffff; // and off sign bit
     }
