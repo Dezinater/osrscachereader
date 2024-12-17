@@ -4,11 +4,12 @@ class Sound {
     location;
     retain;
 
-    constructor(id, loops, location, retain) {
+    constructor(id, loops, location, retain, weight) {
         this.id = id;
         this.loops = loops;
         this.location = location;
         this.retain = retain;
+        this.weight = weight;
     }
 }
 
@@ -78,9 +79,6 @@ export class SequenceDefinition {
      */
     animMayaID = -1;
 
-    /**  @type {Object} */
-    animMayaFrameSounds = {};
-
     /**  @type {number} */
     animMayaStart;
 
@@ -92,6 +90,8 @@ export class SequenceDefinition {
 }
 export default class SequenceLoader {
     rev220FrameSounds = true;
+    rev226 = true;
+
     configureForRevision(revision) {
         this.rev220FrameSounds = revision >= 1141;
     }
@@ -166,24 +166,23 @@ export default class SequenceLoader {
             for (var4 = 0; var4 < var3; ++var4) {
                 def.chatFrameIds[var4] += dataview.readUint16() << 16;
             }
-        } else if (opcode == 13) {
+        } else if (opcode == 13 && !this.rev226) {
             var3 = dataview.readUint8();
             def.frameSounds = [];
 
             for (var4 = 0; var4 < var3; ++var4) {
                 def.frameSounds[var4] = this.readFrameSound(dataview);
             }
-        } else if (opcode == 14) {
+        } else if (opcode == (this.rev226 ? 13 : 14)) {
             def.animMayaID = dataview.readInt32();
-        } else if (opcode == 15) {
+        } else if (opcode == (this.rev226 ? 14 : 15)) {
             var3 = dataview.readUint16();
-            def.animMayaFrameSounds = {};
 
             for (var4 = 0; var4 < var3; ++var4) {
                 let frame = dataview.readUint16();
-                def.animMayaFrameSounds[frame] = this.readFrameSound(dataview);
+                def.frameSounds[frame] = this.readFrameSound(dataview);
             }
-        } else if (opcode == 16) {
+        } else if (opcode == (this.rev226 ? 15 : 16)) {
             def.animMayaStart = dataview.readUint16();
             def.animMayaEnd = dataview.readUint16();
         } else if (opcode == 17) {
@@ -202,6 +201,7 @@ export default class SequenceLoader {
         let loops;
         let location;
         let retain;
+        let weight = -1;
 
         if (!this.rev220FrameSounds) {
             let bits = stream.readUint24();
@@ -211,13 +211,16 @@ export default class SequenceLoader {
             retain = 0;
         } else {
             id = stream.readUint16();
+            if (this.rev226) {
+                weight = stream.readUint8();
+            }
             loops = stream.readUint8();
             location = stream.readUint8();
             retain = stream.readUint8();
         }
 
         if (id >= 1 && loops >= 1 && location >= 0 && retain >= 0) {
-            return new Sound(id, loops, location, retain);
+            return new Sound(id, loops, location, retain, weight);
         } else {
             return null;
         }

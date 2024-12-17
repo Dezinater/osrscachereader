@@ -9,6 +9,7 @@ export class ItemDefinition {
      * @type {number}
      */
     id;
+    name;
     unknown1;
     resizeX = 128;
     resizeY = 128;
@@ -272,6 +273,25 @@ export default class ItemLoader {
             }
         } else if (opcode == 42) {
             def.shiftClickDropIndex = dataview.readInt8();
+        } else if (opcode == 43) {
+            let opId = dataview.readUint8();
+            if (def.subops == null) {
+                def.subops = new Array(5).fill(new Array);
+            }
+            let valid = opId >= 0 && opId < 5;
+            if (valid && def.subops[opId] == null) {
+                def.subops[opId] = new Array(20);
+            }
+            while (true) {
+                let subopId = dataview.readUint8() - 1;
+                if (subopId == -1) {
+                    break;
+                }
+                let op = dataview.readString();
+                if (valid && subopId >= 0 && subopId < 20) {
+                    def.subops[opId][subopId] = op;
+                }
+            }
         } else if (opcode == 65) {
             def.isTradeable = true;
         } else if (opcode == 75) {
