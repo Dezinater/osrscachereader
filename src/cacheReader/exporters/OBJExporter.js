@@ -4,7 +4,7 @@ export default class OBJExporter {
     export(def) {
         let verticies = [];
         for (let i = 0; i < def.vertexPositionsX.length; i++) {
-            verticies.push([def.vertexPositionsX[i], -def.vertexPositionsY[i], -def.vertexPositionsZ[i]]);
+            verticies.push([def.vertexPositionsX[i], def.vertexPositionsY[i], def.vertexPositionsZ[i]]);
         }
 
         let indicies = [];
