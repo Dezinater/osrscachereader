@@ -1,12 +1,15 @@
 import { ModelDefinition } from "../loaders/ModelLoader.js";
 
 export default class ModelGroup {
-    translation = { x: 0, y: 0, z: 0 };
+
+    position = { x: 0, y: 0, z: 0 }
     needsUpdate = false;
 
     constructor(models = []) {
         this.models = models;
-        this.mergeModels();
+        if(models.length != 0) {
+            this.mergeModels();
+        }
     }
 
     addModel(model) {
@@ -20,17 +23,20 @@ export default class ModelGroup {
 
     mergeModels() {
         this.mergedModel = new ModelDefinition();
-        this.models.forEach((model) => {
-            this.mergedModel.mergeWith(model, false);
-        });
-        this.mergedModel.translation = this.translation;
         this.mergedModel.position = this.position;
+        this.models.forEach(model => {
+            
+            this.mergedModel.mergeWith(model);
+        });
+
+        this.mergedModel.removeCommonVerticies();
+        //this.mergedModel.computeNormals();
     }
 
     getMergedModel() {
         if (this.needsUpdate) {
             this.mergeModels();
-            this.needsUpdate = true;
+            this.needsUpdate = false;
         }
         return this.mergedModel;
     }
