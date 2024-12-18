@@ -1,26 +1,23 @@
 import assert from "assert";
-import * as fs from "fs";
-
 import { RSCache, IndexType, ConfigType } from "../src/index.js";
+
 let cache;
+let def;
 
 describe("Load NPC", function () {
     this.timeout(25000);
 
     before(function (done) {
         cache = new RSCache("./cache");
-        // cache = new RSCache("./cache.zip");
-        // cache = new RSCache("https://archive.openrs2.org/caches/runescape/241/disk.zip");
-        cache.onload.then(() => {
-            done();
-        });
+        cache.onload.then(done)
     });
 
     describe("Zulrah", function () {
+        it("Definition loaded", async function () {
+            def = await cache.getDef(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042);
+        });
         it("should be ID 2042", function () {
-            cache.getFile(IndexType.CONFIGS.id, ConfigType.NPC.id, 2042).then((npc) => {
-                assert.equal(npc.def.id, 2042);
-            });
+            assert.equal(def.id, 2042);
         });
     });
 
