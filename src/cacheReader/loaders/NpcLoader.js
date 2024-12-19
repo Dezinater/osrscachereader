@@ -187,6 +187,12 @@ class NpcDefinition {
 
 export { NpcDefinition };
 export default class NpcLoader {
+    rev210HeadIcons = true;
+
+    configureForRevision(revision) {
+        this.rev210HeadIcons  = revision >= 1493;
+    }
+    
     load(bytes, id) {
         let def = new NpcDefinition();
         def.id = id;

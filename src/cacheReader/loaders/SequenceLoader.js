@@ -93,7 +93,8 @@ export default class SequenceLoader {
     rev226 = true;
 
     configureForRevision(revision) {
-        this.rev220FrameSounds = revision >= 1141;
+        this.rev220FrameSounds = revision > 1141;
+        this.rev226 = revision > 1268;
     }
 
     load(bytes, id) {
