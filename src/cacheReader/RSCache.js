@@ -279,7 +279,7 @@ class RSCache {
             let size = dataview.readUint24();
             let segment = dataview.readUint24();
             let index = this.indicies[j / 6];
-            if (index == undefined) continue;
+            if (index == undefined || size == 0) continue;
             let data = this.cacheRequester.readData(index, size, segment);
             //since this is async now the onload is considered complete before its completed
             //this call is completed before loadIndexData is completed

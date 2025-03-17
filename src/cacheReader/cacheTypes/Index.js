@@ -21,10 +21,13 @@ class Index {
         this.revision = -1;
 
         /** @type {number} */
-        this.hash = 0;
+        this.flags = 0;
 
         /** @type {number} */
         this.crc = 0;
+
+        /** @type {boolean} */
+        this.sized = false;
 
         /** @type {boolean} */
         this.named = false;
@@ -56,9 +59,10 @@ class Index {
         if (this.protocol >= 6) {
             this.revision = dataview.readInt32();
         }
-        this.hash = dataview.readUint8();
+        this.flags = dataview.readUint8();
 
-        this.named = (1 & this.hash) != 0;
+        this.named = (1 & this.flags) != 0;
+        this.sized = (4 & this.flags) != 0;
 
         if (this.protocol >= 7) {
             this.archivesCount = dataview.readBigSmart();
@@ -91,6 +95,13 @@ class Index {
         for (let i = 0; i < this.archivesCount; i++) {
             let crc = dataview.readInt32();
             this.archives[archiveKeys[i]].crc = crc;
+        }
+
+        if (this.sized) {
+            for (let i = 0; i < this.archivesCount; i++) {
+                this.archives[archiveKeys[i]].compressedSize = dataview.readInt32();
+                this.archives[archiveKeys[i]].decompressedSize = dataview.readInt32();
+            }
         }
 
         for (let i = 0; i < this.archivesCount; i++) {
