@@ -199,13 +199,15 @@ class GLTFFile {
 
         if (!("targets" in this.meshes[0].primitives[primitive])) {
             this.meshes[0].primitives[primitive].targets = [];
-            this.meshes[0].weights = [1];
+            this.meshes[0].weights = [];
         }
 
         let buffersAmount = this.buffers.length;
 
         if (primitive === 0) {
             this.meshes[0].weights.push(0);
+        } else {
+            this.meshes[0].weights.push(1);
         }
         this.meshes[0].primitives[primitive].targets.push({
             POSITION: this.accessors.length, // the one we're about to add
