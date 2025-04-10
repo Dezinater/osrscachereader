@@ -11,6 +11,12 @@ export class SpotAnimDefinition {
      */
     id;
 
+    /**
+     * Name of the Spot Animation
+     * @type {string}
+     */
+    name;
+
     /** @type {number} */
     rotation = 0;
 
@@ -96,6 +102,8 @@ export default class SpotAnimLoader {
             def.ambient = dataview.readUint8();
         } else if (opcode == 8) {
             def.contrast = dataview.readUint8();
+        } else if (opcode == 9) {
+            def.name = dataview.readString();
         } else if (opcode == 40) {
             let var3 = dataview.readUint8();
             def.recolorToFind = new Array(var3);

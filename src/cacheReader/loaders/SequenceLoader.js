@@ -25,6 +25,13 @@ export class SequenceDefinition {
      * @type {number}
      */
     id;
+
+    /**
+     * Name of the Animation
+     * @type {string}
+     */
+    name;
+
     /**
      * How long each frame will take
      * @type {Array<number>}
@@ -150,6 +157,7 @@ export default class SequenceLoader {
             def.rightHandItem = dataview.readUint16();
         } else if (opcode == 8) {
             def.maxLoops = dataview.readUint8();
+            def.field2372 = true;
         } else if (opcode == 9) {
             def.precedenceAnimating = dataview.readUint8();
         } else if (opcode == 10) {
@@ -194,6 +202,8 @@ export default class SequenceLoader {
             for (var4 = 0; var4 < var3; ++var4) {
                 def.animMayaMasks[dataview.readUint8()] = true;
             }
+        } else if (opcode == 18) {
+            def.name = dataview.readString();
         }
     }
 
