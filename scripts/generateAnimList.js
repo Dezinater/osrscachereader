@@ -21,7 +21,7 @@ cache.onload.then(() => {
             if (!(shiftedId in commonAnims[animSkeletonId])) {
                 commonAnims[animSkeletonId][shiftedId] = [];
             }
-            commonAnims[animSkeletonId][shiftedId].push(animationInfo[i].def.id);
+            commonAnims[animSkeletonId][shiftedId].push([animationInfo[i].def.id, animationInfo[i].def.name]);
         }
         fs.writeFileSync("commonAnims.json", JSON.stringify(commonAnims));
 

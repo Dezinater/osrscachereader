@@ -18,7 +18,7 @@ cache.onload.then(() => {
             console.log("Loading skeletons");
             animayaIds.forEach((x) => {
                 promises.push(
-                    cache.getAllFiles(IndexType.FRAMES.id, x >> 16, {
+                    cache.getAllFiles(IndexType.KEYFRAMES.id, x >> 16, {
                         isAnimaya: true,
                         earlyStop: true,
                     }),
@@ -33,7 +33,7 @@ cache.onload.then(() => {
                     if (!(id in mappedAnims)) {
                         mappedAnims[id] = [];
                     }
-                    mappedAnims[id].push(animIds[index]);
+                    mappedAnims[id].push([animIds[index], animationInfo[index].def.name]);
                 });
 
                 fs.writeFileSync("animayaCommonAnims.json", JSON.stringify(mappedAnims));
