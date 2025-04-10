@@ -5,6 +5,7 @@ import ModelLoader from "../loaders/ModelLoader.js";
 import SpriteLoader from "../loaders/SpriteLoader.js";
 import TextureLoader from "../loaders/TextureLoader.js";
 import MusicTrackLoader from "../loaders/MusicTrackLoader.js";
+import AnimayaLoader from "../loaders/AnimayaLoader.js";
 
 /**
  * @readonly
@@ -53,6 +54,8 @@ const IndexType = {
     UKNOWN3: { id: 19, loader: undefined },
     /** World Map Ground? */
     UKNOWN4: { id: 20, loader: undefined },
+    /** Animation Keyframes */
+    KEYFRAMES: { id: 22, loader: AnimayaLoader },
 };
 
 IndexType.valueOf = (id) => {

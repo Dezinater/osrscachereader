@@ -7,7 +7,7 @@ import { unzipSync } from "fflate";
 export default class CacheLoader {
     onDownloadProgress;
     datFile = "main_file_cache.dat2";
-    indexFiles = new Array(22)
+    indexFiles = new Array(23)
         .fill(0)
         .map((_, i) => "main_file_cache.idx" + i)
         .concat("main_file_cache.idx255");

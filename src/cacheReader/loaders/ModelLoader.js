@@ -783,6 +783,7 @@ export class ModelDefinition {
         return loadedAnims;
     }
 
+
     /**
      *
      * @param {RSCache} cache OSRSCache object used to grab other files for the animation
@@ -796,7 +797,11 @@ export class ModelDefinition {
         let lengths;
 
         if (animation.animMayaID != undefined && animation.animMayaID != -1) {
-            let framesInfo = await cache.getAllFiles(IndexType.FRAMES.id, animation.animMayaID >> 16, {
+            let index = IndexType.FRAMES;
+            if(this.rev229) {
+                index = IndexType.KEYFRAMES;
+            }
+            let framesInfo = await cache.getAllFiles(index.id, animation.animMayaID >> 16, {
                 isAnimaya: true,
             });
 
@@ -826,7 +831,7 @@ export class ModelDefinition {
             }
         } else {
             let shiftedId = animation.frameIDs[0] >> 16;
-            let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId)).map((x) => x.def);
+            let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId & 65535)).map((x) => x.def);
             let frames;
             
             if(animation.frameIDs.length == 1 && animation.frameIDs[0] & 65535 == 0) {
@@ -1467,6 +1472,10 @@ export class ModelDefinition {
 }
 
 export default class ModelLoader {
+    configureForRevision(revision, indexRevision) {
+        this.rev229 = indexRevision >= 969;
+    }
+
     load(bytes, id) {
         let def = new ModelDefinition();
         def.id = id;

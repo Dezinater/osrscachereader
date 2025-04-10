@@ -248,7 +248,9 @@ export class class128 {
 }
 
 export default class AnimayaLoader {
-    load(def, bytes, cache, options) {
+    load(bytes, id, cache, options) {
+        let def = new FramesDefinition();
+        def.id = id;
         let dataview = new DataView(bytes.buffer);
 
         def.version = dataview.readUint8();
