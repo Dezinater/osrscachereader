@@ -1479,6 +1479,7 @@ export default class ModelLoader {
     load(bytes, id) {
         let def = new ModelDefinition();
         def.id = id;
+        def.rev229 = this.rev229;
         let dataview = new DataView(bytes.buffer);
         if (dataview.getInt8(dataview.byteLength - 1) == -3 && dataview.getInt8(dataview.byteLength - 2) == -1) {
             this.load3(def, dataview);
