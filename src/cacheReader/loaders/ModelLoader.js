@@ -833,14 +833,13 @@ export class ModelDefinition {
             let shiftedId = animation.frameIDs[0] >> 16;
             let frameDefs = (await cache.getAllFiles(IndexType.FRAMES.id, shiftedId & 65535)).map((x) => x.def);
             let frames;
-            
-            if(animation.frameIDs.length == 1 && animation.frameIDs[0] & 65535 == 0) {
-                
-            }else{
-                frames = animation.frameIDs.map((frameId) =>
-                    frameDefs.find((frameDef) => frameDef?.id == (frameId & 65535)),
-                );
+
+            if (!(animation.frameIDs.length == 1 && animation.frameIDs[0] & 65535 == 0)) {
+                frames = await Promise.all(animation.frameIDs.map(async (frameId) =>
+                    await cache.getDef(IndexType.FRAMES.id, frameId >> 16, frameId & 65535)
+                ));
             }
+
             let loadedFrames = frames.map((x) => this.loadFrame(this, x, invertZ));
 
             vertexData = loadedFrames.map((x) => x.vertices);
