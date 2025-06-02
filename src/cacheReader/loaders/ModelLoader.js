@@ -11,21 +11,21 @@ import Matrix from "../cacheTypes/anim/Matrix.js";
  */
 
 class Vector3f {
-	x;
-	y;
-	z;
-	magnitude;
+    x;
+    y;
+    z;
+    magnitude;
 
-	constructor(otherVertexNormal) {
-		this.x = otherVertexNormal?.x ?? 0;
-		this.y = otherVertexNormal?.y ?? 0;
-		this.z = otherVertexNormal?.z ?? 0;
-		this.magnitude = otherVertexNormal?.magnitude ?? 0;
-	}
+    constructor(otherVertexNormal) {
+        this.x = otherVertexNormal?.x ?? 0;
+        this.y = otherVertexNormal?.y ?? 0;
+        this.z = otherVertexNormal?.z ?? 0;
+        this.magnitude = otherVertexNormal?.magnitude ?? 0;
+    }
 }
 
-class VertexNormal extends Vector3f {}
-class FaceNormal extends Vector3f {}
+class VertexNormal extends Vector3f { }
+class FaceNormal extends Vector3f { }
 
 /**
  * @class ModelDefinition
@@ -33,14 +33,14 @@ class FaceNormal extends Vector3f {}
  * @hideconstructor
  */
 export class ModelDefinition {
-	static normalMergeCount = 0;
-	static field1935 = new Array(10000);
-	static field1936 = new Array(10000);
-	/**
-	 * The ID of this Model
-	 * @type {number} 
-	 */
-	id;
+    static normalMergeCount = 0;
+    static field1935 = new Array(10000);
+    static field1936 = new Array(10000);
+    /**
+     * The ID of this Model
+     * @type {number} 
+     */
+    id;
 
     /**
      * Used to offset vertices during merge
@@ -218,20 +218,20 @@ export class ModelDefinition {
 
     vertexGroups = [];
 
-	position = { x: 0, y: 0, z: 0 };
-	rotation = { x: 0, y: 0, z: 0 };
+    position = { x: 0, y: 0, z: 0 };
+    rotation = { x: 0, y: 0, z: 0 };
 
-	constructor(x = 0, y = 0, heightOffset = 0, color) {
-		this.position.x = x;
-		this.position.y = y;
-		this.color = color;
-		this.position.z = heightOffset;
-	}
+    constructor(x = 0, y = 0, heightOffset = 0, color) {
+        this.position.x = x;
+        this.position.y = y;
+        this.color = color;
+        this.position.z = heightOffset;
+    }
 
-	addVertex(x, y, z, color = this.color, uvs = [0, 0, 0, 0, 1, 1]) {
-		this.vertexPositionsX.push(this.position.x + x);
-		this.vertexPositionsY.push(y + this.this.position.z);
-		this.vertexPositionsZ.push(this.position.y + z);
+    addVertex(x, y, z, color = this.color, uvs = [0, 0, 0, 0, 1, 1]) {
+        this.vertexPositionsX.push(this.position.x + x);
+        this.vertexPositionsY.push(y + this.this.position.z);
+        this.vertexPositionsZ.push(this.position.y + z);
 
         if (this.vertexNormals == undefined) this.vertexNormals = [];
         this.vertexNormals.push({
@@ -261,427 +261,427 @@ export class ModelDefinition {
         this.faceTextureVCoordinates.push([0, 1, 1]);
     }
 
-	rotate(degrees, size, posX = 0, posY = 0) {
-		for (let i = 0; i < this.vertexCount; i++) {
-			let x = this.vertexPositionsX[i] - posX - (size / 2);
-			let z = this.vertexPositionsZ[i] - posY - (size / 2);
-			this.vertexPositionsX[i] = (x * Math.cos(degrees) - z * Math.sin(degrees)) + posX + (size / 2);
-			this.vertexPositionsZ[i] = (z * Math.cos(degrees) + x * Math.sin(degrees)) + posY + (size / 2);
-		}
-	}
+    rotate(degrees, size, posX = 0, posY = 0) {
+        for (let i = 0; i < this.vertexCount; i++) {
+            let x = this.vertexPositionsX[i] - posX - (size / 2);
+            let z = this.vertexPositionsZ[i] - posY - (size / 2);
+            this.vertexPositionsX[i] = (x * Math.cos(degrees) - z * Math.sin(degrees)) + posX + (size / 2);
+            this.vertexPositionsZ[i] = (z * Math.cos(degrees) + x * Math.sin(degrees)) + posY + (size / 2);
+        }
+    }
 
-	static rotated(pos, degrees, size, posX = 0, posY = 0) {
-		for (let i = 0; i < pos.vertexPositionsX.length; i++) {
-			let x = pos.vertexPositionsX[i] - posX - (size / 2);
-			let z = pos.vertexPositionsZ[i] - posY - (size / 2);
-			pos.vertexPositionsX[i] = (x * Math.cos(degrees) - z * Math.sin(degrees)) + posX + (size / 2);
-			pos.vertexPositionsZ[i] = (z * Math.cos(degrees) + x * Math.sin(degrees)) + posY + (size / 2);
-		}
+    static rotated(pos, degrees, size, posX = 0, posY = 0) {
+        for (let i = 0; i < pos.vertexPositionsX.length; i++) {
+            let x = pos.vertexPositionsX[i] - posX - (size / 2);
+            let z = pos.vertexPositionsZ[i] - posY - (size / 2);
+            pos.vertexPositionsX[i] = (x * Math.cos(degrees) - z * Math.sin(degrees)) + posX + (size / 2);
+            pos.vertexPositionsZ[i] = (z * Math.cos(degrees) + x * Math.sin(degrees)) + posY + (size / 2);
+        }
 
-		return pos;
-	}
+        return pos;
+    }
 
-	translate(x, y, z) {
-		for (let i = 0; i < this.vertexCount; i++) {
-			this.vertexPositionsX[i] -= x;
-			this.vertexPositionsY[i] += z;
-			this.vertexPositionsZ[i] += y;
-		}
-	}
+    translate(x, y, z) {
+        for (let i = 0; i < this.vertexCount; i++) {
+            this.vertexPositionsX[i] -= x;
+            this.vertexPositionsY[i] += z;
+            this.vertexPositionsZ[i] += y;
+        }
+    }
 
-	static translated(pos, x, y, z) {
-		for (let i = 0; i < pos.vertexPositionsX.length; i++) {
-			pos.vertexPositionsX[i] -= x;
-			pos.vertexPositionsY[i] += y;
-			pos.vertexPositionsZ[i] += z;
-		}
+    static translated(pos, x, y, z) {
+        for (let i = 0; i < pos.vertexPositionsX.length; i++) {
+            pos.vertexPositionsX[i] -= x;
+            pos.vertexPositionsY[i] += y;
+            pos.vertexPositionsZ[i] += z;
+        }
 
-		return pos;
-	}
+        return pos;
+    }
 
-	method1194() {
-		let var1;
-		for (var1 = 0; var1 < this.vertexCount; ++var1) {
-			this.vertexPositionsZ[var1] = -this.vertexPositionsZ[var1];
-		}
+    method1194() {
+        let var1;
+        for (var1 = 0; var1 < this.vertexCount; ++var1) {
+            this.vertexPositionsZ[var1] = -this.vertexPositionsZ[var1];
+        }
 
-		for (var1 = 0; var1 < this.faceCount; ++var1) {
-			let var2 = this.faceVertexIndices1[var1];
-			this.faceVertexIndices1[var1] = this.faceVertexIndices3[var1];
-			this.faceVertexIndices3[var1] = var2;
-		}
+        for (var1 = 0; var1 < this.faceCount; ++var1) {
+            let var2 = this.faceVertexIndices1[var1];
+            this.faceVertexIndices1[var1] = this.faceVertexIndices3[var1];
+            this.faceVertexIndices3[var1] = var2;
+        }
 
-		this.invalidate();
-	}
+        this.invalidate();
+    }
 
-	method1206(degrees) {
-		let var2 = Math.sin(2 * Math.PI * (degrees / 2048));
-		let var3 = Math.cos(2 * Math.PI * (degrees / 2048));
+    method1206(degrees) {
+        let var2 = Math.sin(2 * Math.PI * (degrees / 2048));
+        let var3 = Math.cos(2 * Math.PI * (degrees / 2048));
 
-		for (let var4 = 0; var4 < this.vertexCount; ++var4) {
-			let var5 = var2 * this.vertexPositionsZ[var4] + var3 * this.vertexPositionsX[var4];
-			this.vertexPositionsZ[var4] = var3 * this.vertexPositionsZ[var4] - var2 * this.vertexPositionsX[var4];
-			this.vertexPositionsX[var4] = var5;
-		}
+        for (let var4 = 0; var4 < this.vertexCount; ++var4) {
+            let var5 = var2 * this.vertexPositionsZ[var4] + var3 * this.vertexPositionsX[var4];
+            this.vertexPositionsZ[var4] = var3 * this.vertexPositionsZ[var4] - var2 * this.vertexPositionsX[var4];
+            this.vertexPositionsX[var4] = var5;
+        }
 
-		this.invalidate();
-	}
+        this.invalidate();
+    }
 
-	changeOffset(var1, var2, var3) {
-		for (let var4 = 0; var4 < this.vertexCount; ++var4) {
-			this.vertexPositionsX[var4] += var1;
-			this.vertexPositionsY[var4] += var2;
-			this.vertexPositionsZ[var4] += var3;
-		}
+    changeOffset(var1, var2, var3) {
+        for (let var4 = 0; var4 < this.vertexCount; ++var4) {
+            this.vertexPositionsX[var4] += var1;
+            this.vertexPositionsY[var4] += var2;
+            this.vertexPositionsZ[var4] += var3;
+        }
 
-		this.invalidate();
-	}
+        this.invalidate();
+    }
 
-	method1188() {
-		for (let var1 = 0; var1 < this.vertexCount; ++var1) {
-			let var2 = this.vertexPositionsX[var1];
-			this.vertexPositionsX[var1] = this.vertexPositionsZ[var1];
-			this.vertexPositionsZ[var1] = -var2;
-		}
+    method1188() {
+        for (let var1 = 0; var1 < this.vertexCount; ++var1) {
+            let var2 = this.vertexPositionsX[var1];
+            this.vertexPositionsX[var1] = this.vertexPositionsZ[var1];
+            this.vertexPositionsZ[var1] = -var2;
+        }
 
-		this.invalidate();
-	}
+        this.invalidate();
+    }
 
-	method1190() {
-		for (let var1 = 0; var1 < this.vertexCount; ++var1) {
-			this.vertexPositionsX[var1] = -this.vertexPositionsX[var1];
-			this.vertexPositionsZ[var1] = -this.vertexPositionsZ[var1];
-		}
+    method1190() {
+        for (let var1 = 0; var1 < this.vertexCount; ++var1) {
+            this.vertexPositionsX[var1] = -this.vertexPositionsX[var1];
+            this.vertexPositionsZ[var1] = -this.vertexPositionsZ[var1];
+        }
 
-		this.invalidate();
-	}
+        this.invalidate();
+    }
 
-	method1189() {
-		for (let var1 = 0; var1 < this.vertexCount; ++var1) {
-			let var2 = this.vertexPositionsZ[var1];
-			this.vertexPositionsZ[var1] = this.vertexPositionsX[var1];
-			this.vertexPositionsX[var1] = -var2;
-		}
+    method1189() {
+        for (let var1 = 0; var1 < this.vertexCount; ++var1) {
+            let var2 = this.vertexPositionsZ[var1];
+            this.vertexPositionsZ[var1] = this.vertexPositionsX[var1];
+            this.vertexPositionsX[var1] = -var2;
+        }
 
-		this.invalidate();
-	}
+        this.invalidate();
+    }
 
-	resize(var1, var2, var3) {
-		for (let var4 = 0; var4 < this.vertexCount; ++var4) {
-			this.vertexPositionsX[var4] = this.vertexPositionsX[var4] * var1 / 128;
-			this.vertexPositionsY[var4] = var2 * this.vertexPositionsY[var4] / 128;
-			this.vertexPositionsZ[var4] = var3 * this.vertexPositionsZ[var4] / 128;
-		}
+    resize(var1, var2, var3) {
+        for (let var4 = 0; var4 < this.vertexCount; ++var4) {
+            this.vertexPositionsX[var4] = this.vertexPositionsX[var4] * var1 / 128;
+            this.vertexPositionsY[var4] = var2 * this.vertexPositionsY[var4] / 128;
+            this.vertexPositionsZ[var4] = var3 * this.vertexPositionsZ[var4] / 128;
+        }
 
-		this.invalidate();
-	}
+        this.invalidate();
+    }
 
-	invalidate() {
-		this.vertexNormals = null;
-		this.vertexVertices = null;
-		this.faceNormals = null;
-		this.isBoundsCalculated = false;
-	}
+    invalidate() {
+        this.vertexNormals = null;
+        this.vertexVertices = null;
+        this.faceNormals = null;
+        this.isBoundsCalculated = false;
+    }
 
-	recolor(var1, var2) {
-		for (let var3 = 0; var3 < this.faceCount; ++var3) {
-			if (this.faceColors[var3] == var1) {
-				this.faceColors[var3] = var2;
-			}
-		}
-	}
+    recolor(var1, var2) {
+        for (let var3 = 0; var3 < this.faceCount; ++var3) {
+            if (this.faceColors[var3] == var1) {
+                this.faceColors[var3] = var2;
+            }
+        }
+    }
 
-	retexture(var1, var2) {
-		if (this.faceTextures != null) {
-			for (let var3 = 0; var3 < this.faceCount; ++var3) {
-				if (this.faceTextures[var3] == var1) {
-					this.faceTextures[var3] = var2;
-				}
-			}
-		}
-	}
-	removeCommonVerticies() {
-		//doesnt actually remove the verticies, just makes them disappear
-		const TOLERANCE = 1;
-		let alreadyMerged = [];
+    retexture(var1, var2) {
+        if (this.faceTextures != null) {
+            for (let var3 = 0; var3 < this.faceCount; ++var3) {
+                if (this.faceTextures[var3] == var1) {
+                    this.faceTextures[var3] = var2;
+                }
+            }
+        }
+    }
+    removeCommonVerticies() {
+        //doesnt actually remove the verticies, just makes them disappear
+        const TOLERANCE = 1;
+        let alreadyMerged = [];
 
-		outerLoop:
-		for (let i = 0; i < this.vertexCount; i++) {
-			for (let j = 0; j < this.vertexCount; j++) {
-				if (i == j) continue;
-				//if(alreadyMerged[j]) continue;
-				if (Math.abs(this.vertexPositionsX[i] - this.vertexPositionsX[j]) <= TOLERANCE &&
-					Math.abs(this.vertexPositionsY[i] - this.vertexPositionsY[j]) <= TOLERANCE &&
-					Math.abs(this.vertexPositionsZ[i] - this.vertexPositionsZ[j]) <= TOLERANCE) {
+        outerLoop:
+        for (let i = 0; i < this.vertexCount; i++) {
+            for (let j = 0; j < this.vertexCount; j++) {
+                if (i == j) continue;
+                //if(alreadyMerged[j]) continue;
+                if (Math.abs(this.vertexPositionsX[i] - this.vertexPositionsX[j]) <= TOLERANCE &&
+                    Math.abs(this.vertexPositionsY[i] - this.vertexPositionsY[j]) <= TOLERANCE &&
+                    Math.abs(this.vertexPositionsZ[i] - this.vertexPositionsZ[j]) <= TOLERANCE) {
 
-					alreadyMerged[j] = true;
-					this.faceVertexIndices1 = this.faceVertexIndices1.map(x => x == j ? i : x);
-					this.faceVertexIndices2 = this.faceVertexIndices2.map(x => x == j ? i : x);
-					this.faceVertexIndices3 = this.faceVertexIndices3.map(x => x == j ? i : x);
+                    alreadyMerged[j] = true;
+                    this.faceVertexIndices1 = this.faceVertexIndices1.map(x => x == j ? i : x);
+                    this.faceVertexIndices2 = this.faceVertexIndices2.map(x => x == j ? i : x);
+                    this.faceVertexIndices3 = this.faceVertexIndices3.map(x => x == j ? i : x);
 
-					if (this.vertexNormals[i] != undefined && this.vertexNormals[j] != undefined) {
-						this.vertexNormals[j].x = this.vertexNormals[i].x = (this.vertexNormals[i].x + this.vertexNormals[j].x);
-						this.vertexNormals[j].y = this.vertexNormals[i].y = (this.vertexNormals[i].y + this.vertexNormals[j].y);
-						this.vertexNormals[j].z = this.vertexNormals[i].z = (this.vertexNormals[i].z + this.vertexNormals[j].z);
-						this.vertexNormals[j].magnitude = this.vertexNormals[i].magnitude = (this.vertexNormals[i].magnitude + this.vertexNormals[j].magnitude);
-					}
-					//continue outerLoop;
-				}
-			}
-		}
-		//this.vertexNormals = newNormals;
-	}
+                    if (this.vertexNormals[i] != undefined && this.vertexNormals[j] != undefined) {
+                        this.vertexNormals[j].x = this.vertexNormals[i].x = (this.vertexNormals[i].x + this.vertexNormals[j].x);
+                        this.vertexNormals[j].y = this.vertexNormals[i].y = (this.vertexNormals[i].y + this.vertexNormals[j].y);
+                        this.vertexNormals[j].z = this.vertexNormals[i].z = (this.vertexNormals[i].z + this.vertexNormals[j].z);
+                        this.vertexNormals[j].magnitude = this.vertexNormals[i].magnitude = (this.vertexNormals[i].magnitude + this.vertexNormals[j].magnitude);
+                    }
+                    //continue outerLoop;
+                }
+            }
+        }
+        //this.vertexNormals = newNormals;
+    }
 
-	overlapsWith(otherModel) { //aabb collision
-		this.calculateBounds();
-		otherModel.calculateBounds();
-		return (
-			this.minX + this.position.x <= otherModel.maxX + otherModel.position.x &&
-			this.maxX + this.position.x >= otherModel.minX + otherModel.position.x &&
-			this.minY + this.position.y <= otherModel.height + otherModel.position.y &&
-			this.height + this.position.y >= otherModel.minY + otherModel.position.y &&
-			this.minZ + this.position.z <= otherModel.maxZ + otherModel.position.z &&
-			this.maxZ + this.position.z >= otherModel.minZ + otherModel.position.z
-		);
-	}
-	overlapsWith2(otherModel) { //aabb collision
-		this.calculateBounds();
-		otherModel.calculateBounds();
-		return (
-			this.minZ + this.position.x <= otherModel.maxZ + otherModel.position.x &&
-			this.maxZ + this.position.x >= otherModel.minZ + otherModel.position.x &&
-			this.minY + this.position.y <= otherModel.height + otherModel.position.y &&
-			this.height + this.position.y >= otherModel.minY + otherModel.position.y &&
-			this.minX + this.position.z <= otherModel.maxX + otherModel.position.z &&
-			this.maxX + this.position.z >= otherModel.minX + otherModel.position.z
-		);
-	}
-	calculateBounds() {
-		if (!this.isBoundsCalculated) {
-			this.height = 0;
-			this.minY = 0;
-			this.maxY = 0;
-			this.minX = 999999;
-			this.maxX = -999999;
-			this.maxZ = -99999;
-			this.minZ = 99999;
+    overlapsWith(otherModel) { //aabb collision
+        this.calculateBounds();
+        otherModel.calculateBounds();
+        return (
+            this.minX + this.position.x <= otherModel.maxX + otherModel.position.x &&
+            this.maxX + this.position.x >= otherModel.minX + otherModel.position.x &&
+            this.minY + this.position.y <= otherModel.height + otherModel.position.y &&
+            this.height + this.position.y >= otherModel.minY + otherModel.position.y &&
+            this.minZ + this.position.z <= otherModel.maxZ + otherModel.position.z &&
+            this.maxZ + this.position.z >= otherModel.minZ + otherModel.position.z
+        );
+    }
+    overlapsWith2(otherModel) { //aabb collision
+        this.calculateBounds();
+        otherModel.calculateBounds();
+        return (
+            this.minZ + this.position.x <= otherModel.maxZ + otherModel.position.x &&
+            this.maxZ + this.position.x >= otherModel.minZ + otherModel.position.x &&
+            this.minY + this.position.y <= otherModel.height + otherModel.position.y &&
+            this.height + this.position.y >= otherModel.minY + otherModel.position.y &&
+            this.minX + this.position.z <= otherModel.maxX + otherModel.position.z &&
+            this.maxX + this.position.z >= otherModel.minX + otherModel.position.z
+        );
+    }
+    calculateBounds() {
+        if (!this.isBoundsCalculated) {
+            this.height = 0;
+            this.minY = 0;
+            this.maxY = 0;
+            this.minX = 999999;
+            this.maxX = -999999;
+            this.maxZ = -99999;
+            this.minZ = 99999;
 
-			let rotatedVerts = {
-				vertexPositionsX: Object.assign([], this.vertexPositionsX),
-				vertexPositionsY: Object.assign([], this.vertexPositionsY),
-				vertexPositionsZ: Object.assign([], this.vertexPositionsZ)
-			}
-			rotatedVerts = ModelDefinition.rotated(rotatedVerts, this.rotation.y, 1);
+            let rotatedVerts = {
+                vertexPositionsX: Object.assign([], this.vertexPositionsX),
+                vertexPositionsY: Object.assign([], this.vertexPositionsY),
+                vertexPositionsZ: Object.assign([], this.vertexPositionsZ)
+            }
+            rotatedVerts = ModelDefinition.rotated(rotatedVerts, this.rotation.y, 1);
 
-			for (let var1 = 0; var1 < this.vertexCount; ++var1) {
-				let vertX = this.vertexPositionsX[var1];
-				let vertY = this.vertexPositionsY[var1];
-				let vertZ = this.vertexPositionsZ[var1];
-				if (vertX < this.minX) {
-					this.minX = vertX;
-				}
+            for (let var1 = 0; var1 < this.vertexCount; ++var1) {
+                let vertX = this.vertexPositionsX[var1];
+                let vertY = this.vertexPositionsY[var1];
+                let vertZ = this.vertexPositionsZ[var1];
+                if (vertX < this.minX) {
+                    this.minX = vertX;
+                }
 
-				if (vertX > this.maxX) {
-					this.maxX = vertX;
-				}
+                if (vertX > this.maxX) {
+                    this.maxX = vertX;
+                }
 
-				if (vertZ < this.minZ) {
-					this.minZ = vertZ;
-				}
+                if (vertZ < this.minZ) {
+                    this.minZ = vertZ;
+                }
 
-				if (vertZ > this.maxZ) {
-					this.maxZ = vertZ;
-				}
+                if (vertZ > this.maxZ) {
+                    this.maxZ = vertZ;
+                }
 
-				if (-vertY > this.height) {
-					this.height = -vertY;
-				}
+                if (-vertY > this.height) {
+                    this.height = -vertY;
+                }
 
-				if (vertY < this.minY) {
-					this.minY = vertY;
-				}
+                if (vertY < this.minY) {
+                    this.minY = vertY;
+                }
 
-				if (vertY > this.maxY) {
-					this.maxY = vertY;
-				}
-			}
+                if (vertY > this.maxY) {
+                    this.maxY = vertY;
+                }
+            }
 
-			this.isBoundsCalculated = true;
-		}
-	}
+            this.isBoundsCalculated = true;
+        }
+    }
 
-	mergeNormals2(otherModel, var5) {
-		this.calculateBounds();
-		this.computeNormals();
-		otherModel.calculateBounds();
-		otherModel.computeNormals();
+    mergeNormals2(otherModel, var5) {
+        this.calculateBounds();
+        this.computeNormals();
+        otherModel.calculateBounds();
+        otherModel.computeNormals();
 
-		++ModelDefinition.normalMergeCount;
+        ++ModelDefinition.normalMergeCount;
 
-		let var2 = otherModel.position.x - this.position.x ;
-		let var3 = this.position.y - otherModel.position.y;
-		let var4 = this.position.z - otherModel.position.z;
+        let var2 = otherModel.position.x - this.position.x;
+        let var3 = this.position.y - otherModel.position.y;
+        let var4 = this.position.z - otherModel.position.z;
 
-		let var6 = 0;
-		let var7 = otherModel.vertexPositionsX;
+        let var6 = 0;
+        let var7 = otherModel.vertexPositionsX;
 
-		let var9;
-		for (var9 = 0; var9 < this.vertexCount; ++var9) {
-			let var10 = this.vertexNormals[var9];
-			if (var10.magnitude != 0) {
-				let var11 = this.vertexPositionsY[var9] - var3;
-				if (var11 <= otherModel.maxY) {
-					let var12 = this.vertexPositionsX[var9] - var2;
-					if (var12 >= otherModel.minX && var12 <= otherModel.maxX) {
-						let var13 = this.vertexPositionsZ[var9] - var4;
-						if (var13 >= otherModel.minZ && var13 <= otherModel.maxZ) {
-							for (let var14 = 0; var14 < otherModel.vertexCount; ++var14) {
-								let var15 = otherModel.vertexNormals[var14];
-								if (var12 == var7[var14] && var13 == otherModel.vertexPositionsZ[var14] && var11 == otherModel.vertexPositionsY[var14] && var15.magnitude != 0) {  //|| (Math.abs(var12 - var7[var14]) == 0 && Math.abs(var13 - otherModel.vertexPositionsZ[var14]) == 128 && Math.abs(var11 - otherModel.vertexPositionsY[var14]) == 0))
-									if (this.vertexVertices == null) {
-										this.vertexVertices = new Array(this.vertexCount);
-									}
+        let var9;
+        for (var9 = 0; var9 < this.vertexCount; ++var9) {
+            let var10 = this.vertexNormals[var9];
+            if (var10.magnitude != 0) {
+                let var11 = this.vertexPositionsY[var9] - var3;
+                if (var11 <= otherModel.maxY) {
+                    let var12 = this.vertexPositionsX[var9] - var2;
+                    if (var12 >= otherModel.minX && var12 <= otherModel.maxX) {
+                        let var13 = this.vertexPositionsZ[var9] - var4;
+                        if (var13 >= otherModel.minZ && var13 <= otherModel.maxZ) {
+                            for (let var14 = 0; var14 < otherModel.vertexCount; ++var14) {
+                                let var15 = otherModel.vertexNormals[var14];
+                                if (var12 == var7[var14] && var13 == otherModel.vertexPositionsZ[var14] && var11 == otherModel.vertexPositionsY[var14] && var15.magnitude != 0) {  //|| (Math.abs(var12 - var7[var14]) == 0 && Math.abs(var13 - otherModel.vertexPositionsZ[var14]) == 128 && Math.abs(var11 - otherModel.vertexPositionsY[var14]) == 0))
+                                    if (this.vertexVertices == null) {
+                                        this.vertexVertices = new Array(this.vertexCount);
+                                    }
 
-									if (otherModel.vertexVertices == null) {
-										otherModel.vertexVertices = new Array(otherModel.vertexCount);
-									}
+                                    if (otherModel.vertexVertices == null) {
+                                        otherModel.vertexVertices = new Array(otherModel.vertexCount);
+                                    }
 
-									let var16 = this.vertexVertices[var9];
-									if (var16 == null) {
-										var16 = this.vertexVertices[var9] = new VertexNormal(var10);
-									}
+                                    let var16 = this.vertexVertices[var9];
+                                    if (var16 == null) {
+                                        var16 = this.vertexVertices[var9] = new VertexNormal(var10);
+                                    }
 
-									let var17 = otherModel.vertexVertices[var14];
-									if (var17 == null) {
-										var17 = otherModel.vertexVertices[var14] = new VertexNormal(var15);
-									}
-									
-									var16.x += var15.x;
-									var16.y += var15.y;
-									var16.z += var15.z;
-									var16.magnitude += var15.magnitude;
-									var17.x += var10.x;
-									var17.y += var10.y;
-									var17.z += var10.z;
-									var17.magnitude += var10.magnitude;
-									++var6;
-									ModelDefinition.field1935[var9] = ModelDefinition.normalMergeCount;
-									ModelDefinition.field1936[var14] = ModelDefinition.normalMergeCount;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+                                    let var17 = otherModel.vertexVertices[var14];
+                                    if (var17 == null) {
+                                        var17 = otherModel.vertexVertices[var14] = new VertexNormal(var15);
+                                    }
 
-		if (var6 >= 3 && var5) {
-			for (var9 = 0; var9 < this.faceCount; ++var9) {
-				if (ModelDefinition.field1935[this.faceVertexIndices1[var9]] == ModelDefinition.normalMergeCount && ModelDefinition.field1935[this.faceVertexIndices2[var9]] == ModelDefinition.normalMergeCount && ModelDefinition.field1935[this.faceVertexIndices3[var9]] == ModelDefinition.normalMergeCount) {
-					if (this.faceRenderTypes == null) {
-						this.faceRenderTypes = new Array(this.faceCount);
-					}
+                                    var16.x += var15.x;
+                                    var16.y += var15.y;
+                                    var16.z += var15.z;
+                                    var16.magnitude += var15.magnitude;
+                                    var17.x += var10.x;
+                                    var17.y += var10.y;
+                                    var17.z += var10.z;
+                                    var17.magnitude += var10.magnitude;
+                                    ++var6;
+                                    ModelDefinition.field1935[var9] = ModelDefinition.normalMergeCount;
+                                    ModelDefinition.field1936[var14] = ModelDefinition.normalMergeCount;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-					this.faceRenderTypes[var9] = 2;
-				}
-			}
+        if (var6 >= 3 && var5) {
+            for (var9 = 0; var9 < this.faceCount; ++var9) {
+                if (ModelDefinition.field1935[this.faceVertexIndices1[var9]] == ModelDefinition.normalMergeCount && ModelDefinition.field1935[this.faceVertexIndices2[var9]] == ModelDefinition.normalMergeCount && ModelDefinition.field1935[this.faceVertexIndices3[var9]] == ModelDefinition.normalMergeCount) {
+                    if (this.faceRenderTypes == null) {
+                        this.faceRenderTypes = new Array(this.faceCount);
+                    }
 
-			for (var9 = 0; var9 < otherModel.faceCount; ++var9) {
-				if (ModelDefinition.normalMergeCount == ModelDefinition.field1936[otherModel.faceVertexIndices1[var9]] && ModelDefinition.normalMergeCount == ModelDefinition.field1936[otherModel.faceVertexIndices2[var9]] && ModelDefinition.normalMergeCount == ModelDefinition.field1936[otherModel.faceVertexIndices3[var9]]) {
-					if (otherModel.faceRenderTypes == null) {
-						otherModel.faceRenderTypes = new Array(otherModel.faceCount);
-					}
+                    this.faceRenderTypes[var9] = 2;
+                }
+            }
 
-					otherModel.faceRenderTypes[var9] = 2;
-				}
-			}
+            for (var9 = 0; var9 < otherModel.faceCount; ++var9) {
+                if (ModelDefinition.normalMergeCount == ModelDefinition.field1936[otherModel.faceVertexIndices1[var9]] && ModelDefinition.normalMergeCount == ModelDefinition.field1936[otherModel.faceVertexIndices2[var9]] && ModelDefinition.normalMergeCount == ModelDefinition.field1936[otherModel.faceVertexIndices3[var9]]) {
+                    if (otherModel.faceRenderTypes == null) {
+                        otherModel.faceRenderTypes = new Array(otherModel.faceCount);
+                    }
 
-		}
-	}
+                    otherModel.faceRenderTypes[var9] = 2;
+                }
+            }
 
-	static mergeNormals(var0, var1, var2, var3, var4, var5) {
-		var0.calculateBounds();
-		var0.computeNormals();
-		var1.calculateBounds();
-		var1.computeNormals();
-		++ModelDefinition.normalMergeCount;
-		let var6 = 0;
-		let var7 = var1.vertexPositionsX;
-		let var8 = var1.vertexCount;
+        }
+    }
 
-		let var9;
-		for (var9 = 0; var9 < var0.vertexCount; ++var9) {
-			let var10 = var0.vertexNormals[var9];
-			if (var10.magnitude != 0) {
-				let var11 = var0.vertexPositionsY[var9] - var3;
-				if (var11 <= var1.minY) {
-					let var12 = var0.vertexPositionsX[var9] - var2;
-					if (var12 >= var1.minX && var12 <= var1.maxX) {
-						let var13 = var0.vertexPositionsZ[var9] - var4;
-						if (var13 >= var1.minZ && var13 <= var1.maxZ) {
-							for (let var14 = 0; var14 < var8; ++var14) {
-								let var15 = var1.vertexNormals[var14];
-								if (var12 == var7[var14] && var13 == var1.vertexPositionsZ[var14] && var11 == var1.vertexPositionsY[var14] && var15.magnitude != 0) {
-									if (var0.vertexVertices == null) {
-										var0.vertexVertices = new Array(var0.vertexCount);
-									}
+    static mergeNormals(var0, var1, var2, var3, var4, var5) {
+        var0.calculateBounds();
+        var0.computeNormals();
+        var1.calculateBounds();
+        var1.computeNormals();
+        ++ModelDefinition.normalMergeCount;
+        let var6 = 0;
+        let var7 = var1.vertexPositionsX;
+        let var8 = var1.vertexCount;
 
-									if (var1.vertexVertices == null) {
-										var1.vertexVertices = new Array(var8);
-									}
+        let var9;
+        for (var9 = 0; var9 < var0.vertexCount; ++var9) {
+            let var10 = var0.vertexNormals[var9];
+            if (var10.magnitude != 0) {
+                let var11 = var0.vertexPositionsY[var9] - var3;
+                if (var11 <= var1.minY) {
+                    let var12 = var0.vertexPositionsX[var9] - var2;
+                    if (var12 >= var1.minX && var12 <= var1.maxX) {
+                        let var13 = var0.vertexPositionsZ[var9] - var4;
+                        if (var13 >= var1.minZ && var13 <= var1.maxZ) {
+                            for (let var14 = 0; var14 < var8; ++var14) {
+                                let var15 = var1.vertexNormals[var14];
+                                if (var12 == var7[var14] && var13 == var1.vertexPositionsZ[var14] && var11 == var1.vertexPositionsY[var14] && var15.magnitude != 0) {
+                                    if (var0.vertexVertices == null) {
+                                        var0.vertexVertices = new Array(var0.vertexCount);
+                                    }
 
-									let var16 = var0.vertexVertices[var9];
-									if (var16 == null) {
-										var16 = var0.vertexVertices[var9] = Object.assign({}, var10);
-									}
+                                    if (var1.vertexVertices == null) {
+                                        var1.vertexVertices = new Array(var8);
+                                    }
 
-									let var17 = var1.vertexVertices[var14];
-									if (var17 == null) {
-										var17 = var1.vertexVertices[var14] = Object.assign({}, var15);
-									}
+                                    let var16 = var0.vertexVertices[var9];
+                                    if (var16 == null) {
+                                        var16 = var0.vertexVertices[var9] = Object.assign({}, var10);
+                                    }
 
-									var16.x += var15.x;
-									var16.y += var15.y;
-									var16.z += var15.z;
-									var16.magnitude += var15.magnitude;
-									var17.x += var10.x;
-									var17.y += var10.y;
-									var17.z += var10.z;
-									var17.magnitude += var10.magnitude;
-									++var6;
-									ModelDefinition.field1935[var9] = ModelDefinition.normalMergeCount;
-									ModelDefinition.field1936[var14] = ModelDefinition.normalMergeCount;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+                                    let var17 = var1.vertexVertices[var14];
+                                    if (var17 == null) {
+                                        var17 = var1.vertexVertices[var14] = Object.assign({}, var15);
+                                    }
 
-		if (var6 >= 3 && var5) {
-			for (var9 = 0; var9 < var0.faceCount; ++var9) {
-				if (ModelDefinition.field1935[var0.faceVertexIndices1[var9]] == ModelDefinition.normalMergeCount && ModelDefinition.field1935[var0.faceVertexIndices2[var9]] == ModelDefinition.normalMergeCount && ModelDefinition.field1935[var0.faceVertexIndices3[var9]] == ModelDefinition.normalMergeCount) {
-					if (var0.faceRenderTypes == null) {
-						var0.faceRenderTypes = new byte[var0.faceCount];
-					}
+                                    var16.x += var15.x;
+                                    var16.y += var15.y;
+                                    var16.z += var15.z;
+                                    var16.magnitude += var15.magnitude;
+                                    var17.x += var10.x;
+                                    var17.y += var10.y;
+                                    var17.z += var10.z;
+                                    var17.magnitude += var10.magnitude;
+                                    ++var6;
+                                    ModelDefinition.field1935[var9] = ModelDefinition.normalMergeCount;
+                                    ModelDefinition.field1936[var14] = ModelDefinition.normalMergeCount;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
-					var0.faceRenderTypes[var9] = 2;
-				}
-			}
+        if (var6 >= 3 && var5) {
+            for (var9 = 0; var9 < var0.faceCount; ++var9) {
+                if (ModelDefinition.field1935[var0.faceVertexIndices1[var9]] == ModelDefinition.normalMergeCount && ModelDefinition.field1935[var0.faceVertexIndices2[var9]] == ModelDefinition.normalMergeCount && ModelDefinition.field1935[var0.faceVertexIndices3[var9]] == ModelDefinition.normalMergeCount) {
+                    if (var0.faceRenderTypes == null) {
+                        var0.faceRenderTypes = new byte[var0.faceCount];
+                    }
 
-			for (var9 = 0; var9 < var1.faceCount; ++var9) {
-				if (ModelDefinition.normalMergeCount == ModelDefinition.field1936[var1.faceVertexIndices1[var9]] && ModelDefinition.normalMergeCount == ModelDefinition.field1936[var1.faceVertexIndices2[var9]] && ModelDefinition.normalMergeCount == ModelDefinition.field1936[var1.faceVertexIndices3[var9]]) {
-					if (var1.faceRenderTypes == null) {
-						var1.faceRenderTypes = new byte[var1.faceCount];
-					}
+                    var0.faceRenderTypes[var9] = 2;
+                }
+            }
 
-					var1.faceRenderTypes[var9] = 2;
-				}
-			}
+            for (var9 = 0; var9 < var1.faceCount; ++var9) {
+                if (ModelDefinition.normalMergeCount == ModelDefinition.field1936[var1.faceVertexIndices1[var9]] && ModelDefinition.normalMergeCount == ModelDefinition.field1936[var1.faceVertexIndices2[var9]] && ModelDefinition.normalMergeCount == ModelDefinition.field1936[var1.faceVertexIndices3[var9]]) {
+                    if (var1.faceRenderTypes == null) {
+                        var1.faceRenderTypes = new byte[var1.faceCount];
+                    }
 
-		}
-	}
+                    var1.faceRenderTypes[var9] = 2;
+                }
+            }
+
+        }
+    }
 
     /**
      * Merge this model with another model
@@ -798,7 +798,7 @@ export class ModelDefinition {
 
         if (animation.animMayaID != undefined && animation.animMayaID != -1) {
             let index = IndexType.FRAMES;
-            if(this.rev229) {
+            if (this.rev229) {
                 index = IndexType.KEYFRAMES;
             }
             let framesInfo = await cache.getAllFiles(index.id, animation.animMayaID >> 16, {
@@ -806,7 +806,7 @@ export class ModelDefinition {
             });
 
             const rawVertexData = this.loadMayaAnimation(framesInfo[0].def, animation, invertZ);
-            
+
             // run-length encode maya animations
             if (compress) {
                 let last = rawVertexData[0]
@@ -1104,20 +1104,20 @@ export class ModelDefinition {
         let sameVerticiesY = this.vertexPositionsY.every((x, i) => x == otherModel.vertexPositionsY[i]);
         let sameVerticiesZ = this.vertexPositionsZ.every((x, i) => x == otherModel.vertexPositionsZ[i]);
 
-		let sameRenderTypes = true;
-		if (this.faceRenderTypes != undefined && otherModel.faceRenderTypes != undefined) {
-			sameRenderTypes = this.faceRenderTypes.every((x, i) => x == otherModel.faceRenderTypes[i])
-		}
+        let sameRenderTypes = true;
+        if (this.faceRenderTypes != undefined && otherModel.faceRenderTypes != undefined) {
+            sameRenderTypes = this.faceRenderTypes.every((x, i) => x == otherModel.faceRenderTypes[i])
+        }
 
-		let sameNormals = true;
-		if (this.vertexVertices != undefined && otherModel.vertexVertices != undefined) {
-			sameNormals = this.vertexVertices.every((x, i) => x == otherModel.vertexVertices[i]);
-		} else if (this.vertexVertices == undefined ^ otherModel.vertexVertices == undefined) {
-			sameNormals = false;
-		}
+        let sameNormals = true;
+        if (this.vertexVertices != undefined && otherModel.vertexVertices != undefined) {
+            sameNormals = this.vertexVertices.every((x, i) => x == otherModel.vertexVertices[i]);
+        } else if (this.vertexVertices == undefined ^ otherModel.vertexVertices == undefined) {
+            sameNormals = false;
+        }
 
-		return sameVerticiesX && sameVerticiesY && sameVerticiesZ && sameFaceColors && sameFaceColors && sameNormals && sameRenderTypes;
-	}
+        return sameVerticiesX && sameVerticiesY && sameVerticiesZ && sameFaceColors && sameFaceColors && sameNormals && sameRenderTypes;
+    }
 
 
     computeAnimationTables() {
@@ -1302,173 +1302,171 @@ export class ModelDefinition {
         }
     }
 
-	computeNormalsOld() {
-		this.vertexNormals = [];
-		let rotatedVerts = {
-			vertexPositionsX: Object.assign([], this.vertexPositionsX),
-			vertexPositionsY: Object.assign([], this.vertexPositionsY),
-			vertexPositionsZ: Object.assign([], this.vertexPositionsZ)
-		}
-		//rotatedVerts = ModelDefinition.rotated(rotatedVerts, this.rotation.y, 1);
+    computeNormalsOld() {
+        this.vertexNormals = [];
+        let rotatedVerts = {
+            vertexPositionsX: Object.assign([], this.vertexPositionsX),
+            vertexPositionsY: Object.assign([], this.vertexPositionsY),
+            vertexPositionsZ: Object.assign([], this.vertexPositionsZ)
+        }
+        //rotatedVerts = ModelDefinition.rotated(rotatedVerts, this.rotation.y, 1);
 
-		let var1;
-		for (var1 = 0; var1 < this.vertexCount; ++var1) {
-			this.vertexNormals[var1] = { x: 0, y: 0, z: 0, magnitude: 0 };
-		}
-		for (var1 = 0; var1 < this.faceCount; ++var1) {
-			let var2 = this.faceVertexIndices1[var1];
-			let var3 = this.faceVertexIndices2[var1];
-			let var4 = this.faceVertexIndices3[var1];
-			let var5 = rotatedVerts.vertexPositionsX[var3] - rotatedVerts.vertexPositionsX[var2];
-			let var6 = rotatedVerts.vertexPositionsY[var3] - rotatedVerts.vertexPositionsY[var2];
-			let var7 = rotatedVerts.vertexPositionsZ[var3] - rotatedVerts.vertexPositionsZ[var2];
-			let var8 = rotatedVerts.vertexPositionsX[var4] - rotatedVerts.vertexPositionsX[var2];
-			let var9 = rotatedVerts.vertexPositionsY[var4] - rotatedVerts.vertexPositionsY[var2];
-			let var10 = rotatedVerts.vertexPositionsZ[var4] - rotatedVerts.vertexPositionsZ[var2];
-			let var11 = var6 * var10 - var9 * var7;
-			let var12 = var7 * var8 - var10 * var5;
+        let var1;
+        for (var1 = 0; var1 < this.vertexCount; ++var1) {
+            this.vertexNormals[var1] = { x: 0, y: 0, z: 0, magnitude: 0 };
+        }
+        for (var1 = 0; var1 < this.faceCount; ++var1) {
+            let var2 = this.faceVertexIndices1[var1];
+            let var3 = this.faceVertexIndices2[var1];
+            let var4 = this.faceVertexIndices3[var1];
+            let var5 = rotatedVerts.vertexPositionsX[var3] - rotatedVerts.vertexPositionsX[var2];
+            let var6 = rotatedVerts.vertexPositionsY[var3] - rotatedVerts.vertexPositionsY[var2];
+            let var7 = rotatedVerts.vertexPositionsZ[var3] - rotatedVerts.vertexPositionsZ[var2];
+            let var8 = rotatedVerts.vertexPositionsX[var4] - rotatedVerts.vertexPositionsX[var2];
+            let var9 = rotatedVerts.vertexPositionsY[var4] - rotatedVerts.vertexPositionsY[var2];
+            let var10 = rotatedVerts.vertexPositionsZ[var4] - rotatedVerts.vertexPositionsZ[var2];
+            let var11 = var6 * var10 - var9 * var7;
+            let var12 = var7 * var8 - var10 * var5;
 
-			let var13;
-			for (var13 = var5 * var9 - var8 * var6; var11 > 8192 || var12 > 8192 || var13 > 8192 || var11 < -8192 || var12 < -8192 || var13 < -8192; var13 >>= 1) {
-				var11 >>= 1;
-				var12 >>= 1;
-			}
+            let var13;
+            for (var13 = var5 * var9 - var8 * var6; var11 > 8192 || var12 > 8192 || var13 > 8192 || var11 < -8192 || var12 < -8192 || var13 < -8192; var13 >>= 1) {
+                var11 >>= 1;
+                var12 >>= 1;
+            }
 
-			let var14 = parseInt(Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13));
-			if (var14 <= 0) {
-				var14 = 1;
-			}
+            let var14 = parseInt(Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13));
+            if (var14 <= 0) {
+                var14 = 1;
+            }
 
-			var11 = var11 * 256 / var14;
-			var12 = var12 * 256 / var14;
-			var13 = var13 * 256 / var14;
-			let var15;
-			if (this.faceRenderTypes == null) {
-				var15 = 0;
-			} else {
-				var15 = this.faceRenderTypes[var1];
-			}
+            var11 = var11 * 256 / var14;
+            var12 = var12 * 256 / var14;
+            var13 = var13 * 256 / var14;
+            let var15;
+            if (this.faceRenderTypes == null) {
+                var15 = 0;
+            } else {
+                var15 = this.faceRenderTypes[var1];
+            }
 
-			//osrs doesnt have || var15 == 1
-			//we only use this because we dont have per face normals
-			//i left the original incase we do add it
-			//-dez
-			if (var15 == 0 || var15 == 1) {
-				let var16 = this.vertexNormals[var2];
-				var16.x += var11;
-				var16.y += var12;
-				var16.z += var13;
-				++var16.magnitude;
-				var16 = this.vertexNormals[var3];
-				var16.x += var11;
-				var16.y += var12;
-				var16.z += var13;
-				++var16.magnitude;
-				var16 = this.vertexNormals[var4];
-				var16.x += var11;
-				var16.y += var12;
-				var16.z += var13;
-				++var16.magnitude;
+            //osrs doesnt have || var15 == 1
+            //we only use this because we dont have per face normals
+            //i left the original incase we do add it
+            //-dez
+            if (var15 == 0 || var15 == 1) {
+                let var16 = this.vertexNormals[var2];
+                var16.x += var11;
+                var16.y += var12;
+                var16.z += var13;
+                ++var16.magnitude;
+                var16 = this.vertexNormals[var3];
+                var16.x += var11;
+                var16.y += var12;
+                var16.z += var13;
+                ++var16.magnitude;
+                var16 = this.vertexNormals[var4];
+                var16.x += var11;
+                var16.y += var12;
+                var16.z += var13;
+                ++var16.magnitude;
 
-			} else if (var15 == 1) {
-				if (this.faceNormals == undefined) {
-					this.faceNormals = [];
-				}
+            } else if (var15 == 1) {
+                if (this.faceNormals == undefined) {
+                    this.faceNormals = [];
+                }
 
-				let var17 = this.faceNormals[var1] = {};
-				var17.x = var11;
-				var17.y = var12;
-				var17.z = var13;
-			}
-		}
-	}
+                let var17 = this.faceNormals[var1] = {};
+                var17.x = var11;
+                var17.y = var12;
+                var17.z = var13;
+            }
+        }
+    }
 
-	computeNormals()
-	{
-		if (this.vertexNormals != undefined) {
-			return;
-		}
+    computeNormals() {
+        if (this.vertexNormals != undefined) {
+            return;
+        }
 
-		this.vertexNormals = new Array(this.vertexCount);
+        this.vertexNormals = new Array(this.vertexCount);
 
-		let var1;
-		for (var1 = 0; var1 < this.vertexCount; ++var1){
-			this.vertexNormals[var1] = new VertexNormal();
-		}
+        let var1;
+        for (var1 = 0; var1 < this.vertexCount; ++var1) {
+            this.vertexNormals[var1] = new VertexNormal();
+        }
 
-		for (var1 = 0; var1 < this.faceCount; ++var1) {
-			let vertexA = this.faceVertexIndices1[var1];
-			let vertexB = this.faceVertexIndices2[var1];
-			let vertexC = this.faceVertexIndices3[var1];
+        for (var1 = 0; var1 < this.faceCount; ++var1) {
+            let vertexA = this.faceVertexIndices1[var1];
+            let vertexB = this.faceVertexIndices2[var1];
+            let vertexC = this.faceVertexIndices3[var1];
 
-			let xA = this.vertexPositionsX[vertexB] - this.vertexPositionsX[vertexA];
-			let yA = this.vertexPositionsY[vertexB] - this.vertexPositionsY[vertexA];
-			let zA = this.vertexPositionsZ[vertexB] - this.vertexPositionsZ[vertexA];
+            let xA = this.vertexPositionsX[vertexB] - this.vertexPositionsX[vertexA];
+            let yA = this.vertexPositionsY[vertexB] - this.vertexPositionsY[vertexA];
+            let zA = this.vertexPositionsZ[vertexB] - this.vertexPositionsZ[vertexA];
 
-			let xB = this.vertexPositionsX[vertexC] - this.vertexPositionsX[vertexA];
-			let yB = this.vertexPositionsY[vertexC] - this.vertexPositionsY[vertexA];
-			let zB = this.vertexPositionsZ[vertexC] - this.vertexPositionsZ[vertexA];
+            let xB = this.vertexPositionsX[vertexC] - this.vertexPositionsX[vertexA];
+            let yB = this.vertexPositionsY[vertexC] - this.vertexPositionsY[vertexA];
+            let zB = this.vertexPositionsZ[vertexC] - this.vertexPositionsZ[vertexA];
 
-			// Compute cross product
-			let var11 = yA * zB - yB * zA;
-			let var12 = zA * xB - zB * xA;
-			let var13 = xA * yB - xB * yA;
+            // Compute cross product
+            let var11 = yA * zB - yB * zA;
+            let var12 = zA * xB - zB * xA;
+            let var13 = xA * yB - xB * yA;
 
-			while (var11 > 8192 || var12 > 8192 || var13 > 8192 || var11 < -8192 || var12 < -8192 || var13 < -8192) {
-				var11 >>= 1;
-				var12 >>= 1;
-				var13 >>= 1;
-			}
+            while (var11 > 8192 || var12 > 8192 || var13 > 8192 || var11 < -8192 || var12 < -8192 || var13 < -8192) {
+                var11 >>= 1;
+                var12 >>= 1;
+                var13 >>= 1;
+            }
 
-			let length = Math.floor(Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13));
-			if (length <= 0)
-			{
-				length = 1;
-			}
+            let length = Math.floor(Math.sqrt(var11 * var11 + var12 * var12 + var13 * var13));
+            if (length <= 0) {
+                length = 1;
+            }
 
-			var11 = var11 * 256 / length;
-			var12 = var12 * 256 / length;
-			var13 = var13 * 256 / length;
+            var11 = var11 * 256 / length;
+            var12 = var12 * 256 / length;
+            var13 = var13 * 256 / length;
 
-			let var15;
-			if (this.faceRenderTypes == null) {
-				var15 = 0;
-			}
-			else {
-				var15 = this.faceRenderTypes[var1];
-			}
+            let var15;
+            if (this.faceRenderTypes == null) {
+                var15 = 0;
+            }
+            else {
+                var15 = this.faceRenderTypes[var1];
+            }
 
-			if (var15 == 0) {
-				let var16 = this.vertexNormals[vertexA];
-				var16.x += var11;
-				var16.y += var12;
-				var16.z += var13;
-				++var16.magnitude;
+            if (var15 == 0) {
+                let var16 = this.vertexNormals[vertexA];
+                var16.x += var11;
+                var16.y += var12;
+                var16.z += var13;
+                ++var16.magnitude;
 
-				var16 = this.vertexNormals[vertexB];
-				var16.x += var11;
-				var16.y += var12;
-				var16.z += var13;
-				++var16.magnitude;
+                var16 = this.vertexNormals[vertexB];
+                var16.x += var11;
+                var16.y += var12;
+                var16.z += var13;
+                ++var16.magnitude;
 
-				var16 = this.vertexNormals[vertexC];
-				var16.x += var11;
-				var16.y += var12;
-				var16.z += var13;
-				++var16.magnitude;
-			}
-			else if (var15 == 1) {
-				if (this.faceNormals == null) {
-					this.faceNormals = new Array(this.faceCount);
-				}
+                var16 = this.vertexNormals[vertexC];
+                var16.x += var11;
+                var16.y += var12;
+                var16.z += var13;
+                ++var16.magnitude;
+            }
+            else if (var15 == 1) {
+                if (this.faceNormals == null) {
+                    this.faceNormals = new Array(this.faceCount);
+                }
 
-				let var17 = this.faceNormals[var1] = new FaceNormal();
-				var17.x = var11;
-				var17.y = var12;
-				var17.z = var13;
-			}
-		}
-	}
+                let var17 = this.faceNormals[var1] = new FaceNormal();
+                var17.x = var11;
+                var17.y = var12;
+                var17.z = var13;
+            }
+        }
+    }
 }
 
 export default class ModelLoader {
@@ -1491,9 +1489,9 @@ export default class ModelLoader {
             this.loadOriginal(def, dataview);
         }
 
-		def.computeNormals(def);
-		def.computeTextureUVCoordinates(def);
-		def.computeAnimationTables(def);
+        def.computeNormals(def);
+        def.computeTextureUVCoordinates(def);
+        def.computeAnimationTables(def);
 
         return def;
     }
