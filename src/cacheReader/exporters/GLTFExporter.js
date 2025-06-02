@@ -237,7 +237,7 @@ class GLTFFile {
         });
     }
 
-    addAnimation(targets, lengths, morphTargetsAmount) {
+    addAnimation(targets, lengths, morphTargetsAmount, name) {
         if (!this.animations) {
             this.animations = [];
         }
@@ -302,6 +302,7 @@ class GLTFFile {
 
         let animationsLength = this.animations.length;
         this.animations.push({
+            name,
             samplers: [
                 {
                     input: accessorsLength,
@@ -411,6 +412,9 @@ export default class GLTFExporter {
 
     colorPalettePng = null;
 
+    modelDef;
+    morphTargetsMap = {};
+
     /**
      * mapping of original vertex ID to new vertex IDs
      * if alpha is true, it refers to the position in this.alphaVertices, otherwise this.verticies
@@ -421,6 +425,7 @@ export default class GLTFExporter {
     combineColorAndAlpha = (color, alpha) => (color & 0xffffff) | ((alpha & 0xff) << 24);
 
     constructor(def) {
+        this.modelDef = def;
         this.verticies = [];
         this.alphaVertices = [];
 
@@ -474,7 +479,7 @@ export default class GLTFExporter {
      * @param {*} morphVertices array of vertices for the morph target
      * @returns the position of the morph target that was inserted
      */
-    addMorphTarget(morphVertices) {
+    addMorphTarget(morphVertices, id = -1) {
         let newMorphVertices = [];
         let newAlphaMorphVertices = [];
         for (let i = 0; i < morphVertices.length; i++) {
@@ -490,35 +495,80 @@ export default class GLTFExporter {
             }
         }
 
+        if (!(id in this.morphTargetsMap)) {
+            this.morphTargetsMap[id] = this.morphVertices.length;
+        }
+
         this.morphVertices.push(newMorphVertices);
         if (this.alphaVertices.length > 0) {
             this.alphaMorphVertices.push(newAlphaMorphVertices);
         }
+
         return this.morphTargetsAmount++;
     }
 
-    addAnimation(morphTargetIds, baseLengths) {
+    addAnimation(morphTargetIds, baseLengths, name) {
         let lengths = Object.assign([], baseLengths);
         for (let i = 1; i < lengths.length; i++) {
             lengths[i] += lengths[i - 1];
         }
         lengths = lengths.map((x) => x / 50);
-        this.animations.push({ morphTargetIds, lengths });
+        this.animations.push({ morphTargetIds, lengths, name });
     }
 
-    addColors(def) {
+    async addSequence(cache, def) {
+        let targets;
+        let frameIDs;
+        let frameLengths;
+
+        if (def.animMayaID != undefined && def.animMayaID != -1) {
+            let anim = await this.modelDef.loadAnimation(cache, def.id, false, true);
+            const id = def.animMayaID >> 16;
+            targets = [[id, anim.vertexData]];
+
+            frameIDs = new Array(anim.vertexData.length).fill().map((x, i) => (id << 16) + i + 1);
+            frameLengths = anim.lengths;
+        } else {
+            targets = Array.from(new Set(def.frameIDs.map(id => id >> 16)));
+            targets = await Promise.all(targets.map(async (targetId, i) => {
+                let skeletonAnims = await this.modelDef.loadSkeletonAnims(cache, this.modelDef, targetId, false);
+                return [targetId, skeletonAnims.map(x => x.vertices)];
+            }));
+
+            frameIDs = def.frameIDs;
+            frameLengths = def.frameLengths;
+        }
+
+
+        targets.forEach(targetData => {
+            const [targetId, frames] = targetData;
+            if (targetId in this.morphTargetsMap) return;
+
+            frames.forEach(frame => this.addMorphTarget(frame, targetId));
+        });
+
+        let frameIDsToIndex = (frameID) => {
+            const skeletonId = frameID >> 16;
+            const frame = (frameID & 65535) - 1;
+            return this.morphTargetsMap[skeletonId] + frame;
+        }
+
+        this.addAnimation(frameIDs.map(frameIDsToIndex), frameLengths, def.name);
+    }
+
+    addColors() {
         const seenColors = {};
         const colorToPaletteIndex = {};
         const order = [];
-        for (let i = 0; i < def.faceColors.length; ++i) {
-            const lookupIndex = this.combineColorAndAlpha(def.faceColors[i], def.faceAlphas[i] ?? 0);
+        for (let i = 0; i < this.modelDef.faceColors.length; ++i) {
+            const lookupIndex = this.combineColorAndAlpha(this.modelDef.faceColors[i], this.modelDef.faceAlphas[i] ?? 0);
             // ensure unique color + alpha combinations
             if (seenColors[lookupIndex]) {
                 continue;
             }
-            let rscolor = def.faceColors[i];
+            let rscolor = this.modelDef.faceColors[i];
             let color = HSLtoRGB(rscolor, BRIGHTNESS_MAX);
-            let a = def.faceAlphas[i] ?? 0;
+            let a = this.modelDef.faceAlphas[i] ?? 0;
             let rscolorWithAlpha = this.combineColorAndAlpha(color, a);
             seenColors[lookupIndex] = color;
             colorToPaletteIndex[lookupIndex] = order.length;
@@ -547,28 +597,28 @@ export default class GLTFExporter {
         const half = 1 / numUniqueColors / 2;
         for (let i = 0; i < this.faces.length; i++) {
             let faceId = this.faces[i];
-            const faceColor = def.faceColors[faceId];
-            const faceAlpha = def.faceAlphas[faceId] ?? 0;
+            const faceColor = this.modelDef.faceColors[faceId];
+            const faceAlpha = this.modelDef.faceAlphas[faceId] ?? 0;
             const lookupKey = this.combineColorAndAlpha(faceColor, faceAlpha);
             const paletteIndex = colorToPaletteIndex[lookupKey];
             // remap to new position within the vertices based on its color and alpha
-            let v1 = this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey].idx;
-            let v2 = this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey].idx;
-            let v3 = this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey].idx;
+            let v1 = this.remappedVertices[this.modelDef.faceVertexIndices1[faceId]][lookupKey].idx;
+            let v2 = this.remappedVertices[this.modelDef.faceVertexIndices2[faceId]][lookupKey].idx;
+            let v3 = this.remappedVertices[this.modelDef.faceVertexIndices3[faceId]][lookupKey].idx;
             this.uvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
             this.uvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
             this.uvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
         }
         for (let i = 0; i < this.alphaFaces.length; i++) {
             let faceId = this.alphaFaces[i];
-            const faceColor = def.faceColors[faceId];
-            const faceAlpha = def.faceAlphas[faceId] ?? 0;
+            const faceColor = this.modelDef.faceColors[faceId];
+            const faceAlpha = this.modelDef.faceAlphas[faceId] ?? 0;
             const lookupKey = this.combineColorAndAlpha(faceColor, faceAlpha);
             const paletteIndex = colorToPaletteIndex[lookupKey];
             // remap to new position within the vertices based on its color and alpha
-            let v1 = this.remappedVertices[def.faceVertexIndices1[faceId]][lookupKey].idx;
-            let v2 = this.remappedVertices[def.faceVertexIndices2[faceId]][lookupKey].idx;
-            let v3 = this.remappedVertices[def.faceVertexIndices3[faceId]][lookupKey].idx;
+            let v1 = this.remappedVertices[this.modelDef.faceVertexIndices1[faceId]][lookupKey].idx;
+            let v2 = this.remappedVertices[this.modelDef.faceVertexIndices2[faceId]][lookupKey].idx;
+            let v3 = this.remappedVertices[this.modelDef.faceVertexIndices3[faceId]][lookupKey].idx;
             this.alphaUvs[v1] = [paletteIndex / numUniqueColors + half, 0.33];
             this.alphaUvs[v2] = [paletteIndex / numUniqueColors + half, 0.5];
             this.alphaUvs[v3] = [paletteIndex / numUniqueColors + half, 0.66];
@@ -602,8 +652,8 @@ export default class GLTFExporter {
         }
 
         // add animations
-        this.animations.forEach(({ morphTargetIds, lengths }) => {
-            file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount);
+        this.animations.forEach(({ morphTargetIds, lengths, name }) => {
+            file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount, name);
         });
 
         // add UVs and palette texture
