@@ -190,9 +190,9 @@ export default class NpcLoader {
     rev210HeadIcons = true;
 
     configureForRevision(revision) {
-        this.rev210HeadIcons  = revision >= 1493;
+        this.rev210HeadIcons = revision >= 1493;
     }
-    
+
     load(bytes, id) {
         let def = new NpcDefinition();
         def.id = id;
@@ -402,6 +402,8 @@ export default class NpcLoader {
             def.lowPriorityFollowerOps = true;
         } else if (opcode == 124) {
             def.height = dataview.readUint16();
+        } else if (opcode == 126) {
+            def.footprintSize = dataview.readUint16();
         } else if (opcode == 249) {
             length = dataview.readUint8();
 
