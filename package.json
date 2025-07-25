@@ -1,7 +1,7 @@
 {
     "name": "osrscachereader",
     "exports": "./src/index.js",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Read Old-School Runescape Cache files",
     "contributors": [
         {
