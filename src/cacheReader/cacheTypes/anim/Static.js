@@ -88,7 +88,7 @@ export class class181 {
                 }
 
                 let var8 = var7;
-                let var10 = Math.abs(float(var7 - var8));
+                let var10 = Math.abs(var7 - var8);
                 let var11 = var10 * var6;
                 var8 = Math.abs(var8 + 1.0);
                 let var12 = var8 / 2.0;
@@ -353,7 +353,7 @@ export class class368 {
             var7 += Math.abs(var0[var8]);
         }
 
-        let var24 = (Math.abs(var2) + Math.abs(var4)) * float(var1 + 1) * class123.field1167;
+        let var24 = (Math.abs(var2) + Math.abs(var4)) * (var1 + 1) * class123.field1167;
         if (var7 <= var24) {
             return -1;
         } else {

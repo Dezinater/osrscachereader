@@ -10,18 +10,20 @@ cache.onload.then(() => {
     console.log("Loading animations");
     cache.getAllFiles(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id).then(async (animationInfo) => {
         for (let i = 0; i < animationInfo.length; i++) {
-            let shiftedId = animationInfo[i].def.frameIDs[0] >> 16;
-            let frames = Object.values(await cache.getAllFiles(IndexType.FRAMES.id, shiftedId));
-            if (frames[0] == undefined) debugger;
-            let animSkeletonId = frames[0].def.framemap.id;
-            if (!(animSkeletonId in commonAnims)) {
-                commonAnims[animSkeletonId] = {};
-            }
+            if (animationInfo[i].def.animMayaID == -1) {
+                let shiftedId = animationInfo[i].def.frameIDs[0] >> 16;
+                let frames = Object.values(await cache.getAllFiles(IndexType.FRAMES.id, shiftedId));
+                if (frames[0] == undefined) debugger;
+                let animSkeletonId = frames[0].def.framemap.id;
+                if (!(animSkeletonId in commonAnims)) {
+                    commonAnims[animSkeletonId] = {};
+                }
 
-            if (!(shiftedId in commonAnims[animSkeletonId])) {
-                commonAnims[animSkeletonId][shiftedId] = [];
+                if (!(shiftedId in commonAnims[animSkeletonId])) {
+                    commonAnims[animSkeletonId][shiftedId] = [];
+                }
+                commonAnims[animSkeletonId][shiftedId].push([animationInfo[i].def.id, animationInfo[i].def.name]);
             }
-            commonAnims[animSkeletonId][shiftedId].push([animationInfo[i].def.id, animationInfo[i].def.name]);
         }
         fs.writeFileSync("commonAnims.json", JSON.stringify(commonAnims));
 

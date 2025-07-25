@@ -143,7 +143,17 @@ DataView.prototype.readUint32 = function () {
     this.addPosition(4);
     return val;
 };
-
+DataView.prototype.readUint64 = function () {
+    //int
+    let val = 0;
+    try {
+        val = this.getUint64(this.getPosition());
+    } catch (error) {
+        throw error;
+    }
+    this.addPosition(4);
+    return val;
+};
 DataView.prototype.readUnsignedShortSmart = function () {
     let peek = this.getInt8(this.pos) & 0xff;
     return peek < 128 ? this.readUint8() : this.readUint16() - 0x8000;

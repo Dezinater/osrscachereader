@@ -11,7 +11,7 @@ cache.onload.then(() => {
         .getAllFiles(IndexType.CONFIGS.id, ConfigType.SEQUENCE.id)
         .then((animationInfo) => {
             let anims = animationInfo.filter((x) => x.def.animMayaID != undefined && x.def.animMayaID >= 0);
-            let animIds = anims.map((x) => x.def.id);
+            let animIds = anims.map((x) => [x.def.id, x.def.name]);
             let animayaIds = anims.map((x) => x.def.animMayaID);
             let promises = [];
 
@@ -33,7 +33,7 @@ cache.onload.then(() => {
                     if (!(id in mappedAnims)) {
                         mappedAnims[id] = [];
                     }
-                    mappedAnims[id].push([animIds[index], animationInfo[index].def.name]);
+                    mappedAnims[id].push(animIds[index]);
                 });
 
                 fs.writeFileSync("animayaCommonAnims.json", JSON.stringify(mappedAnims));
