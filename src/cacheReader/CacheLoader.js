@@ -56,7 +56,7 @@ export default class CacheLoader {
             const result = {
                 datFile: datPromiseResults,
                 indexFiles: indexPromiseResults,
-                xteas: xteasResults,
+                xteas: xteasResults ?? {},
             };
             resolve(result);
         });
@@ -179,7 +179,9 @@ export default class CacheLoader {
                 fs.readFile(path + "xteas.json", "utf8", (err, data) => {
                     // if (err) throw err;
                     if (err) resolve();
-                    resolve(this.readXteas(data));
+                    if (data != undefined) {
+                        resolve(this.readXteas(JSON.parse(data)));
+                    }
                 }),
             );
         }

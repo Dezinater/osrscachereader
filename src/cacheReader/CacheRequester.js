@@ -89,12 +89,11 @@ export default class CacheRequester {
                 try {
                     unzipped = gzip.unzip(data);
                 } catch {
-                    throw "Could not unzip with key:" + key;
+                    console.warn("Could not unzip with key:" + key);
                 }
 
                 decompressedData = new Uint8Array(unzipped);
             }
-
             resolve({ index, archiveId, decompressedData });
         });
     }

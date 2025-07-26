@@ -230,6 +230,30 @@ class RSCache {
         return this.getDef(IndexType.CONFIGS, ConfigType.OBJECT, id, options);
     }
 
+    async #getMapDef(x, y, type) {
+        let hash = (str) => {
+            let h = 0;
+            for (let i = 0; i < str.length; i++) {
+                h = h * 31 + str.charCodeAt(i);
+            }
+            return new Int32Array([h])[0];
+        }
+
+        let archives = this.indicies[IndexType.MAPS.id].archives;
+        let hashVal = hash(type + x + "_" + y);
+
+        let map = Object.values(archives).find(x => x.nameHash == hashVal);
+        return this.getDef(IndexType.MAPS, map.id);
+    }
+
+    async getLoc(x, y) {
+        return this.#getMapDef(x, y, "l");
+    }
+
+    async getMap(x, y) {
+        return this.#getMapDef(x, y, "m");
+    }
+
     /** Closes the cache and cleans up the web worker pool */
     close() {
         this.cacheRequester.workerPool.finish();
