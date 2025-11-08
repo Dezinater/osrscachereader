@@ -498,8 +498,10 @@ export default class ObjectLoader {
             def.mapAreaId = dataview.readUint16();
         } else if (opcode == 89) {
             def.randomizeAnimStart = true;
-        }else if (opcode == 90) {
+        } else if (opcode == 90) {
             def.deferAnimChange = true;
+        } else if (opcode == 91) {
+            def.soundDistanceFadeCurve = dataview.readUint8();
         } else if (opcode == 92) {
             var varpID = dataview.readUint16();
             if (varpID == 0xffff) {
@@ -528,6 +530,15 @@ export default class ObjectLoader {
                 }
             }
             def.configChangeDest.push(varValue);
+        } else if (opcode == 93) {
+            def.soundFadeInCurve = dataview.readUint8();
+            def.soundFadeInDuration = dataview.readUint16();
+            def.soundFadeOutCurve = dataview.readUint8();
+            def.soundFadeOutDuration = dataview.readUint16();
+        } else if (opcode == 95) {
+            def.soundVisibility = dataview.readUint8();
+        } else if (opcode == 94) {
+            def.unknown1 = true;
         } else if (opcode == 249) {
             var length = dataview.readUint8();
             def.params = {};

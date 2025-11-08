@@ -49,46 +49,57 @@ let vec = [Math.cos(angle) * animationSpeed, Math.sin(angle) * animationSpeed];
 }
 
 export default class TextureLoader {
+    rev233 = true;
+
     async load(bytes, id, cache, options) {
         let def = new TextureDefinition();
         def.id = id;
         let dataview = new DataView(bytes.buffer);
 
-        def.field1777 = dataview.readUint16();
-        def.field1778 = dataview.readInt8() != 0;
+        if (this.rev233) {
+            def.fileIds = [dataview.readUint16()];
 
-        let count = dataview.readUint8();
-        def.fileIds = new Array(count);
+            def.field1777 = dataview.readUint16();
+            def.field1778 = dataview.readUint8() == 1;
+            def.animationDirection = dataview.readUint8();
+            def.animationSpeed = dataview.readUint8();
+        } else {
 
-        for (let i = 0; i < count; ++i) {
-            def.fileIds[i] = dataview.readUint16();
-        }
+            def.field1777 = dataview.readUint16();
+            def.field1778 = dataview.readInt8() != 0;
 
-        if (count > 1) {
-            def.field1780 = new Array(count - 1);
+            let count = dataview.readUint8();
+            def.fileIds = new Array(count);
 
-            for (let var3 = 0; var3 < count - 1; ++var3) {
-                def.field1780[var3] = dataview.readUint8();
+            for (let i = 0; i < count; ++i) {
+                def.fileIds[i] = dataview.readUint16();
             }
-        }
 
-        if (count > 1) {
-            def.field1781 = new Array(count - 1);
+            if (count > 1) {
+                def.field1780 = new Array(count - 1);
 
-            for (let var3 = 0; var3 < count - 1; ++var3) {
-                def.field1781[var3] = dataview.readUint8();
+                for (let var3 = 0; var3 < count - 1; ++var3) {
+                    def.field1780[var3] = dataview.readUint8();
+                }
             }
+
+            if (count > 1) {
+                def.field1781 = new Array(count - 1);
+
+                for (let var3 = 0; var3 < count - 1; ++var3) {
+                    def.field1781[var3] = dataview.readUint8();
+                }
+            }
+
+            def.field1786 = new Array(count);
+
+            for (let var3 = 0; var3 < count; ++var3) {
+                def.field1786[var3] = dataview.readInt32();
+            }
+
+            def.animationDirection = dataview.readUint8();
+            def.animationSpeed = dataview.readUint8();
         }
-
-        def.field1786 = new Array(count);
-
-        for (let var3 = 0; var3 < count; ++var3) {
-            def.field1786[var3] = dataview.readInt32();
-        }
-
-        def.animationDirection = dataview.readUint8();
-        def.animationSpeed = dataview.readUint8();
-
         if (options.loadSprites) {
             let sprites = def.fileIds.map((x) => cache.getFile(IndexType.SPRITES.id, x));
             def.sprites = await Promise.all(sprites);

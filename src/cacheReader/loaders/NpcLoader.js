@@ -106,8 +106,8 @@ class NpcDefinition {
     /** @type {number} */
     heightScale;
 
-    /** @type {boolean} */
-    hasRenderPriority;
+    /** @type {number} */
+    renderPriority;
 
     /**
      * Number from 0 to 255. Overrides NPC model's ambient lighting
@@ -188,6 +188,7 @@ class NpcDefinition {
 export { NpcDefinition };
 export default class NpcLoader {
     rev210HeadIcons = true;
+    rev233 = true;
 
     configureForRevision(revision) {
         this.rev210HeadIcons = revision >= 1493;
@@ -290,7 +291,7 @@ export default class NpcLoader {
         } else if (opcode == 98) {
             def.heightScale = dataview.readUint16();
         } else if (opcode == 99) {
-            def.hasRenderPriority = true;
+            def.renderPriority = 1;
         } else if (opcode == 100) {
             def.ambient = dataview.readInt8();
         } else if (opcode == 101) {
@@ -346,9 +347,11 @@ export default class NpcLoader {
             def.isInteractable = false;
         } else if (opcode == 109) {
             def.rotationFlag = false;
-        } else if (opcode == 111) {
+        } else if (opcode == 111 && !this.rev233) {
             def.isFollower = true;
             def.lowPriorityFollowerOps = true;
+        } else if (opcode == 111 && this.rev233) {
+            def.renderPriority = 2;
         } else if (opcode == 114) {
             def.runAnimation = dataview.readUint16();
         } else if (opcode == 115) {
@@ -404,6 +407,12 @@ export default class NpcLoader {
             def.height = dataview.readUint16();
         } else if (opcode == 126) {
             def.footprintSize = dataview.readUint16();
+        } else if (opcode == 129) {
+            def.unknown1 = true;
+        } else if (opcode == 145) {
+            def.canHideForOverlap = true;
+        } else if (opcode == 146) {
+            def.overlapTintHSL = dataview.readUint16();
         } else if (opcode == 249) {
             length = dataview.readUint8();
 

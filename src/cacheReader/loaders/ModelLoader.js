@@ -1815,6 +1815,15 @@ export default class ModelLoader {
             var2.readUint16();
             var2.readInt32();
         }
+
+        let hasOffsets = var2.readUint8() == 1;
+        if (hasOffsets) {
+            def.faceZOffsets = new Array(numFaces);
+
+            for (let i = 0; i < numFaces ; ++i) {
+                def.faceZOffsets[i] = var2.readInt8();
+            }
+        }
     }
 
     load2(def, var1) {
@@ -1876,7 +1885,8 @@ export default class ModelLoader {
         var24 += var18;
         let var35 = var24;
         var24 += var19;
-        let var10000 = var24 + var20;
+        let var36 = var24;
+        var24 += var20;
         def.vertexCount = var9;
         def.faceCount = var10;
         def.numTextureFaces = var11;
@@ -1929,7 +1939,7 @@ export default class ModelLoader {
         var4.setPosition(var23);
         var5.setPosition(var34);
         var6.setPosition(var35);
-        var7.setPosition(var24);
+        var7.setPosition(var36);
         var8.setPosition(var29);
         let var37 = 0;
         let var38 = 0;
@@ -2083,6 +2093,16 @@ export default class ModelLoader {
             def.texIndices1[var44] = var4.readUint16();
             def.texIndices2[var44] = var4.readUint16();
             def.texIndices3[var44] = var4.readUint16();
+        }
+
+        var4.setPosition(var24);
+		let hasOffsets = var4.readUint8() == 1;
+        if (hasOffsets) {
+            def.faceZOffsets = new Array(var10);
+
+            for (var45 = 0; var45 < var10; ++var45) {
+                def.faceZOffsets[var45] = var4.readInt8();
+            }
         }
 
         if (def.textureCoords != null) {

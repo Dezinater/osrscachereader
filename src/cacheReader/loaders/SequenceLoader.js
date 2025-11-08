@@ -194,6 +194,8 @@ export default class SequenceLoader {
         } else if (opcode == (this.rev226 ? 15 : 16)) {
             def.animMayaStart = dataview.readUint16();
             def.animMayaEnd = dataview.readUint16();
+        } else if (opcode == 16) {
+            def.verticalOffset = dataview.readUint8();
         } else if (opcode == 17) {
             def.animMayaMasks = new Array(256).fill().map((x) => false);
 
@@ -203,7 +205,11 @@ export default class SequenceLoader {
                 def.animMayaMasks[dataview.readUint8()] = true;
             }
         } else if (opcode == 18) {
+            console.log("name");
             def.name = dataview.readString();
+        }
+        else if (opcode == 19) {
+            def.soundsCrossWorldView = true;
         }
     }
 
