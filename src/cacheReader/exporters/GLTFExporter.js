@@ -507,12 +507,24 @@ export default class GLTFExporter {
         return this.morphTargetsAmount++;
     }
 
+    /**
+     * @param {number[]} morphTargetIds 
+     * @param {number[]} baseLengths
+     * @param {string} name 
+     */
     addAnimation(morphTargetIds, baseLengths, name) {
-        let lengths = Object.assign([], baseLengths);
-        for (let i = 1; i < lengths.length; i++) {
-            lengths[i] += lengths[i - 1];
+        let cumulative = 0;
+        const lengths = new Array(baseLengths.length);
+        for (let i = 0; i < baseLengths.length; i++) {
+            lengths[i] = cumulative / 50;
+            cumulative += baseLengths[i];
         }
-        lengths = lengths.map((x) => x / 50);
+        // include the last frame's duration by appending an end timestamp
+        // and duplicating the final frame target so counts align
+        if (baseLengths.length > 0 && morphTargetIds.length > 0) {
+            lengths.push(cumulative / 50);
+            morphTargetIds = morphTargetIds.concat(morphTargetIds[morphTargetIds.length - 1]);
+        }
         this.animations.push({ morphTargetIds, lengths, name });
     }
 
