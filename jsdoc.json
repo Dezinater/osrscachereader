@@ -1,10 +1,6 @@
 {
     "tags": {
-        "allowUnknownTags": [
-            "category"
-        ]
+        "allowUnknownTags": ["category"]
     },
-    "plugins": [
-        "node_modules/better-docs/category"
-    ]
+    "plugins": ["node_modules/better-docs/category"]
 }

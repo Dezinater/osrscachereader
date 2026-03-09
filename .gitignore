@@ -2,6 +2,8 @@ node_modules/*
 cache-old
 dumpFn
 cache
+cache.zip
 node_modules
 docs
+out
 .npmrc

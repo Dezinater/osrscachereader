@@ -1,11 +1,10 @@
-import Vector from "./Vector.js"
+import Vector from "./Vector.js";
 
 export default class Matrix {
     matrixVals = new Array(16);
 
     static field3746 = new Array(100);
     static field3747 = new Matrix();
-
 
     constructor(var1, var2) {
         if (var1 == undefined && var2 == undefined) {
@@ -24,7 +23,7 @@ export default class Matrix {
     }
 
     getRotation() {
-        let var1 = [(-Math.asin(this.matrixVals[6])), 0.0, 0.0];
+        let var1 = [-Math.asin(this.matrixVals[6]), 0.0, 0.0];
         let var2 = Math.cos(var1[0]);
         let var4;
         let var6;
@@ -41,7 +40,7 @@ export default class Matrix {
             if (this.matrixVals[6] < 0.0) {
                 var1[1] = Math.atan2(var4, var6);
             } else {
-                var1[1] = (-Math.atan2(var4, var6));
+                var1[1] = -Math.atan2(var4, var6);
             }
 
             var1[2] = 0.0;
@@ -112,26 +111,89 @@ export default class Matrix {
         for (let var2 = 0; var2 < this.matrixVals.length; ++var2) {
             this.matrixVals[var2] += var1.matrixVals[var2];
         }
-
     }
 
     multiply(var1) {
-        let var2 = this.matrixVals[1] * var1.matrixVals[4] + this.matrixVals[0] * var1.matrixVals[0] + this.matrixVals[2] * var1.matrixVals[8] + this.matrixVals[3] * var1.matrixVals[12];
-        let var3 = this.matrixVals[3] * var1.matrixVals[13] + this.matrixVals[2] * var1.matrixVals[9] + this.matrixVals[1] * var1.matrixVals[5] + var1.matrixVals[1] * this.matrixVals[0];
-        let var4 = var1.matrixVals[10] * this.matrixVals[2] + var1.matrixVals[2] * this.matrixVals[0] + var1.matrixVals[6] * this.matrixVals[1] + this.matrixVals[3] * var1.matrixVals[14];
-        let var5 = var1.matrixVals[7] * this.matrixVals[1] + var1.matrixVals[3] * this.matrixVals[0] + this.matrixVals[2] * var1.matrixVals[11] + var1.matrixVals[15] * this.matrixVals[3];
-        let var6 = this.matrixVals[7] * var1.matrixVals[12] + this.matrixVals[6] * var1.matrixVals[8] + this.matrixVals[4] * var1.matrixVals[0] + this.matrixVals[5] * var1.matrixVals[4];
-        let var7 = this.matrixVals[7] * var1.matrixVals[13] + var1.matrixVals[9] * this.matrixVals[6] + this.matrixVals[5] * var1.matrixVals[5] + var1.matrixVals[1] * this.matrixVals[4];
-        let var8 = this.matrixVals[6] * var1.matrixVals[10] + this.matrixVals[5] * var1.matrixVals[6] + this.matrixVals[4] * var1.matrixVals[2] + var1.matrixVals[14] * this.matrixVals[7];
-        let var9 = var1.matrixVals[15] * this.matrixVals[7] + this.matrixVals[4] * var1.matrixVals[3] + var1.matrixVals[7] * this.matrixVals[5] + this.matrixVals[6] * var1.matrixVals[11];
-        let var10 = var1.matrixVals[12] * this.matrixVals[11] + var1.matrixVals[0] * this.matrixVals[8] + this.matrixVals[9] * var1.matrixVals[4] + this.matrixVals[10] * var1.matrixVals[8];
-        let var11 = var1.matrixVals[13] * this.matrixVals[11] + var1.matrixVals[9] * this.matrixVals[10] + var1.matrixVals[5] * this.matrixVals[9] + var1.matrixVals[1] * this.matrixVals[8];
-        let var12 = this.matrixVals[11] * var1.matrixVals[14] + var1.matrixVals[10] * this.matrixVals[10] + this.matrixVals[8] * var1.matrixVals[2] + var1.matrixVals[6] * this.matrixVals[9];
-        let var13 = var1.matrixVals[11] * this.matrixVals[10] + var1.matrixVals[7] * this.matrixVals[9] + this.matrixVals[8] * var1.matrixVals[3] + var1.matrixVals[15] * this.matrixVals[11];
-        let var14 = this.matrixVals[15] * var1.matrixVals[12] + this.matrixVals[13] * var1.matrixVals[4] + var1.matrixVals[0] * this.matrixVals[12] + this.matrixVals[14] * var1.matrixVals[8];
-        let var15 = this.matrixVals[14] * var1.matrixVals[9] + this.matrixVals[12] * var1.matrixVals[1] + var1.matrixVals[5] * this.matrixVals[13] + var1.matrixVals[13] * this.matrixVals[15];
-        let var16 = this.matrixVals[14] * var1.matrixVals[10] + var1.matrixVals[6] * this.matrixVals[13] + this.matrixVals[12] * var1.matrixVals[2] + this.matrixVals[15] * var1.matrixVals[14];
-        let var17 = var1.matrixVals[15] * this.matrixVals[15] + this.matrixVals[14] * var1.matrixVals[11] + this.matrixVals[13] * var1.matrixVals[7] + this.matrixVals[12] * var1.matrixVals[3];
+        let var2 =
+            this.matrixVals[1] * var1.matrixVals[4] +
+            this.matrixVals[0] * var1.matrixVals[0] +
+            this.matrixVals[2] * var1.matrixVals[8] +
+            this.matrixVals[3] * var1.matrixVals[12];
+        let var3 =
+            this.matrixVals[3] * var1.matrixVals[13] +
+            this.matrixVals[2] * var1.matrixVals[9] +
+            this.matrixVals[1] * var1.matrixVals[5] +
+            var1.matrixVals[1] * this.matrixVals[0];
+        let var4 =
+            var1.matrixVals[10] * this.matrixVals[2] +
+            var1.matrixVals[2] * this.matrixVals[0] +
+            var1.matrixVals[6] * this.matrixVals[1] +
+            this.matrixVals[3] * var1.matrixVals[14];
+        let var5 =
+            var1.matrixVals[7] * this.matrixVals[1] +
+            var1.matrixVals[3] * this.matrixVals[0] +
+            this.matrixVals[2] * var1.matrixVals[11] +
+            var1.matrixVals[15] * this.matrixVals[3];
+        let var6 =
+            this.matrixVals[7] * var1.matrixVals[12] +
+            this.matrixVals[6] * var1.matrixVals[8] +
+            this.matrixVals[4] * var1.matrixVals[0] +
+            this.matrixVals[5] * var1.matrixVals[4];
+        let var7 =
+            this.matrixVals[7] * var1.matrixVals[13] +
+            var1.matrixVals[9] * this.matrixVals[6] +
+            this.matrixVals[5] * var1.matrixVals[5] +
+            var1.matrixVals[1] * this.matrixVals[4];
+        let var8 =
+            this.matrixVals[6] * var1.matrixVals[10] +
+            this.matrixVals[5] * var1.matrixVals[6] +
+            this.matrixVals[4] * var1.matrixVals[2] +
+            var1.matrixVals[14] * this.matrixVals[7];
+        let var9 =
+            var1.matrixVals[15] * this.matrixVals[7] +
+            this.matrixVals[4] * var1.matrixVals[3] +
+            var1.matrixVals[7] * this.matrixVals[5] +
+            this.matrixVals[6] * var1.matrixVals[11];
+        let var10 =
+            var1.matrixVals[12] * this.matrixVals[11] +
+            var1.matrixVals[0] * this.matrixVals[8] +
+            this.matrixVals[9] * var1.matrixVals[4] +
+            this.matrixVals[10] * var1.matrixVals[8];
+        let var11 =
+            var1.matrixVals[13] * this.matrixVals[11] +
+            var1.matrixVals[9] * this.matrixVals[10] +
+            var1.matrixVals[5] * this.matrixVals[9] +
+            var1.matrixVals[1] * this.matrixVals[8];
+        let var12 =
+            this.matrixVals[11] * var1.matrixVals[14] +
+            var1.matrixVals[10] * this.matrixVals[10] +
+            this.matrixVals[8] * var1.matrixVals[2] +
+            var1.matrixVals[6] * this.matrixVals[9];
+        let var13 =
+            var1.matrixVals[11] * this.matrixVals[10] +
+            var1.matrixVals[7] * this.matrixVals[9] +
+            this.matrixVals[8] * var1.matrixVals[3] +
+            var1.matrixVals[15] * this.matrixVals[11];
+        let var14 =
+            this.matrixVals[15] * var1.matrixVals[12] +
+            this.matrixVals[13] * var1.matrixVals[4] +
+            var1.matrixVals[0] * this.matrixVals[12] +
+            this.matrixVals[14] * var1.matrixVals[8];
+        let var15 =
+            this.matrixVals[14] * var1.matrixVals[9] +
+            this.matrixVals[12] * var1.matrixVals[1] +
+            var1.matrixVals[5] * this.matrixVals[13] +
+            var1.matrixVals[13] * this.matrixVals[15];
+        let var16 =
+            this.matrixVals[14] * var1.matrixVals[10] +
+            var1.matrixVals[6] * this.matrixVals[13] +
+            this.matrixVals[12] * var1.matrixVals[2] +
+            this.matrixVals[15] * var1.matrixVals[14];
+        let var17 =
+            var1.matrixVals[15] * this.matrixVals[15] +
+            this.matrixVals[14] * var1.matrixVals[11] +
+            this.matrixVals[13] * var1.matrixVals[7] +
+            this.matrixVals[12] * var1.matrixVals[3];
         this.matrixVals[0] = var2;
         this.matrixVals[1] = var3;
         this.matrixVals[2] = var4;
@@ -173,27 +235,164 @@ export default class Matrix {
     }
 
     determinant() {
-        return this.matrixVals[12] * this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[9] + (this.matrixVals[10] * this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[13] + (this.matrixVals[1] * this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[15] + this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[10] * this.matrixVals[15] - this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[11] * this.matrixVals[14] - this.matrixVals[0] * this.matrixVals[6] * this.matrixVals[9] * this.matrixVals[15] + this.matrixVals[6] * this.matrixVals[0] * this.matrixVals[11] * this.matrixVals[13] + this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[0] - this.matrixVals[10] * this.matrixVals[7] * this.matrixVals[0] * this.matrixVals[13] - this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[4] * this.matrixVals[15] + this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[11] - this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[6] * this.matrixVals[1] - this.matrixVals[7] * this.matrixVals[1] * this.matrixVals[8] * this.matrixVals[14] + this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[1] * this.matrixVals[10] + this.matrixVals[9] * this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[15] - this.matrixVals[13] * this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[11] - this.matrixVals[15] * this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[8] + this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[11] * this.matrixVals[12] + this.matrixVals[13] * this.matrixVals[8] * this.matrixVals[7] * this.matrixVals[2] - this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[2] * this.matrixVals[12] - this.matrixVals[14] * this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[9]) + this.matrixVals[14] * this.matrixVals[8] * this.matrixVals[5] * this.matrixVals[3] - this.matrixVals[5] * this.matrixVals[3] * this.matrixVals[10] * this.matrixVals[12] - this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[13]);
+        return (
+            this.matrixVals[12] * this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[9] +
+            (this.matrixVals[10] * this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[13] +
+                (this.matrixVals[1] * this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[15] +
+                    this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[10] * this.matrixVals[15] -
+                    this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[11] * this.matrixVals[14] -
+                    this.matrixVals[0] * this.matrixVals[6] * this.matrixVals[9] * this.matrixVals[15] +
+                    this.matrixVals[6] * this.matrixVals[0] * this.matrixVals[11] * this.matrixVals[13] +
+                    this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[0] -
+                    this.matrixVals[10] * this.matrixVals[7] * this.matrixVals[0] * this.matrixVals[13] -
+                    this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[4] * this.matrixVals[15] +
+                    this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[11] -
+                    this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[6] * this.matrixVals[1] -
+                    this.matrixVals[7] * this.matrixVals[1] * this.matrixVals[8] * this.matrixVals[14] +
+                    this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[1] * this.matrixVals[10] +
+                    this.matrixVals[9] * this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[15] -
+                    this.matrixVals[13] * this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[11] -
+                    this.matrixVals[15] * this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[8] +
+                    this.matrixVals[2] * this.matrixVals[5] * this.matrixVals[11] * this.matrixVals[12] +
+                    this.matrixVals[13] * this.matrixVals[8] * this.matrixVals[7] * this.matrixVals[2] -
+                    this.matrixVals[9] * this.matrixVals[7] * this.matrixVals[2] * this.matrixVals[12] -
+                    this.matrixVals[14] * this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[9]) +
+                this.matrixVals[14] * this.matrixVals[8] * this.matrixVals[5] * this.matrixVals[3] -
+                this.matrixVals[5] * this.matrixVals[3] * this.matrixVals[10] * this.matrixVals[12] -
+                this.matrixVals[3] * this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[13])
+        );
     }
 
     inverse() {
         let var1 = 1.0 / this.determinant();
-        let var2 = var1 * (this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[7] + this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[11] + (this.matrixVals[10] * this.matrixVals[5] * this.matrixVals[15] - this.matrixVals[11] * this.matrixVals[5] * this.matrixVals[14] - this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[6]) - this.matrixVals[13] * this.matrixVals[7] * this.matrixVals[10]);
-        let var3 = var1 * (this.matrixVals[3] * this.matrixVals[10] * this.matrixVals[13] + (this.matrixVals[15] * -this.matrixVals[1] * this.matrixVals[10] + this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[1] + this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[2] - this.matrixVals[13] * this.matrixVals[2] * this.matrixVals[11] - this.matrixVals[3] * this.matrixVals[9] * this.matrixVals[14]));
-        let var4 = var1 * (this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[13] + (this.matrixVals[15] * this.matrixVals[6] * this.matrixVals[1] - this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[14] - this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[15]) + this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[14] - this.matrixVals[13] * this.matrixVals[3] * this.matrixVals[6]);
-        let var5 = (this.matrixVals[6] * -this.matrixVals[1] * this.matrixVals[11] + this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[7] + this.matrixVals[11] * this.matrixVals[2] * this.matrixVals[5] - this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[9] - this.matrixVals[10] * this.matrixVals[3] * this.matrixVals[5] + this.matrixVals[9] * this.matrixVals[3] * this.matrixVals[6]) * var1;
-        let var6 = var1 * (this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[10] + (this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[11] + -this.matrixVals[4] * this.matrixVals[10] * this.matrixVals[15] + this.matrixVals[8] * this.matrixVals[6] * this.matrixVals[15] - this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[6] - this.matrixVals[7] * this.matrixVals[8] * this.matrixVals[14]));
-        let var7 = (this.matrixVals[12] * this.matrixVals[2] * this.matrixVals[11] + (this.matrixVals[15] * this.matrixVals[0] * this.matrixVals[10] - this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[0] - this.matrixVals[8] * this.matrixVals[2] * this.matrixVals[15]) + this.matrixVals[14] * this.matrixVals[3] * this.matrixVals[8] - this.matrixVals[12] * this.matrixVals[10] * this.matrixVals[3]) * var1;
-        let var8 = (this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[15] + this.matrixVals[15] * this.matrixVals[6] * -this.matrixVals[0] + this.matrixVals[14] * this.matrixVals[0] * this.matrixVals[7] - this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[12] - this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[3] + this.matrixVals[6] * this.matrixVals[3] * this.matrixVals[12]) * var1;
-        let var9 = var1 * (this.matrixVals[11] * this.matrixVals[0] * this.matrixVals[6] - this.matrixVals[10] * this.matrixVals[0] * this.matrixVals[7] - this.matrixVals[11] * this.matrixVals[4] * this.matrixVals[2] + this.matrixVals[7] * this.matrixVals[2] * this.matrixVals[8] + this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[10] - this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[6]);
-        let var10 = (this.matrixVals[13] * this.matrixVals[8] * this.matrixVals[7] + this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[4] - this.matrixVals[4] * this.matrixVals[11] * this.matrixVals[13] - this.matrixVals[5] * this.matrixVals[8] * this.matrixVals[15] + this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[5] - this.matrixVals[7] * this.matrixVals[9] * this.matrixVals[12]) * var1;
-        let var11 = (-this.matrixVals[0] * this.matrixVals[9] * this.matrixVals[15] + this.matrixVals[13] * this.matrixVals[11] * this.matrixVals[0] + this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[15] - this.matrixVals[11] * this.matrixVals[1] * this.matrixVals[12] - this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[13] + this.matrixVals[12] * this.matrixVals[9] * this.matrixVals[3]) * var1;
-        let var12 = (this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[13] + this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[12] + (this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[15] - this.matrixVals[13] * this.matrixVals[0] * this.matrixVals[7] - this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[15]) - this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[12]) * var1;
-        let var13 = var1 * (this.matrixVals[0] * this.matrixVals[7] * this.matrixVals[9] + -this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[11] + this.matrixVals[11] * this.matrixVals[1] * this.matrixVals[4] - this.matrixVals[8] * this.matrixVals[7] * this.matrixVals[1] - this.matrixVals[9] * this.matrixVals[3] * this.matrixVals[4] + this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[5]);
-        let var14 = var1 * (this.matrixVals[12] * this.matrixVals[9] * this.matrixVals[6] + (this.matrixVals[14] * this.matrixVals[9] * -this.matrixVals[4] + this.matrixVals[4] * this.matrixVals[10] * this.matrixVals[13] + this.matrixVals[14] * this.matrixVals[8] * this.matrixVals[5] - this.matrixVals[5] * this.matrixVals[10] * this.matrixVals[12] - this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[13]));
-        let var15 = var1 * (this.matrixVals[2] * this.matrixVals[8] * this.matrixVals[13] + this.matrixVals[12] * this.matrixVals[1] * this.matrixVals[10] + (this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[0] - this.matrixVals[10] * this.matrixVals[0] * this.matrixVals[13] - this.matrixVals[1] * this.matrixVals[8] * this.matrixVals[14]) - this.matrixVals[2] * this.matrixVals[9] * this.matrixVals[12]);
-        let var16 = (this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[12] + (this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[14] + -this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[14] + this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[0] - this.matrixVals[12] * this.matrixVals[1] * this.matrixVals[6] - this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[13])) * var1;
-        let var17 = var1 * (this.matrixVals[9] * this.matrixVals[4] * this.matrixVals[2] + this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[6] + (this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[10] - this.matrixVals[9] * this.matrixVals[0] * this.matrixVals[6] - this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[4]) - this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[8]);
+        let var2 =
+            var1 *
+            (this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[7] +
+                this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[11] +
+                (this.matrixVals[10] * this.matrixVals[5] * this.matrixVals[15] -
+                    this.matrixVals[11] * this.matrixVals[5] * this.matrixVals[14] -
+                    this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[6]) -
+                this.matrixVals[13] * this.matrixVals[7] * this.matrixVals[10]);
+        let var3 =
+            var1 *
+            (this.matrixVals[3] * this.matrixVals[10] * this.matrixVals[13] +
+                (this.matrixVals[15] * -this.matrixVals[1] * this.matrixVals[10] +
+                    this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[1] +
+                    this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[2] -
+                    this.matrixVals[13] * this.matrixVals[2] * this.matrixVals[11] -
+                    this.matrixVals[3] * this.matrixVals[9] * this.matrixVals[14]));
+        let var4 =
+            var1 *
+            (this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[13] +
+                (this.matrixVals[15] * this.matrixVals[6] * this.matrixVals[1] -
+                    this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[14] -
+                    this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[15]) +
+                this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[14] -
+                this.matrixVals[13] * this.matrixVals[3] * this.matrixVals[6]);
+        let var5 =
+            (this.matrixVals[6] * -this.matrixVals[1] * this.matrixVals[11] +
+                this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[7] +
+                this.matrixVals[11] * this.matrixVals[2] * this.matrixVals[5] -
+                this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[9] -
+                this.matrixVals[10] * this.matrixVals[3] * this.matrixVals[5] +
+                this.matrixVals[9] * this.matrixVals[3] * this.matrixVals[6]) *
+            var1;
+        let var6 =
+            var1 *
+            (this.matrixVals[12] * this.matrixVals[7] * this.matrixVals[10] +
+                (this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[11] +
+                    -this.matrixVals[4] * this.matrixVals[10] * this.matrixVals[15] +
+                    this.matrixVals[8] * this.matrixVals[6] * this.matrixVals[15] -
+                    this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[6] -
+                    this.matrixVals[7] * this.matrixVals[8] * this.matrixVals[14]));
+        let var7 =
+            (this.matrixVals[12] * this.matrixVals[2] * this.matrixVals[11] +
+                (this.matrixVals[15] * this.matrixVals[0] * this.matrixVals[10] -
+                    this.matrixVals[14] * this.matrixVals[11] * this.matrixVals[0] -
+                    this.matrixVals[8] * this.matrixVals[2] * this.matrixVals[15]) +
+                this.matrixVals[14] * this.matrixVals[3] * this.matrixVals[8] -
+                this.matrixVals[12] * this.matrixVals[10] * this.matrixVals[3]) *
+            var1;
+        let var8 =
+            (this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[15] +
+                this.matrixVals[15] * this.matrixVals[6] * -this.matrixVals[0] +
+                this.matrixVals[14] * this.matrixVals[0] * this.matrixVals[7] -
+                this.matrixVals[2] * this.matrixVals[7] * this.matrixVals[12] -
+                this.matrixVals[14] * this.matrixVals[4] * this.matrixVals[3] +
+                this.matrixVals[6] * this.matrixVals[3] * this.matrixVals[12]) *
+            var1;
+        let var9 =
+            var1 *
+            (this.matrixVals[11] * this.matrixVals[0] * this.matrixVals[6] -
+                this.matrixVals[10] * this.matrixVals[0] * this.matrixVals[7] -
+                this.matrixVals[11] * this.matrixVals[4] * this.matrixVals[2] +
+                this.matrixVals[7] * this.matrixVals[2] * this.matrixVals[8] +
+                this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[10] -
+                this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[6]);
+        let var10 =
+            (this.matrixVals[13] * this.matrixVals[8] * this.matrixVals[7] +
+                this.matrixVals[15] * this.matrixVals[9] * this.matrixVals[4] -
+                this.matrixVals[4] * this.matrixVals[11] * this.matrixVals[13] -
+                this.matrixVals[5] * this.matrixVals[8] * this.matrixVals[15] +
+                this.matrixVals[12] * this.matrixVals[11] * this.matrixVals[5] -
+                this.matrixVals[7] * this.matrixVals[9] * this.matrixVals[12]) *
+            var1;
+        let var11 =
+            (-this.matrixVals[0] * this.matrixVals[9] * this.matrixVals[15] +
+                this.matrixVals[13] * this.matrixVals[11] * this.matrixVals[0] +
+                this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[15] -
+                this.matrixVals[11] * this.matrixVals[1] * this.matrixVals[12] -
+                this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[13] +
+                this.matrixVals[12] * this.matrixVals[9] * this.matrixVals[3]) *
+            var1;
+        let var12 =
+            (this.matrixVals[3] * this.matrixVals[4] * this.matrixVals[13] +
+                this.matrixVals[1] * this.matrixVals[7] * this.matrixVals[12] +
+                (this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[15] -
+                    this.matrixVals[13] * this.matrixVals[0] * this.matrixVals[7] -
+                    this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[15]) -
+                this.matrixVals[3] * this.matrixVals[5] * this.matrixVals[12]) *
+            var1;
+        let var13 =
+            var1 *
+            (this.matrixVals[0] * this.matrixVals[7] * this.matrixVals[9] +
+                -this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[11] +
+                this.matrixVals[11] * this.matrixVals[1] * this.matrixVals[4] -
+                this.matrixVals[8] * this.matrixVals[7] * this.matrixVals[1] -
+                this.matrixVals[9] * this.matrixVals[3] * this.matrixVals[4] +
+                this.matrixVals[8] * this.matrixVals[3] * this.matrixVals[5]);
+        let var14 =
+            var1 *
+            (this.matrixVals[12] * this.matrixVals[9] * this.matrixVals[6] +
+                (this.matrixVals[14] * this.matrixVals[9] * -this.matrixVals[4] +
+                    this.matrixVals[4] * this.matrixVals[10] * this.matrixVals[13] +
+                    this.matrixVals[14] * this.matrixVals[8] * this.matrixVals[5] -
+                    this.matrixVals[5] * this.matrixVals[10] * this.matrixVals[12] -
+                    this.matrixVals[6] * this.matrixVals[8] * this.matrixVals[13]));
+        let var15 =
+            var1 *
+            (this.matrixVals[2] * this.matrixVals[8] * this.matrixVals[13] +
+                this.matrixVals[12] * this.matrixVals[1] * this.matrixVals[10] +
+                (this.matrixVals[14] * this.matrixVals[9] * this.matrixVals[0] -
+                    this.matrixVals[10] * this.matrixVals[0] * this.matrixVals[13] -
+                    this.matrixVals[1] * this.matrixVals[8] * this.matrixVals[14]) -
+                this.matrixVals[2] * this.matrixVals[9] * this.matrixVals[12]);
+        let var16 =
+            (this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[12] +
+                (this.matrixVals[4] * this.matrixVals[1] * this.matrixVals[14] +
+                    -this.matrixVals[0] * this.matrixVals[5] * this.matrixVals[14] +
+                    this.matrixVals[13] * this.matrixVals[6] * this.matrixVals[0] -
+                    this.matrixVals[12] * this.matrixVals[1] * this.matrixVals[6] -
+                    this.matrixVals[4] * this.matrixVals[2] * this.matrixVals[13])) *
+            var1;
+        let var17 =
+            var1 *
+            (this.matrixVals[9] * this.matrixVals[4] * this.matrixVals[2] +
+                this.matrixVals[8] * this.matrixVals[1] * this.matrixVals[6] +
+                (this.matrixVals[5] * this.matrixVals[0] * this.matrixVals[10] -
+                    this.matrixVals[9] * this.matrixVals[0] * this.matrixVals[6] -
+                    this.matrixVals[10] * this.matrixVals[1] * this.matrixVals[4]) -
+                this.matrixVals[5] * this.matrixVals[2] * this.matrixVals[8]);
         this.matrixVals[0] = var2;
         this.matrixVals[1] = var3;
         this.matrixVals[2] = var4;

@@ -1,4 +1,4 @@
-import { RSCache, CacheDumper } from "osrscachereader"
+import { RSCache, CacheDumper } from "osrscachereader";
 
 let cache = new RSCache("./cache");
 cache.onload.then(() => {

@@ -1,56 +1,28 @@
 /**
- * @class KitDefinition
+ * @class GameValDefinition
  * @category Definitions
  * @hideconstructor
  */
-export class KitDefinition {
+export class GameValDefinition {
     /**
-     * The ID of this Kit
      * @type {number}
      */
     id;
 
     /**
-     * Color values to find to be replaced for this Spot Anim
-     * @type {Array}
-     */
-    recolorToFind = [];
-
-    /**
-     * What the color values will be replaced with
-     * @type {Array}
-     */
-    recolorToReplace = [];
-
-    /**
-     * Textures to find to be replaced for this Object
-     * @type {Array}
-     */
-    retextureToFind = [];
-
-    /**
-     * What the texture will be replaced with
-     * @type {Array}
-     */
-    retextureToReplace = [];
-
-    /**
-     * What body part this kit represents
      * @type {number}
      */
-    bodyPartId = -1;
+    gameValId = [];
 
     /**
-     * Models that compose this kit
-     * @type {Array<number>}
+     * @type {String}
      */
-    models = [];
+    name;
 
-    /** @type {Array<number>} */
-    chatheadModels = [-1, -1, -1, -1, -1];
-
-    /** @type {boolean} */
-    nonSelectable = false;
+    /**
+     * @type {Array}
+     */
+    files = [];
 }
 
 export default class KitLoader {

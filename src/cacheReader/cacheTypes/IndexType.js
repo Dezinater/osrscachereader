@@ -1,24 +1,26 @@
-import FramemapLoader from '../loaders/FramemapLoader.js';
-import FramesLoader from '../loaders/FramesLoader.js';
-import MapLoader from '../loaders/MapLoader.js';
-import ModelLoader from '../loaders/ModelLoader.js'
-import SpriteLoader from '../loaders/SpriteLoader.js';
-import TextureLoader from '../loaders/TextureLoader.js';
 import MusicTrackLoader from '../loaders/MusicTrackLoader.js';
 import SoundEffectLoader from '../loaders/SoundEffectLoader.js';
+import FramemapLoader from "../loaders/FramemapLoader.js";
+import FramesLoader from "../loaders/FramesLoader.js";
+import MapLoader from "../loaders/MapLoader.js";
+import ModelLoader from "../loaders/ModelLoader.js";
+import SpriteLoader from "../loaders/SpriteLoader.js";
+import TextureLoader from "../loaders/TextureLoader.js";
+import MusicTrackLoader from "../loaders/MusicTrackLoader.js";
+import AnimayaLoader from "../loaders/AnimayaLoader.js";
 
 /**
  * @readonly
  * @enum {IndexType}
  */
 const IndexType = {
-    /** Animations */          
+    /** Animations */
     FRAMES: { id: 0, loader: FramesLoader },
-    /** Skeletons */          
+    /** Skeletons */
     FRAMEMAPS: { id: 1, loader: FramemapLoader },
-    /** Configs */          
+    /** Configs */
     CONFIGS: { id: 2, loader: undefined },
-    /** Interfaces */          
+    /** Interfaces */
     INTERFACES: { id: 3, loader: undefined },
     /** Sound FX */          
     SOUNDEFFECTS: { id: 4, loader: SoundEffectLoader }, 
@@ -54,19 +56,27 @@ const IndexType = {
     UKNOWN3: { id: 19, loader: undefined }, 
     /** World Map Ground? */                    
     UKNOWN4: { id: 20, loader: undefined },      
-
-
+    /** Animation Keyframes */
+    KEYFRAMES: { id: 22, loader: AnimayaLoader },
 };
 
 IndexType.valueOf = (id) => {
     var values = Object.values(IndexType);
     var keys = Object.keys(IndexType);
     for (var i = 0; i < values.length; i++) {
-        if (id == values[i].id)
-            return IndexType[keys[i]];
+        if (id == values[i].id) return IndexType[keys[i]];
     }
     return undefined;
-}
+};
+
+IndexType.keyOf = (id) => {
+    var values = Object.values(IndexType);
+    var keys = Object.keys(IndexType);
+    for (var i = 0; i < values.length; i++) {
+        if (id == values[i].id) return keys[i];
+    }
+    return undefined;
+};
 
 Object.freeze(IndexType);
 

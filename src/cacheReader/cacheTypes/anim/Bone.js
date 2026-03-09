@@ -4,7 +4,7 @@ export default class Bone {
     field1181 = true;
     transformUpdated = true;
     field1178 = new Matrix();
-    field1180 = new Matrix()
+    field1180 = new Matrix();
     field1174 = new Matrix();
 
     constructor(size, dataview) {
@@ -26,9 +26,9 @@ export default class Bone {
     }
 
     init() {
-        this.rotations = new Array(this.matricies.length).fill().map(x => new Array(3));
-        this.translations = new Array(this.matricies.length).fill().map(x => new Array(3));
-        this.vectorMagnitudes = new Array(this.matricies.length).fill().map(x => new Array(3));
+        this.rotations = new Array(this.matricies.length).fill().map((x) => new Array(3));
+        this.translations = new Array(this.matricies.length).fill().map((x) => new Array(3));
+        this.vectorMagnitudes = new Array(this.matricies.length).fill().map((x) => new Array(3));
         let var7 = new Matrix();
 
         for (let i = 0; i < this.matricies.length; ++i) {
@@ -59,7 +59,6 @@ export default class Bone {
 
         return this.field1176[var1];
     }
-
 
     method685(var1) {
         if (this.field1177[var1] == null || this.field1177[var1] == undefined) {
@@ -114,5 +113,4 @@ export default class Bone {
     getVectorMagnitudes(index) {
         return this.vectorMagnitudes[index];
     }
-
 }
