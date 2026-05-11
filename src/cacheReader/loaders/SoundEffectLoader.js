@@ -29,7 +29,7 @@ export class SoundEffectDefinition {
         }
   
         if (var1 == 0) {
-           return new byte[0];
+           return [];
         } else {
            var2 = Math.floor(var1 * 22050 / 1000);
            let var3 = new Array(var2).fill().map(x => 0);

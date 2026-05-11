@@ -1,4 +1,5 @@
 import RawSound from "./RawSound.js";
+import IndexType from "../IndexType.js";
 import VorbisSample from "./vorbis/VorbisSample.js"
 
 export default class SoundCache {
@@ -15,7 +16,7 @@ export default class SoundCache {
       //this.musicSampleIndex = var2;
    }
 
-   getSoundEffect0(var1, var2, var3) {
+   async getSoundEffect0(var1, var2, var3) {
       let var4 = var2 ^ (var1 << 4 & '\uffff' | var1 >>> 12);
       var4 |= var1 << 16;
       let var5 = var4;
@@ -25,7 +26,7 @@ export default class SoundCache {
       } else if (var3 != null && var3[0] <= 0) {
          return null;
       } else {
-         let var8 = SoundEffect.readSoundEffect(this.soundEffectIndex, var1, var2);
+         let var8 = await this.cache.getDef(IndexType.SOUNDEFFECTS, var1, var2);
          if (var8 == null) {
             return null;
          } else {
@@ -72,7 +73,7 @@ export default class SoundCache {
    }
 
    async getSoundEffect(var1, var2) {
-      return this.getSoundEffect0(var1, 0, var2);
+      return await this.getSoundEffect0(var1, 0, var2);
    }
 
    async getMusicSample(var1, var2) {
