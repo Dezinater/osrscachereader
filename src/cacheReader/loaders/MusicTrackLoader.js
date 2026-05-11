@@ -128,7 +128,7 @@ export class MusicTrackDefinition {
 							 this.table[var14] = var13;
 						  }
   
-						  var14.byteArray[var11] = 1;
+						  var14[var11] = 1;
 					   }
 					}
   

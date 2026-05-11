@@ -20,6 +20,12 @@ export default class Instrument {
 
    static noise = new Array(32768).fill().map(Math.random);
    static sine = new Array(32768).fill().map((x, i) => Math.floor(Math.sin(i / 5215.1903) * 16384.0));
+   load(bytes, id) {
+      let def = new Instrument();
+      def.id = id;
+      let dataview = new DataView(bytes.buffer);
+      return def.decode(dataview);
+   }
 
    decode(dataview) {
       this.pitch.decode(dataview);

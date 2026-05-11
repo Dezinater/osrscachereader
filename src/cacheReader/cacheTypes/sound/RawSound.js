@@ -11,13 +11,13 @@ export default class RawSound {
         const CHUNK_SIZE = 16;
         const AUDIO_FORMAT = 1;
         const CHANNELS = 2;
-        const BITS_PER_SAMPLE = 16;
+        const BITS_PER_SAMPLE = 8;
         const BYTE_RATE = (this.sampleRate * BITS_PER_SAMPLE * CHANNELS) / 8;
         const BLOCK_ALIGN = (BITS_PER_SAMPLE * CHANNELS) / 8;
 
         let header = new DataView(new ArrayBuffer(HEADER_SIZE));
         header.writeString("RIFF");//RIFF
-        header.writeUint32(header.byteLength + this.samples.length, true);//totalsize
+        header.writeUint32(header.byteLength + this.samples.length - 8, true);//totalsize
         header.writeString("WAVE");//WAVE
         header.writeString("fmt ");//fmt
         header.writeUint32(CHUNK_SIZE, true);//chunksize - short
@@ -28,11 +28,13 @@ export default class RawSound {
         header.writeUint16(BLOCK_ALIGN, true);//block align - short
         header.writeUint16(BITS_PER_SAMPLE, true);//bits per sample - short
         header.writeString("data");//data
-        header.writeUint32(this.samples.length + 8, true);//datasize - int
-console.log(header.byteLength + this.samples.length, header.byteLength);
-        let wav = new Uint8Array(header.byteLength + this.samples.length + 8);
+        header.writeUint32(this.samples.length, true);//datasize - int
+
+        let sampleData = new Uint8Array(this.samples.map(x => x + 128));
+        let wav = new Uint8Array(HEADER_SIZE + sampleData.length);
         wav.set(new Uint8Array(header.buffer), 0);
-        wav.set(this.samples, HEADER_SIZE);
+        wav.set(sampleData, HEADER_SIZE);
+
         return wav;
     }
 }
