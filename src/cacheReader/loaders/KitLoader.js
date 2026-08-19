@@ -86,6 +86,13 @@ export default class KitLoader {
                 def.nonSelectable = true;
                 break;
 
+            case 5:
+                var length = dataview.readUint8();
+                def.models = [];
+
+                for (var index = 0; index < length; ++index) def.models[index] = dataview.readInt32();
+                break;
+
             case 40:
                 var length = dataview.readUint8();
                 def.recolorToFind = [];
@@ -112,6 +119,9 @@ export default class KitLoader {
                 if (opcode >= 60 && opcode < 70) {
                     if (def.chatheadModels == undefined) def.chatheadModels = [];
                     def.chatheadModels[opcode - 60] = dataview.readUint16();
+                } else if (opcode >= 70 && opcode < 80) {
+                    if (def.chatheadModels == undefined) def.chatheadModels = [];
+                    def.chatheadModels[opcode - 70] = dataview.readInt32();
                 } else {
                     throw "Unknown opcode found: " + opcode;
                 }
