@@ -1,3 +1,14 @@
+const KitBodyPartIdToWearPos = new Map([
+    [-1, -1],
+    [0, 0],
+    [1, 11],
+    [2, 4],
+    [3, 6],
+    [4, 9],
+    [5, 7],
+    [6, 10]
+])
+
 /**
  * @class KitDefinition
  * @category Definitions
@@ -39,6 +50,15 @@ export class KitDefinition {
      * @type {number}
      */
     bodyPartId = -1;
+
+    /**
+     * If an Item has this value for `wearPos1`, `wearPos2`, or `wearPos3`, then this Kit's model should be excluded.
+     * @returns {number}
+     * @see {ItemLoader}
+     */
+    get replacedByWearPos() {
+        return KitBodyPartIdToWearPos.get(this.bodyPartId) ?? -1;
+    }
 
     /**
      * Models that compose this kit
