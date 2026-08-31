@@ -1,3 +1,14 @@
+const KitBodyPartIdToWearPos = new Map([
+    [-1, -1],
+    [0, 0],
+    [1, 11],
+    [2, 4],
+    [3, 6],
+    [4, 9],
+    [5, 7],
+    [6, 10]
+])
+
 /**
  * @class KitDefinition
  * @category Definitions
@@ -39,6 +50,15 @@ export class KitDefinition {
      * @type {number}
      */
     bodyPartId = -1;
+
+    /**
+     * If an Item has this value for `wearPos1`, `wearPos2`, or `wearPos3`, then this Kit's model should be excluded.
+     * @returns {number}
+     * @see {ItemLoader}
+     */
+    get replacedByWearPos() {
+        return KitBodyPartIdToWearPos.get(this.bodyPartId) ?? -1;
+    }
 
     /**
      * Models that compose this kit
@@ -86,6 +106,13 @@ export default class KitLoader {
                 def.nonSelectable = true;
                 break;
 
+            case 5:
+                var length = dataview.readUint8();
+                def.models = [];
+
+                for (var index = 0; index < length; ++index) def.models[index] = dataview.readInt32();
+                break;
+
             case 40:
                 var length = dataview.readUint8();
                 def.recolorToFind = [];
@@ -112,6 +139,9 @@ export default class KitLoader {
                 if (opcode >= 60 && opcode < 70) {
                     if (def.chatheadModels == undefined) def.chatheadModels = [];
                     def.chatheadModels[opcode - 60] = dataview.readUint16();
+                } else if (opcode >= 70 && opcode < 80) {
+                    if (def.chatheadModels == undefined) def.chatheadModels = [];
+                    def.chatheadModels[opcode - 70] = dataview.readInt32();
                 } else {
                     throw "Unknown opcode found: " + opcode;
                 }
