@@ -219,7 +219,8 @@ export class ObjectDefinition {
         let modelData = null;
         let isRotated;
         if (this.objectTypes == null) {
-            // if it has no types then merge
+            // "untyped object" - merge all objectModels together
+
             if (modelType != 10) {
                 return null;
             }
@@ -245,7 +246,15 @@ export class ObjectDefinition {
             if (this.objectModels.length > 1) {
                 modelData = new ModelGroup(models).getMergedModel();
             }
+
+            if (isRotated) {
+                modelData.mirrorZ();
+            }
         } else {
+            // typed object - each model is a variant
+            // there's a 1:1 correlation between objectTypes and objectModels
+            // if the scene requests a certain objectType we return the
+            // corresponding model
             let var9 = -1;
 
             for (let i = 0; i < this.objectTypes.length; ++i) {
@@ -264,9 +273,13 @@ export class ObjectDefinition {
 
             modelData = await cache.getDef(IndexType.MODELS.id, modelId);
             if (var10) {
-                modelData.method1194();
+                modelData.mirrorZ();
             }
         }
+
+        // Object transforms below mutate vertex data.
+        // Clone here so one orientation cannot contaminate another.
+        modelData = new ModelGroup([modelData], false).getMergedModel();
 
         if (this.modelSizeX == 128 && this.modelSizeHeight == 128 && this.modelSizeY == 128) {
             isRotated = false;
