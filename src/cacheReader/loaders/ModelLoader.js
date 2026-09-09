@@ -690,6 +690,8 @@ export class ModelDefinition {
      * @returns ModelDefinition
      */
     mergeWith(otherModel, init = true) {
+        const previousVertexCount = this.vertexCount;
+        const previousFaceCount = this.faceCount;
         let verticesCount = this.vertexPositionsX.length;
         this.vertexPositionsX = [...this.vertexPositionsX, ...otherModel.vertexPositionsX];
         this.vertexPositionsY = [...this.vertexPositionsY, ...otherModel.vertexPositionsY];
@@ -725,6 +727,19 @@ export class ModelDefinition {
         }
         this.vertexGroups = newVertexGroups;
 
+        // Alpha animation groups are already expanded from faceSkins by each
+        // decoded model. Preserve them when composing models and offset the
+        // incoming face indices into the merged face array.
+        const thisAlphaGroups = this.faceLabelsAlpha ?? [];
+        const otherAlphaGroups = (otherModel.faceLabelsAlpha ?? []).map((group) =>
+            group?.map((face) => face + previousFaceCount),
+        );
+        const mergedAlphaGroups = Array(Math.max(thisAlphaGroups.length, otherAlphaGroups.length));
+        for (let i = 0; i < mergedAlphaGroups.length; i++) {
+            mergedAlphaGroups[i] = [...(thisAlphaGroups[i] ?? []), ...(otherAlphaGroups[i] ?? [])];
+        }
+        this.faceLabelsAlpha = mergedAlphaGroups;
+
         if (init && (this.faceTextures == undefined || this.faceTextures.length == 0))
             this.faceTextures = new Array(this.faceCount).fill(-1);
         if (init && (otherModel.faceTextures == undefined || otherModel.faceTextures.length == 0))
@@ -735,20 +750,25 @@ export class ModelDefinition {
         if (init && (otherModel.faceRenderTypes == undefined || otherModel.faceRenderTypes.length == 0))
             otherModel.faceRenderTypes = new Array(otherModel.faceCount).fill(-1);
 
-        this.vertexCount += otherModel.vertexCount;
-        this.faceCount += otherModel.faceCount;
-
-        if (init && this.animayaGroups == undefined) this.animayaGroups = new Array(this.vertexCount).fill([0]);
+        // Initialise optional per-vertex data for the vertices which were
+        // already present, before adding the incoming model. Using the
+        // post-merge count here inserts a whole model's worth of defaults in
+        // front of its real Animaya weights and shifts every bone assignment.
+        if (init && this.animayaGroups == undefined) this.animayaGroups = new Array(previousVertexCount).fill([0]);
         if (init && otherModel.animayaGroups == undefined)
             otherModel.animayaGroups = new Array(otherModel.vertexCount).fill([0]);
 
-        if (init && this.animayaScales == undefined) this.animayaScales = new Array(this.vertexCount).fill([255]);
+        if (init && this.animayaScales == undefined) this.animayaScales = new Array(previousVertexCount).fill([255]);
         if (init && otherModel.animayaScales == undefined)
             otherModel.animayaScales = new Array(otherModel.vertexCount).fill([255]);
 
-        if (init && this.faceAlphas == undefined) this.faceAlphas = new Array(this.vertexCount).fill(0);
-        if (init && otherModel.faceAlphas == undefined)
-            otherModel.faceAlphas = new Array(otherModel.vertexCount).fill(0);
+        if (init && (this.faceAlphas == undefined || this.faceAlphas.length == 0))
+            this.faceAlphas = new Array(previousFaceCount).fill(0);
+        if (init && (otherModel.faceAlphas == undefined || otherModel.faceAlphas.length == 0))
+            otherModel.faceAlphas = new Array(otherModel.faceCount).fill(0);
+
+        this.vertexCount += otherModel.vertexCount;
+        this.faceCount += otherModel.faceCount;
 
 
         let copy = (property) => {
