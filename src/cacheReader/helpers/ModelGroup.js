@@ -31,11 +31,11 @@ export default class ModelGroup {
             this.mergedModel.mergeWith(model);
         });
 
-        // Equipment parts must retain independent vertices. Deduplicating
-        // across separately authored models can weld unrelated triangles
-        // (for example, connecting the two boots with a stray face).
-        if (this.deduplicateVertices) this.mergedModel.removeCommonVerticies();
-        //this.mergedModel.computeNormals();
+        // some callers may not want vertices deduplicated (e.g. some equipment that have
+        // a common vertex while stationary that separate while animated)
+        if (this.deduplicateVertices) {
+            this.mergedModel.removeCommonVerticies();
+        }
     }
 
     getMergedModel() {
