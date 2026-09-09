@@ -299,7 +299,7 @@ export class ModelDefinition {
         return pos;
     }
 
-    method1194() {
+    mirrorZ() {
         let var1;
         for (var1 = 0; var1 < this.vertexCount; ++var1) {
             this.vertexPositionsZ[var1] = -this.vertexPositionsZ[var1];
