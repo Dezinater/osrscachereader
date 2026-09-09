@@ -5,8 +5,9 @@ export default class ModelGroup {
     position = { x: 0, y: 0, z: 0 }
     needsUpdate = false;
 
-    constructor(models = []) {
+    constructor(models = [], deduplicateVertices = true) {
         this.models = models;
+        this.deduplicateVertices = deduplicateVertices;
         if(models.length != 0) {
             this.mergeModels();
         }
@@ -30,7 +31,10 @@ export default class ModelGroup {
             this.mergedModel.mergeWith(model);
         });
 
-        this.mergedModel.removeCommonVerticies();
+        // Equipment parts must retain independent vertices. Deduplicating
+        // across separately authored models can weld unrelated triangles
+        // (for example, connecting the two boots with a stray face).
+        if (this.deduplicateVertices) this.mergedModel.removeCommonVerticies();
         //this.mergedModel.computeNormals();
     }
 
