@@ -5,8 +5,9 @@ export default class ModelGroup {
     position = { x: 0, y: 0, z: 0 }
     needsUpdate = false;
 
-    constructor(models = []) {
+    constructor(models = [], deduplicateVertices = true) {
         this.models = models;
+        this.deduplicateVertices = deduplicateVertices;
         if(models.length != 0) {
             this.mergeModels();
         }
@@ -30,8 +31,11 @@ export default class ModelGroup {
             this.mergedModel.mergeWith(model);
         });
 
-        this.mergedModel.removeCommonVerticies();
-        //this.mergedModel.computeNormals();
+        // some callers may not want vertices deduplicated (e.g. some equipment that have
+        // a common vertex while stationary that separate while animated)
+        if (this.deduplicateVertices) {
+            this.mergedModel.removeCommonVerticies();
+        }
     }
 
     getMergedModel() {
