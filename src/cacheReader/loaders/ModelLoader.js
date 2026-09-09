@@ -754,13 +754,14 @@ export class ModelDefinition {
         // already present, before adding the incoming model. Using the
         // post-merge count here inserts a whole model's worth of defaults in
         // front of its real Animaya weights and shifts every bone assignment.
-        if (init && this.animayaGroups == undefined) this.animayaGroups = new Array(previousVertexCount).fill([0]);
+        // Components without Animaya data remain unweighted in the merged model.
+        if (init && this.animayaGroups == undefined) this.animayaGroups = new Array(previousVertexCount);
         if (init && otherModel.animayaGroups == undefined)
-            otherModel.animayaGroups = new Array(otherModel.vertexCount).fill([0]);
+            otherModel.animayaGroups = new Array(otherModel.vertexCount);
 
-        if (init && this.animayaScales == undefined) this.animayaScales = new Array(previousVertexCount).fill([255]);
+        if (init && this.animayaScales == undefined) this.animayaScales = new Array(previousVertexCount);
         if (init && otherModel.animayaScales == undefined)
-            otherModel.animayaScales = new Array(otherModel.vertexCount).fill([255]);
+            otherModel.animayaScales = new Array(otherModel.vertexCount);
 
         if (init && (this.faceAlphas == undefined || this.faceAlphas.length == 0))
             this.faceAlphas = new Array(previousFaceCount).fill(0);
