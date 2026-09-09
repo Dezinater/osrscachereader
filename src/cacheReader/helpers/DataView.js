@@ -231,6 +231,16 @@ DataView.prototype.readInt24 = function () {
     this.addPosition(3);
     return val;
 };
+DataView.prototype.readUint24 = function () {
+    let val = 0;
+    try {
+        val = this.getUint24(this.getPosition());
+    } catch (error) {
+        throw error;
+    }
+    this.addPosition(3);
+    return val;
+};
 DataView.prototype.readInt32 = function () {
     //int
     let val = 0;
