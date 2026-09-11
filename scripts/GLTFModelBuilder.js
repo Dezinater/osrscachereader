@@ -12,6 +12,10 @@ let split = false;
 let excludeModelIds = [];
 let interpolation = "STEP";
 
+function ensureOutputDir() {
+    fs.mkdirSync("./out", { recursive: true });
+}
+
 async function processCommand(cache, command, options) {
     switch (command) {
         case "item":
@@ -127,6 +131,8 @@ async function loadEntityIds(cache, options, configType, modelTypeKeys, animatio
 }
 
 async function exportGLTFModel(cache) {
+    ensureOutputDir();
+
     const exporter = new GLTFExporter(finalModel.getMergedModel());
     const splitExporters = individualModels.map((m) => new GLTFExporter(m));
 
@@ -243,4 +249,4 @@ async function addSpotAnim(cache, options) {
     await loadEntityIds(cache, options, ConfigType.SPOTANIM, modelTypes, "animationId");
 }
 
-export { processCommand, exportGLTFModel };
+export { processCommand, exportGLTFModel, ensureOutputDir };

@@ -26,6 +26,7 @@
     "scripts": {
         "test": "mocha",
         "cmd": "node scripts/command.js",
+        "downloadCache": "node scripts/downloadLatestCache.js",
         "generate": "node scripts/generateAnimList.js & node scripts/generateAnimayaAnimList.js",
         "dumpNames": "node scripts/dumpNames.js",
         "model": "node scripts/dumpModel.js",
@@ -74,6 +75,7 @@
         "fflate": "^0.8.2",
         "gzip-js": "^0.3.2",
         "mocha": "^10.2.0",
+        "path-browserify": "^1.0.1",
         "wasm-gzip": "^2.1.0",
         "web-worker": "~1.2.0"
     }
