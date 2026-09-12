@@ -5,7 +5,7 @@ export default class EntityOpsLoader {
 
     static decodeSubOp(ops, dataview) {
         let index = dataview.readUint8();
-        ops[index] = { subID: is.readUint8(), text: is.readString() };
+        ops[index] = { subID: dataview.readUint8(), text: dataview.readString() };
     }
 
     static decodeConditionalOp(ops, dataview) {
