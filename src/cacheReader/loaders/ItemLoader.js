@@ -233,8 +233,8 @@ export default class ItemLoader {
             def.wearPos1 = dataview.readInt8();
         } else if (opcode == 14) {
             def.wearPos2 = dataview.readInt8();
-        }else if (opcode == 15) {
-			def.isTradeable = false;
+        } else if (opcode == 15) {
+            def.isTradeable = false;
         } else if (opcode == 16) {
             def.members = true;
         } else if (opcode == 23) {
@@ -370,6 +370,8 @@ export default class ItemLoader {
             def.placeholderId = dataview.readUint16();
         } else if (opcode == 149) {
             def.placeholderTemplateId = dataview.readUint16();
+        } else if (opcode == 160) {
+            def.stackable = 2;
         } else if (opcode == 200) {
             EntityOpsLoader.decodeSubOp(def.groundOps, dataview);
         } else if (opcode == 201) {

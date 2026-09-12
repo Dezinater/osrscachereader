@@ -92,6 +92,8 @@ export default class SpotAnimLoader {
             def.modelId = dataview.readUint16();
         } else if (opcode == 2) {
             def.animationId = dataview.readUint16();
+        }else if(opcode == 3) {
+            def.modelId = dataview.readInt32();
         } else if (opcode == 4) {
             def.resizeX = dataview.readUint16();
         } else if (opcode == 5) {
