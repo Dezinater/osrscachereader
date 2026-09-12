@@ -176,7 +176,12 @@ class RSCache {
      * @returns [File]{@link File}
      */
     async getFile(indexId, archiveId, fileId = 0, options = {}) {
-        return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
+        // Single-file archives are stored at slot zero even when the cache
+        // assigns that file a non-zero ID. Keep the fast positional lookup for
+        // dense archives, then fall back to the file's actual ID.
+        return this.getAllFiles(indexId, archiveId, options).then(
+            (files) => files[fileId] ?? files.find((file) => file?.id === fileId),
+        );
     }
 
     /**
@@ -204,7 +209,7 @@ class RSCache {
      * @returns Definition
      */
     async getDef(indexId, archiveId, fileId = 0, options = {}) {
-        return this.getAllDefs(indexId, archiveId, options).then((x) => x[fileId]);
+        return this.getFile(indexId, archiveId, fileId, options).then((file) => file?.def);
     }
 
     /**
