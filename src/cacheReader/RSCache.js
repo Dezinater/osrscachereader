@@ -167,6 +167,11 @@ class RSCache {
         return AnimNames[animId];
     }
 
+    async getFileByIndex(indexId, archiveId, fileId = 0, options = {}) {
+        return this.getAllFiles(indexId, archiveId, options)
+        .then((x) => Object.values(x)[fileId]);
+    }
+
     /**
      * Gets a single file from an archive and load its definition if possible.
      * @param {(Number | IndexType)} indexId Can be a number or IndexType
@@ -237,17 +242,17 @@ class RSCache {
         return this.getDef(IndexType.CONFIGS, ConfigType.OBJECT, id, options);
     }
 
-    async #getMapDef(x, y, type) {
-        let hash = (str) => {
-            let h = 0;
-            for (let i = 0; i < str.length; i++) {
-                h = h * 31 + str.charCodeAt(i);
-            }
-            return new Int32Array([h])[0];
+    hash(str){
+        let h = 0;
+        for (let i = 0; i < str.length; i++) {
+            h = h * 31 + str.charCodeAt(i);
         }
+        return new Int32Array([h])[0];
+    }
 
+    async #getMapDef(x, y, type) {
         let archives = this.indicies[IndexType.MAPS.id].archives;
-        let hashVal = hash(type + x + "_" + y);
+        let hashVal = this.hash(type + x + "_" + y);
 
         let map = Object.values(archives).find(x => x.nameHash == hashVal);
         return this.getDef(IndexType.MAPS, map.id);
