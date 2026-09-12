@@ -11,7 +11,7 @@ export default class CacheDefinitionLoader {
 		let loaderObject;
 		if (this.indexType == IndexType.CONFIGS) {
 			loaderObject = ConfigType.valueOf(this.archive.id);
-		} else {
+		} else if(this.indexType.loader != undefined){
 			loaderObject = this.indexType;
 		}
 

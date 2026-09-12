@@ -29,24 +29,24 @@ DataView.prototype.write = function (func, size) {
     return true;
 };
 
-DataView.prototype.writeUint8 = function (data) {
-    this.write(() => this.setUint8(this.getPosition(), data), 1);
+DataView.prototype.writeUint8 = function (data, littleEndian) {
+    this.write(() => this.setUint8(this.getPosition(), data, littleEndian), 1);
 };
-DataView.prototype.writeUint16 = function (data) {
-    this.write(() => this.setUint16(this.getPosition(), data), 2);
+DataView.prototype.writeUint16 = function (data, littleEndian) {
+    this.write(() => this.setUint16(this.getPosition(), data, littleEndian), 2);
 };
-DataView.prototype.writeUint32 = function (data) {
-    this.write(() => this.setUint32(this.getPosition(), data), 4);
+DataView.prototype.writeUint32 = function (data, littleEndian) {
+    this.write(() => this.setUint32(this.getPosition(), data, littleEndian), 4);
 };
 
-DataView.prototype.writeInt8 = function (data) {
-    this.write(() => this.setInt8(this.getPosition(), data), 1);
+DataView.prototype.writeInt8 = function (data, littleEndian) {
+    this.write(() => this.setInt8(this.getPosition(), data, littleEndian), 1);
 };
-DataView.prototype.writeInt16 = function (data) {
-    this.write(() => this.setInt16(this.getPosition(), data), 2);
+DataView.prototype.writeInt16 = function (data, littleEndian) {
+    this.write(() => this.setInt16(this.getPosition(), data, littleEndian), 2);
 };
-DataView.prototype.writeInt32 = function (data) {
-    this.write(() => this.setInt32(this.getPosition(), data), 4);
+DataView.prototype.writeInt32 = function (data, littleEndian) {
+    this.write(() => this.setInt32(this.getPosition(), data, littleEndian), 4);
 };
 DataView.prototype.writeVarInt = function (var1) {
     if ((var1 & -128) != 0) {
@@ -74,6 +74,14 @@ DataView.prototype.writeLengthFromMark = function (var1) {
     this.setUint8(this.getPosition() - var1 - 2, var1 >> 8);
     this.setUint8(this.getPosition() - var1 - 1, var1);
     //this.addPosition(4);
+};
+
+DataView.prototype.writeString = function (str) {
+    for(let i = 0; i < str.length; i++) {
+        this.setUint8(this.getPosition() + i, str.charCodeAt(i));
+    }
+
+    this.addPosition(str.length);
 };
 
 DataView.prototype.readFloat32 = function () {

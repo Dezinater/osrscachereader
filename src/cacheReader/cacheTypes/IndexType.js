@@ -1,3 +1,5 @@
+import MusicTrackLoader from '../loaders/MusicTrackLoader.js';
+import SoundEffectLoader from '../loaders/SoundEffectLoader.js';
 import FramemapLoader from "../loaders/FramemapLoader.js";
 import FramesLoader from "../loaders/FramesLoader.js";
 import MapLoader from "../loaders/MapLoader.js";
@@ -20,40 +22,40 @@ const IndexType = {
     CONFIGS: { id: 2, loader: undefined },
     /** Interfaces */
     INTERFACES: { id: 3, loader: undefined },
-    /** Sound FX */
-    SOUNDEFFECTS: { id: 4, loader: undefined },
-    /** Maps */
-    MAPS: { id: 5, loader: MapLoader },
-    /** Music Tracks */
-    TRACK1: { id: 6, loader: MusicTrackLoader },
-    /** Models */
-    MODELS: { id: 7, loader: ModelLoader },
-    /** Sprites */
-    SPRITES: { id: 8, loader: SpriteLoader },
-    /** Textures */
-    TEXTURES: { id: 9, loader: TextureLoader },
-    /** Title screen & Huffman? */
-    BINARY: { id: 10, loader: undefined },
-    /** Music Jingles */
-    TRACK2: { id: 11, loader: MusicTrackLoader },
-    /** Interface Scripts */
-    CLIENTSCRIPT: { id: 12, loader: undefined },
-    /** Interface Fonts */
-    FONTS: { id: 13, loader: undefined },
-    /** Music Samples */
-    VORBIS: { id: 14, loader: undefined },
-    /** Music Patches */
-    INSTRUMENTS: { id: 15, loader: undefined },
-    /** World Locations */
-    WORLDMAP: { id: 16, loader: undefined },
-    /** Sprite IDs? */
-    UKNOWN1: { id: 17, loader: undefined },
-    /** World Map Geography? */
-    UKNOWN2: { id: 18, loader: undefined },
-    /**World Map? */
-    UKNOWN3: { id: 19, loader: undefined },
-    /** World Map Ground? */
-    UKNOWN4: { id: 20, loader: undefined },
+    /** Sound FX */          
+    SOUNDEFFECTS: { id: 4, loader: SoundEffectLoader }, 
+    /** Maps */          
+    MAPS: { id: 5, loader: MapLoader }, 
+    /** Music Tracks */          
+    TRACK1: { id: 6, loader: MusicTrackLoader }, 
+    /** Models */          
+    MODELS: { id: 7, loader: ModelLoader }, 
+    /** Sprites */          
+    SPRITES: { id: 8, loader: SpriteLoader }, 
+    /** Textures */          
+    TEXTURES: { id: 9, loader: TextureLoader }, 
+    /** Title screen & Huffman? */          
+    BINARY: { id: 10, loader: undefined }, 
+    /** Music Jingles */          
+    TRACK2: { id: 11, loader: MusicTrackLoader }, 
+    /** Interface Scripts */          
+    CLIENTSCRIPT: { id: 12, loader: undefined }, 
+    /** Interface Fonts */          
+    FONTS: { id: 13, loader: undefined }, 
+    /** Music Samples */          
+    VORBIS: { id: 14, loader: undefined }, 
+    /** Music Patches */          
+    INSTRUMENTS: { id: 15, loader: undefined }, 
+    /** World Locations */          
+    WORLDMAP: { id: 16, loader: undefined }, 
+    /** Sprite IDs? */          
+    UKNOWN1: { id: 17, loader: undefined }, 
+    /** World Map Geography? */                      
+    UKNOWN2: { id: 18, loader: undefined }, 
+    /**World Map? */                          
+    UKNOWN3: { id: 19, loader: undefined }, 
+    /** World Map Ground? */                    
+    UKNOWN4: { id: 20, loader: undefined },      
     /** Animation Keyframes */
     KEYFRAMES: { id: 22, loader: AnimayaLoader },
 };

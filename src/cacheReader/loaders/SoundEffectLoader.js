@@ -68,9 +68,6 @@ export default class SoundEffectLoader {
         let dataview = new DataView(bytes.buffer);
         for(let var2 = 0; var2 < 10; ++var2) {
             let var3 = dataview.readUint8();
-            if(var3 == 45) {
-               console.log("Sound Effect " + id + " is empty");
-            }
             if (var3 != 0) {
                dataview.addPosition(-1);
                def.instruments[var2] = new InstrumentLoader().decode(dataview);
