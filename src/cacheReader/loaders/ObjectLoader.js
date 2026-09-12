@@ -1,6 +1,7 @@
 import { ModelDefinition } from "./ModelLoader.js";
 import ModelGroup from "../helpers/ModelGroup.js";
 import IndexType from "../cacheTypes/IndexType.js";
+import EntityOpsLoader from "../helpers/EntityOpsDecoder.js";
 
 /**
  * @class ObjectDefinition
@@ -218,7 +219,8 @@ export class ObjectDefinition {
         let modelData = null;
         let isRotated;
         if (this.objectTypes == null) {
-            // if it has no types then merge
+            // "untyped object" - merge all objectModels together
+
             if (modelType != 10) {
                 return null;
             }
@@ -244,7 +246,15 @@ export class ObjectDefinition {
             if (this.objectModels.length > 1) {
                 modelData = new ModelGroup(models).getMergedModel();
             }
+
+            if (isRotated) {
+                modelData.mirrorZ();
+            }
         } else {
+            // typed object - each model is a variant
+            // there's a 1:1 correlation between objectTypes and objectModels
+            // if the scene requests a certain objectType we return the
+            // corresponding model
             let var9 = -1;
 
             for (let i = 0; i < this.objectTypes.length; ++i) {
@@ -263,9 +273,13 @@ export class ObjectDefinition {
 
             modelData = await cache.getDef(IndexType.MODELS.id, modelId);
             if (var10) {
-                modelData.method1194();
+                modelData.mirrorZ();
             }
         }
+
+        // Object transforms below mutate vertex data.
+        // Clone here so one orientation cannot contaminate another.
+        modelData = new ModelGroup([modelData], false).getMergedModel();
 
         if (this.modelSizeX == 128 && this.modelSizeHeight == 128 && this.modelSizeY == 128) {
             isRotated = false;
@@ -353,7 +367,7 @@ export default class ObjectLoader {
         } else if (opcode == 2) {
             def.name = dataview.readString();
         } else if (opcode == 5) {
-            var length = dataview.readUint8();
+            let length = dataview.readUint8();
             if (length > 0) {
                 def.objectTypes = null;
                 def.objectModels = [];
@@ -361,6 +375,18 @@ export default class ObjectLoader {
                 for (var index = 0; index < length; ++index) {
                     def.objectModels.push(dataview.readUint16());
                 }
+            }
+
+        } else if (opcode == 6) {
+            let length = dataview.readUint8();
+            for (let index = 0; index < length; ++index) {
+                def.objectModels[index] = dataview.readInt32();
+                def.objectTypes[index] = dataview.readUint8();
+            }
+        } else if (opcode == 7) {
+            let length = dataview.readUint8();
+            for (let index = 0; index < length; ++index) {
+                def.objectModels[index] = dataview.readInt32();
             }
         } else if (opcode == 14) {
             def.sizeX = dataview.readUint8();
@@ -395,15 +421,7 @@ export default class ObjectLoader {
         }
         //30-34, 40, 41 are similar to NPCLoader, maybe make parent class for similar opcode loaders
         else if (opcode >= 30 && opcode < 35) {
-            if (def.actions == undefined) def.actions = [];
-
-            var readString = dataview.readString();
-            def.actions[opcode - 30] = readString;
-
-            //might be better to leave it as hidden (?)
-            if (def.actions[opcode - 30] == "Hidden") {
-                def.actions[opcode - 30] = undefined;
-            }
+            EntityOpsLoader.decodeOp(def.actions, dataview, opcode - 30);
         } else if (opcode == 40) {
             var length = dataview.readUint8();
             def.recolorToFind = [];
@@ -544,6 +562,12 @@ export default class ObjectLoader {
             def.unknown1 = true;
         } else if (opcode == 96) {
             def.raise = dataview.readUint8();
+        } else if (opcode == 100) {
+            EntityOpsLoader.decodeSubOp(def.actions, dataview);
+        } else if (opcode == 101) {
+            EntityOpsLoader.decodeConditionalOp(def.actions, dataview);
+        } else if (opcode == 102) {
+            EntityOpsLoader.decodeConditionalSubOp(def.actions, dataview);
         } else if (opcode == 249) {
             var length = dataview.readUint8();
             def.params = {};

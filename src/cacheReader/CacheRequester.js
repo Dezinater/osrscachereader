@@ -1,14 +1,14 @@
-import * as gzip from "gzip-js";
-import IndexType from "./cacheTypes/IndexType.js";
+import { gunzipSync } from "fflate";
 
-import compressjs from "@ledgerhq/compressjs";
+import IndexType from "./cacheTypes/IndexType.js";
 import WorkerPool from "./WorkerPool.js";
 
 export default class CacheRequester {
-    constructor(datFile) {
+    constructor(datFile, bz) {
         this.workerPool = new WorkerPool(8);
         this.promises = {};
         this.datData = datFile;
+        this.bzip = bz;
     }
 
     setXteas(xteas) {
@@ -69,7 +69,8 @@ export default class CacheRequester {
                 bzData[3] = "1".charCodeAt(0);
                 bzData.set(data, 4);
 
-                decompressedData = compressjs.Bzip2.decompressFile(bzData);
+                //decompressedData = compressjs.Bzip2.decompressFile(bzData);
+                decompressedData = await this.bzip.decompress(bzData, decompressedLength);
             } else if (compressionOpcode == 2) {
                 //gzip
                 let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
@@ -87,7 +88,7 @@ export default class CacheRequester {
                 let unzipped;
 
                 try {
-                    unzipped = gzip.unzip(data);
+                    unzipped = gunzipSync(data);
                 } catch {
                     console.warn("Could not unzip with key:" + key);
                 }

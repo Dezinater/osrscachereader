@@ -23,6 +23,7 @@ export default class ModelGroup {
 
     mergeModels() {
         this.mergedModel = new ModelDefinition();
+        this.mergedModel.rev229 = this.models.some((model) => model.rev229);
         this.mergedModel.position = this.position;
         this.models.forEach(model => {
             

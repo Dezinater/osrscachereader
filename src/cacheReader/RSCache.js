@@ -10,6 +10,8 @@ import IndexType from "./cacheTypes/IndexType.js";
 import ConfigType from "./cacheTypes/ConfigType.js";
 
 import AnimNames from "../allAnimNames.js"
+
+import bz from "@foxglove/wasm-bz2";
 /**
  * @typedef options
  * @property {boolean} threaded Use a Web Worker to read from the cache. Slower than non-threaded since threading overhead is big. Useful for web apps to have a responsive UI
@@ -53,8 +55,8 @@ class RSCache {
 
         const cacheLoader = new CacheLoader(cacheRootDir);
 
-        this.onload = cacheLoader.getResults().then((result) => {
-            this.cacheRequester = new CacheRequester(result.datFile);
+        this.onload = cacheLoader.getResults().then(async (result) => {
+            this.cacheRequester = new CacheRequester(result.datFile, await bz.init());
 
             return this.#loadCacheFiles(result.indexFiles).then(() => {
                 this.cacheRequester.setXteas(result.xteas);

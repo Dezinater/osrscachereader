@@ -237,7 +237,7 @@ class GLTFFile {
         });
     }
 
-    addAnimation(targets, lengths, morphTargetsAmount, name) {
+    addAnimation(targets, lengths, morphTargetsAmount, name, interpolation = "STEP") {
         if (!this.animations) {
             this.animations = [];
         }
@@ -306,7 +306,7 @@ class GLTFFile {
             samplers: [
                 {
                     input: accessorsLength,
-                    interpolation: "STEP",
+                    interpolation,
                     output: accessorsLength + 1,
                 },
             ],
@@ -418,7 +418,7 @@ export default class GLTFExporter {
     /**
      * mapping of original vertex ID to new vertex IDs
      * if alpha is true, it refers to the position in this.alphaVertices, otherwise this.verticies
-     * @type {[originalIdx: number]: {[colorKey: number]: {idx: number, alpha: boolean}}
+     * @type {[originalIdx: number]: {[colorKey: number]: {idx: number, alpha: boolean}}}
      */
     remappedVertices = {};
 
@@ -508,11 +508,12 @@ export default class GLTFExporter {
     }
 
     /**
-     * @param {number[]} morphTargetIds 
+     * @param {number[]} morphTargetIds
      * @param {number[]} baseLengths
-     * @param {string} name 
+     * @param {string} name
+     * @param {"LINEAR" | "STEP"} interpolation default STEP
      */
-    addAnimation(morphTargetIds, baseLengths, name) {
+    addAnimation(morphTargetIds, baseLengths, name, interpolation = "STEP") {
         let cumulative = 0;
         const lengths = new Array(baseLengths.length);
         for (let i = 0; i < baseLengths.length; i++) {
@@ -525,7 +526,7 @@ export default class GLTFExporter {
             lengths.push(cumulative / 50);
             morphTargetIds = morphTargetIds.concat(morphTargetIds[morphTargetIds.length - 1]);
         }
-        this.animations.push({ morphTargetIds, lengths, name });
+        this.animations.push({ morphTargetIds, lengths, name, interpolation });
     }
 
     async addSequence(cache, def) {
@@ -541,29 +542,30 @@ export default class GLTFExporter {
             frameIDs = new Array(anim.vertexData.length).fill().map((x, i) => (id << 16) + i + 1);
             frameLengths = anim.lengths;
         } else {
-            targets = Array.from(new Set(def.frameIDs.map(id => id >> 16)));
-            targets = await Promise.all(targets.map(async (targetId, i) => {
-                let skeletonAnims = await this.modelDef.loadSkeletonAnims(cache, this.modelDef, targetId, false);
-                return [targetId, skeletonAnims.map(x => x.vertices)];
-            }));
+            targets = Array.from(new Set(def.frameIDs.map((id) => id >> 16)));
+            targets = await Promise.all(
+                targets.map(async (targetId, i) => {
+                    let skeletonAnims = await this.modelDef.loadSkeletonAnims(cache, this.modelDef, targetId, false);
+                    return [targetId, skeletonAnims.map((x) => x.vertices)];
+                }),
+            );
 
             frameIDs = def.frameIDs;
             frameLengths = def.frameLengths;
         }
 
-
-        targets.forEach(targetData => {
+        targets.forEach((targetData) => {
             const [targetId, frames] = targetData;
             if (targetId in this.morphTargetsMap) return;
 
-            frames.forEach(frame => this.addMorphTarget(frame, targetId));
+            frames.forEach((frame) => this.addMorphTarget(frame, targetId));
         });
 
         let frameIDsToIndex = (frameID) => {
             const skeletonId = frameID >> 16;
             const frame = (frameID & 65535) - 1;
             return this.morphTargetsMap[skeletonId] + frame;
-        }
+        };
 
         this.addAnimation(frameIDs.map(frameIDsToIndex), frameLengths, cache.getAnimName(def.id));
     }
@@ -573,7 +575,10 @@ export default class GLTFExporter {
         const colorToPaletteIndex = {};
         const order = [];
         for (let i = 0; i < this.modelDef.faceColors.length; ++i) {
-            const lookupIndex = this.combineColorAndAlpha(this.modelDef.faceColors[i], this.modelDef.faceAlphas[i] ?? 0);
+            const lookupIndex = this.combineColorAndAlpha(
+                this.modelDef.faceColors[i],
+                this.modelDef.faceAlphas[i] ?? 0,
+            );
             // ensure unique color + alpha combinations
             if (seenColors[lookupIndex]) {
                 continue;
@@ -664,8 +669,8 @@ export default class GLTFExporter {
         }
 
         // add animations
-        this.animations.forEach(({ morphTargetIds, lengths, name }) => {
-            file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount, name);
+        this.animations.forEach(({ morphTargetIds, lengths, name, interpolation }) => {
+            file.addAnimation(morphTargetIds, lengths, this.morphTargetsAmount, name, interpolation);
         });
 
         // add UVs and palette texture

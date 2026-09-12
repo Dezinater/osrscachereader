@@ -289,14 +289,13 @@ DataView.prototype.getInt24 = function (pos) {
 
 //this method should never be used directly
 //but if required to use it then remember to do stringLength+1 for the last null character
+const decoder = new TextDecoder();
 DataView.prototype.getString = function (pos) {
-    let string = "";
-    let character;
-    while (character != 0) {
-        character = this.getUint8(pos);
-        pos += 1;
-        string += String.fromCharCode(character);
+const start = pos;
+    while (this.getUint8(pos) !== 0) {
+        pos++;
     }
-
-    return string.substring(0, string.length - 1);
+    
+    const bytes = new Uint8Array(this.buffer, this.byteOffset + start, pos - start);
+    return decoder.decode(bytes);
 };

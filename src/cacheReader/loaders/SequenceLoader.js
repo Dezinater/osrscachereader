@@ -77,7 +77,9 @@ export class SequenceDefinition {
     /**  @type {Array} */
     chatFrameIds = [];
 
-    /**  @type {Array<Sound>} */
+    /** Multiple weighted variants may be attached to the same animation frame.
+     * @type {Array<Array<Sound>>}
+     */
     frameSounds = [];
 
     /**
@@ -180,7 +182,10 @@ export default class SequenceLoader {
             def.frameSounds = [];
 
             for (var4 = 0; var4 < var3; ++var4) {
-                def.frameSounds[var4] = this.readFrameSound(dataview);
+                const sound = this.readFrameSound(dataview);
+                if (sound) {
+                    def.frameSounds[var4] = [sound];
+                }
             }
         } else if (opcode == (this.rev226 ? 13 : 14)) {
             def.animMayaID = dataview.readInt32();
@@ -189,7 +194,11 @@ export default class SequenceLoader {
 
             for (var4 = 0; var4 < var3; ++var4) {
                 let frame = dataview.readUint16();
-                def.frameSounds[frame] = this.readFrameSound(dataview);
+                const sound = this.readFrameSound(dataview);
+                if (sound) {
+                    def.frameSounds[frame] ??= [];
+                    def.frameSounds[frame].push(sound);
+                }
             }
         } else if (opcode == (this.rev226 ? 15 : 16)) {
             def.animMayaStart = dataview.readUint16();

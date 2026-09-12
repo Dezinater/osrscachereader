@@ -1,9 +1,15 @@
-//import * as gzip from 'gzip-js'
-const gzip = require("gzip-js");
+const bz = require("@foxglove/wasm-bz2");
+const { gunzipSync } = require("fflate");
 
-const compressjs = require("@ledgerhq/compressjs");
+let bzip;
+async function loadBz() {
+    bzip = await bz.init();
+}
 
 onmessage = async function (e) {
+    if(!bzip) {
+        await loadBz();
+    }
     //let workerResult = 'Result: ' + (e.data[0]);
     //console.log(e);
     //postMessage(workerResult);
@@ -34,7 +40,8 @@ onmessage = async function (e) {
         bzData.set(bzHeader, 0);
         bzData.set(data, 4);
 
-        decompressedData = compressjs.Bzip2.decompressFile(bzData);
+        //decompressedData = compressjs.Bzip2.decompressFile(bzData);
+        decompressedData = await bzip.decompress(bzData, decompressedLength);
     } else if (compressionOpcode == 2) {
         //gzip
         let unencryptedData = new Uint8Array(dataview.buffer.slice(5, 9 + compressedLength));
@@ -53,7 +60,7 @@ onmessage = async function (e) {
         let unzipped;
         try {
             //console.log("unzipping");
-            unzipped = gzip.unzip(data);
+            unzipped = gunzipSync(data);
             //console.log("unzipped");
         } catch {
             throw "Could not unzip with key:" + e?.key;

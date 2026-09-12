@@ -1,15 +1,16 @@
 import fs from "fs";
-import _ from "lodash";
-import { IndexType, ConfigType, GLTFExporter, ModelGroup } from "osrscachereader";
+import { IndexType, ConfigType, GLTFExporter, ModelGroup } from "../src/index.js";
 
 let finalModel = new ModelGroup();
 let individualModels = [];
 let modelVertexIndices = [];
 let individualModelNames = [];
+let wearPosIdsUsed = new Set();
 let name = "model";
 let animations = [];
 let split = false;
 let excludeModelIds = [];
+let interpolation = "STEP";
 
 async function processCommand(cache, command, options) {
     switch (command) {
@@ -18,6 +19,9 @@ async function processCommand(cache, command, options) {
             break;
         case "npc":
             await addNpc(cache, options);
+            break;
+        case "kit":
+            await addKit(cache, options);
             break;
         case "spotanim":
             await addSpotAnim(cache, options);
@@ -41,6 +45,16 @@ async function processCommand(cache, command, options) {
             break;
         case "exclude":
             excludeModelIds.push(...listToIds(options));
+            break;
+        case "interpolation":
+            if (options[0].toUpperCase() === "LINEAR") {
+                interpolation = "LINEAR";
+            } else if (options[0].toUpperCase() === "STEP") {
+                interpolation = "STEP";
+            } else {
+                console.error(`Invalid interpolation type. Use 'LINEAR' or 'STEP'. Defaulting to ${interpolation}`);
+                return;
+            }
             break;
     }
 }
@@ -69,6 +83,13 @@ async function loadEntityIds(cache, options, configType, modelTypeKeys, animatio
             if (!(modelType in entityDef)) {
                 console.error(`${modelType} key not found`);
                 return;
+            }
+            if (configType === ConfigType.IDENTKIT && wearPosIdsUsed.has(entityDef.replacedByWearPos)) {
+                continue;
+            } else if (configType === ConfigType.ITEM) {
+                ["wearPos1", "wearPos2", "wearPos3"].forEach((key) => {
+                    if (entityDef[key] !== undefined) wearPosIdsUsed.add(entityDef[key]);
+                });
             }
             const entry = entityDef[modelType];
             const modelIds = Array.isArray(entry) ? entry : [entry];
@@ -132,8 +153,8 @@ async function exportGLTFModel(cache) {
     for (let i = 0; i < animations.length; ++i) {
         const lengths = allLengths[i];
         const morphTargets = allMorphTargets[i];
-        exporter.addAnimation(morphTargets, lengths);
-        splitExporters.forEach((e) => e.addAnimation(morphTargets, lengths));
+        exporter.addAnimation(morphTargets, lengths, undefined, interpolation);
+        splitExporters.forEach((e) => e.addAnimation(morphTargets, lengths, undefined, interpolation));
     }
 
     exporter.addColors(finalModel.getMergedModel());
@@ -184,6 +205,28 @@ async function addNpc(cache, options) {
     }
 
     await loadEntityIds(cache, options, ConfigType.NPC, modelTypes);
+}
+
+async function addKit(cache, options) {
+    const presets = {
+        default: [0, 10, 18, 26, 33, 36, 42],
+    };
+
+    if (options[0] == undefined) {
+        console.error("Kit ID undefined");
+        return;
+    }
+
+    if (Object.keys(presets).some((presetName) => options[0] === presetName)) {
+        options[0] = presets[options[0]].join(",");
+    }
+
+    let modelTypes = ["models"];
+    if (options[1] != undefined) {
+        modelTypes = options[1].split(",");
+    }
+
+    await loadEntityIds(cache, options, ConfigType.IDENTKIT, modelTypes);
 }
 
 async function addSpotAnim(cache, options) {

@@ -87,6 +87,19 @@ If you wanted to get every Sprite you would have to do something like this.
 
 There are also option you can pass as parameter to any getFile/getAllFiles and getDef/getAllDefs functions. You can read more about these options [here](https://dezinater.github.io/osrscachereader/global.html#options)
 
+## Running as CLI
+
+It is also possible to run GLTF export as a CLI. Assuming the `cache/` folder is populated and the `out/` directory exists:
+
+For example, to export Zuk (7706) with idle/shoot/flinch/death animations respectively, to `out/zuk.gltf`:
+
+```
+npm install
+npm run cmd modelBuilder npc 7706 anim 7564,7566,7565,7562 name zuk
+```
+
+You can also enable animation smoothing (linear interpolation) by adding `interpolation linear` to the command.
+
 ## Sources
 
 Loaders/Definitions and other various information was gathered from the following:

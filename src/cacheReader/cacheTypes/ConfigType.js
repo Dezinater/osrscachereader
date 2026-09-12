@@ -6,6 +6,7 @@ import SequenceLoader from "../loaders/SequenceLoader.js";
 import OverlayLoader from "../loaders/OverlayLoader.js";
 import UnderlayLoader from "../loaders/UnderlayLoader.js";
 import SpotAnimLoader from "../loaders/SpotAnimLoader.js";
+import Config72Loader from "../loaders/Config72Loader.js";
 
 /**
  * @readonly
@@ -71,6 +72,7 @@ const ConfigType = {
     /** Possible scripts? */
     UNKNOWN54: { id: 54, loader: undefined },
     UNKNOWN70: { id: 70, loader: undefined },
+    CONFIG72: { id:72, loader: Config72Loader}
 };
 ConfigType.valueOf = (id) => {
     var values = Object.values(ConfigType);

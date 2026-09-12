@@ -1,3 +1,5 @@
+import EntityOpsLoader from "../helpers/EntityOpsDecoder.js";
+
 /**
  * @class NpcDefinition
  * @category Definitions
@@ -243,14 +245,7 @@ export default class NpcLoader {
         } else if (opcode == 18) {
             def.category = dataview.readUint16();
         } else if (opcode >= 30 && opcode < 35) {
-            if (def.actions == undefined) def.actions = [];
-
-            var readString = dataview.readString();
-            def.actions[opcode - 30] = readString;
-
-            if (def.actions[opcode - 30] == "Hidden") {
-                def.actions[opcode - 30] = undefined;
-            }
+            EntityOpsLoader.decodeOp(def.actions, dataview, opcode - 30);
         } else if (opcode == 40) {
             length = dataview.readUint8();
             def.recolorToFind = [];
@@ -275,6 +270,21 @@ export default class NpcLoader {
 
             for (index = 0; index < length; ++index) {
                 def.chatheadModels.push(dataview.readUint16());
+            }
+
+        } else if (opcode == 61) {
+            length = dataview.readUint8();
+            def.models = [];
+
+            for (index = 0; index < length; ++index) {
+                def.models[index] = dataview.readInt32();
+            }
+        } else if (opcode == 62) {
+            length = dataview.readUint8();
+            def.chatheadModels = [];
+
+            for (index = 0; index < length; ++index) {
+                def.chatheadModels[index] = dataview.readInt32();
             }
         } else if (opcode == 74) {
             def.stats[0] = dataview.readUint16();
@@ -442,6 +452,12 @@ export default class NpcLoader {
 
                 def.params[key] = value;
             }
+        } else if (opcode == 251) {
+            EntityOpsLoader.decodeSubOp(def.actions, dataview);
+        } else if (opcode == 252) {
+            EntityOpsLoader.decodeConditionalOp(def.actions, dataview);
+        } else if (opcode == 253) {
+            EntityOpsLoader.decodeConditionalSubOp(def.actions, dataview);
         }
     }
 }

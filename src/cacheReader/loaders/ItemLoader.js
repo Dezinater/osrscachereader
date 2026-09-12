@@ -1,3 +1,5 @@
+import EntityOpsLoader from "../helpers/EntityOpsDecoder.js";
+
 /**
  * @class ItemDefinition
  * @category Definitions
@@ -36,7 +38,9 @@ export class ItemDefinition {
     cost = 1;
 
     /** @type {boolean} */
-    isTradeable;
+    isTradeable = true;
+    /** @type {boolean} */
+    isGETradeable;
 
     /** @type {number} */
     stackable = 0;
@@ -96,7 +100,7 @@ export class ItemDefinition {
     countObj;
 
     /** @type {Array<string>} */
-    options = [null, null, "Take", null, null];
+    groundOps = [null, null, "Take", null, null];
 
     /** @type {Array<string>} */
     interfaceOptions = [null, null, null, null, "Drop"];
@@ -229,6 +233,8 @@ export default class ItemLoader {
             def.wearPos1 = dataview.readInt8();
         } else if (opcode == 14) {
             def.wearPos2 = dataview.readInt8();
+        }else if (opcode == 15) {
+			def.isTradeable = false;
         } else if (opcode == 16) {
             def.members = true;
         } else if (opcode == 23) {
@@ -244,12 +250,7 @@ export default class ItemLoader {
         } else if (opcode == 27) {
             def.wearPos3 = dataview.readInt8();
         } else if (opcode >= 30 && opcode < 35) {
-            if (def.options == undefined) def.options = [];
-
-            def.options[opcode - 30] = dataview.readString();
-            if (def.options[opcode - 30] == "Hidden") {
-                def.options[opcode - 30] = null;
-            }
+            EntityOpsLoader.decodeOp(def.groundOps, dataview, opcode - 30);
         } else if (opcode >= 35 && opcode < 40) {
             if (def.interfaceOptions == undefined) def.interfaceOptions = [];
             def.interfaceOptions[opcode - 35] = dataview.readString();
@@ -292,8 +293,33 @@ export default class ItemLoader {
                     def.subops[opId][subopId] = op;
                 }
             }
+        } else if (opcode == 44) {
+            def.inventoryModel = dataview.readInt32();
+        } else if (opcode == 45) {
+            def.maleModel0 = dataview.readInt32();
+            def.maleOffset = dataview.readUint8();
+        } else if (opcode == 46) {
+            def.maleModel1 = dataview.readInt32();
+        } else if (opcode == 47) {
+            def.maleModel2 = dataview.readInt32();
+        } else if (opcode == 48) {
+            def.femaleModel0 = dataview.readInt32();
+            def.femaleOffset = dataview.readUint8();
+        } else if (opcode == 49) {
+            def.femaleModel1 = dataview.readInt32();
+        }
+        else if (opcode == 50) {
+            def.femaleModel2 = dataview.readInt32();
+        } else if (opcode == 51) {
+            def.maleHeadModel = dataview.readInt32();
+        } else if (opcode == 52) {
+            def.maleHeadModel2 = dataview.readInt32();
+        } else if (opcode == 53) {
+            def.femaleHeadModel = dataview.readInt32();
+        } else if (opcode == 54) {
+            def.femaleHeadModel2 = dataview.readInt32();
         } else if (opcode == 65) {
-            def.isTradeable = true;
+            def.isGETradeable = true;
         } else if (opcode == 75) {
             def.weight = dataview.readInt16();
         } else if (opcode == 78) {
@@ -344,6 +370,12 @@ export default class ItemLoader {
             def.placeholderId = dataview.readUint16();
         } else if (opcode == 149) {
             def.placeholderTemplateId = dataview.readUint16();
+        } else if (opcode == 200) {
+            EntityOpsLoader.decodeSubOp(def.groundOps, dataview);
+        } else if (opcode == 201) {
+            EntityOpsLoader.decodeConditionalOp(def.groundOps, dataview);
+        } else if (opcode == 202) {
+            EntityOpsLoader.decodeConditionalSubOp(def.groundOps, dataview);
         } else if (opcode == 249) {
             var length = dataview.readUint8();
             def.params = {};
