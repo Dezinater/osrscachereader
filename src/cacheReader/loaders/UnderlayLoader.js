@@ -27,23 +27,24 @@ export default class UnderlayLoader {
     }
 
     packHsl(def) {
+        let saturation = def.saturation;
         if (def.lightness > 179) {
-            def.saturation = (def.saturation / 2) | 0;
+            saturation = (saturation / 2) | 0;
         }
       
         if (def.lightness > 192) {
-            def.saturation = (def.saturation / 2) | 0;
+            saturation = (saturation / 2) | 0;
         }
       
         if (def.lightness > 217) {
-            def.saturation = (def.saturation / 2) | 0;
+            saturation = (saturation / 2) | 0;
         }
       
         if (def.lightness > 243) {
-            def.saturation = (def.saturation / 2) | 0;
+            saturation = (saturation / 2) | 0;
         }
       
-        def.color = (Math.floor(def.saturation / 32) << 7) + (Math.floor(def.hue / 4) << 10) + (Math.floor(def.lightness / 2) | 0);
+        def.color = (Math.floor(saturation / 32) << 7) + (Math.floor(def.hue / 4) << 10) + (Math.floor(def.lightness / 2) | 0);
     }
 
     handleOpcode(def, opcode, dataview) {
@@ -51,7 +52,8 @@ export default class UnderlayLoader {
             return;
         }
         if (opcode == 1) {
-            def.color = dataview.readInt24();
+            // Underlay colour is an unsigned RGB medium, not a signed value.
+            def.color = dataview.readUint24();
         }
     }
 
