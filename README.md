@@ -85,6 +85,17 @@ let logo = allSprites.filter((spriteFile) => spriteFile.nameHash == 3327403);
 
 If you wanted to get every Sprite you would have to do something like this.
 
+Rendering sprites or exporting GLTF colour palettes requires a Canvas implementation.
+If you are consuming `osrscachereader` as a dependency to your own project, you need to install `canvas` yourself and pass its `createCanvas` function to the relevant functions that require:
+
+```js
+import { createCanvas } from "canvas";
+import { GLTFExporter } from "osrscachereader";
+
+const image = await sprite.createImage(sprite.getWidth(), sprite.getHeight(), createCanvas);
+const exporter = new GLTFExporter(model, createCanvas);
+```
+
 There are also option you can pass as parameter to any getFile/getAllFiles and getDef/getAllDefs functions. You can read more about these options [here](https://dezinater.github.io/osrscachereader/global.html#options)
 
 ## Running as CLI

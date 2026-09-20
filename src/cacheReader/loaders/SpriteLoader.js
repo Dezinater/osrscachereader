@@ -1,5 +1,3 @@
-import { createCanvas } from "canvas";
-
 const FLAG_VERTICAL = 0b01;
 const FLAG_ALPHA = 0b10;
 /**
@@ -62,16 +60,19 @@ export class Sprite {
         this.pixels = pixels;
     }
 
-    async createImageUrl(width, height) {
+    async createImageUrl(width, height, createCanvas) {
         if (width == undefined) width = this.getWidth();
         if (height == undefined) height = this.getHeight();
 
-        return (await this.createImage(width, height)).toDataURL();
+        return (await this.createImage(width, height, createCanvas)).toDataURL();
     }
 
-    async createImage(width, height) {
+    async createImage(width, height, createCanvas) {
         if (width == undefined) width = this.getWidth();
         if (height == undefined) height = this.getHeight();
+        if (typeof createCanvas != "function") {
+            throw new Error("Sprite image rendering requires an injected createCanvas function");
+        }
 
         const canvas = createCanvas(this.getWidth(), this.getHeight());
         const ctx = canvas.getContext("2d");
@@ -98,10 +99,7 @@ export class Sprite {
     }
 
     createImageData(ctx) {
-        if (ctx == undefined) {
-            const canvas = createCanvas(this.getWidth(), this.getHeight());
-            ctx = canvas.getContext("2d");
-        }
+        if (ctx == undefined) throw new Error("Sprite image data requires a canvas context");
 
         let imageData = ctx.createImageData(this.getWidth(), this.getHeight());
         for (let i = 0; i < imageData.data.byteLength; i += 4) {
