@@ -56,13 +56,15 @@ export default class OverlayLoader {
         }
 
         if (opcode == 1) {
-            def.color = dataview.readInt24();
+            // Overlay colours are unsigned RGB mediums. Signed decoding would
+            // sign-extend colours whose blue channel has bit 7 set.
+            def.color = dataview.readUint24();
         } else if (opcode == 2) {
             def.texture = dataview.readUint8();
         } else if (opcode == 5) {
             def.hideUnderlay = false;
         } else if (opcode == 7) {
-            def.secondaryColor = dataview.readInt24();
+            def.secondaryColor = dataview.readUint24();
         }
     }
 
