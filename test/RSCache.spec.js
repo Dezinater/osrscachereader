@@ -22,4 +22,16 @@ describe("RSCache file lookup", function () {
         assert.strictEqual(await cache.getFile(0, 1, 1), files[1]);
         assert.deepStrictEqual(await cache.getDef(0, 1, 1), files[1].def);
     });
+
+    it("does not confuse a physical slot with a sparse file ID", async function () {
+        const cache = Object.create(RSCache.prototype);
+        const files = [
+            { id: 1, def: { id: 1 } },
+            { id: 3, def: { id: 3 } },
+        ];
+        cache.getAllFiles = async () => files;
+
+        assert.strictEqual(await cache.getFile(0, 1, 1), files[0]);
+        assert.deepStrictEqual(await cache.getDef(0, 1, 1), files[0].def);
+    });
 });

@@ -179,9 +179,12 @@ class RSCache {
         // Single-file archives are stored at slot zero even when the cache
         // assigns that file a non-zero ID. Keep the fast positional lookup for
         // dense archives, then fall back to the file's actual ID.
-        return this.getAllFiles(indexId, archiveId, options).then(
-            (files) => files[fileId] ?? files.find((file) => file?.id === fileId),
-        );
+        return this.getAllFiles(indexId, archiveId, options).then((files) => {
+            const positionalFile = files[fileId];
+            return positionalFile?.id === fileId
+                ? positionalFile
+                : files.find((file) => file?.id === fileId);
+        });
     }
 
     /**
