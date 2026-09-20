@@ -176,14 +176,14 @@ class RSCache {
      * @returns [File]{@link File}
      */
     async getFile(indexId, archiveId, fileId = 0, options = {}) {
-        // Single-file archives are stored at slot zero even when the cache
-        // assigns that file a non-zero ID. Keep the fast positional lookup for
-        // dense archives, then fall back to the file's actual ID.
         return this.getAllFiles(indexId, archiveId, options).then((files) => {
-            const positionalFile = files[fileId];
-            return positionalFile?.id === fileId
-                ? positionalFile
-                : files.find((file) => file?.id === fileId);
+            const file = files[fileId];
+            // Some archives are 'sparse', i.e. the file with id '10' is not at position 10 in files[].
+            // In this case we have to do a linear lookup to find the correct file.
+            if (file?.id === fileId) {
+                return file;
+            }
+            return files.find((file) => file?.id === fileId);
         });
     }
 
