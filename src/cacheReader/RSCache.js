@@ -181,7 +181,15 @@ class RSCache {
      * @returns [File]{@link File}
      */
     async getFile(indexId, archiveId, fileId = 0, options = {}) {
-        return this.getAllFiles(indexId, archiveId, options).then((x) => x[fileId]);
+        return this.getAllFiles(indexId, archiveId, options).then((files) => {
+            const file = files[fileId];
+            // Some archives are 'sparse', i.e. the file with id '10' is not at position 10 in files[].
+            // In this case we have to do a linear lookup to find the correct file.
+            if (file?.id === fileId) {
+                return file;
+            }
+            return files.find((file) => file?.id === fileId);
+        });
     }
 
     /**
@@ -209,7 +217,7 @@ class RSCache {
      * @returns Definition
      */
     async getDef(indexId, archiveId, fileId = 0, options = {}) {
-        return this.getAllDefs(indexId, archiveId, options).then((x) => x[fileId]);
+        return this.getFile(indexId, archiveId, fileId, options).then((file) => file?.def);
     }
 
     /**
