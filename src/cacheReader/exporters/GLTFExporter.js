@@ -1,7 +1,5 @@
 import * as base64 from "../helpers/base64.js";
 
-import { createCanvas } from "canvas";
-
 const BRIGHTNESS_MAX = 0.6;
 const HUE_OFFSET = 0.5 / 64;
 const SATURATION_OFFSET = 0.5 / 8;
@@ -413,6 +411,7 @@ export default class GLTFExporter {
     colorPalettePng = null;
 
     modelDef;
+    createCanvas;
     morphTargetsMap = {};
 
     /**
@@ -424,8 +423,9 @@ export default class GLTFExporter {
 
     combineColorAndAlpha = (color, alpha) => (color & 0xffffff) | ((alpha & 0xff) << 24);
 
-    constructor(def) {
+    constructor(def, createCanvas) {
         this.modelDef = def;
+        this.createCanvas = createCanvas;
         this.verticies = [];
         this.alphaVertices = [];
 
@@ -571,6 +571,10 @@ export default class GLTFExporter {
     }
 
     addColors() {
+        if (typeof this.createCanvas != "function") {
+            throw new Error("GLTF colour palette generation requires an injected createCanvas function");
+        }
+
         const seenColors = {};
         const colorToPaletteIndex = {};
         const order = [];
@@ -594,7 +598,7 @@ export default class GLTFExporter {
         const numUniqueColors = Object.keys(seenColors).length;
         // create a texture for the face colors
         const pSize = 4;
-        const canvas = createCanvas(numUniqueColors * pSize, pSize, "png");
+        const canvas = this.createCanvas(numUniqueColors * pSize, pSize, "png");
         const ctx = canvas.getContext("2d");
         let xx = 0;
         for (const value of order) {

@@ -60,18 +60,20 @@ export class Sprite {
         this.pixels = pixels;
     }
 
-    async createImageUrl(width, height) {
+    async createImageUrl(width, height, createCanvas) {
         if (width == undefined) width = this.getWidth();
         if (height == undefined) height = this.getHeight();
 
-        return (await this.createImage(width, height)).toDataURL();
+        return (await this.createImage(width, height, createCanvas)).toDataURL();
     }
 
-    async createImage(width, height) {
+    async createImage(width, height, createCanvas) {
         if (width == undefined) width = this.getWidth();
         if (height == undefined) height = this.getHeight();
+        if (typeof createCanvas != "function") {
+            throw new Error("Sprite image rendering requires an injected createCanvas function");
+        }
 
-        const { createCanvas } = await import("canvas");
         const canvas = createCanvas(this.getWidth(), this.getHeight());
         const ctx = canvas.getContext("2d");
 
