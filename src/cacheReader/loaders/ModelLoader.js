@@ -1048,63 +1048,68 @@ export class ModelDefinition {
                 frameDef.method727(currentFrame, bone, var6, frameDef.field1257);
                 ++var6;
             }
-            if (this.animayaGroups != null) {
-                let animatedFrameVertices = [];
+            let animatedFrameVertices = [];
 
-                for (let vertexIndex = 0; vertexIndex < this.vertexCount; ++vertexIndex) {
-                    let bones = this.animayaGroups[vertexIndex];
+            for (let vertexIndex = 0; vertexIndex < this.vertexCount; ++vertexIndex) {
+                let bones = this.animayaGroups?.[vertexIndex];
 
-                    if (bones != null && bones.length != 0) {
-                        let scales = this.animayaScales[vertexIndex];
+                if (bones != null && bones.length != 0) {
+                    let scales = this.animayaScales[vertexIndex];
 
-                        let matrix = new Matrix();
-                        matrix.zero();
+                    let matrix = new Matrix();
+                    matrix.zero();
 
-                        for (let i = 0; i < bones.length; ++i) {
-                            let boneIndex = bones[i];
-                            let bone = animayaSkeleton.getBone(boneIndex);
-                            if (bone != null) {
-                                let matrix2 = new Matrix();
-                                let matrix3 = new Matrix();
+                    for (let i = 0; i < bones.length; ++i) {
+                        let boneIndex = bones[i];
+                        let bone = animayaSkeleton.getBone(boneIndex);
+                        if (bone != null) {
+                            let matrix2 = new Matrix();
+                            let matrix3 = new Matrix();
 
-                                matrix2.setScale(scales[i] / 255);
-                                matrix3.copy(bone.method687(frameDef.field1257));
-                                matrix3.multiply(matrix2);
-                                matrix.add(matrix3);
-                            }
+                            matrix2.setScale(scales[i] / 255);
+                            matrix3.copy(bone.method687(frameDef.field1257));
+                            matrix3.multiply(matrix2);
+                            matrix.add(matrix3);
                         }
-
-                        let var3 = this.vertexPositionsX[vertexIndex];
-                        let var4 = -this.vertexPositionsY[vertexIndex];
-                        let var5 = (invertZ ? 1 : -1) * this.vertexPositionsZ[vertexIndex];
-                        let var6 = 1.0;
-                        verticesX[vertexIndex] =
-                            matrix.matrixVals[0] * var3 +
-                            matrix.matrixVals[4] * var4 +
-                            matrix.matrixVals[8] * var5 +
-                            matrix.matrixVals[12] * var6;
-                        verticesY[vertexIndex] = -(
-                            matrix.matrixVals[1] * var3 +
-                            matrix.matrixVals[5] * var4 +
-                            matrix.matrixVals[9] * var5 +
-                            matrix.matrixVals[13] * var6
-                        );
-                        verticesZ[vertexIndex] = -(
-                            matrix.matrixVals[2] * var3 +
-                            matrix.matrixVals[6] * var4 +
-                            matrix.matrixVals[10] * var5 +
-                            matrix.matrixVals[14] * var6
-                        );
-
-                        animatedFrameVertices.push([
-                            verticesX[vertexIndex],
-                            -verticesY[vertexIndex],
-                            -verticesZ[vertexIndex],
-                        ]);
                     }
+
+                    let var3 = this.vertexPositionsX[vertexIndex];
+                    let var4 = -this.vertexPositionsY[vertexIndex];
+                    let var5 = (invertZ ? 1 : -1) * this.vertexPositionsZ[vertexIndex];
+                    let var6 = 1.0;
+                    verticesX[vertexIndex] =
+                        matrix.matrixVals[0] * var3 +
+                        matrix.matrixVals[4] * var4 +
+                        matrix.matrixVals[8] * var5 +
+                        matrix.matrixVals[12] * var6;
+                    verticesY[vertexIndex] = -(
+                        matrix.matrixVals[1] * var3 +
+                        matrix.matrixVals[5] * var4 +
+                        matrix.matrixVals[9] * var5 +
+                        matrix.matrixVals[13] * var6
+                    );
+                    verticesZ[vertexIndex] = -(
+                        matrix.matrixVals[2] * var3 +
+                        matrix.matrixVals[6] * var4 +
+                        matrix.matrixVals[10] * var5 +
+                        matrix.matrixVals[14] * var6
+                    );
+
+                    animatedFrameVertices.push([
+                        verticesX[vertexIndex],
+                        -verticesY[vertexIndex],
+                        -verticesZ[vertexIndex],
+                    ]);
+                } else {
+                    // Vertices without bones
+                    animatedFrameVertices.push([
+                        this.vertexPositionsX[vertexIndex],
+                        -this.vertexPositionsY[vertexIndex],
+                        (invertZ ? 1 : -1) * this.vertexPositionsZ[vertexIndex],
+                    ]);
                 }
-                animations.push(animatedFrameVertices);
             }
+            animations.push(animatedFrameVertices);
         }
 
         return animations;

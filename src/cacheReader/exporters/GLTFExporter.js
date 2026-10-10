@@ -480,8 +480,16 @@ export default class GLTFExporter {
      * @returns the position of the morph target that was inserted
      */
     addMorphTarget(morphVertices, id = -1) {
-        let newMorphVertices = [];
-        let newAlphaMorphVertices = [];
+        if (morphVertices.length !== this.modelDef.vertexPositionsX.length) {
+            throw new Error("Morph target vertex count must match the source model");
+        }
+        for (let i = 0; i < morphVertices.length; i++) {
+            if (morphVertices[i] == null) {
+                throw new Error(`Morph target is missing source vertex ${i}`);
+            }
+        }
+        const newMorphVertices = [];
+        const newAlphaMorphVertices = [];
         for (let i = 0; i < morphVertices.length; i++) {
             const realVertices = this.remappedVertices[i];
             // may end up reprocessing each vertex multiple times if it appears in multiple colours, but thats OK
