@@ -15,22 +15,17 @@ function createExporter() {
 }
 
 describe("GLTFExporter morph targets", function () {
-    it("keeps omitted trailing vertices stationary in complete morph buffers", function () {
+    it("rejects incomplete frames before modifying exporter state", function () {
         const exporter = createExporter();
-        exporter.addMorphTarget([[1, 2, 3]]);
-
-        assert.equal(exporter.morphVertices[0].length, exporter.verticies.length);
-        assert.equal(exporter.alphaMorphVertices[0].length, exporter.alphaVertices.length);
-        assert.deepEqual(exporter.morphVertices[0], [
-            [1, 2, 3], [0, 0, 0], [0, 0, 0],
-            [1, 2, 3], [0, 0, 0], [0, 0, 0],
-        ]);
-        assert.deepEqual(exporter.alphaMorphVertices[0], [[1, 2, 3], [0, 0, 0], [0, 0, 0]]);
+        assert.throws(() => exporter.addMorphTarget([[1, 2, 3]]), /vertex count/);
+        assert.throws(() => exporter.addMorphTarget([[0, 0, 0], undefined, [20, 0, 0], [30, 0, 0]]), /missing source vertex 1/);
+        assert.equal(exporter.morphTargetsAmount, 0);
+        assert.equal(exporter.morphVertices.length, 0);
     });
 
-    it("preserves vertex ordering when an animation omits an interior vertex", function () {
+    it("maps complete frames to colour and alpha duplicates", function () {
         const exporter = createExporter();
-        exporter.addMorphTarget([[0, 0, 0], undefined, [24, 5, 6], [37, 8, 9]]);
+        exporter.addMorphTarget([[0, 0, 0], [10, 0, 0], [24, 5, 6], [37, 8, 9]]);
 
         assert.deepEqual(exporter.morphVertices[0], [
             [0, 0, 0], [0, 0, 0], [4, 5, 6],
