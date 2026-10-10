@@ -92,7 +92,7 @@ export default class SpotAnimLoader {
             def.modelId = dataview.readUint16();
         } else if (opcode == 2) {
             def.animationId = dataview.readUint16();
-        }else if(opcode == 3) {
+        } else if (opcode == 3) {
             def.modelId = dataview.readInt32();
         } else if (opcode == 4) {
             def.resizeX = dataview.readUint16();
@@ -106,6 +106,8 @@ export default class SpotAnimLoader {
             def.contrast = dataview.readUint8();
         } else if (opcode == 9) {
             def.name = dataview.readString();
+        } else if (opcode == 10) {
+            def.clickable = false;
         } else if (opcode == 40) {
             let var3 = dataview.readUint8();
             def.recolorToFind = new Array(var3);
@@ -124,6 +126,8 @@ export default class SpotAnimLoader {
                 def.textureToFind[var4] = dataview.readUint16();
                 def.textureToReplace[var4] = dataview.readUint16();
             }
+        } else if (opcode == 42) {
+            def.fullRecolor = dataview.readUint16();
         }
     }
 }

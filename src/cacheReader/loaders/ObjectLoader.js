@@ -440,6 +440,8 @@ export default class ObjectLoader {
                 def.retextureToFind.push(dataview.readUint16());
                 def.textureToReplace.push(dataview.readUint16());
             }
+        } else if (opcode == 42) {
+            def.fullRecolor = dataview.readUint16();
         } else if (opcode == 61) {
             def.category = dataview.readUint16();
         } else if (opcode == 62) {

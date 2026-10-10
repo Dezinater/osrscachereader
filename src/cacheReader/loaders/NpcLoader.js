@@ -264,6 +264,8 @@ export default class NpcLoader {
                 def.retextureToFind.push(dataview.readUint16());
                 def.retextureToReplace.push(dataview.readUint16());
             }
+        } else if (opcode == 42) {
+            def.fullRecolor = dataview.readUint16();
         } else if (opcode == 60) {
             length = dataview.readUint8();
             def.chatheadModels = [];

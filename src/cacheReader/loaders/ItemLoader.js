@@ -176,6 +176,12 @@ export class ItemDefinition {
 
     /** @type {String} */
     examineText;
+
+    /** @type {boolean} */
+    bronzeman = false;
+
+    /** @type {short} */
+    fullRecolor = -1;
 }
 
 export default class ItemLoader {
@@ -342,6 +348,8 @@ export default class ItemLoader {
             def.notedID = dataview.readUint16();
         } else if (opcode == 98) {
             def.notedTemplate = dataview.readUint16();
+        } else if (opcode == 99) {
+            def.fullRecolor = dataview.readUint16();
         } else if (opcode >= 100 && opcode < 110) {
             if (def.countObj == undefined) {
                 def.countObj = [];
@@ -372,6 +380,12 @@ export default class ItemLoader {
             def.placeholderTemplateId = dataview.readUint16();
         } else if (opcode == 160) {
             def.stackable = 2;
+        } else if (opcode == 161) {
+            let len = stream.readUint16();
+            def.holdingWhitelist = [];
+            for (let i = 0; i < len; i++) {
+                def.holdingWhitelist[i] = stream.readUint16();
+            }
         } else if (opcode == 200) {
             EntityOpsLoader.decodeSubOp(def.groundOps, dataview);
         } else if (opcode == 201) {
@@ -396,6 +410,8 @@ export default class ItemLoader {
 
                 def.params[key] = value;
             }
+        } else if (opcode == 251) {
+            def.bronzeman = true;
         } else {
             console.error("UNHANDLED OPCODE [ItemLoader]: " + opcode + " last: " + lastOpCode);
         }
