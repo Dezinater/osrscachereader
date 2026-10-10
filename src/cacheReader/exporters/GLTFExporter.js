@@ -480,9 +480,12 @@ export default class GLTFExporter {
      * @returns the position of the morph target that was inserted
      */
     addMorphTarget(morphVertices, id = -1) {
-        let newMorphVertices = [];
-        let newAlphaMorphVertices = [];
+        // glTF requires a delta for every base vertex, including vertices omitted
+        // by the animation. Keep those vertices stationary instead of leaving holes.
+        const newMorphVertices = this.verticies.map(() => [0, 0, 0]);
+        const newAlphaMorphVertices = this.alphaVertices.map(() => [0, 0, 0]);
         for (let i = 0; i < morphVertices.length; i++) {
+            if (morphVertices[i] == null) continue;
             const realVertices = this.remappedVertices[i];
             // may end up reprocessing each vertex multiple times if it appears in multiple colours, but thats OK
             for (const { idx: newIdx, alpha } of Object.values(realVertices || {})) {
